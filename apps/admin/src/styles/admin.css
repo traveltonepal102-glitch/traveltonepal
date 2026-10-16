@@ -1,0 +1,12 @@
+/* Tailwind for our admin screens. No preflight: Payload's own screens keep their styles.
+   Payload's CSS sits in @layer payload-default, declared first, so these layers win. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "@ttn/ui/theme.css";
+
+@theme {
+  /* Payload sets the root font size to 13px, so rem-based spacing would shrink.
+     Use the design's 4px base in px instead (h-11 = 44px, max-w-100 = 400px). */
+  --spacing: 4px;
+}

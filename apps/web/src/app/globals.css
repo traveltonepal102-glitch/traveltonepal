@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@ttn/ui/theme.css";
+
+/* Scan the shared UI package for class names */
+@source "../../../../packages/ui/src";
+
+@layer base {
+  body {
+    @apply bg-background text-body text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+  }
+}

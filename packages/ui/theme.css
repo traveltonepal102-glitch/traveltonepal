@@ -1,0 +1,191 @@
+/* Travel To Nepal design tokens: one light theme for all sites and the admin.
+   Keep each color to its job in the design system (contrast is checked per job).
+   Tokens only: each app imports Tailwind itself before this file (the admin skips
+   Tailwind's preflight so Payload's own screens keep their styles). */
+:root {
+  /* brand palette */
+  --ttn-brand: #005b9f;
+  --ttn-brand-hover: #004a82;
+  --ttn-brand-tint: #eef4fa;
+  --ttn-on-brand: #ffffff;
+  --ttn-navy: #00284a;
+  --ttn-navy-text: #b9c8d8;
+  --ttn-ink: #1f2328;
+  --ttn-text: #334155;
+  --ttn-muted: #64748b;
+  --ttn-subtle: #94a3b8; /* placeholders and disabled text only */
+  --ttn-line: #e2e8f0;
+  --ttn-line-strong: #cbd5e1;
+  --ttn-surface: #ffffff;
+  --ttn-page: #f8fafc;
+  --ttn-footer-text: #b9c2cc;
+  --ttn-footer-muted: #8a949e;
+  --ttn-saffron: #f2a33a; /* text on saffron is navy or ink, never white */
+  --ttn-saffron-tint: #fff8ec;
+  --ttn-saffron-line: #f3d9ae;
+  --ttn-saffron-ink: #8a5a12;
+  --ttn-saffron-deep: #b4690e; /* icons only, not small text */
+  --ttn-whatsapp: #15803d; /* WhatsApp and success only */
+  --ttn-green-tint: #ecf8f1;
+  --ttn-green-line: #cdebd9;
+  --ttn-danger: #b42318; /* always with an icon or word */
+  --ttn-danger-tint: #fef2f2;
+  --ttn-month-best: var(--ttn-whatsapp);
+  --ttn-month-possible: #f6c26b;
+  --ttn-month-avoid: var(--ttn-line);
+
+  /* shadcn/ui names */
+  --background: var(--ttn-page);
+  --foreground: var(--ttn-text);
+  --card: var(--ttn-surface);
+  --card-foreground: var(--ttn-text);
+  --popover: var(--ttn-surface);
+  --popover-foreground: var(--ttn-text);
+  --primary: var(--ttn-brand);
+  --primary-foreground: var(--ttn-on-brand);
+  --secondary: var(--ttn-surface);
+  --secondary-foreground: var(--ttn-ink);
+  --muted: #f1f5f9;
+  --muted-foreground: var(--ttn-muted);
+  --accent: var(--ttn-brand-tint);
+  --accent-foreground: var(--ttn-navy);
+  --destructive: var(--ttn-danger);
+  --border: var(--ttn-line);
+  --input: var(--ttn-line-strong);
+  --ring: var(--ttn-brand);
+  --radius: 14px;
+  --chart-1: var(--ttn-brand);
+  --chart-2: var(--ttn-saffron);
+  --chart-3: #9dc3e4;
+  --chart-4: var(--ttn-whatsapp);
+  --chart-5: var(--ttn-subtle);
+  --sidebar: var(--ttn-navy);
+  --sidebar-foreground: var(--ttn-navy-text);
+  --sidebar-primary: var(--ttn-saffron);
+  --sidebar-primary-foreground: var(--ttn-navy);
+  --sidebar-accent: rgba(255, 255, 255, 0.14);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: var(--ttn-saffron);
+}
+
+@theme inline {
+  /* shadcn/ui colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* brand colors: bg-brand, text-ink, bg-saffron-tint ...
+     The brand "muted" text color is text-muted-foreground (bg-muted is the shadcn grey). */
+  --color-brand: var(--ttn-brand);
+  --color-brand-hover: var(--ttn-brand-hover);
+  --color-brand-tint: var(--ttn-brand-tint);
+  --color-on-brand: var(--ttn-on-brand);
+  --color-navy: var(--ttn-navy);
+  --color-navy-text: var(--ttn-navy-text);
+  --color-ink: var(--ttn-ink);
+  --color-text: var(--ttn-text);
+  --color-subtle: var(--ttn-subtle);
+  --color-line: var(--ttn-line);
+  --color-line-strong: var(--ttn-line-strong);
+  --color-surface: var(--ttn-surface);
+  --color-page: var(--ttn-page);
+  --color-footer-text: var(--ttn-footer-text);
+  --color-footer-muted: var(--ttn-footer-muted);
+  --color-saffron: var(--ttn-saffron);
+  --color-saffron-tint: var(--ttn-saffron-tint);
+  --color-saffron-line: var(--ttn-saffron-line);
+  --color-saffron-ink: var(--ttn-saffron-ink);
+  --color-saffron-deep: var(--ttn-saffron-deep);
+  --color-whatsapp: var(--ttn-whatsapp);
+  --color-green-tint: var(--ttn-green-tint);
+  --color-green-line: var(--ttn-green-line);
+  --color-danger: var(--ttn-danger);
+  --color-danger-tint: var(--ttn-danger-tint);
+  --color-month-best: var(--ttn-month-best);
+  --color-month-possible: var(--ttn-month-possible);
+  --color-month-avoid: var(--ttn-month-avoid);
+
+  /* fonts: --font-outfit and --font-dm-sans come from next/font in each app's root layout */
+  --font-display: var(--font-outfit), system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+
+  /* type scale: text-display-xl, text-h2, text-body-sm ... (size / line height / weight) */
+  --text-display-xl: 72px;
+  --text-display-xl--line-height: 72px;
+  --text-display-xl--font-weight: 800;
+  --text-display: 56px;
+  --text-display--line-height: 60px;
+  --text-display--font-weight: 800;
+  --text-h1: 46px;
+  --text-h1--line-height: 50px;
+  --text-h1--font-weight: 800;
+  --text-h2: 32px;
+  --text-h2--line-height: 38px;
+  --text-h2--font-weight: 800;
+  --text-h3: 20px;
+  --text-h3--line-height: 26px;
+  --text-h3--font-weight: 700;
+  --text-h4: 17px;
+  --text-h4--line-height: 22px;
+  --text-h4--font-weight: 700;
+  --text-price: 30px;
+  --text-price--line-height: 34px;
+  --text-price--font-weight: 800;
+  --text-body-lg: 17px;
+  --text-body-lg--line-height: 29px;
+  --text-body: 15px;
+  --text-body--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 22px;
+  --text-caption: 13px;
+  --text-caption--line-height: 20px;
+  --text-caption--font-weight: 500;
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-label--font-weight: 700;
+  --text-eyebrow: 12px;
+  --text-eyebrow--line-height: 16px;
+  --text-eyebrow--font-weight: 700;
+  --text-eyebrow--letter-spacing: 0.14em;
+
+  /* layout: max-w-content */
+  --container-content: 1240px;
+
+  /* corners and shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-raised: 0 18px 40px -24px rgba(0, 40, 74, 0.45);
+  --shadow-popover: 0 20px 40px -12px rgba(0, 40, 74, 0.35);
+}
