@@ -73,7 +73,7 @@ export const REGION_LINKS: readonly RegionLink[] = REGIONS.map((region) => ({
   name: region.name,
   meta: `Up to ${formatAltitude(region.maxAltitudeM)}`,
   href: regionPath(region.slug),
-  image: region.image,
+  image: region.image?.src,
 }));
 
 export const GUIDE_LINKS: readonly TopicLink[] = [

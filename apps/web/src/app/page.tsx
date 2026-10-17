@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { HomeHero } from "@/features/home/components/HomeHero";
+import { RegionsSection } from "@/features/home/components/RegionsSection";
 import { TrekFinder } from "@/features/home/components/TrekFinder";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
@@ -15,9 +16,10 @@ const HomePage = () => (
     <div className="absolute inset-x-0 top-0 z-40">
       <SiteHeader variant="overlay" />
     </div>
-    <main className="flex-1 bg-surface pb-16">
+    <main className="flex-1 bg-surface">
       <HomeHero />
       <TrekFinder />
+      <RegionsSection />
     </main>
   </>
 );
