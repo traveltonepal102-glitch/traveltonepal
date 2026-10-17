@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
+import { SiteHeader } from "@/features/site-header/components/SiteHeader";
+
 import "./globals.css";
 
 // Variable fonts, self-hosted by next/font at build time (no requests to Google, GDPR).
@@ -14,7 +16,10 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: LayoutProps<"/">) => (
   <html lang="en" className={`${outfit.variable} ${dmSans.variable} h-full antialiased`}>
-    <body className="flex min-h-full flex-col">{children}</body>
+    <body className="flex min-h-full flex-col">
+      <SiteHeader />
+      {children}
+    </body>
   </html>
 );
 

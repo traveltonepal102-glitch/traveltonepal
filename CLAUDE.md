@@ -8,6 +8,7 @@
 - `packages/*` — shared code (`@ttn/ui`, etc.). Design tokens (colors, fonts, type scale) live in `packages/ui/theme.css` (tokens only; each app imports Tailwind itself — the admin without preflight, see `apps/admin/src/styles/admin.css`).
 - Next.js 16 has breaking changes: read the app's `AGENTS.md` and the bundled docs in `node_modules/next/dist/docs/` before writing Next.js code. For Payload, read its source in `node_modules/payload/dist` rather than guessing.
 - Run commands from the repo root: `pnpm dev` (both apps), `pnpm build`, `pnpm lint`, `pnpm test`; add packages with `pnpm add <pkg> --filter <app>`. Versions are pinned (see the Project Setup doc); update Next.js and Payload together.
+- Contact details (email, phone/WhatsApp, registration number) live only in `packages/config/src/contact.ts`; import `CONTACT`, `getWhatsAppUrl` and `getEmailUrl` from `@ttn/config/contact`, never type them into components.
 - Local database: Homebrew `postgresql@17`, database `ttn_local`. Admin env vars are in `apps/admin/.env.example`.
 - Admin login (email + password + 6-digit TOTP, lock after 5 wrong tries) is in `apps/admin/src/features/auth`. The admin user is created/reset only by `pnpm --filter admin admin:reset <email> [reset-2fa]`; sign-up, forgot/reset password and Payload's create-first-user are blocked on purpose.
 - Turbopack's cache does not notice changes to imported CSS such as `packages/ui/theme.css`: after editing it, delete the app's `.next` folder before `dev` or `build`, or the old CSS is used.

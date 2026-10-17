@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "icons": "node scripts/build-icons.mjs"
+  },
   "exports": {
     "./theme.css": "./theme.css",
     "./*": "./src/*.tsx"
@@ -14,6 +17,7 @@
     "react": "^19"
   },
   "devDependencies": {
+    "@material-symbols/svg-400": "0.48.0",
     "@types/react": "^19",
     "typescript": "^5"
   }

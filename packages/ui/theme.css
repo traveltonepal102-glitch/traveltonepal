@@ -26,6 +26,7 @@
   --ttn-saffron-ink: #8a5a12;
   --ttn-saffron-deep: #b4690e; /* icons only, not small text */
   --ttn-whatsapp: #15803d; /* WhatsApp and success only */
+  --ttn-whatsapp-on-dark: #86efac; /* WhatsApp/verified on navy (whatsapp is too dark there) */
   --ttn-green-tint: #ecf8f1;
   --ttn-green-line: #cdebd9;
   --ttn-danger: #b42318; /* always with an icon or word */
@@ -126,6 +127,7 @@
   --color-saffron-ink: var(--ttn-saffron-ink);
   --color-saffron-deep: var(--ttn-saffron-deep);
   --color-whatsapp: var(--ttn-whatsapp);
+  --color-whatsapp-on-dark: var(--ttn-whatsapp-on-dark);
   --color-green-tint: var(--ttn-green-tint);
   --color-green-line: var(--ttn-green-line);
   --color-danger: var(--ttn-danger);
