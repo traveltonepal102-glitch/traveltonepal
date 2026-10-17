@@ -1,42 +1,28 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
 import { trekPath } from "@/lib/routes";
 
 import { formatAltitude, formatUsd } from "../format";
+import { trekInquiryUrl } from "../inquiry";
 import type { TrekSummary } from "../types";
+import { CARD_FOCUS_RING, STRETCHED_LINK } from "./cardStyles";
+import { TrekCardMedia } from "./TrekCardMedia";
 import { TrekFacts } from "./TrekFacts";
-import { TrekPhotoPlaceholder } from "./TrekPhotoPlaceholder";
 
 /**
- * Trek card (design: Main.dc.html, "Treks trekkers book first"). Two tab stops only: the trek name,
- * a link stretched over the whole card ("View trek" is its visual button), and the WhatsApp button.
+ * Feature trek card (design: Main.dc.html, "Treks trekkers book first"). Two tab stops only: the trek
+ * name, a link stretched over the whole card ("View trek" is its visual button), and the WhatsApp button.
  */
 export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
-  <article className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-surface shadow-card transition-shadow hover:shadow-raised has-[[data-trek-link]:focus-visible]:outline-2 has-[[data-trek-link]:focus-visible]:outline-offset-2 has-[[data-trek-link]:focus-visible]:outline-ring">
-    <div className="relative h-50 bg-brand-tint">
-      {trek.image ? (
-        <Image
-          src={trek.image.src}
-          alt={trek.image.alt}
-          fill
-          sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 85vw"
-          className="object-cover"
-        />
-      ) : (
-        <TrekPhotoPlaceholder />
-      )}
-      <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-navy">
-        <Icon name="location_on" size={14} className="text-brand" />
-        {trek.region}
-      </span>
-    </div>
+  <article
+    className={`group relative flex h-full flex-col overflow-hidden rounded-xl bg-surface shadow-card transition-shadow hover:shadow-raised ${CARD_FOCUS_RING}`}
+  >
+    <TrekCardMedia trek={trek} className="h-50" sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 85vw" />
 
     <div className="flex grow flex-col gap-3.5 px-5 pt-4.5 pb-5">
       <h3 className="text-h3">
-        <Link href={trekPath(trek.slug)} data-trek-link className="outline-none after:absolute after:inset-0">
+        <Link href={trekPath(trek.slug)} data-trek-link className={STRETCHED_LINK}>
           {trek.name}
         </Link>
       </h3>
@@ -63,7 +49,7 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
           <Icon name="arrow_forward" size={18} />
         </span>
         <a
-          href={getWhatsAppUrl(`Hello! I would like to know more about the ${trek.name}.`)}
+          href={trekInquiryUrl(trek)}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Ask about the ${trek.name} on WhatsApp`}

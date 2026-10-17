@@ -2,7 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
-import { guidePath, regionPath, trekPath } from "@/lib/routes";
+import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
 import { REGIONS } from "@/features/regions/regions";
 import { TREK_LENGTHS, treksFilterPath } from "@/features/treks/filters";
 import type { TrekLength } from "@/features/treks/filters";
@@ -64,9 +64,10 @@ export const TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "By style",
     links: [
-      { name: "Quiet, off the beaten path", meta: "Fewer trekkers, wild valleys", href: treksFilterPath({ style: "quiet" }), icon: "landscape" },
-      { name: "Teahouse treks", meta: "Lodges every night", href: treksFilterPath({ style: "teahouse" }), icon: "cottage" },
-      { name: "Private treks", meta: "Your group, your dates", href: treksFilterPath({ style: "private" }), icon: "groups" },
+      { name: "Quiet, off the beaten path", meta: "Fewer trekkers, wild valleys", href: treksFilterPath({ show: "quiet" }), icon: "landscape" },
+      // Every trek is private and teahouse-based for now (no data to filter on), so these open the full list.
+      { name: "Teahouse treks", meta: "Lodges every night", href: ROUTES.treks, icon: "cottage" },
+      { name: "Private treks", meta: "Your group, your dates", href: ROUTES.treks, icon: "groups" },
     ],
   },
 ];

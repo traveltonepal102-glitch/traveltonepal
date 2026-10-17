@@ -43,6 +43,8 @@ type ButtonLinkProps = {
   trailingIcon?: IconName;
   /** Opens in a new tab (WhatsApp, other sites). */
   isExternal?: boolean;
+  /** "pill" (default, website buttons) or "rounded" (list pages and panels, e.g. the Treks page). */
+  shape?: "pill" | "rounded";
   className?: string;
 };
 
@@ -55,11 +57,12 @@ export const ButtonLink = ({
   icon,
   trailingIcon,
   isExternal = false,
+  shape = "pill",
   className = "",
 }: ButtonLinkProps) => {
   const look = VARIANTS[variant];
   const { button: sizeClasses, icon: iconSize } = SIZES[size];
-  const classes = `inline-flex items-center justify-center rounded-full text-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${sizeClasses} ${look.button} ${className}`;
+  const classes = `inline-flex items-center justify-center ${shape === "pill" ? "rounded-full" : "rounded-md"} text-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${sizeClasses} ${look.button} ${className}`;
   const content = (
     <>
       {icon && <Icon name={icon} size={iconSize} className={look.icon} />}
