@@ -35,6 +35,8 @@ export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
   section.key === "contact" ? { ...section, hasMenu: false } : { ...section, hasMenu: true },
 );
 
+const POPULAR_TREKS_IN_MENU = 4;
+
 const LENGTH_LINKS: Record<TrekLength, { name: string; icon: IconName }> = {
   short: { name: "Short treks", icon: "timer" },
   classic: { name: "Classic treks", icon: "calendar_month" },
@@ -44,9 +46,9 @@ const LENGTH_LINKS: Record<TrekLength, { name: string; icon: IconName }> = {
 export const TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "Popular treks",
-    links: POPULAR_TREKS.map((trek) => ({
+    links: POPULAR_TREKS.slice(0, POPULAR_TREKS_IN_MENU).map((trek) => ({
       name: trek.name,
-      meta: `${trek.days} days · from ${formatUsd(trek.priceFromUsd)}`,
+      meta: trek.priceFromUsd ? `${trek.days} days · from ${formatUsd(trek.priceFromUsd)}` : `${trek.days} days`,
       href: trekPath(trek.slug),
       icon: "hiking",
     })),

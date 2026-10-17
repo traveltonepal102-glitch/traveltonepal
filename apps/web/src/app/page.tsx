@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { HomeHero } from "@/features/home/components/HomeHero";
 import { RegionsSection } from "@/features/home/components/RegionsSection";
+import { TreksSection } from "@/features/home/components/TreksSection";
 import { TrekFinder } from "@/features/home/components/TrekFinder";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
@@ -20,6 +21,7 @@ const HomePage = () => (
       <HomeHero />
       <TrekFinder />
       <RegionsSection />
+      <TreksSection />
     </main>
   </>
 );

@@ -1,9 +1,11 @@
 import { Icon } from "@ttn/ui/icon";
-import Link from "next/link";
 
 import { RegionTile } from "@/features/regions/components/RegionTile";
 import { REGIONS } from "@/features/regions/regions";
 import { ROUTES } from "@/lib/routes";
+
+import { SwipeHint } from "./SwipeHint";
+import { SWIPE_ITEM, SWIPE_ROW, SWIPE_ROW_RESET } from "./swipeRow";
 
 /**
  * "Nine regions" (design: Main.dc.html).
@@ -31,14 +33,14 @@ export const RegionsSection = () => (
 
       <ul
         aria-label="Trekking regions"
-        className="-mx-4 flex snap-x snap-mandatory scroll-pl-4 gap-3 overflow-x-auto px-4 pb-1 scrollbar-none md:mx-0 md:grid md:auto-rows-52.5 md:grid-cols-[repeat(auto-fill,minmax(230px,1fr))] md:gap-3.5 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+        className={`gap-3 pb-1 md:grid md:auto-rows-52.5 md:grid-cols-[repeat(auto-fill,minmax(230px,1fr))] md:gap-3.5 md:pb-0 ${SWIPE_ROW} ${SWIPE_ROW_RESET}`}
       >
         {REGIONS.map((region, index) => {
           const isFeatured = index === 0;
           return (
             <li
               key={region.slug}
-              className={`h-85 flex-[0_0_84%] snap-start md:h-auto ${isFeatured ? "md:col-span-2 md:row-span-2" : ""}`}
+              className={`h-85 md:h-auto ${SWIPE_ITEM} ${isFeatured ? "md:col-span-2 md:row-span-2" : ""}`}
             >
               <RegionTile region={region} index={index} isFeatured={isFeatured} />
             </li>
@@ -46,20 +48,7 @@ export const RegionsSection = () => (
         })}
       </ul>
 
-      {/* Phones only: tells people the row scrolls sideways, and links to every region. */}
-      <div className="-mt-4.5 flex items-center justify-between gap-3 text-body-sm text-muted-foreground md:hidden">
-        <span className="inline-flex items-center gap-1.5">
-          <Icon name="swipe" />
-          Swipe to see all {REGIONS.length} regions
-        </span>
-        <Link
-          href={ROUTES.regions}
-          className="inline-flex min-h-11 items-center gap-1 rounded-sm font-extrabold text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          All regions
-          <Icon name="arrow_forward" size={18} />
-        </Link>
-      </div>
+      <SwipeHint text={`Swipe to see all ${REGIONS.length} regions`} linkLabel="All regions" href={ROUTES.regions} />
     </div>
   </section>
 );
