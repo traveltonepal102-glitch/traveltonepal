@@ -3,6 +3,8 @@ import type { IconName } from "@ttn/ui/icon";
 import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
 import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
+import { formatUsd } from "@/features/treks/format";
+import { POPULAR_TREKS } from "@/features/treks/popularTreks";
 
 /**
  * Header menu content, as in the website design (Header.dc.html).
@@ -33,12 +35,12 @@ export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
 export const TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "Popular treks",
-    links: [
-      { name: "Everest Base Camp", meta: "14 days · from $1,000", href: trekPath("everest-base-camp"), icon: "hiking" },
-      { name: "Annapurna Circuit", meta: "16 days · from $1,150", href: trekPath("annapurna-circuit"), icon: "hiking" },
-      { name: "Langtang Valley", meta: "10 days · from $890", href: trekPath("langtang-valley"), icon: "hiking" },
-      { name: "Manaslu Circuit", meta: "15 days · from $1,280", href: trekPath("manaslu-circuit"), icon: "hiking" },
-    ],
+    links: POPULAR_TREKS.map((trek) => ({
+      name: trek.name,
+      meta: `${trek.days} days · from ${formatUsd(trek.priceFromUsd)}`,
+      href: trekPath(trek.slug),
+      icon: "hiking",
+    })),
   },
   {
     title: "By length",

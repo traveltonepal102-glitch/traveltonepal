@@ -150,9 +150,16 @@
   --text-h1: 46px;
   --text-h1--line-height: 50px;
   --text-h1--font-weight: 800;
+  /* phone sizes: text-h1-sm md:text-h1, text-h2-sm md:text-h2 */
+  --text-h1-sm: 34px;
+  --text-h1-sm--line-height: 38px;
+  --text-h1-sm--font-weight: 800;
   --text-h2: 32px;
   --text-h2--line-height: 38px;
   --text-h2--font-weight: 800;
+  --text-h2-sm: 24px;
+  --text-h2-sm--line-height: 30px;
+  --text-h2-sm--font-weight: 800;
   --text-h3: 20px;
   --text-h3--line-height: 26px;
   --text-h3--font-weight: 700;

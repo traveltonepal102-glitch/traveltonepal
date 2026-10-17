@@ -11,7 +11,7 @@ const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Travel To Nepal",
+  title: { default: "Travel To Nepal", template: "%s · Travel To Nepal" },
   description: "Trekking in Nepal with a local team.",
 };
 
