@@ -34,7 +34,7 @@ export const TreksMenu = () => (
         <div key={column.title} className="flex flex-col gap-1">
           <MenuColumnTitle>{column.title}</MenuColumnTitle>
           {column.links.map((link) => (
-            <MenuItemLink key={link.href} {...link} />
+            <MenuItemLink key={link.name} {...link} />
           ))}
         </div>
       ))}

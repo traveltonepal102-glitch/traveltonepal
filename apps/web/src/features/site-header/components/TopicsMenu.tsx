@@ -15,7 +15,7 @@ export const TopicsMenu = ({ links, allLabel, allHref, align }: TopicsMenuProps)
     <PanelCard className="w-140 max-w-full p-5">
       <div className="grid grid-cols-2 gap-2.5">
         {links.map((link) => (
-          <MenuItemLink key={link.href} {...link} />
+          <MenuItemLink key={link.name} {...link} />
         ))}
       </div>
       <PanelFooter linkLabel={allLabel} href={allHref} />
