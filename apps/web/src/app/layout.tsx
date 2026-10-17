@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
 import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
-import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
 import "./globals.css";
 
@@ -15,10 +14,13 @@ export const metadata: Metadata = {
   description: "Trekking in Nepal with a local team.",
 };
 
+// No header here: the home page puts the overlay header on its hero photo, every other page
+// renders the solid <SiteHeader /> itself (a shared route-group layout once more pages exist).
 const RootLayout = ({ children }: LayoutProps<"/">) => (
   <html lang="en" className={`${outfit.variable} ${dmSans.variable} h-full antialiased`}>
-    <body className="flex min-h-full flex-col">
-      <SiteHeader />
+    {/* Browser extensions (e.g. Grammarly) add attributes to <body> before React loads. This only
+        ignores attribute differences on <body> itself, not on anything inside it. */}
+    <body className="flex min-h-full flex-col" suppressHydrationWarning>
       {children}
       <SiteFooter />
     </body>

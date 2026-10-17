@@ -2,8 +2,11 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
-import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
-import { formatUsd } from "@/features/treks/format";
+import { guidePath, regionPath, trekPath } from "@/lib/routes";
+import { REGIONS } from "@/features/regions/regions";
+import { TREK_LENGTHS, treksFilterPath } from "@/features/treks/filters";
+import type { TrekLength } from "@/features/treks/filters";
+import { formatAltitude, formatUsd } from "@/features/treks/format";
 import { POPULAR_TREKS } from "@/features/treks/popularTreks";
 
 /**
@@ -32,6 +35,12 @@ export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
   section.key === "contact" ? { ...section, hasMenu: false } : { ...section, hasMenu: true },
 );
 
+const LENGTH_LINKS: Record<TrekLength, { name: string; icon: IconName }> = {
+  short: { name: "Short treks", icon: "timer" },
+  classic: { name: "Classic treks", icon: "calendar_month" },
+  long: { name: "Long and remote", icon: "route" },
+};
+
 export const TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "Popular treks",
@@ -44,38 +53,28 @@ export const TREK_COLUMNS: readonly TrekColumn[] = [
   },
   {
     title: "By length",
-    links: [
-      { name: "Short treks", meta: "Under 10 days", href: `${ROUTES.treks}?length=short`, icon: "timer" },
-      { name: "Classic treks", meta: "10 to 16 days", href: `${ROUTES.treks}?length=classic`, icon: "calendar_month" },
-      { name: "Long and remote", meta: "16 days and more", href: `${ROUTES.treks}?length=long`, icon: "route" },
-    ],
+    links: TREK_LENGTHS.map((length) => ({
+      ...LENGTH_LINKS[length.value],
+      meta: length.label,
+      href: treksFilterPath({ length: length.value }),
+    })),
   },
   {
     title: "By style",
     links: [
-      { name: "Quiet, off the beaten path", meta: "Fewer trekkers, wild valleys", href: `${ROUTES.treks}?style=quiet`, icon: "landscape" },
-      { name: "Teahouse treks", meta: "Lodges every night", href: `${ROUTES.treks}?style=teahouse`, icon: "cottage" },
-      { name: "Private treks", meta: "Your group, your dates", href: `${ROUTES.treks}?style=private`, icon: "groups" },
+      { name: "Quiet, off the beaten path", meta: "Fewer trekkers, wild valleys", href: treksFilterPath({ style: "quiet" }), icon: "landscape" },
+      { name: "Teahouse treks", meta: "Lodges every night", href: treksFilterPath({ style: "teahouse" }), icon: "cottage" },
+      { name: "Private treks", meta: "Your group, your dates", href: treksFilterPath({ style: "private" }), icon: "groups" },
     ],
   },
 ];
 
-export const REGION_LINKS: readonly RegionLink[] = [
-  { name: "Everest", meta: "Up to 5,545 m", href: regionPath("everest") },
-  { name: "Annapurna", meta: "Up to 5,416 m", href: regionPath("annapurna") },
-  { name: "Manaslu", meta: "Up to 5,106 m", href: regionPath("manaslu") },
-  { name: "Langtang", meta: "Up to 4,984 m", href: regionPath("langtang"), image: "/images/langtang-peaks.jpg" },
-  { name: "Mardi Himal", meta: "Up to 4,500 m", href: regionPath("mardi-himal") },
-  { name: "Kanchenjunga", meta: "Up to 5,143 m", href: regionPath("kanchenjunga") },
-  { name: "Nar Phu", meta: "Up to 5,320 m", href: regionPath("nar-phu") },
-  { name: "Pikey Peak", meta: "4,065 m", href: regionPath("pikey-peak") },
-  {
-    name: "Tamang Heritage Trail",
-    meta: "Up to 3,165 m",
-    href: regionPath("tamang-heritage-trail"),
-    image: "/images/tamang-heritage-village.jpg",
-  },
-];
+export const REGION_LINKS: readonly RegionLink[] = REGIONS.map((region) => ({
+  name: region.name,
+  meta: `Up to ${formatAltitude(region.maxAltitudeM)}`,
+  href: regionPath(region.slug),
+  image: region.image,
+}));
 
 export const GUIDE_LINKS: readonly TopicLink[] = [
   { name: "Planning and permits", meta: "Permits, visas, costs, guides", href: guidePath("planning-and-permits"), icon: "description", tone: "brand" },

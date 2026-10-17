@@ -1,20 +1,25 @@
-import { Button } from "@ttn/ui/button";
+import type { Metadata } from "next";
 
-const Home = () => (
-  <main className="mx-auto flex w-full max-w-content flex-1 flex-col justify-center gap-6 px-4 py-14 md:px-6">
-    <p className="text-eyebrow text-brand uppercase">Langtang · Everest · Annapurna</p>
-    <h1 className="text-display">Travel to Nepal</h1>
-    <p className="text-body-lg max-w-2xl">
-      Small-group treks with a local team. Ask us anything on WhatsApp or by email.
-    </p>
-    <div className="flex flex-wrap items-center gap-4">
-      <Button>Start planning</Button>
-      <span className="text-label rounded-full bg-saffron px-3 py-1 text-navy">Featured</span>
-      <span className="text-caption rounded-full bg-green-tint px-3 py-1 text-whatsapp">
-        Guaranteed
-      </span>
+import { HomeHero } from "@/features/home/components/HomeHero";
+import { TrekFinder } from "@/features/home/components/TrekFinder";
+import { SiteHeader } from "@/features/site-header/components/SiteHeader";
+
+export const metadata: Metadata = {
+  description:
+    "Nine trekking regions, guides born in the valleys they lead, and a real person to plan it with you on WhatsApp.",
+};
+
+const HomePage = () => (
+  <>
+    {/* Overlay header, laid over the hero photo; it stays outside <main> so it keeps its banner role. */}
+    <div className="absolute inset-x-0 top-0 z-40">
+      <SiteHeader variant="overlay" />
     </div>
-  </main>
+    <main className="flex-1 bg-surface pb-16">
+      <HomeHero />
+      <TrekFinder />
+    </main>
+  </>
 );
 
-export default Home;
+export default HomePage;

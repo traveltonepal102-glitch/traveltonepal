@@ -3,39 +3,62 @@ import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "whatsapp";
+type ButtonVariant = "primary" | "secondary" | "whatsapp" | "accent" | "outlineOnDark";
+type ButtonSize = "md" | "lg";
 
 const VARIANTS: Record<ButtonVariant, { button: string; icon: string }> = {
-  primary: { button: "bg-brand text-on-brand hover:bg-brand-hover", icon: "" },
-  secondary: { button: "border border-line-strong bg-surface text-ink hover:bg-page", icon: "text-brand" },
-  whatsapp: { button: "bg-whatsapp text-white hover:bg-whatsapp/90", icon: "" },
+  primary: { button: "bg-brand font-bold text-on-brand hover:bg-brand-hover focus-visible:outline-ring", icon: "" },
+  secondary: {
+    button: "border border-line-strong bg-surface font-bold text-ink hover:bg-page focus-visible:outline-ring",
+    icon: "text-brand",
+  },
+  whatsapp: { button: "bg-whatsapp font-bold text-white hover:bg-whatsapp/90 focus-visible:outline-ring", icon: "" },
+  /** Saffron: the one main action on a dark photo (text stays ink, never white). */
+  accent: { button: "bg-saffron font-extrabold text-ink hover:bg-saffron/90 focus-visible:outline-white", icon: "" },
+  outlineOnDark: {
+    button: "border-[1.5px] border-white/55 font-bold text-white hover:bg-white/10 focus-visible:outline-white",
+    icon: "",
+  },
+};
+
+const SIZES: Record<ButtonSize, { button: string; icon: number }> = {
+  md: { button: "min-h-12 gap-2 px-5", icon: 18 },
+  lg: { button: "min-h-13.5 gap-2.5 px-7", icon: 20 },
 };
 
 type ButtonLinkProps = {
   href: string;
   children: ReactNode;
   variant?: ButtonVariant;
+  size?: ButtonSize;
+  /** Icon before the text. */
   icon?: IconName;
+  /** Icon after the text, e.g. an arrow. */
+  trailingIcon?: IconName;
   /** Opens in a new tab (WhatsApp, other sites). */
   isExternal?: boolean;
   className?: string;
 };
 
-/** A link styled as the website's pill button (48px tall). */
+/** A link styled as the website's pill button. */
 export const ButtonLink = ({
   href,
   children,
   variant = "primary",
+  size = "md",
   icon,
+  trailingIcon,
   isExternal = false,
   className = "",
 }: ButtonLinkProps) => {
   const look = VARIANTS[variant];
-  const classes = `inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 text-body font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${look.button} ${className}`;
+  const { button: sizeClasses, icon: iconSize } = SIZES[size];
+  const classes = `inline-flex items-center justify-center rounded-full text-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${sizeClasses} ${look.button} ${className}`;
   const content = (
     <>
-      {icon && <Icon name={icon} size={18} className={look.icon} />}
+      {icon && <Icon name={icon} size={iconSize} className={look.icon} />}
       {children}
+      {trailingIcon && <Icon name={trailingIcon} size={iconSize} className={look.icon} />}
     </>
   );
 
