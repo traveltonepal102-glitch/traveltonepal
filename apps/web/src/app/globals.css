@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Enter/exit animation utilities used by the shadcn components in @ttn/ui (animate-in, fade-in-0 ...). */
+@import "tw-animate-css";
 @import "@ttn/ui/theme.css";
 
 /* Scan the shared UI package for class names */

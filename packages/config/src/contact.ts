@@ -25,4 +25,12 @@ export const getWhatsAppUrl = (message?: string): string => {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 };
 
-export const getEmailUrl = (): string => `mailto:${CONTACT.email}`;
+/** mailto: link to the office, optionally with a subject and body already written. */
+export const getEmailUrl = (draft?: { subject?: string; body?: string }): string => {
+  // encodeURIComponent, not URLSearchParams: mail apps show URLSearchParams' "+" literally instead of spaces.
+  const query = Object.entries(draft ?? {})
+    .filter(([, value]) => value)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join("&");
+  return query ? `mailto:${CONTACT.email}?${query}` : `mailto:${CONTACT.email}`;
+};

@@ -9,3 +9,6 @@ export const REVIEWS: readonly Review[] = [];
 
 /** Overall Google rating, shown next to the reviews. Null until the real numbers are known. */
 export const GOOGLE_RATING: RatingSummary | null = null;
+
+/** Published reviews of one trek, for its page. */
+export const reviewsForTrek = (trekSlug: string): Review[] => REVIEWS.filter((review) => review.trekSlug === trekSlug);

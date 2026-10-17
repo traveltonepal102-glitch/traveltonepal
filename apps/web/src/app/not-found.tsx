@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 
-import { HelpBand } from "@/features/not-found/components/HelpBand";
-import { NotFoundHero } from "@/features/not-found/components/NotFoundHero";
-import { PopularTreksSection } from "@/features/not-found/components/PopularTreksSection";
-import { StartHereLinks } from "@/features/not-found/components/StartHereLinks";
+import { NotFoundContent } from "@/features/not-found/components/NotFoundContent";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
 // Next.js answers with HTTP 404 and adds <meta name="robots" content="noindex"> itself (TRD: real 404, noindex).
@@ -11,15 +8,14 @@ export const metadata: Metadata = {
   title: "Page not found",
 };
 
+/**
+ * URLs that match no route. Only the root layout wraps this, so it brings its own header.
+ * notFound() inside the (site) group uses app/(site)/not-found.tsx instead.
+ */
 const NotFound = () => (
   <>
     <SiteHeader />
-    <main className="flex-1">
-      <NotFoundHero />
-      <PopularTreksSection />
-      <StartHereLinks />
-      <HelpBand />
-    </main>
+    <NotFoundContent />
   </>
 );
 

@@ -1,0 +1,72 @@
+import { Icon } from "@ttn/ui/icon";
+import type { IconName } from "@ttn/ui/icon";
+import Image from "next/image";
+
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { regionInquiryUrl } from "@/features/regions/inquiry";
+import { formatAltitude } from "@/features/treks/format";
+
+import { regionBreadcrumbs } from "../seo";
+import type { RegionDetail } from "../types";
+import { PILL, WRAP } from "./styles";
+
+/** Full-width photo hero: breadcrumb, location and season, the region name, key chips and two actions. */
+export const RegionHero = ({ region }: { region: RegionDetail }) => {
+  const chips: readonly { icon: IconName; text: string }[] = [
+    { icon: "altitude", text: `Up to ${formatAltitude(region.maxAltitudeM)}` },
+    { icon: "calendar_month", text: region.trekLength },
+    { icon: "speed", text: region.difficulty },
+    { icon: "directions_walk", text: region.heroHighlight },
+  ];
+
+  return (
+    <section aria-labelledby="region-title" className="relative flex min-h-140 items-end overflow-hidden bg-navy md:min-h-150">
+      <Image src={region.heroImage.src} alt={region.heroImage.alt} fill preload sizes="100vw" className="object-cover" />
+      <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-navy/20 via-navy/50 via-45% to-navy/92" />
+
+      <div className={`${WRAP} relative flex flex-col gap-4.5 pt-12 pb-24 text-white`}>
+        <Breadcrumbs tone="onDark" items={regionBreadcrumbs(region)} />
+        <div className="flex flex-wrap gap-2">
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-saffron px-3 py-1.5 text-caption font-bold text-navy">
+            <Icon name="location_on" size={16} />
+            {region.district}
+          </p>
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-whatsapp/92 px-3 py-1.5 text-caption font-bold text-white">
+            <Icon name="wb_sunny" size={16} />
+            Best: {region.bestMonthsLabel}
+          </p>
+        </div>
+        <h1 id="region-title" className="text-[44px] leading-none font-extrabold tracking-tight text-white md:text-display-xl">
+          {region.name}
+        </h1>
+        <p className="max-w-160 text-body-lg text-white/90 md:text-[19px]">{region.tagline}</p>
+        <ul className="flex flex-wrap gap-2">
+          {chips.map((chip) => (
+            <li
+              key={chip.text}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/28 bg-white/14 px-3 py-1.75 text-caption font-semibold backdrop-blur-md"
+            >
+              <Icon name={chip.icon} size={16} className="text-saffron" />
+              {chip.text}
+            </li>
+          ))}
+        </ul>
+        <div className="flex flex-col gap-3 pt-1.5 sm:flex-row sm:items-center">
+          <a href="#treks" className={`${PILL} bg-white text-navy hover:bg-brand-tint focus-visible:outline-white`}>
+            See {region.name} treks
+            <Icon name="arrow_downward" />
+          </a>
+          <a
+            href={regionInquiryUrl(region.name)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${PILL} bg-whatsapp text-white hover:bg-whatsapp/90 focus-visible:outline-white`}
+          >
+            <Icon name="chat" />
+            Plan {region.name} on WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
