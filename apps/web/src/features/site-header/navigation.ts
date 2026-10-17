@@ -1,12 +1,14 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
+import type { SectionKey } from "@/lib/navigation";
 import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
 
 /**
  * Header menu content, as in the website design (Header.dc.html).
  * Popular treks and regions are demo values until they come from Payload (CMS phase).
  */
-export type MenuKey = "treks" | "regions" | "guides" | "about";
+export type MenuKey = Exclude<SectionKey, "contact">;
 
 export type NavTab =
   | { key: MenuKey; label: string; href: string; hasMenu: true }
@@ -23,13 +25,10 @@ export type TileTone = "brand" | "saffron" | "green" | "navy";
 
 export type TopicLink = MenuLink & { tone: TileTone };
 
-export const NAV_TABS: readonly NavTab[] = [
-  { key: "treks", label: "Treks", href: ROUTES.treks, hasMenu: true },
-  { key: "regions", label: "Regions", href: ROUTES.regions, hasMenu: true },
-  { key: "guides", label: "Travel guides", href: ROUTES.guides, hasMenu: true },
-  { key: "about", label: "About us", href: ROUTES.about, hasMenu: true },
-  { key: "contact", label: "Contact", href: ROUTES.contact, hasMenu: false },
-];
+/** Every main section opens a dropdown menu except Contact. */
+export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
+  section.key === "contact" ? { ...section, hasMenu: false } : { ...section, hasMenu: true },
+);
 
 export const TREK_COLUMNS: readonly TrekColumn[] = [
   {
@@ -84,10 +83,10 @@ export const GUIDE_LINKS: readonly TopicLink[] = [
 ];
 
 export const ABOUT_LINKS: readonly TopicLink[] = [
-  { name: "Our story", meta: "Who we are and why we started", href: `${ROUTES.about}#our-story`, icon: "cottage", tone: "brand" },
-  { name: "Our guides and team", meta: "Meet the people who lead you", href: `${ROUTES.about}#team`, icon: "groups", tone: "green" },
-  { name: "Reviews", meta: "What trekkers say about us", href: `${ROUTES.about}#reviews`, icon: "person", tone: "saffron" },
-  { name: "Why travel with us", meta: "Safety, prices, flexibility", href: `${ROUTES.about}#why-us`, icon: "shield_person", tone: "navy" },
-  { name: "Licences and legal", meta: "Registration and memberships", href: `${ROUTES.about}#licences`, icon: "verified", tone: "brand" },
-  { name: "Responsible travel", meta: "Porters, villages, nature", href: `${ROUTES.about}#responsible-travel`, icon: "volunteer_activism", tone: "green" },
+  { name: "Our story", meta: "Who we are and why we started", href: ABOUT_PATHS.story, icon: "cottage", tone: "brand" },
+  { name: "Our guides and team", meta: "Meet the people who lead you", href: ABOUT_PATHS.team, icon: "groups", tone: "green" },
+  { name: "Reviews", meta: "What trekkers say about us", href: ABOUT_PATHS.reviews, icon: "person", tone: "saffron" },
+  { name: "Why travel with us", meta: "Safety, prices, flexibility", href: ABOUT_PATHS.whyUs, icon: "shield_person", tone: "navy" },
+  { name: "Licences and legal", meta: "Registration and memberships", href: ABOUT_PATHS.licences, icon: "verified", tone: "brand" },
+  { name: "Responsible travel", meta: "Porters, villages, nature", href: ABOUT_PATHS.responsibleTravel, icon: "volunteer_activism", tone: "green" },
 ];

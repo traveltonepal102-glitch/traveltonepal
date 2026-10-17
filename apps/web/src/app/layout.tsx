@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
+import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
 import "./globals.css";
@@ -19,6 +20,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     <body className="flex min-h-full flex-col">
       <SiteHeader />
       {children}
+      <SiteFooter />
     </body>
   </html>
 );

@@ -13,6 +13,10 @@ export const CONTACT = {
   phoneDigits: `${PHONE_COUNTRY_CODE}${PHONE_LOCAL_NUMBER}`,
   /** Nepal government trekking agency registration number. TEMPORARY: replace with the real one. */
   registrationNumber: "123456",
+  /** Trekking Agencies' Association of Nepal membership number. TEMPORARY: replace with the real one. */
+  taanMemberNumber: "2345",
+  /** TEMPORARY: city only until the street address is confirmed. */
+  officeAddress: "Kathmandu, Nepal",
 } as const;
 
 /** wa.me link that opens a WhatsApp chat with the office, with an optional first message. */

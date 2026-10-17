@@ -7,6 +7,10 @@ export const ROUTES = {
   about: "/about",
   contact: "/contact",
   german: "/de",
+  privacy: "/privacy",
+  terms: "/terms",
+  impressum: "/impressum",
+  cookies: "/cookies",
 } as const;
 
 export const trekPath = (slug: string) => `${ROUTES.treks}/${slug}`;
