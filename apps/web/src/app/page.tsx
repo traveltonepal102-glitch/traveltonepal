@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 
+import { GuidesSection } from "@/features/home/components/GuidesSection";
 import { HomeHero } from "@/features/home/components/HomeHero";
+import { HowBookingWorksSection } from "@/features/home/components/HowBookingWorksSection";
+import { PlanTrekCta } from "@/features/home/components/PlanTrekCta";
 import { RegionsSection } from "@/features/home/components/RegionsSection";
-import { TreksSection } from "@/features/home/components/TreksSection";
+import { ReviewsSection } from "@/features/home/components/ReviewsSection";
 import { TrekFinder } from "@/features/home/components/TrekFinder";
+import { TreksSection } from "@/features/home/components/TreksSection";
+import { WhyUsSection } from "@/features/home/components/WhyUsSection";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 
 export const metadata: Metadata = {
@@ -22,6 +27,11 @@ const HomePage = () => (
       <TrekFinder />
       <RegionsSection />
       <TreksSection />
+      <WhyUsSection />
+      <HowBookingWorksSection />
+      <ReviewsSection />
+      <GuidesSection />
+      <PlanTrekCta />
     </main>
   </>
 );

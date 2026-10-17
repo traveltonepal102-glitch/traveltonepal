@@ -3,7 +3,7 @@ import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "whatsapp" | "accent" | "outlineOnDark";
+type ButtonVariant = "primary" | "secondary" | "outline" | "whatsapp" | "accent" | "light" | "outlineOnDark";
 type ButtonSize = "md" | "lg";
 
 const VARIANTS: Record<ButtonVariant, { button: string; icon: string }> = {
@@ -19,6 +19,8 @@ const VARIANTS: Record<ButtonVariant, { button: string; icon: string }> = {
   whatsapp: { button: "bg-whatsapp font-bold text-white hover:bg-whatsapp/90 focus-visible:outline-ring", icon: "" },
   /** Saffron: the one main action on a dark photo (text stays ink, never white). */
   accent: { button: "bg-saffron font-extrabold text-ink hover:bg-saffron/90 focus-visible:outline-white", icon: "" },
+  /** White button on a brand-colored band (text color set by the caller, e.g. text-whatsapp). */
+  light: { button: "bg-white font-extrabold hover:bg-brand-tint focus-visible:outline-white", icon: "" },
   outlineOnDark: {
     button: "border-[1.5px] border-white/55 font-bold text-white hover:bg-white/10 focus-visible:outline-white",
     icon: "",
