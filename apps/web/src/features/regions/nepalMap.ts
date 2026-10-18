@@ -26,5 +26,16 @@ export const NEPAL_OUTLINE_PATH = `M${BORDER.map(([lon, lat]) => {
   return `${x} ${y}`;
 }).join(" L")} Z`;
 
-/** Kathmandu, the starting point of every trek. */
+/** Kathmandu, the starting point of every trek, and Pokhara, the gateway to the Annapurna treks. */
 export const KATHMANDU = projectToMap(85.32, 27.7);
+export const POKHARA = projectToMap(83.98, 28.21);
+
+/** The main Himalayan range as a band along the northern border, for the Regions map. */
+const HIMALAYA: readonly (readonly [number, number])[] = [
+  [81.2, 29.9], [82.4, 29.5], [83.5, 28.8], [84.6, 28.6], [85.6, 28.2], [86.8, 27.95], [88.0, 27.75],
+];
+
+export const HIMALAYA_PATH = `M${HIMALAYA.map(([lon, lat]) => {
+  const { x, y } = projectToMap(lon, lat - 0.05);
+  return `${x} ${y}`;
+}).join(" L")}`;

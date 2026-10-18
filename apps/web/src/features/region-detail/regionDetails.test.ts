@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 
+import { KATHMANDU, projectToMap } from "@/features/regions/nepalMap";
+import { REGION_OVERVIEWS } from "@/features/regions/overviews";
+import { REGIONS } from "@/features/regions/regions";
 import { getGuides } from "@/features/team/guides";
 import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { TREKS } from "@/features/treks/treks";
 
-import { KATHMANDU, projectToMap } from "./nepalMap";
-import { REGION_DETAIL_SLUGS, getRegionDetail, regionDaysLabel, regionsToCompare } from "./regionDetails";
+import { REGION_DETAIL_SLUGS, getRegionDetail, regionCards, regionsToCompare } from "./regionDetails";
 import { regionJsonLd } from "./seo";
 import type { RegionDetail } from "./types";
 
@@ -14,7 +16,8 @@ describe("getRegionDetail", () => {
     const region = getRegionDetail("langtang");
     expect(region?.name).toBe("Langtang");
     expect(region?.maxAltitudeM).toBe(4984);
-    expect(region?.district).toBe("Rasuwa, Nepal");
+    expect(region?.district).toBe("Rasuwa");
+    expect(region?.months).toHaveLength(12);
   });
 
   it("returns undefined for a region without a page", () => {
@@ -36,11 +39,18 @@ describe("getRegionDetail", () => {
   });
 });
 
-describe("regionDaysLabel", () => {
-  it("gives the range of the region's trek lengths", () => {
-    expect(regionDaysLabel("annapurna")).toBe("5–16 days");
-    expect(regionDaysLabel("langtang")).toBe("10 days");
-    expect(regionDaysLabel("atlantis")).toBeUndefined();
+describe("region overviews", () => {
+  it("cover every region once, each with 12 months", () => {
+    expect(REGION_OVERVIEWS.map((overview) => overview.slug).sort()).toEqual(REGIONS.map((region) => region.slug).sort());
+    for (const overview of REGION_OVERVIEWS) expect(overview.months, overview.slug).toHaveLength(12);
+  });
+
+  it("joins every region for the cards, west to east", () => {
+    const cards = regionCards();
+    expect(cards).toHaveLength(9);
+    expect(cards[0].slug).toBe("annapurna");
+    expect(cards.at(-1)?.slug).toBe("kanchenjunga");
+    expect(cards.find((card) => card.slug === "langtang")).toMatchObject({ name: "Langtang", maxAltitudeM: 4984, district: "Rasuwa" });
   });
 });
 

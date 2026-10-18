@@ -29,7 +29,7 @@ export const RegionHero = ({ region }: { region: RegionDetail }) => {
         <div className="flex flex-wrap gap-2">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-saffron px-3 py-1.5 text-caption font-bold text-navy">
             <Icon name="location_on" size={16} />
-            {region.district}
+            {region.district}, Nepal
           </p>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-whatsapp/92 px-3 py-1.5 text-caption font-bold text-white">
             <Icon name="wb_sunny" size={16} />

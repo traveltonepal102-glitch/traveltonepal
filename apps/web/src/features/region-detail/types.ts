@@ -1,10 +1,10 @@
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
+import type { MonthRating, RegionOverview } from "@/features/regions/overviews";
 import type { RegionSummary } from "@/features/regions/regions";
 
-/** How good a month is for trekking in the region. */
-export type MonthRating = "best" | "possible" | "avoid";
+export type { MonthRating };
 
 export type RegionFact = { icon: IconName; tone: IconTone; label: string; value: string };
 
@@ -29,20 +29,13 @@ export type RegionArticle = {
   image: RegionPhoto;
 };
 
-/** Everything the region page shows beyond REGIONS (name, highest point, photo). From Payload later. */
+/** Everything the region page shows beyond REGIONS and its overview (district, location, months...). */
 export type RegionDetailContent = {
   slug: string;
   seo: { title: string; description: string };
-  /** District shown in the hero, e.g. "Rasuwa, Nepal". */
-  district: string;
   /** Hero line under the name. */
   tagline: string;
   heroImage: RegionPhoto;
-  /** Map pin, in degrees. */
-  location: { lat: number; lon: number };
-  /** e.g. "7–12 days" (the region's treks plus custom routes). */
-  trekLength: string;
-  difficulty: string;
   bestMonthsLabel: string;
   /** Extra hero chip, e.g. "No flights needed". */
   heroHighlight: string;
@@ -55,8 +48,6 @@ export type RegionDetailContent = {
   /** Other treks near the region, e.g. sharing the trailhead. */
   nearbyTreks: readonly { slug: string; label: string; note: string }[];
   customRoutePitch: string;
-  /** Jan–Dec, exactly 12 entries. */
-  months: readonly MonthRating[];
   seasons: readonly SeasonNote[];
   guideIds: readonly string[];
   photos: readonly RegionPhoto[];
@@ -66,4 +57,4 @@ export type RegionDetailContent = {
   compareWith: readonly string[];
 };
 
-export type RegionDetail = RegionSummary & RegionDetailContent;
+export type RegionDetail = RegionSummary & RegionOverview & RegionDetailContent;

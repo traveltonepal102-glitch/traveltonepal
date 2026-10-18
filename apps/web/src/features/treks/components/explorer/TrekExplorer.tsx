@@ -54,7 +54,7 @@ const TrekExplorerView = (props: TrekExplorerViewProps) => {
             <ActiveFilterChips filters={filters} regions={regions} update={update} clearAll={clearAll} />
 
             {shown.length > 0 ? (
-              <ul className="grid gap-4.5 md:grid-cols-2 xl:grid-cols-3">
+              <ul className="grid gap-4.5 md:grid-cols-2">
                 {shown.map((trek) => (
                   <li key={trek.slug}>{cards[trek.slug]}</li>
                 ))}

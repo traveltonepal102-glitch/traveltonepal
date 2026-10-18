@@ -1,6 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 
-import { KATHMANDU, NEPAL_MAP_VIEWBOX, NEPAL_OUTLINE_PATH, projectToMap } from "../nepalMap";
+import { KATHMANDU, NEPAL_MAP_VIEWBOX, NEPAL_OUTLINE_PATH, projectToMap } from "@/features/regions/nepalMap";
+
 import type { RegionDetail } from "../types";
 import { CARD } from "./styles";
 

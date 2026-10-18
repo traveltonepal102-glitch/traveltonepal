@@ -2,11 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
-import { treksFilterPath } from "@/features/treks/filters";
 import { formatAltitude } from "@/features/treks/format";
-import { ROUTES, regionPath } from "@/lib/routes";
+import { ROUTES } from "@/lib/routes";
 
-import { hasRegionPage, regionDaysLabel, regionsToCompare } from "../regionDetails";
+import { regionHref, regionsToCompare } from "../regionDetails";
 import { RegionSectionHeading } from "./RegionSectionHeading";
 import { CARD, WRAP } from "./styles";
 
@@ -28,7 +27,7 @@ export const OtherRegions = ({ slugs }: { slugs: readonly string[] }) => {
           {regions.map((region) => (
             <li key={region.slug}>
               <Link
-                href={hasRegionPage(region.slug) ? regionPath(region.slug) : treksFilterPath({ region: region.slug })}
+                href={regionHref(region.slug)}
                 className={`${CARD} block overflow-hidden text-inherit transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
               >
                 <span className="relative block h-37.5 bg-navy">
@@ -41,7 +40,7 @@ export const OtherRegions = ({ slugs }: { slugs: readonly string[] }) => {
                   <span className="absolute bottom-2.5 left-3.5 font-display text-xl font-bold text-white">{region.name}</span>
                 </span>
                 <span className="flex justify-between gap-2 px-3.5 py-3 text-caption font-normal text-text">
-                  <span>{regionDaysLabel(region.slug) ?? "Custom routes"}</span>
+                  <span>{region.trekLength}</span>
                   <span>max {formatAltitude(region.maxAltitudeM)}</span>
                 </span>
               </Link>

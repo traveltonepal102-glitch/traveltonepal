@@ -1,6 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
+import { Fragment } from "react";
 
 import { trekPath } from "@/lib/routes";
 
@@ -13,18 +14,19 @@ import { TrekCardMedia } from "./TrekCardMedia";
 
 /**
  * Month ranges like "Oct–Nov" never break at the dash ("Mar–May, / Oct–Nov"); parts with spaces
- * ("All year except monsoon") still wrap normally.
+ * ("All year except monsoon") still wrap normally. The ", " sits outside the no-wrap span so the
+ * line can break after it.
  */
 const Fact = ({ icon, label, value }: { icon: IconName; label: string; value: string }) => (
-  <li className="flex flex-col items-start gap-0.5">
+  <li className="flex min-w-0 flex-col items-start gap-0.5">
     <Icon name={icon} size={16} className="text-brand" />
     <span className="font-bold">
       <span className="sr-only">{label}: </span>
-      {value.split(", ").map((part, index, parts) => (
-        <span key={part} className={part.includes(" ") ? undefined : "whitespace-nowrap"}>
-          {part}
-          {index < parts.length - 1 && ", "}
-        </span>
+      {value.split(", ").map((part, index) => (
+        <Fragment key={part}>
+          {index > 0 && ", "}
+          <span className={part.includes(" ") ? undefined : "whitespace-nowrap"}>{part}</span>
+        </Fragment>
       ))}
     </span>
   </li>
@@ -38,7 +40,7 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => (
     <TrekCardMedia
       trek={trek}
       className="aspect-16/10"
-      sizes="(min-width: 1280px) 300px, (min-width: 768px) 45vw, 100vw"
+      sizes="(min-width: 1280px) 440px, (min-width: 1024px) 34vw, (min-width: 768px) 48vw, 100vw"
       showBadge
     />
 

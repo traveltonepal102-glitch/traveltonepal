@@ -8,12 +8,8 @@ export const LANGTANG: RegionDetailContent = {
     description:
       "Trek Langtang, the closest big-mountain valley to Kathmandu: glaciers, yak pastures and Kyanjin Gompa with no flight needed. Treks, best months, permits and local Tamang guides.",
   },
-  district: "Rasuwa, Nepal",
   tagline: "Glaciers, yak pastures and Kyanjin Gompa — the closest big-mountain valley to Kathmandu, with no flight needed.",
   heroImage: { src: "/images/kyanjin-gompa-prayer-wheels.jpg", alt: "Prayer wheels at Kyanjin Gompa below the snow peaks of the Langtang valley" },
-  location: { lat: 28.21, lon: 85.56 },
-  trekLength: "7–12 days",
-  difficulty: "Moderate",
   bestMonthsLabel: "Mar–May, Oct–Nov",
   heroHighlight: "No flights needed",
   facts: [
@@ -59,7 +55,6 @@ export const LANGTANG: RegionDetailContent = {
     },
   ],
   customRoutePitch: "Langtang + Tamang Heritage, a shorter version, or Tserko Ri. We plan it around your days.",
-  months: ["possible", "possible", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"],
   seasons: [
     { name: "Spring · Mar–May", rating: "best", text: "Warm days and rhododendron forests in bloom. Clouds often build after lunch." },
     { name: "Monsoon · Jun–Aug", rating: "avoid", text: "Daily rain, leeches and landslide risk on the road." },
