@@ -1,17 +1,28 @@
 import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { guidePath } from "@/lib/routes";
 
 import type { GuideSummary } from "../types";
+import { CARD_FOCUS, STRETCHED_LINK } from "./styles";
 
-/** Same focus ring on the card when its stretched title link is focused. */
-const CARD_FOCUS =
-  "has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-ring";
+const READ_THE_GUIDE = (
+  <span aria-hidden="true" className="inline-flex items-center gap-1 text-body-sm font-extrabold text-brand">
+    Read the guide
+    <Icon name="arrow_forward" size={16} />
+  </span>
+);
 
-/** Guide card: photo with topic chip, title, one line, "Read the guide". One link (the title). */
-export const GuideCard = ({ guide }: { guide: GuideSummary }) => (
+type GuideCardProps = {
+  guide: GuideSummary;
+  /** Bottom line of the card; "Read the guide" by default. */
+  footer?: ReactNode;
+};
+
+/** Guide card: photo with topic chip, title, one line and a footer line. One link (the title). */
+export const GuideCard = ({ guide, footer = READ_THE_GUIDE }: GuideCardProps) => (
   <article
     className={`group relative flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-card transition-shadow hover:shadow-raised ${CARD_FOCUS}`}
   >
@@ -30,15 +41,12 @@ export const GuideCard = ({ guide }: { guide: GuideSummary }) => (
     </div>
     <div className="flex flex-1 flex-col gap-1.5 px-4.5 pt-4 pb-4.5">
       <h3 className="text-h3">
-        <Link href={guidePath(guide.slug)} className="outline-none after:absolute after:inset-0">
+        <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
           {guide.title}
         </Link>
       </h3>
       <p className="text-body-sm text-text">{guide.excerpt}</p>
-      <span aria-hidden="true" className="mt-auto inline-flex items-center gap-1 pt-1.5 text-body-sm font-extrabold text-brand">
-        Read the guide
-        <Icon name="arrow_forward" size={16} />
-      </span>
+      <div className="mt-auto pt-1.5">{footer}</div>
     </div>
   </article>
 );
@@ -63,7 +71,7 @@ export const FeaturedGuideCard = ({ guide }: { guide: GuideSummary }) => (
       {guide.tag}
     </span>
     <h3 className="relative max-w-135 text-h2-sm text-white md:text-h1-sm">
-      <Link href={guidePath(guide.slug)} className="outline-none after:absolute after:inset-0">
+      <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
         {guide.title}
       </Link>
     </h3>

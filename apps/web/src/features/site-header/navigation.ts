@@ -2,7 +2,8 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
-import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
+import { ROUTES, regionPath, trekPath } from "@/lib/routes";
+import { guideListHref } from "@/features/guides/guideFiltering";
 import { REGIONS } from "@/features/regions/regions";
 import { TREK_LENGTHS, treksFilterPath } from "@/features/treks/filters";
 import type { TrekLength } from "@/features/treks/filters";
@@ -79,11 +80,12 @@ export const REGION_LINKS: readonly RegionLink[] = REGIONS.map((region) => ({
   image: region.image?.src,
 }));
 
+/** Each opens the Travel guides list filtered to that topic (the same links as the page's topic cards). */
 export const GUIDE_LINKS: readonly TopicLink[] = [
-  { name: "Planning and permits", meta: "Permits, visas, costs, guides", href: guidePath("planning-and-permits"), icon: "description", tone: "brand" },
-  { name: "Best time to trek", meta: "Seasons and weather by region", href: guidePath("best-time-to-trek"), icon: "wb_sunny", tone: "saffron" },
-  { name: "Health and altitude", meta: "Fitness, acclimatization, safety", href: guidePath("health-and-altitude"), icon: "health_and_safety", tone: "green" },
-  { name: "Gear and packing", meta: "Packing lists and rentals", href: guidePath("gear-and-packing"), icon: "backpack", tone: "navy" },
+  { name: "Planning and permits", meta: "Permits, visas, costs, guides", href: guideListHref({ topic: "planning" }), icon: "description", tone: "brand" },
+  { name: "Best time to trek", meta: "Seasons and weather by region", href: guideListHref({ topic: "best-time" }), icon: "wb_sunny", tone: "saffron" },
+  { name: "Health and altitude", meta: "Fitness, acclimatization, safety", href: guideListHref({ topic: "health" }), icon: "health_and_safety", tone: "green" },
+  { name: "Gear and packing", meta: "Packing lists and rentals", href: guideListHref({ topic: "gear" }), icon: "backpack", tone: "navy" },
 ];
 
 export const ABOUT_LINKS: readonly TopicLink[] = [
