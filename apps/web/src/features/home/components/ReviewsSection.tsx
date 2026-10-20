@@ -5,6 +5,7 @@ import type { RatingBadgeData } from "@/features/reviews/components/RatingBadge"
 import { ReviewCard } from "@/features/reviews/components/ReviewCard";
 import type { ReviewCardData } from "@/features/reviews/components/ReviewCard";
 import { PREVIEW_RATING, PREVIEW_REVIEW_CARDS } from "@/features/reviews/previewReviews";
+import { ratingBadgeFor } from "@/features/reviews/ratingBadge";
 import { GOOGLE_RATING, REVIEWS } from "@/features/reviews/reviews";
 
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -17,13 +18,7 @@ const realCards: ReviewCardData[] = REVIEWS.map((review) => ({
   cite: review.url,
 }));
 
-const realRating: RatingBadgeData | null = GOOGLE_RATING && {
-  ratingLabel: GOOGLE_RATING.rating.toFixed(1),
-  stars: Math.round(GOOGLE_RATING.rating),
-  countLabel: `${GOOGLE_RATING.count} reviews on ${GOOGLE_RATING.source}`,
-  accessibleLabel: `Rated ${GOOGLE_RATING.rating.toFixed(1)} out of 5 from ${GOOGLE_RATING.count} reviews on ${GOOGLE_RATING.source}`,
-  href: GOOGLE_RATING.url,
-};
+const realRating: RatingBadgeData | null = GOOGLE_RATING && ratingBadgeFor(GOOGLE_RATING);
 
 /**
  * "Trekkers tell it best" (design: Main.dc.html). Shows real reviews only: with none yet the section

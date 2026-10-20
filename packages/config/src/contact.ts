@@ -5,6 +5,21 @@
 const PHONE_COUNTRY_CODE = "977"; // Nepal
 const PHONE_LOCAL_NUMBER = "9843197197";
 
+type ClockTime = { hour: number; minute: number };
+
+/**
+ * When the office is open, in Nepal time (UTC+5:45, no daylight saving). Days: 0 = Sunday … 6 = Saturday.
+ * TEMPORARY: from the website design until the owner confirms.
+ */
+export const OFFICE_SCHEDULE = {
+  openDays: [0, 1, 2, 3, 4, 5],
+  daysLabel: "Sunday to Friday",
+  opens: { hour: 9, minute: 0 },
+  closes: { hour: 18, minute: 0 },
+} as const satisfies { openDays: readonly number[]; daysLabel: string; opens: ClockTime; closes: ClockTime };
+
+const clock = ({ hour, minute }: ClockTime) => `${hour}:${String(minute).padStart(2, "0")}`;
+
 export const CONTACT = {
   email: "traveltonepal102@gmail.com",
   /** Shown to visitors, e.g. "+977 9843197197". */
@@ -17,6 +32,8 @@ export const CONTACT = {
   taanMemberNumber: "2345",
   /** TEMPORARY: city only until the street address is confirmed. */
   officeAddress: "Kathmandu, Nepal",
+  /** Office opening hours as visitors read them, e.g. "Sunday to Friday, 9:00–18:00 (Nepal time)". */
+  officeHours: `${OFFICE_SCHEDULE.daysLabel}, ${clock(OFFICE_SCHEDULE.opens)}–${clock(OFFICE_SCHEDULE.closes)} (Nepal time)`,
 } as const;
 
 /** wa.me link that opens a WhatsApp chat with the office, with an optional first message. */

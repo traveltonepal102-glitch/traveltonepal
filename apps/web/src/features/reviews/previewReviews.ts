@@ -30,6 +30,25 @@ export const PREVIEW_TREK_REVIEWS: readonly Review[] = PREVIEW_TOPICS.map((topic
   url: "#",
 }));
 
+const PREVIEW_COMPANY_TOPICS = [
+  ["our guide and the trek", "Langtang Valley Trek"],
+  ["planning on WhatsApp", "Everest Base Camp"],
+  ["safety and acclimatization", "Annapurna Circuit"],
+] as const;
+
+/** DEVELOPMENT ONLY: the About page's review placeholders from the design (About.dc.html), one per topic. */
+export const PREVIEW_COMPANY_REVIEWS: readonly Review[] = PREVIEW_COMPANY_TOPICS.map(([topic, trekName], index) => ({
+  id: `preview-company-${index}`,
+  title: "[Review title]",
+  quote: `[A real review about ${topic}, copied from Google or TripAdvisor.]`,
+  rating: 5,
+  name: "[Name]",
+  country: "[Country]",
+  trekName,
+  source: "Google",
+  url: "#",
+}));
+
 export const PREVIEW_RATING: RatingBadgeData = {
   ratingLabel: "[4.9]",
   stars: 5,

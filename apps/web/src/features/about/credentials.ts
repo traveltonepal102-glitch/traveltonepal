@@ -1,4 +1,5 @@
 import { CONTACT } from "@ttn/config/contact";
+import type { IconName } from "@ttn/ui/icon";
 
 export type CredentialTone = "green" | "brand" | "ink";
 
@@ -27,3 +28,18 @@ export const CREDENTIALS: CompanyCredentials = {
   ],
   certificate: { title: "Nepal Department of Tourism registration certificate" },
 };
+
+export type Licence = { icon: IconName; label: string; value: string };
+
+/**
+ * The About page's "Licences and legal" list: everything a visitor can check with the Department of
+ * Tourism and TAAN. Numbers from CONTACT; [BRACKETED] values wait for the owner's documents.
+ */
+export const LICENCES: readonly Licence[] = [
+  { icon: "verified", label: "Department of Tourism", value: `Reg. ${CONTACT.registrationNumber}` },
+  { icon: "description", label: "Company registration", value: "[NUMBER]" },
+  { icon: "groups", label: "TAAN member", value: `No. ${CONTACT.taanMemberNumber}` },
+  { icon: "description", label: "Tax number (PAN)", value: "[NUMBER]" },
+  { icon: "shield_person", label: "Staff insurance", value: "[INSURER]" },
+  { icon: "flag", label: "Other memberships", value: "[e.g. NMA, KEEP]" },
+];

@@ -3,9 +3,9 @@
 import { Icon } from "@ttn/ui/icon";
 
 import { formatReadTime } from "@/features/guides/format";
+import { useActiveSection } from "@/hooks/useActiveSection";
 
 import type { TocLink } from "../../guideArticles";
-import { useActiveSection } from "../../hooks/useActiveSection";
 import { FOCUS } from "../styles";
 
 type ArticleTocProps = {

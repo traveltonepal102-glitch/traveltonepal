@@ -4,6 +4,8 @@ import { Icon } from "@ttn/ui/icon";
 import { useState } from "react";
 import type { ReactNode } from "react";
 
+import { useConsent } from "@/features/consent/useConsent";
+
 type MapConsentGateProps = {
   /** Shown until the visitor loads the map (a drawn map). */
   preview: ReactNode;
@@ -16,15 +18,18 @@ type MapConsentGateProps = {
 };
 
 /**
- * Click-to-load wrapper for Google maps. Nothing is requested from Google until the visitor asks
- * (GDPR: Google sees their IP address and may set cookies), and the page stays fast without it.
+ * Click-to-load wrapper for Google maps. Nothing is requested from Google until the visitor asks, here
+ * or by allowing "External media" in the cookie settings (GDPR: Google sees their IP address and may
+ * set cookies), and the page stays fast without it.
  */
 export const MapConsentGate = ({ preview, previewLabel, children, className = "" }: MapConsentGateProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const consent = useConsent();
+  const isAllowed = isLoaded || consent?.externalMedia === true;
 
   return (
     <div className={`relative overflow-hidden rounded-xl border border-[#dde3d6] bg-[#e9efe3] ${className}`}>
-      {isLoaded ? (
+      {isAllowed ? (
         children
       ) : (
         <>

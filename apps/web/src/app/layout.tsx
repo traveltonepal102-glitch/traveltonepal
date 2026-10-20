@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
+import { CookieBanner } from "@/features/consent/components/CookieBanner";
 import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
 import { SITE_URL } from "@/lib/site";
 
@@ -26,6 +27,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     <body className="flex min-h-full flex-col" suppressHydrationWarning>
       {children}
       <SiteFooter />
+      <CookieBanner />
     </body>
   </html>
 );
