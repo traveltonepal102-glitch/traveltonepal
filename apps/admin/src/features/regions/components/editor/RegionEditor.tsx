@@ -9,6 +9,8 @@ import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
+import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
+import type { SimilarTrekOption } from "@/features/treks/types";
 
 import { REGIONS_PATH } from "../../constants";
 import { getRegionReadiness } from "../../lib/readiness";
@@ -18,7 +20,9 @@ import { BasicsSection } from "./BasicsSection";
 import { FactsSection } from "./FactsSection";
 import { FaqSection } from "./FaqSection";
 import { MonthsSection } from "./MonthsSection";
+import { RegionGuidesSection } from "./RegionGuidesSection";
 import { SeoSection } from "./SeoSection";
+import { RegionTreksSection } from "./treks/RegionTreksSection";
 
 type RegionEditorProps = {
   /** saveRegion bound to this region's id (null for a new region). */
@@ -30,6 +34,11 @@ type RegionEditorProps = {
   regionId: string | null;
   isNew: boolean;
   websiteDomain: string | null;
+  /** The region's own treks and the others (to suggest as nearby). */
+  regionTreks: SimilarTrekOption[];
+  otherTreks: SimilarTrekOption[];
+  /** Every guide with this region in Trekking guides. */
+  guides: GuideOption[];
   /** e.g. "Saved 23 Oct, 11:32" (formatted on the server, so it matches the admin's time zone setting). */
   lastSaved?: string;
   isJustAdded?: boolean;
@@ -46,6 +55,9 @@ export const RegionEditor = ({
   regionId,
   isNew,
   websiteDomain,
+  regionTreks,
+  otherTreks,
+  guides,
   lastSaved,
   isJustAdded = false,
 }: RegionEditorProps) => {
@@ -82,7 +94,7 @@ export const RegionEditor = ({
           sections={REGION_SECTIONS}
           activeKey={activeKey}
           onSelect={form.setActiveKey}
-          readiness={getRegionReadiness(values, photos)}
+          readiness={getRegionReadiness(values, photos, guides.map((guide) => guide.id))}
           errorKeys={sectionsWithErrors(Object.keys(errors))}
         />
 
@@ -117,6 +129,12 @@ export const RegionEditor = ({
           </div>
           <div hidden={activeKey !== "months"} className="flex flex-col gap-4">
             <MonthsSection values={values} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "treks"} className="flex flex-col gap-4">
+            <RegionTreksSection values={values} regionName={values.name} regionTreks={regionTreks} otherTreks={otherTreks} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "guides"}>
+            <RegionGuidesSection regionName={values.name} guides={guides} hiddenGuideIds={values.hiddenGuideIds} />
           </div>
           <div hidden={activeKey !== "faq"}>
             <FaqSection faqs={values.faqs} errors={errors} onEdit={markDirty} />

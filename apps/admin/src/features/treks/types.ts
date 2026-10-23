@@ -197,8 +197,16 @@ export type Trek = TrekValues & {
   photos: TrekPhotos;
 };
 
-/** Another trek to pick as a similar trek. */
-export type SimilarTrekOption = { id: string; name: string; days: number; difficulty: TrekDifficulty; regionName: string; cover: Photo | null };
+/** A trek to pick from another editor (similar treks, a region's featured and nearby treks). */
+export type SimilarTrekOption = {
+  id: string;
+  name: string;
+  days: number;
+  difficulty: TrekDifficulty;
+  regionId: string;
+  regionName: string;
+  cover: Photo | null;
+};
 
 /** A region to pick in the trek editor. */
 export type RegionOption = { id: string; name: string };

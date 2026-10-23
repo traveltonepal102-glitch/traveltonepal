@@ -6,6 +6,9 @@ export type SeasonKey = "spring" | "monsoon" | "autumn" | "winter";
 
 export type RegionFaq = { question: string; answer: RichTextDoc };
 
+/** A trek from another region suggested on this region's page, e.g. "Nearby · same trailhead". */
+export type NearbyTrek = { trekId: string; label: string; note: string };
+
 /** Everything the region editor saves (one language). */
 export type RegionValues = {
   name: string;
@@ -30,6 +33,16 @@ export type RegionValues = {
   seoKeyword: string;
   seoTitle: string;
   seoDescription: string;
+  /** One of the region's own treks, shown as its signature trek; null for none. */
+  featuredTrekId: string | null;
+  /** e.g. "Our signature Langtang trek" */
+  featuredTrekLabel: string;
+  featuredTrekPitch: string;
+  nearbyTreks: NearbyTrek[];
+  /** "Want your own route?" */
+  customRoutePitch: string;
+  /** Guides who lead here but are switched off for the region page (the others show automatically). */
+  hiddenGuideIds: string[];
 };
 
 /** The region's photos as the editor shows them: the cover slot and the gallery, in order. */
@@ -45,6 +58,8 @@ export type Region = RegionValues & {
   id: string;
   /** The region's own website; set by the developer. */
   websiteDomain: string | null;
+  /** Every guide with this region in their regions (Trekking guides), shown or not. */
+  leadingGuideIds: string[];
   updatedAt: string;
   photos: RegionPhotos;
 };

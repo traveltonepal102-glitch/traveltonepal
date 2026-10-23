@@ -109,4 +109,30 @@ describe("regionSchema", () => {
     const unsafe = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "x", marks: [{ type: "link", attrs: { href: "javascript:alert(1)" } }] }] }] };
     expect(errorsOf({ introduction: JSON.stringify(unsafe) }).introduction).toMatch(/Links must start with https/);
   });
+
+  it("reads the featured trek and the nearby treks in order, each once", () => {
+    const featured = "00000000-0000-4000-8000-000000000031";
+    const nearby = "00000000-0000-4000-8000-000000000032";
+    const result = parse({
+      featuredTrekId: featured,
+      featuredTrekLabel: " Our signature trek ",
+      nearbyTrekId: [nearby],
+      nearbyTrekLabel: ["Nearby · same trailhead"],
+      nearbyTrekNote: ["Easy to combine."],
+    });
+    expect(result.data).toMatchObject({
+      featuredTrekId: featured,
+      featuredTrekLabel: "Our signature trek",
+      nearbyTreks: [{ trekId: nearby, label: "Nearby · same trailhead", note: "Easy to combine." }],
+    });
+    expect(parse().data?.featuredTrekId).toBeNull();
+    expect(errorsOf({ nearbyTrekId: [nearby, nearby], nearbyTrekLabel: ["", ""], nearbyTrekNote: ["", ""] }).nearbyTreks).toBe("A trek is in the list twice. Remove one.");
+    expect(errorsOf({ featuredTrekId: "langtang" }).featuredTrekId).toBe("Pick the featured trek from the list.");
+  });
+
+  it("stores the guides switched off, from every guide listed and the switches that are on", () => {
+    const [a, b, c] = ["00000000-0000-4000-8000-000000000041", "00000000-0000-4000-8000-000000000042", "00000000-0000-4000-8000-000000000043"];
+    expect(parse({ regionGuideListed: [a, b, c], regionGuideShown: [b] }).data?.hiddenGuideIds).toEqual([a, c]);
+    expect(parse({ regionGuideListed: [a], regionGuideShown: [a] }).data?.hiddenGuideIds).toEqual([]);
+  });
 });

@@ -4,7 +4,7 @@ import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/sche
 import { readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 
-import { MAX_BEST_FOR, MAX_FAQS, REGION_LIMITS as LIMIT } from "../constants";
+import { MAX_BEST_FOR, MAX_FAQS, MAX_NEARBY_TREKS, REGION_LIMITS as LIMIT } from "../constants";
 import type { RegionFormValues } from "../types";
 
 /** Empty → null; otherwise a number in range (the database checks the same range). */
@@ -68,6 +68,20 @@ export const regionSchema = z
     seoKeyword: text(LIMIT.seoKeyword),
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
+    featuredTrekId: z
+      .string()
+      .transform((value) => value || null)
+      .pipe(z.uuid("Pick the featured trek from the list.").nullable()),
+    featuredTrekLabel: text(LIMIT.featuredTrekLabel),
+    featuredTrekPitch: text(LIMIT.featuredTrekPitch),
+    nearbyTreks: z
+      .array(z.object({ trekId: z.uuid("Pick the nearby treks from the list."), label: text(LIMIT.nearbyLabel), note: text(LIMIT.nearbyNote) }))
+      .refine((treks) => new Set(treks.map((trek) => trek.trekId)).size === treks.length, "A trek is in the list twice. Remove one.")
+      .refine((treks) => treks.length <= MAX_NEARBY_TREKS, `Suggest up to ${MAX_NEARBY_TREKS} nearby treks.`),
+    customRoutePitch: text(LIMIT.customRoutePitch),
+    // The switches send the guides that show; the region stores the ones it hides.
+    guidesListed: z.array(z.uuid()),
+    guidesShown: z.array(z.uuid()),
     photos: photoSelectionSchema("region"),
   })
   .superRefine((values, context) => {
@@ -75,7 +89,18 @@ export const regionSchema = z
     if ((values.latitude === null) === (values.longitude === null)) return;
     const missing = values.latitude === null ? "latitude" : "longitude";
     context.addIssue({ code: "custom", path: [missing], message: "Enter both latitude and longitude, or neither." });
-  }) satisfies z.ZodType<RegionFormValues, unknown>;
+  })
+  .transform(({ guidesListed, guidesShown, ...values }) => ({
+    ...values,
+    hiddenGuideIds: [...new Set(guidesListed.filter((id) => !guidesShown.includes(id)))],
+  })) satisfies z.ZodType<RegionFormValues, unknown>;
+
+/** Nearby treks in FormData: nearbyTrekId, nearbyTrekLabel and nearbyTrekNote, one of each per row in order. */
+const readNearbyTreks = (formData: FormData) => {
+  const labels = readList(formData, "nearbyTrekLabel");
+  const notes = readList(formData, "nearbyTrekNote");
+  return readList(formData, "nearbyTrekId").map((trekId, index) => ({ trekId, label: labels[index] ?? "", note: notes[index] ?? "" }));
+};
 
 /** The editor's FormData as the schema expects it. */
 export const readRegionForm = (formData: FormData) => {
@@ -109,6 +134,13 @@ export const readRegionForm = (formData: FormData) => {
     seoKeyword: readText(formData, "seoKeyword"),
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
+    featuredTrekId: readText(formData, "featuredTrekId"),
+    featuredTrekLabel: readText(formData, "featuredTrekLabel"),
+    featuredTrekPitch: readText(formData, "featuredTrekPitch"),
+    nearbyTreks: readNearbyTreks(formData),
+    customRoutePitch: readText(formData, "customRoutePitch"),
+    guidesListed: readList(formData, "regionGuideListed"),
+    guidesShown: readList(formData, "regionGuideShown"),
     photos: readPhotoSelection(formData),
   };
 };

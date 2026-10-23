@@ -23,7 +23,8 @@ const failure = (message: string, fieldErrors: FieldErrors = {}): SaveRegionStat
 
 const FAILURE_MESSAGES = {
   not_found: "This region no longer exists. Go back to Regions and open it again.",
-  photo_missing: "One of the photos no longer exists. Reload the page and try again.",
+  photo_missing: "One of the photos, treks or guides no longer exists. Reload the page and try again.",
+  featured_not_in_region: "The featured trek is no longer in this region. Pick the featured trek again.",
   forbidden: "Your account can't make this change. Only a Super admin can add a region.",
   failed: "The region couldn't be saved. Nothing was lost on this page: try Save again in a moment.",
 } as const;

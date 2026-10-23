@@ -27,13 +27,15 @@ const SECTION_NAMES: Record<ReadySectionKey, string> = {
   photos: "Photos",
   facts: "Facts",
   months: "Months",
+  treks: "Treks",
+  guides: "Guides",
   faq: "Questions",
   seo: "Google",
 };
-const SECTION_KEYS: ReadySectionKey[] = ["basics", "photos", "facts", "months", "faq", "seo"];
+const SECTION_KEYS: ReadySectionKey[] = ["basics", "photos", "facts", "months", "treks", "guides", "faq", "seo"];
 
 export const toRegionCardItem = (region: Region): RegionCardItem => {
-  const readiness = getRegionReadiness(region, region.photos);
+  const readiness = getRegionReadiness(region, region.photos, region.leadingGuideIds);
   const openKeys = SECTION_KEYS.filter((key) => readiness[key].status !== "done");
   const next = openKeys[0];
 

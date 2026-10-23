@@ -46,7 +46,7 @@ describe("formatBestMonths", () => {
 
 describe("getRegionReadiness", () => {
   it("lists what a new region still needs", () => {
-    const readiness = getRegionReadiness(EMPTY, NO_REGION_PHOTOS);
+    const readiness = getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []);
     expect(readiness.basics).toEqual({ status: "todo", note: "Add the tagline, introduction, map pin" });
     expect(readiness.facts).toEqual({ status: "todo", note: "0 of 6 filled in" });
     expect(readiness.months.status).toBe("todo");
@@ -57,7 +57,7 @@ describe("getRegionReadiness", () => {
 
   it("warns about too few questions and missing season notes", () => {
     const faq = { question: "Q?", answer: richText("A.") };
-    const readiness = getRegionReadiness({ ...EMPTY, faqs: [faq, faq], monthRatings: months("xxgggxxxxggx") }, NO_REGION_PHOTOS);
+    const readiness = getRegionReadiness({ ...EMPTY, faqs: [faq, faq], monthRatings: months("xxgggxxxxggx") }, NO_REGION_PHOTOS, []);
     expect(readiness.faq).toEqual({ status: "warn", note: "Only 2 questions" });
     expect(readiness.months).toEqual({ status: "warn", note: "Best: Mar–May, Oct–Nov · 0 of 4 season notes" });
   });
@@ -81,17 +81,18 @@ describe("getRegionReadiness", () => {
       faqs: Array.from({ length: 6 }, () => faq),
       seoTitle: "Langtang trekking",
       seoDescription: "Trek Langtang.",
+      featuredTrekId: "trek-1",
     };
-    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }))).toBe(6);
+    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }, ["guide-1"]))).toBe(8);
   });
 });
 
 describe("photos readiness", () => {
   it("needs only a cover; an empty \"taken at\" is never a warning", () => {
-    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS).photos).toEqual({ status: "todo", note: "Add a cover photo" });
-    const readiness = getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b"), photo("c", "Kyanjin Gompa")] });
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).photos).toEqual({ status: "todo", note: "Add a cover photo" });
+    const readiness = getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b"), photo("c", "Kyanjin Gompa")] }, []);
     expect(readiness.photos).toEqual({ status: "done", note: "Cover + 2 photos" });
-    expect(getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b")] }).photos.note).toBe("Cover + 1 photo");
+    expect(getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b")] }, []).photos.note).toBe("Cover + 1 photo");
   });
 });
 
@@ -100,5 +101,19 @@ describe("firstSectionWithError", () => {
     expect(firstSectionWithError(["seoTitle", "faqs.2.answer", "permits"])).toBe("facts");
     expect(firstSectionWithError(["seasons.spring"])).toBe("months");
     expect(firstSectionWithError([])).toBeUndefined();
+  });
+});
+
+describe("treks and guides readiness", () => {
+  it("needs a featured trek; nearby treks are counted", () => {
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).treks).toEqual({ status: "todo", note: "Pick the featured trek" });
+    const featured = { ...EMPTY, featuredTrekId: "t1", nearbyTreks: [{ trekId: "t2", label: "", note: "" }] };
+    expect(getRegionReadiness(featured, NO_REGION_PHOTOS, []).treks).toEqual({ status: "done", note: "Featured trek · 1 nearby" });
+  });
+
+  it("counts the guides who lead here and aren't switched off", () => {
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).guides).toEqual({ status: "todo", note: "No guides lead here yet" });
+    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1"]).guides.note).toBe("All guides switched off");
+    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1", "g2", "g3"]).guides).toEqual({ status: "done", note: "2 guides" });
   });
 });

@@ -205,6 +205,7 @@ export const listSimilarTrekOptions = async (exceptId: string | null): Promise<S
       name: trek.trek_translations[0]?.name ?? "",
       days: trek.days,
       difficulty: trek.difficulty,
+      regionId: trek.region_id,
       regionName: regionNames.get(trek.region_id) ?? "",
       cover: trek.cover ? toPhoto(trek.cover) : null,
     }))

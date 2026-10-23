@@ -18,6 +18,8 @@ type RegionRow = {
   longitude: number | null;
   month_ratings: MonthRating[];
   cover_photo_id: string | null;
+  /** One of the region's own treks, shown as its signature trek. */
+  featured_trek_id: string | null;
   created_at: string;
   updated_at: string;
   updated_by: string | null;
@@ -210,8 +212,17 @@ type RegionTranslationRow = {
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
+  featured_trek_label: string;
+  featured_trek_pitch: string;
+  custom_route_pitch: string;
   updated_at: string;
 };
+
+type RegionNearbyTrekRow = { region_id: string; trek_id: string; position: number };
+
+type RegionNearbyTrekTranslationRow = { region_id: string; trek_id: string; locale: "en" | "de"; label: string; note: string };
+
+type RegionHiddenGuideRow = { region_id: string; guide_id: string };
 
 export type Database = {
   public: {
@@ -240,6 +251,36 @@ export type Database = {
             referencedRelation: "photos";
             referencedColumns: ["id"];
           },
+          Fk<"regions_featured_trek_id_fkey", "featured_trek_id", "treks">,
+        ];
+      };
+      region_nearby_treks: {
+        Row: RegionNearbyTrekRow;
+        Insert: RegionNearbyTrekRow;
+        Update: Partial<RegionNearbyTrekRow>;
+        Relationships: [Fk<"region_nearby_treks_region_id_fkey", "region_id", "regions">, Fk<"region_nearby_treks_trek_id_fkey", "trek_id", "treks">];
+      };
+      region_nearby_trek_translations: {
+        Row: RegionNearbyTrekTranslationRow;
+        Insert: Partial<RegionNearbyTrekTranslationRow> & Pick<RegionNearbyTrekTranslationRow, "region_id" | "trek_id" | "locale">;
+        Update: Partial<RegionNearbyTrekTranslationRow>;
+        Relationships: [
+          {
+            foreignKeyName: "region_nearby_trek_translations_region_id_trek_id_fkey";
+            columns: ["region_id", "trek_id"];
+            isOneToOne: false;
+            referencedRelation: "region_nearby_treks";
+            referencedColumns: ["region_id", "trek_id"];
+          },
+        ];
+      };
+      region_hidden_guides: {
+        Row: RegionHiddenGuideRow;
+        Insert: RegionHiddenGuideRow;
+        Update: Partial<RegionHiddenGuideRow>;
+        Relationships: [
+          Fk<"region_hidden_guides_region_id_fkey", "region_id", "regions">,
+          Fk<"region_hidden_guides_guide_id_fkey", "guide_id", "trekking_guides">,
         ];
       };
       photos: {

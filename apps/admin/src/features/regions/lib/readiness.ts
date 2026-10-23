@@ -5,8 +5,8 @@ import { RECOMMENDED_FAQS } from "../constants";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../types";
 import { formatBestMonths } from "./bestMonths";
 
-/** The sections an admin can fill in now (the others wait on treks, guides and travel guides). */
-export type ReadySectionKey = Extract<RegionSectionKey, "basics" | "photos" | "facts" | "months" | "faq" | "seo">;
+/** The sections an admin can fill in now (Travel guides waits on travel guides). */
+export type ReadySectionKey = Extract<RegionSectionKey, "basics" | "photos" | "facts" | "months" | "treks" | "guides" | "faq" | "seo">;
 
 const countFilled = (values: string[]) => values.filter((value) => value.trim()).length;
 
@@ -62,12 +62,36 @@ const photos = ({ cover, gallery }: RegionPhotos): SectionReadiness => {
   return { status: "done", note: `Cover + ${plural(gallery.length, "photo")}` };
 };
 
-/** How complete each section is, from the saved values (the editor's checklist and the region cards). */
-export const getRegionReadiness = (region: RegionValues, regionPhotos: RegionPhotos): Record<ReadySectionKey, SectionReadiness> => ({
+/** Needs a featured trek (one of the region's own); nearby treks are optional. */
+const treks = (region: RegionValues): SectionReadiness => {
+  if (!region.featuredTrekId) return { status: "todo", note: "Pick the featured trek" };
+  const nearby = region.nearbyTreks.length;
+  return { status: "done", note: nearby ? `Featured trek · ${nearby} nearby` : "Featured trek" };
+};
+
+/** Guides show by themselves (anyone with this region in Trekking guides); none showing is a to-do. */
+const guides = (region: RegionValues, leadingGuideIds: string[]): SectionReadiness => {
+  const shown = leadingGuideIds.filter((id) => !region.hiddenGuideIds.includes(id)).length;
+  if (!leadingGuideIds.length) return { status: "todo", note: "No guides lead here yet" };
+  if (!shown) return { status: "todo", note: "All guides switched off" };
+  return { status: "done", note: plural(shown, "guide") };
+};
+
+/**
+ * How complete each section is, from the saved values (the editor's checklist and the region cards).
+ * `leadingGuideIds`: every guide with this region in Trekking guides.
+ */
+export const getRegionReadiness = (
+  region: RegionValues,
+  regionPhotos: RegionPhotos,
+  leadingGuideIds: string[],
+): Record<ReadySectionKey, SectionReadiness> => ({
   basics: basics(region),
   photos: photos(regionPhotos),
   facts: facts(region),
   months: months(region),
+  treks: treks(region),
+  guides: guides(region, leadingGuideIds),
   faq: faq(region),
   seo: seo(region),
 });

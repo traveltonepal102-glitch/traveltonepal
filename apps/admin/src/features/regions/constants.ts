@@ -30,7 +30,14 @@ export const REGION_LIMITS = {
   seoKeyword: 80,
   seoTitle: 70,
   seoDescription: 200,
+  featuredTrekLabel: 60,
+  featuredTrekPitch: 300,
+  customRoutePitch: 300,
+  nearbyLabel: 40,
+  nearbyNote: 160,
 } as const;
+
+export const MAX_NEARBY_TREKS = 6;
 
 /** Google shows about this much; longer still saves, the counter turns amber. */
 export const SEO_TITLE_RECOMMENDED = 60;
@@ -81,6 +88,12 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   seoKeyword: "",
   seoTitle: "",
   seoDescription: "",
+  featuredTrekId: null,
+  featuredTrekLabel: "",
+  featuredTrekPitch: "",
+  nearbyTreks: [],
+  customRoutePitch: "",
+  hiddenGuideIds: [],
 };
 
 export const NO_REGION_PHOTOS: RegionPhotos = { cover: null, gallery: [] };
