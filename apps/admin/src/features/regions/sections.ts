@@ -1,15 +1,9 @@
-import type { IconName } from "@ttn/ui/icon";
+import { createSectionErrorLookup } from "@/components/editor/sectionErrors";
+import type { EditorSection } from "@/components/editor/types";
 
 import type { RegionSectionKey } from "./types";
 
-export type RegionSection = {
-  key: RegionSectionKey;
-  label: string;
-  icon: IconName;
-  description: string;
-  /** Sections that wait on another feature (photo uploads, treks, guides, travel guides). */
-  waitsFor?: string;
-};
+export type RegionSection = EditorSection<RegionSectionKey>;
 
 /** The editor's sections, in the design's order (Admin-region-editor.dc.html). */
 export const REGION_SECTIONS: RegionSection[] = [
@@ -88,12 +82,4 @@ const FIELD_SECTIONS: Record<string, RegionSectionKey> = {
   photos: "photos",
 };
 
-/** The sections that have a field with an error. */
-export const sectionsWithErrors = (fields: string[]): Set<RegionSectionKey> =>
-  new Set(fields.map((field) => FIELD_SECTIONS[field.split(".")[0]]).filter(Boolean));
-
-/** The first section (in display order) that has a field with an error. */
-export const firstSectionWithError = (fields: string[]): RegionSectionKey | undefined => {
-  const sections = sectionsWithErrors(fields);
-  return REGION_SECTIONS.find((section) => sections.has(section.key))?.key;
-};
+export const { sectionsWithErrors, firstSectionWithError } = createSectionErrorLookup(REGION_SECTIONS, FIELD_SECTIONS);

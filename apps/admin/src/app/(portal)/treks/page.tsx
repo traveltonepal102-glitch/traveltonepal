@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { SectionPlaceholder } from "@/features/shell/components/SectionPlaceholder";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
+import { TreksOverview } from "@/features/treks/components/list/TreksOverview";
+import { toTrekListItem } from "@/features/treks/lib/trekListItem";
+import { listRegionOptions, listTreks } from "@/features/treks/services/treksRepository";
 
-const SECTION = ADMIN_SECTIONS.treks;
+export const metadata: Metadata = { title: ADMIN_SECTIONS.treks.label };
 
-export const metadata: Metadata = { title: SECTION.label };
-
-/** Placeholder until the screen is built (design: Admin-treks.dc.html). */
+/** Treks list (design: Admin-treks.dc.html). */
 const TreksPage = async () => {
   await requireAdmin();
-  return <SectionPlaceholder section={SECTION} />;
+  const [treks, regions] = await Promise.all([listTreks(), listRegionOptions()]);
+
+  return <TreksOverview treks={treks.map(toTrekListItem)} regions={regions} />;
 };
 
 export default TreksPage;

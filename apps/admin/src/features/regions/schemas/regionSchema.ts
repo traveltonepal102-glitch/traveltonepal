@@ -1,15 +1,11 @@
 import { z } from "zod";
 
-import { MAX_GALLERY_PHOTOS, PHOTO_LIMITS } from "@/features/photos/constants";
+import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
+import { readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 
 import { MAX_BEST_FOR, MAX_FAQS, REGION_LIMITS as LIMIT } from "../constants";
 import type { RegionFormValues } from "../types";
-
-const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-const text = (max: number) => z.string().trim().max(max, `Use ${max} characters or fewer.`);
-const requiredText = (max: number, message: string) => text(max).min(1, message);
 
 /** Empty → null; otherwise a number in range (the database checks the same range). */
 const coordinate = (min: number, max: number, example: string) =>
@@ -40,42 +36,12 @@ const faqsSchema = z
   .transform((rows) => rows.filter((row) => row.question))
   .refine((rows) => rows.length <= MAX_FAQS, `Keep it to ${MAX_FAQS} questions.`);
 
-const photoId = z.uuid("A photo couldn't be read. Reload the page and try again.");
-
-/** Cover, gallery order and each photo's optional place. Details are kept only for photos in use. */
-const photosSchema = z
-  .object({
-    coverPhotoId: z
-      .string()
-      .transform((value) => value || null)
-      .pipe(photoId.nullable()),
-    galleryPhotoIds: z.array(photoId).max(MAX_GALLERY_PHOTOS, `A region can have up to ${MAX_GALLERY_PHOTOS} gallery photos.`),
-    details: z.array(
-      z.object({ id: photoId, place: text(PHOTO_LIMITS.place) }),
-    ),
-  })
-  .superRefine((photos, context) => {
-    const used = [...photos.galleryPhotoIds, ...(photos.coverPhotoId ? [photos.coverPhotoId] : [])];
-    if (new Set(used).size === used.length) return;
-    context.addIssue({ code: "custom", path: ["galleryPhotoIds"], message: "A photo is in this region twice. Reload the page." });
-  })
-  .transform((photos) => {
-    const used = new Set([...photos.galleryPhotoIds, photos.coverPhotoId]);
-    return { ...photos, details: photos.details.filter((detail) => used.has(detail.id)) };
-  });
-
 /** The region editor's form (read with readRegionForm). Checked again on the server before saving. */
 export const regionSchema = z
   .object({
     name: requiredText(LIMIT.name, "Enter the region name."),
     district: text(LIMIT.district),
-    slug: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(1, "Enter the web address.")
-      .max(LIMIT.slug, `Use ${LIMIT.slug} characters or fewer.`)
-      .regex(SLUG_PATTERN, "Use lowercase letters, numbers and dashes, like mardi-himal."),
+    slug: slugField("mardi-himal"),
     latitude: coordinate(26, 31, "28.2100"),
     longitude: coordinate(80, 89, "85.5600"),
     pinLabel: text(LIMIT.pinLabel),
@@ -102,7 +68,7 @@ export const regionSchema = z
     seoKeyword: text(LIMIT.seoKeyword),
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
-    photos: photosSchema,
+    photos: photoSelectionSchema("region"),
   })
   .superRefine((values, context) => {
     // A pin needs both numbers (the database checks this too).
@@ -110,22 +76,6 @@ export const regionSchema = z
     const missing = values.latitude === null ? "latitude" : "longitude";
     context.addIssue({ code: "custom", path: [missing], message: "Enter both latitude and longitude, or neither." });
   }) satisfies z.ZodType<RegionFormValues, unknown>;
-
-const readText = (formData: FormData, name: string) => {
-  const value = formData.get(name);
-  return typeof value === "string" ? value : "";
-};
-
-const readList = (formData: FormData, name: string) =>
-  formData.getAll(name).filter((value): value is string => typeof value === "string");
-
-const PLACE_PREFIX = "photoPlace.";
-
-/** Each photo's "taken at" field is named by its id: photoPlace.<id>. */
-const readPhotoDetails = (formData: FormData) =>
-  [...formData.keys()]
-    .filter((key) => key.startsWith(PLACE_PREFIX))
-    .map((key) => ({ id: key.slice(PLACE_PREFIX.length), place: readText(formData, key) }));
 
 /** The editor's FormData as the schema expects it. */
 export const readRegionForm = (formData: FormData) => {
@@ -159,10 +109,6 @@ export const readRegionForm = (formData: FormData) => {
     seoKeyword: readText(formData, "seoKeyword"),
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
-    photos: {
-      coverPhotoId: readText(formData, "coverPhotoId"),
-      galleryPhotoIds: readList(formData, "galleryPhotoId"),
-      details: readPhotoDetails(formData),
-    },
+    photos: readPhotoSelection(formData),
   };
 };

@@ -13,8 +13,8 @@ describe("admin menu", () => {
     expect(existsSync(pageFileFor(href))).toBe(true);
   });
 
-  it.each(NEW_ITEMS)("New → $label leads to a section", ({ href }) => {
-    expect(Object.values(ADMIN_SECTIONS).map((section) => section.href)).toContain(href);
+  it.each(NEW_ITEMS)("New → $label ($href) has a page", ({ href }) => {
+    expect(existsSync(pageFileFor(href))).toBe(true);
   });
 });
 

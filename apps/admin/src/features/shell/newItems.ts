@@ -1,5 +1,7 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { NEW_TREK_PATH } from "@/features/treks/constants";
+
 import { ADMIN_SECTIONS } from "./navigation";
 
 export type NewItemTone = "brand" | "saffron" | "green";
@@ -9,13 +11,13 @@ export type NewItem = {
   hint: string;
   icon: IconName;
   tone: NewItemTone;
-  /** Where the item leads. Each goes to its section until the "add" screens exist. */
+  /** Where the item leads: the "add" screen where it exists, otherwise its section. */
   href: string;
 };
 
 /** The top bar's "New" menu (design: Admin-dashboard.dc.html). */
 export const NEW_ITEMS: NewItem[] = [
-  { label: "Trek", hint: "Itinerary, prices, photos", icon: "hiking", tone: "brand", href: ADMIN_SECTIONS.treks.href },
+  { label: "Trek", hint: "Itinerary, prices, photos", icon: "hiking", tone: "brand", href: NEW_TREK_PATH },
   {
     label: "Departure date",
     hint: "Shows a date picker on the trek",

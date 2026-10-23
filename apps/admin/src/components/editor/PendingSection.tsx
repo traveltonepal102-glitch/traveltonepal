@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 
 type PendingSectionProps = {
-  /** What it waits for, e.g. "photo uploads". */
+  /** What it waits for, e.g. "trekking guides" or "the next build step". */
   waitsFor: string;
 };
 
@@ -14,6 +14,6 @@ export const PendingSection = ({ waitsFor }: PendingSectionProps) => (
     <span className="rounded-full border border-solid border-saffron-line bg-saffron-tint px-2.5 py-1 text-xs font-bold text-saffron-ink">
       Work in progress
     </span>
-    <p className="m-0 max-w-105 text-muted-foreground">This part opens once {waitsFor} are in the admin. Nothing here is saved yet.</p>
+    <p className="m-0 max-w-105 text-muted-foreground">Coming soon: this part waits for {waitsFor}. Nothing here is saved yet.</p>
   </div>
 );

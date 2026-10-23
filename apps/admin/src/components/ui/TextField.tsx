@@ -28,6 +28,10 @@ type TextFieldProps = {
   placeholder?: string;
   inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   inputClassName?: string;
+  /** Shown but not editable (the value comes from elsewhere; say where in `hint`). */
+  isReadOnly?: boolean;
+  /** Label for screen readers only (a column heading already says what it is). */
+  isLabelHidden?: boolean;
 };
 
 /** Labelled text input or textarea for admin forms, with hint, error and optional character counter. */
@@ -48,6 +52,8 @@ export const TextField = ({
   placeholder,
   inputMode,
   inputClassName,
+  isReadOnly = false,
+  isLabelHidden = false,
 }: TextFieldProps) => {
   const id = useId();
   const [ownLength, setOwnLength] = useState(defaultValue.length);
@@ -67,28 +73,42 @@ export const TextField = ({
     name,
     maxLength,
     placeholder,
+    readOnly: isReadOnly,
     onChange: handleChange,
     "aria-describedby": describedBy,
     "aria-invalid": error ? true : undefined,
     ...(value === undefined ? { defaultValue } : { value }),
   };
 
+  const labelText = (
+    <>
+      {label}
+      {labelNote && <span className="font-medium text-muted-foreground"> {labelNote}</span>}
+    </>
+  );
+
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <div className="flex items-baseline justify-between gap-3">
-        <label htmlFor={id} className={labelClass}>
-          {label}
-          {labelNote && <span className="font-medium text-muted-foreground"> {labelNote}</span>}
+      {isLabelHidden ? (
+        // Out of the layout entirely, so the field lines up with its neighbours in a row.
+        <label htmlFor={id} className="sr-only">
+          {labelText}
         </label>
-        {showCount && recommendedLength && (
-          <span
-            aria-hidden="true"
-            className={cn("text-caption font-semibold", length > recommendedLength ? "text-saffron-ink" : "text-whatsapp")}
-          >
-            {length} / {recommendedLength}
-          </span>
-        )}
-      </div>
+      ) : (
+        <div className="flex items-baseline justify-between gap-3">
+          <label htmlFor={id} className={labelClass}>
+            {labelText}
+          </label>
+          {showCount && recommendedLength && (
+            <span
+              aria-hidden="true"
+              className={cn("text-caption font-semibold", length > recommendedLength ? "text-saffron-ink" : "text-whatsapp")}
+            >
+              {length} / {recommendedLength}
+            </span>
+          )}
+        </div>
+      )}
       {multiline ? (
         <textarea rows={rows} className={cn(textareaClass, inputClassName)} {...fieldProps} />
       ) : (

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
@@ -12,10 +13,7 @@ import { REGIONS_PATH, regionPath } from "../constants";
 import { readRegionForm, regionSchema } from "../schemas/regionSchema";
 import { saveRegion as saveRegionToDatabase } from "../services/regionsRepository";
 
-export type SaveRegionState =
-  | { status: "idle" }
-  | { status: "saved" }
-  | { status: "error"; message: string; fieldErrors: FieldErrors };
+export type SaveRegionState = EditorSaveState;
 
 const failure = (message: string, fieldErrors: FieldErrors = {}): SaveRegionState => ({
   status: "error",

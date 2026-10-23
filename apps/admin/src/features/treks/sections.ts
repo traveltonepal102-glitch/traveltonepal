@@ -1,0 +1,127 @@
+import { createSectionErrorLookup } from "@/components/editor/sectionErrors";
+import type { EditorSection } from "@/components/editor/types";
+
+import type { TrekSectionKey } from "./types";
+
+/** The editor's sections, in the design's order (Admin-trek-editor.dc.html). */
+export const TREK_SECTIONS: EditorSection<TrekSectionKey>[] = [
+  {
+    key: "basics",
+    label: "Basics and trip facts",
+    icon: "description",
+    description: "Name, web address, region, difficulty and the trip facts at the top of the trek page.",
+  },
+  { key: "photos", label: "Photos", icon: "photo_library", description: "The cover photo and the photo gallery." },
+  {
+    key: "overview",
+    label: "Overview and highlights",
+    icon: "notes",
+    description: "The introduction, the highlights and “Is this trek for you?”.",
+  },
+  {
+    key: "itinerary",
+    label: "Day by day",
+    icon: "route",
+    description: "The day-by-day plan. The altitude chart, the number of days and the highest point are made from it.",
+  },
+  {
+    key: "prices",
+    label: "Prices and dates",
+    icon: "payments",
+    description: "Price per person by group size, and optional departure dates.",
+  },
+  {
+    key: "included",
+    label: "Included and meals",
+    icon: "checklist",
+    description: "What the price includes and what it does not, the daily food budget and meal tips.",
+  },
+  {
+    key: "guides",
+    label: "Guides",
+    icon: "hiking",
+    description: "Pick the guides who lead this trek, from your Trekking guides.",
+    waitsFor: "trekking guides",
+  },
+  {
+    key: "practical",
+    label: "Map and packing",
+    icon: "backpack",
+    description: "The Google route map and the packing list.",
+  },
+  {
+    key: "faq",
+    label: "Questions and answers",
+    icon: "quiz",
+    description: "Questions grouped by topic, shown near the bottom of the trek page and to Google.",
+  },
+  {
+    key: "seo",
+    label: "Google and similar treks",
+    icon: "travel_explore",
+    description: "How the trek appears in Google, the page heading, and which treks to suggest next.",
+  },
+  {
+    key: "shared",
+    label: "Shared sections",
+    icon: "view_agenda",
+    description: "Sections written once for every trek. Choose which ones show on this trek.",
+  },
+];
+
+/** Which section each saved field is on, to open the right one when a field has an error. */
+const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
+  name: "basics",
+  slug: "basics",
+  regionId: "basics",
+  status: "basics",
+  difficulty: "basics",
+  grade: "basics",
+  days: "basics",
+  maxAltitudeM: "basics",
+  distanceKm: "basics",
+  seasons: "basics",
+  tags: "basics",
+  isPopular: "basics",
+  summary: "basics",
+  cardBadge: "basics",
+  photoBadges: "basics",
+  startFinish: "basics",
+  dailyWalking: "basics",
+  guideRatio: "basics",
+  seasonLabel: "basics",
+  accommodation: "basics",
+  transport: "basics",
+  introduction: "overview",
+  highlightsHeading: "overview",
+  highlights: "overview",
+  suitabilityIntro: "overview",
+  suitabilityPoints: "overview",
+  itineraryIntro: "itinerary",
+  itinerary: "itinerary",
+  included: "included",
+  excluded: "included",
+  mealBudgetMinUsd: "included",
+  mealBudgetMaxUsd: "included",
+  mealTrailTips: "included",
+  mealTeahouseNotes: "included",
+  groupPrices: "prices",
+  hasFixedDates: "prices",
+  departures: "prices",
+  mapPlace: "practical",
+  myMapsId: "practical",
+  packingIntro: "practical",
+  packingGroups: "practical",
+  faqs: "faq",
+  headline: "seo",
+  shortName: "seo",
+  seoKeyword: "seo",
+  seoTitle: "seo",
+  seoDescription: "seo",
+  similarTrekIds: "seo",
+  hiddenSharedSections: "shared",
+  sharedSectionsShown: "shared",
+  photos: "photos",
+};
+
+export const { sectionsWithErrors, firstSectionWithError } = createSectionErrorLookup(TREK_SECTIONS, FIELD_SECTIONS);

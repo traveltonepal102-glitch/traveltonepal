@@ -1,13 +1,16 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
-import type { FormEvent } from "react";
+import { useState } from "react";
 
+import { EditorHeader } from "@/components/editor/EditorHeader";
+import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
+import { PendingSection } from "@/components/editor/PendingSection";
+import type { EditorSaveAction } from "@/components/editor/types";
+import { useEditorForm } from "@/components/editor/useEditorForm";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
-import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
 
-import type { SaveRegionState } from "../../actions/saveRegion";
+import { REGIONS_PATH } from "../../constants";
 import { getRegionReadiness } from "../../lib/readiness";
 import { REGION_SECTIONS, firstSectionWithError, sectionsWithErrors } from "../../sections";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../../types";
@@ -15,15 +18,11 @@ import { BasicsSection } from "./BasicsSection";
 import { FactsSection } from "./FactsSection";
 import { FaqSection } from "./FaqSection";
 import { MonthsSection } from "./MonthsSection";
-import { PendingSection } from "./PendingSection";
-import { RegionEditorHeader } from "./RegionEditorHeader";
-import type { SaveStatusTone } from "./RegionEditorHeader";
-import { RegionSectionNav } from "./RegionSectionNav";
 import { SeoSection } from "./SeoSection";
 
 type RegionEditorProps = {
   /** saveRegion bound to this region's id (null for a new region). */
-  action: (state: SaveRegionState, formData: FormData) => Promise<SaveRegionState>;
+  action: EditorSaveAction;
   /** The saved values (empty for a new region). */
   values: RegionValues;
   photos: RegionPhotos;
@@ -34,22 +33,6 @@ type RegionEditorProps = {
   /** e.g. "Saved 23 Oct, 11:32" (formatted on the server, so it matches the admin's time zone setting). */
   lastSaved?: string;
   isJustAdded?: boolean;
-};
-
-const IDLE: SaveRegionState = { status: "idle" };
-
-type SaveStatusInput = Pick<RegionEditorProps, "isNew" | "lastSaved" | "isJustAdded"> & {
-  isDirty: boolean;
-  state: SaveRegionState;
-};
-
-/** The line under the region name: what has been saved. */
-const getSaveStatus = ({ isDirty, state, isNew, isJustAdded, lastSaved }: SaveStatusInput): [string, SaveStatusTone] => {
-  if (isDirty) return ["Unsaved changes", "unsaved"];
-  if (state.status === "saved") return ["Saved just now", "saved"];
-  if (isNew) return ["Not saved yet", "neutral"];
-  if (isJustAdded) return ["Region added", "saved"];
-  return [lastSaved ?? "Saved", "saved"];
 };
 
 /**
@@ -66,49 +49,39 @@ export const RegionEditor = ({
   lastSaved,
   isJustAdded = false,
 }: RegionEditorProps) => {
-  const [state, formAction, isSaving] = useActionState(action, IDLE);
-  const [activeKey, setActiveKey] = useState<RegionSectionKey>("basics");
+  const form = useEditorForm<RegionSectionKey>({
+    action,
+    firstKey: "basics",
+    firstSectionWithError,
+    isNew,
+    lastSaved,
+    addedLabel: isJustAdded ? "Region added" : undefined,
+  });
   const [slug, setSlug] = useState(values.slug);
-  const [isDirty, setIsDirty] = useState(false);
-  const [handledState, setHandledState] = useState(state);
-  useUnsavedChangesWarning(isDirty);
-
-  // React to a finished save once: clear "unsaved", or open the first section with a problem.
-  if (state !== handledState) {
-    setHandledState(state);
-    if (state.status === "saved") setIsDirty(false);
-    if (state.status === "error") setActiveKey((key) => firstSectionWithError(Object.keys(state.fieldErrors)) ?? key);
-  }
-
-  const errors = state.status === "error" ? state.fieldErrors : {};
+  const { errors, activeKey, markDirty } = form;
+  const [status, statusTone] = form.saveStatus;
   const photosError = Object.entries(errors).find(([field]) => field.startsWith("photos"))?.[1];
   const active = REGION_SECTIONS.find((section) => section.key === activeKey) ?? REGION_SECTIONS[0];
-  const markDirty = () => setIsDirty(true);
-
-  const [status, statusTone] = getSaveStatus({ isDirty, state, isNew, isJustAdded, lastSaved });
-
-  // Not <form action>: React would reset the fields after each save.
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    startTransition(() => formAction(formData));
-  };
 
   return (
-    <form noValidate onSubmit={handleSubmit} onChange={markDirty} className="flex flex-col gap-5">
-      <RegionEditorHeader
+    <form noValidate onSubmit={form.handleSubmit} onChange={markDirty} className="flex flex-col gap-5">
+      <EditorHeader
+        back={{ href: REGIONS_PATH, label: "Regions" }}
         title={isNew ? "New region" : `${values.name} region`}
-        status={isSaving ? "Saving…" : status}
+        status={status}
         statusTone={statusTone}
         saveLabel={isNew ? "Add region" : "Save changes"}
-        isSaving={isSaving}
+        isSaving={form.isSaving}
       />
-      {state.status === "error" && <FormAlert message={state.message} />}
+      {form.state.status === "error" && <FormAlert message={form.state.message} />}
 
       <div className="grid items-start gap-6 desktop:grid-cols-[260px_minmax(0,1fr)]">
-        <RegionSectionNav
+        <EditorSectionNav
+          label="Region sections"
+          progressTitle="Region page ready"
+          sections={REGION_SECTIONS}
           activeKey={activeKey}
-          onSelect={setActiveKey}
+          onSelect={form.setActiveKey}
           readiness={getRegionReadiness(values, photos)}
           errorKeys={sectionsWithErrors(Object.keys(errors))}
         />

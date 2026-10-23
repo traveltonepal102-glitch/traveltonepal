@@ -16,8 +16,11 @@
   "chat",
   "check",
   "check_circle",
+  "checklist",
   "close",
+  "compare_arrows",
   "construction",
+  "content_copy",
   "cottage",
   "dashboard",
   "delete",
@@ -64,6 +67,7 @@
   "monitoring",
   "mountain_flag",
   "nordic_walking",
+  "notes",
   "notifications",
   "open_in_full",
   "open_in_new",
@@ -108,6 +112,7 @@
   "water_drop",
   "wb_sunny",
   "wb_twilight",
+  "workspace_premium",
   "zoom_in",
   "zoom_out"
 ]

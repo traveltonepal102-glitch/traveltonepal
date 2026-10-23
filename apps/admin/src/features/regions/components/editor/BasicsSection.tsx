@@ -4,15 +4,15 @@ import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId, useState } from "react";
 
-import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
-import { hintClass, inputClass, labelClass } from "@/components/ui/formStyles";
+import { inputClass, labelClass } from "@/components/ui/formStyles";
 import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
+import { SlugField } from "@/components/ui/SlugField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { MAIN_SITE_REGIONS_PREFIX, REGION_LIMITS as LIMIT } from "../../constants";
-import { slugify } from "../../lib/slugify";
+import { slugify } from "@/utils/slugify";
 import type { RegionValues } from "../../types";
 import { BestForPicker } from "./BestForPicker";
 
@@ -59,33 +59,17 @@ export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSl
           />
         </div>
         <div className="grid gap-3 tablet:grid-cols-2">
-          <div className="flex min-w-0 flex-col gap-1.5">
-            <label htmlFor={`${id}-slug`} className={labelClass}>
-              Page on the main site
-            </label>
-            <div className="flex">
-              <span className="inline-flex h-10.5 items-center rounded-l-md border border-r-0 border-solid border-input bg-page px-2.5 text-caption whitespace-nowrap text-muted-foreground max-tablet:hidden">
-                {MAIN_SITE_REGIONS_PREFIX}
-              </span>
-              <input
-                id={`${id}-slug`}
-                name="slug"
-                value={slug}
-                maxLength={LIMIT.slug}
-                onChange={(event) => {
-                  setIsSlugTyped(true);
-                  onSlugChange(event.target.value);
-                }}
-                aria-invalid={errors.slug ? true : undefined}
-                aria-describedby={`${id}-slug-hint ${id}-slug-error`}
-                className={cn(inputClass, "tablet:rounded-l-none")}
-              />
-            </div>
-            <p id={`${id}-slug-hint`} className={hintClass}>
-              {isNew ? "Made from the name. Lowercase letters, numbers and dashes." : "Changing it moves the page to a new address."}
-            </p>
-            <FieldError id={`${id}-slug-error`} message={errors.slug} />
-          </div>
+          <SlugField
+            label="Page on the main site"
+            prefix={MAIN_SITE_REGIONS_PREFIX}
+            value={slug}
+            onChange={(next) => {
+              setIsSlugTyped(true);
+              onSlugChange(next);
+            }}
+            hint={isNew ? "Made from the name. Lowercase letters, numbers and dashes." : "Changing it moves the page to a new address."}
+            error={errors.slug}
+          />
           <div className="flex min-w-0 flex-col gap-1.5">
             <label htmlFor={`${id}-domain`} className={labelClass}>
               Own website <span className="font-medium text-muted-foreground">(set by the developer)</span>

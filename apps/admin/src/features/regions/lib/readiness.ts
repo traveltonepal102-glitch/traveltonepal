@@ -1,12 +1,9 @@
+import type { SectionReadiness } from "@/components/editor/types";
 import { isRichTextEmpty } from "@/lib/richText/richText";
 
 import { RECOMMENDED_FAQS } from "../constants";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../types";
 import { formatBestMonths } from "./bestMonths";
-
-export type SectionStatus = "done" | "warn" | "todo";
-
-export type SectionReadiness = { status: SectionStatus; note: string };
 
 /** The sections an admin can fill in now (the others wait on treks, guides and travel guides). */
 export type ReadySectionKey = Extract<RegionSectionKey, "basics" | "photos" | "facts" | "months" | "faq" | "seo">;

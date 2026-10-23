@@ -2,16 +2,20 @@ import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 
-import type { ReadySectionKey, SectionReadiness, SectionStatus } from "../../lib/readiness";
-import { REGION_SECTIONS } from "../../sections";
-import type { RegionSectionKey } from "../../types";
+import type { EditorSection, SectionReadiness, SectionStatus } from "./types";
 
-type RegionSectionNavProps = {
-  activeKey: RegionSectionKey;
-  onSelect: (key: RegionSectionKey) => void;
-  readiness: Record<ReadySectionKey, SectionReadiness>;
+type EditorSectionNavProps<Key extends string> = {
+  /** e.g. "Region sections". */
+  label: string;
+  /** Title of the progress card, e.g. "Region page ready". */
+  progressTitle: string;
+  sections: EditorSection<Key>[];
+  activeKey: Key;
+  onSelect: (key: Key) => void;
+  /** Status of the sections that can be filled in now; the others show "Waits for …". */
+  readiness: Partial<Record<Key, SectionReadiness>>;
   /** Sections with a field that failed the last save. */
-  errorKeys: Set<RegionSectionKey>;
+  errorKeys: Set<Key>;
 };
 
 const STATUS: Record<SectionStatus | "error" | "later", { icon: IconName; label: string; className: string }> = {
@@ -22,22 +26,27 @@ const STATUS: Record<SectionStatus | "error" | "later", { icon: IconName; label:
   later: { icon: "schedule", label: "Coming later", className: "text-subtle" },
 };
 
-const isReadyKey = (key: RegionSectionKey, readiness: RegionSectionNavProps["readiness"]): key is ReadySectionKey =>
-  key in readiness;
-
 /** The editor's section list with each section's status (design: .ad-te-nav). A row of chips on narrow screens. */
-export const RegionSectionNav = ({ activeKey, onSelect, readiness, errorKeys }: RegionSectionNavProps) => {
-  const ready = Object.values(readiness);
+export const EditorSectionNav = <Key extends string>({
+  label,
+  progressTitle,
+  sections,
+  activeKey,
+  onSelect,
+  readiness,
+  errorKeys,
+}: EditorSectionNavProps<Key>) => {
+  const ready = Object.values<SectionReadiness | undefined>(readiness).filter((section) => section !== undefined);
   const doneCount = ready.filter((section) => section.status === "done").length;
 
   return (
     <nav
-      aria-label="Region sections"
+      aria-label={label}
       className="flex flex-col gap-0.5 desktop:sticky desktop:top-38 max-desktop:flex-row max-desktop:gap-1.5 max-desktop:overflow-x-auto max-desktop:pb-1"
     >
       <div className="mb-2.5 flex flex-col gap-2 rounded-lg border border-solid border-border bg-surface p-3.5 max-desktop:hidden">
         <div className="flex items-baseline justify-between">
-          <span className="font-bold text-ink">Region page ready</span>
+          <span className="font-bold text-ink">{progressTitle}</span>
           <span className="text-caption font-bold text-whatsapp">
             {doneCount} of {ready.length} ready
           </span>
@@ -47,9 +56,9 @@ export const RegionSectionNav = ({ activeKey, onSelect, readiness, errorKeys }: 
         </span>
       </div>
 
-      {REGION_SECTIONS.map((section) => {
+      {sections.map((section) => {
         const isActive = section.key === activeKey;
-        const sectionReadiness = isReadyKey(section.key, readiness) ? readiness[section.key] : undefined;
+        const sectionReadiness = readiness[section.key];
         const statusKey = errorKeys.has(section.key) ? "error" : (sectionReadiness?.status ?? "later");
         const status = STATUS[statusKey];
         const note = sectionReadiness?.note ?? `Waits for ${section.waitsFor}`;
