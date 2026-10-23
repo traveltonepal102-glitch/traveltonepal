@@ -111,11 +111,42 @@ type TrekTranslationRow = {
   headline: string;
   /** How people say it, e.g. "Langtang Trek". */
   short_name: string;
+  /** One line above "Meet your trek guide". */
+  guides_intro: string;
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
   updated_at: string;
 };
+
+type TrekGuideRow = { trek_id: string; guide_id: string; position: number };
+
+export type FirstAidLevel = "wfr" | "basic" | "none";
+
+type TrekkingGuideRow = {
+  id: string;
+  name: string;
+  photo_id: string | null;
+  home: string;
+  age: number | null;
+  years_guiding: number | null;
+  specialty_icon: string;
+  languages: string[];
+  /** Admin only, never on the website. */
+  licence_number: string;
+  licence_valid_until: string | null;
+  first_aid: FirstAidLevel;
+  show_on_about: boolean;
+  can_lead_treks: boolean;
+  can_fact_check: boolean;
+  created_at: string;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role: string; specialty: string; bio: string; quote: string };
+
+type TrekkingGuideRegionRow = { guide_id: string; region_id: string };
 
 type TrekSimilarRow = { trek_id: string; similar_trek_id: string; position: number };
 
@@ -283,6 +314,33 @@ export type Database = {
         Update: Partial<TrekDepartureTranslationRow>;
         Relationships: [Fk<"trek_departure_translations_departure_id_fkey", "departure_id", "trek_departures">];
       };
+      trek_guides: {
+        Row: TrekGuideRow;
+        Insert: TrekGuideRow;
+        Update: Partial<TrekGuideRow>;
+        Relationships: [Fk<"trek_guides_trek_id_fkey", "trek_id", "treks">, Fk<"trek_guides_guide_id_fkey", "guide_id", "trekking_guides">];
+      };
+      trekking_guides: {
+        Row: TrekkingGuideRow;
+        Insert: Partial<TrekkingGuideRow> & Pick<TrekkingGuideRow, "name">;
+        Update: Partial<TrekkingGuideRow>;
+        Relationships: [Fk<"trekking_guides_photo_id_fkey", "photo_id", "photos">];
+      };
+      trekking_guide_translations: {
+        Row: TrekkingGuideTranslationRow;
+        Insert: Partial<TrekkingGuideTranslationRow> & Pick<TrekkingGuideTranslationRow, "guide_id" | "locale" | "role">;
+        Update: Partial<TrekkingGuideTranslationRow>;
+        Relationships: [Fk<"trekking_guide_translations_guide_id_fkey", "guide_id", "trekking_guides">];
+      };
+      trekking_guide_regions: {
+        Row: TrekkingGuideRegionRow;
+        Insert: TrekkingGuideRegionRow;
+        Update: Partial<TrekkingGuideRegionRow>;
+        Relationships: [
+          Fk<"trekking_guide_regions_guide_id_fkey", "guide_id", "trekking_guides">,
+          Fk<"trekking_guide_regions_region_id_fkey", "region_id", "regions">,
+        ];
+      };
       trek_similar: {
         Row: TrekSimilarRow;
         Insert: TrekSimilarRow;
@@ -353,6 +411,10 @@ export type Database = {
         };
         Returns: string;
       };
+      save_trekking_guide: {
+        Args: { p_guide_id: string | null; p_locale: string; p_guide: Json; p_text: Json; p_region_ids: Json };
+        Returns: string;
+      };
       save_region: {
         Args: { p_region_id: string | null; p_locale: string; p_region: Json; p_text: Json; p_photos: Json };
         Returns: string;
@@ -371,6 +433,7 @@ export type Database = {
       trek_difficulty: TrekDifficultyValue;
       trek_season: TrekSeasonValue;
       trek_tag: TrekTagValue;
+      first_aid_level: FirstAidLevel;
     };
     CompositeTypes: { [_ in never]: never };
   };

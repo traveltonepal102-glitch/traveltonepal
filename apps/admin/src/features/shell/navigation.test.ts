@@ -6,7 +6,8 @@ import { ADMIN_SECTIONS, isActivePath } from "./navigation";
 import { NEW_ITEMS } from "./newItems";
 
 const PORTAL = path.resolve(import.meta.dirname, "../../app/(portal)");
-const pageFileFor = (href: string) => path.join(PORTAL, href, "page.tsx");
+/** The page a link opens ("?guide=new" only changes what that page shows). */
+const pageFileFor = (href: string) => path.join(PORTAL, href.split("?")[0], "page.tsx");
 
 describe("admin menu", () => {
   it.each(Object.values(ADMIN_SECTIONS))("$label ($href) has a page", ({ href }) => {

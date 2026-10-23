@@ -34,7 +34,8 @@ const TREK_COLUMNS = `*,
   trek_days(*, photo:photos(${PHOTO_COLUMNS}), trek_day_translations!inner(*)),
   trek_group_prices(*, trek_group_price_translations!inner(*)),
   trek_departures(*, trek_departure_translations!inner(*)),
-  trek_similar!trek_similar_trek_id_fkey(position, similar_trek_id)` as const;
+  trek_similar!trek_similar_trek_id_fkey(position, similar_trek_id),
+  trek_guides(position, guide_id)` as const;
 
 type DayQueryRow = DayRow & { photo: PhotoFields | null; trek_day_translations: DayTextRow[] };
 
@@ -46,6 +47,7 @@ type TrekQueryRow = TrekRow & {
   trek_group_prices: (PriceRow & { trek_group_price_translations: PriceTextRow[] })[];
   trek_departures: (DepartureRow & { trek_departure_translations: DepartureTextRow[] })[];
   trek_similar: { position: number; similar_trek_id: string }[];
+  trek_guides: { position: number; guide_id: string }[];
 };
 
 const toGroupPrices = (rows: TrekQueryRow["trek_group_prices"]): GroupPrice[] =>
@@ -162,6 +164,8 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     seoTitle: text.seo_title,
     seoDescription: text.seo_description,
     hiddenSharedSections: sharedSectionsSchema.parse(row.hidden_shared_sections),
+    guidesIntro: text.guides_intro,
+    guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
   };
 };
@@ -274,6 +278,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
       hidden_shared_sections: values.hiddenSharedSections,
+      guide_ids: values.guideIds,
     },
     p_text: {
       name: values.name,
@@ -304,6 +309,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       seo_keyword: values.seoKeyword,
       seo_title: values.seoTitle,
       seo_description: values.seoDescription,
+      guides_intro: values.guidesIntro,
     },
     p_photos: { gallery: values.photos.galleryPhotoIds, details: values.photos.details },
     p_days: values.itinerary.map((day) => ({

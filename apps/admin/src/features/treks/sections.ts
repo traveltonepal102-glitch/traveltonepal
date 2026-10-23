@@ -41,7 +41,6 @@ export const TREK_SECTIONS: EditorSection<TrekSectionKey>[] = [
     label: "Guides",
     icon: "hiking",
     description: "Pick the guides who lead this trek, from your Trekking guides.",
-    waitsFor: "trekking guides",
   },
   {
     key: "practical",
@@ -120,6 +119,8 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   seoDescription: "seo",
   similarTrekIds: "seo",
   hiddenSharedSections: "shared",
+  guidesIntro: "guides",
+  guideIds: "guides",
   sharedSectionsShown: "shared",
   photos: "photos",
 };

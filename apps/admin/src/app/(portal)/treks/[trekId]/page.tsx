@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
+import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { saveTrek } from "@/features/treks/actions/saveTrek";
 import { TrekEditor } from "@/features/treks/components/editor/TrekEditor";
 import { getTrek, listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
@@ -28,7 +30,13 @@ export const generateMetadata = async ({ params }: TrekPageProps): Promise<Metad
 const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
   await requireAdmin();
   const { trekId } = await params;
-  const [trek, regions, similarOptions] = await Promise.all([loadTrek(params), listRegionOptions(), listSimilarTrekOptions(trekId)]);
+  const [trek, regions, similarOptions, guides] = await Promise.all([
+    loadTrek(params),
+    listRegionOptions(),
+    listSimilarTrekOptions(trekId),
+    listTrekkingGuides(),
+  ]);
+  const today = todayInNepal();
   const { added } = await searchParams;
 
   return (
@@ -38,9 +46,10 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       photos={trek.photos}
       regions={regions}
       similarOptions={similarOptions}
+      guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={trek.regionId}
       isNew={false}
-      today={todayInNepal()}
+      today={today}
       lastSaved={`Saved ${formatDateTime(trek.updatedAt)}`}
       isJustAdded={added === "1"}
     />

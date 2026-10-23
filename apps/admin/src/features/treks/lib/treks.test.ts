@@ -147,4 +147,11 @@ describe("getTrekReadiness", () => {
     expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).shared).toEqual({ status: "done", note: "9 of 9 shown" });
     expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, hiddenSharedSections: ["newsletter"] }, NO_TREK_PHOTOS, TODAY).shared.note).toBe("8 of 9 shown");
   });
+
+  it("asks for guides, then for the line about them", () => {
+    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "todo", note: "Pick the guides" });
+    const picked = { ...EMPTY_TREK_VALUES, guideIds: ["g1", "g2"] };
+    expect(getTrekReadiness(picked, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "warn", note: "Add the line about the guides" });
+    expect(getTrekReadiness({ ...picked, guidesIntro: "Local guides." }, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "done", note: "2 guides" });
+  });
 });

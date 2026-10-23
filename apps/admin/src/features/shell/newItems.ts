@@ -1,5 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { NEW_GUIDE_PATH } from "@/features/trekking-guides/constants";
 import { NEW_TREK_PATH } from "@/features/treks/constants";
 
 import { ADMIN_SECTIONS } from "./navigation";
@@ -31,7 +32,7 @@ export const NEW_ITEMS: NewItem[] = [
     hint: "Add once, pick from a list anywhere",
     icon: "person",
     tone: "saffron",
-    href: ADMIN_SECTIONS.trekkingGuides.href,
+    href: NEW_GUIDE_PATH,
   },
   { label: "Upload photos", hint: "Location data is removed", icon: "image", tone: "green", href: ADMIN_SECTIONS.photos.href },
 ];

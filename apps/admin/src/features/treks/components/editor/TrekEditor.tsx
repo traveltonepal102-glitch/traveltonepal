@@ -2,11 +2,11 @@
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
-import { PendingSection } from "@/components/editor/PendingSection";
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
+import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 
 import { TREKS_PATH } from "../../constants";
 import { getTrekReadiness } from "../../lib/readiness";
@@ -20,6 +20,7 @@ import { TrekIncludedSection } from "./TrekIncludedSection";
 import { TrekListingCard } from "./TrekListingCard";
 import { TrekNameCard } from "./TrekNameCard";
 import { TrekFaqSection } from "./faq/TrekFaqSection";
+import { TrekGuidesSection } from "./guides/TrekGuidesSection";
 import { GoogleSearchCard } from "./seo/GoogleSearchCard";
 import { SimilarTreksCard } from "./seo/SimilarTreksCard";
 import { TrekItinerarySection } from "./itinerary/TrekItinerarySection";
@@ -38,6 +39,8 @@ type TrekEditorProps = {
   regions: RegionOption[];
   /** Every other trek, to pick similar treks from. */
   similarOptions: SimilarTrekOption[];
+  /** Every trekking guide, to pick the trek's guides from. */
+  guideOptions: GuideOption[];
   /** The region's id, to tag new uploads (null when the trek has none yet). */
   regionId: string | null;
   isNew: boolean;
@@ -51,7 +54,7 @@ type TrekEditorProps = {
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, regions, similarOptions, regionId, isNew, today, lastSaved, isJustAdded = false }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, regions, similarOptions, guideOptions, regionId, isNew, today, lastSaved, isJustAdded = false }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "basics",
@@ -141,10 +144,20 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, re
             <GoogleSearchCard values={values} errors={errors} />
             <SimilarTreksCard similarTrekIds={values.similarTrekIds} options={similarOptions} error={errors.similarTrekIds} onEdit={markDirty} />
           </div>
+          <div hidden={activeKey !== "guides"} className="flex flex-col gap-4">
+            <TrekGuidesSection
+              intro={values.guidesIntro}
+              guideIds={values.guideIds}
+              options={guideOptions}
+              regionId={values.regionId}
+              regionName={regions.find((region) => region.id === values.regionId)?.name ?? ""}
+              errors={errors}
+              onEdit={markDirty}
+            />
+          </div>
           <div hidden={activeKey !== "shared"} className="flex flex-col gap-4">
             <SharedSectionsCard hiddenSharedSections={values.hiddenSharedSections} />
           </div>
-          {active.waitsFor && <PendingSection waitsFor={active.waitsFor} />}
         </div>
       </div>
     </form>

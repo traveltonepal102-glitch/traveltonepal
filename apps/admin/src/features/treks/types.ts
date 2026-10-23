@@ -171,6 +171,9 @@ export type TrekValues = {
   similarTrekIds: string[];
   /** Shared sections (written once in Site settings) this trek doesn't show. */
   hiddenSharedSections: SharedSectionKey[];
+  /** "Meet your trek guide": one line about the guides, and the guides in page order. */
+  guidesIntro: string;
+  guideIds: string[];
 };
 
 export type TrekPhotos = PhotoSelection;

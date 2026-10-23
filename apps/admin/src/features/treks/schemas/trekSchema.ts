@@ -11,6 +11,7 @@ import {
   MAX_MEAL_TIPS,
   MAX_PHOTO_BADGES,
   MAX_SIMILAR_TREKS,
+  MAX_TREK_GUIDES,
   SHARED_SECTION_KEYS,
   MAX_SUITABILITY_POINTS,
   TREK_LIMITS as LIMIT,
@@ -85,6 +86,11 @@ export const trekSchema = z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
       .refine((ids) => ids.length <= MAX_SIMILAR_TREKS, `Pick up to ${MAX_SIMILAR_TREKS} similar treks.`),
+    guidesIntro: text(LIMIT.guidesIntro),
+    guideIds: z
+      .array(z.uuid("Pick the guides from the list."))
+      .transform(unique)
+      .refine((ids) => ids.length <= MAX_TREK_GUIDES, `Pick up to ${MAX_TREK_GUIDES} guides.`),
     // The switches send the sections that show; the trek stores the ones it hides.
     sharedSectionsShown: z.array(z.enum(SHARED_SECTION_KEYS)).transform(unique),
     photos: photoSelectionSchema("trek"),
@@ -172,6 +178,8 @@ export const readTrekForm = (formData: FormData) => {
     seoDescription: readText(formData, "seoDescription"),
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
+    guidesIntro: readText(formData, "guidesIntro"),
+    guideIds: readList(formData, "guideId"),
     photos: readPhotoSelection(formData),
   };
 };

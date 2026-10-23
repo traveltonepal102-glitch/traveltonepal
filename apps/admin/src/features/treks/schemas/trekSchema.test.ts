@@ -326,4 +326,13 @@ describe("trekSchema", () => {
     expect(parse().data?.hiddenSharedSections).toHaveLength(9);
     expect(parse({ sharedSectionShown: ["founder", "pop_up"] }).success).toBe(false);
   });
+
+  it("reads the guides in page order, once each and up to 10, with the line about them", () => {
+    const first = "00000000-0000-4000-8000-000000000021";
+    const second = "00000000-0000-4000-8000-000000000022";
+    expect(parse({ guidesIntro: " Local guides. ", guideId: [second, first, second] }).data).toMatchObject({ guidesIntro: "Local guides.", guideIds: [second, first] });
+    expect(errorsOf({ guideId: ["pemba"] })["guideIds.0"]).toBe("Pick the guides from the list.");
+    const eleven = Array.from({ length: 11 }, (_, index) => `00000000-0000-4000-8000-0000000001${String(index).padStart(2, "0")}`);
+    expect(errorsOf({ guideId: eleven }).guideIds).toBe("Pick up to 10 guides.");
+  });
 });

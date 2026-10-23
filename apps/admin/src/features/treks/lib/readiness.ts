@@ -6,7 +6,7 @@ import type { TrekPhotos, TrekSectionKey, TrekValues } from "../types";
 import { getSeoChecks } from "./seoChecks";
 
 /** The sections an admin can fill in now (the others come in later steps). */
-export type ReadyTrekSectionKey = Extract<TrekSectionKey, "basics" | "photos" | "overview" | "itinerary" | "included" | "prices" | "practical" | "faq" | "seo" | "shared">;
+export type ReadyTrekSectionKey = Extract<TrekSectionKey, "basics" | "photos" | "overview" | "itinerary" | "included" | "prices" | "practical" | "faq" | "seo" | "shared" | "guides">;
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
@@ -88,6 +88,13 @@ const seo = (trek: TrekValues): SectionReadiness => {
   return { status: "done", note: `Title, description · ${similar}` };
 };
 
+/** Needs at least one guide (the trek page leaves "Meet your trek guide" out without one). */
+const guides = (trek: TrekValues): SectionReadiness => {
+  if (!trek.guideIds.length) return { status: "todo", note: "Pick the guides" };
+  if (!trek.guidesIntro.trim()) return { status: "warn", note: "Add the line about the guides" };
+  return { status: "done", note: plural(trek.guideIds.length, "guide") };
+};
+
 /** Nothing to fill in: it says how many of the shared sections show. */
 const shared = (trek: TrekValues): SectionReadiness => ({
   status: "done",
@@ -106,4 +113,5 @@ export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos, today
   faq: faq(trek),
   seo: seo(trek),
   shared: shared(trek),
+  guides: guides(trek),
 });

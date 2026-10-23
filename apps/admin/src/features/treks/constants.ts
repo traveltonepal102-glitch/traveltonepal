@@ -48,6 +48,7 @@ export const TREK_LIMITS = {
   seoDescription: 200,
   seoDescriptionRecommended: 160,
   seoDescriptionMin: 120,
+  guidesIntro: 300,
 } as const;
 
 export const MAX_DAYS = 60;
@@ -157,6 +158,9 @@ export const SHARED_SECTION_KEYS = [
   "newsletter",
 ] as const satisfies readonly SharedSectionKey[];
 
+/** Guides a trek can show ("Meet your trek guide" scrolls sideways). */
+export const MAX_TREK_GUIDES = 10;
+
 /** The trek page shows 4 similar treks. */
 export const MAX_SIMILAR_TREKS = 4;
 
@@ -253,6 +257,8 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   seoDescription: "",
   similarTrekIds: [],
   hiddenSharedSections: [],
+  guidesIntro: "",
+  guideIds: [],
 };
 
 export const NO_TREK_PHOTOS: TrekPhotos = { cover: null, gallery: [] };

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { FormSection } from "@/components/ui/FormSection";
+import { Switch } from "@/components/ui/Switch";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
 import { SHARED_SECTIONS } from "../../constants";
@@ -64,19 +65,12 @@ export const SharedSectionsCard = ({ hiddenSharedSections }: SharedSectionsCardP
                   <span className="block font-bold text-ink">{section.label}</span>
                   <span className="block text-xs text-muted-foreground">{section.description}</span>
                 </span>
-                <input
-                  type="checkbox"
-                  role="switch"
+                <Switch
                   name="sharedSectionShown"
                   value={section.key}
+                  label={`Show ${section.label}`}
                   checked={isShown}
                   onChange={(event) => toggle(section.key, event.target.checked)}
-                  aria-label={`Show ${section.label}`}
-                  className="peer sr-only"
-                />
-                <span
-                  aria-hidden="true"
-                  className="relative h-6.5 w-11 flex-none rounded-full bg-line-strong transition-colors peer-checked:bg-whatsapp peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring after:absolute after:top-1 after:left-1 after:size-4.5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-4.5"
                 />
               </label>
             </li>
