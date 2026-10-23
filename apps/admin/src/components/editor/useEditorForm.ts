@@ -68,6 +68,7 @@ export const useEditorForm = <Key extends string>({
     state,
     errors: state.status === "error" ? state.fieldErrors : {},
     isSaving,
+    isDirty,
     activeKey,
     setActiveKey,
     markDirty: () => setIsDirty(true),

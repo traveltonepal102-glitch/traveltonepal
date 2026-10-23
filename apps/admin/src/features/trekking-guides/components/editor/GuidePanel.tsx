@@ -1,13 +1,14 @@
 "use client";
 
-import { Icon } from "@ttn/ui/icon";
+import { Dialog } from "@base-ui/react/dialog";
 import { cn } from "@ttn/ui/lib/utils";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
-import { iconButton, primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
+import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FormAlert } from "@/components/ui/FormAlert";
+import { SideDrawer } from "@/components/ui/SideDrawer";
 import { TextField } from "@/components/ui/TextField";
 
 import { GUIDE_LIMITS as LIMIT, TREKKING_GUIDES_PATH } from "../../constants";
@@ -35,8 +36,8 @@ type GuidePanelProps = {
 const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutral: "text-muted-foreground" } as const;
 
 /**
- * Add or edit one guide, beside the list (design: the edit drawer; full screen on phones and tablets).
- * One Save sends everything. Closing is a link back to the list.
+ * Add or edit one guide in a drawer over the list (design: the edit drawer; full screen on phones and tablets).
+ * One Save sends everything. Closing goes back to the list, after asking when there are unsaved changes.
  */
 export const GuidePanel = ({ action, guide, values, regions, today, canRemove, isJustAdded }: GuidePanelProps) => {
   const form = useEditorForm<"guide">({
@@ -46,29 +47,28 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
     isNew: !guide,
     addedLabel: isJustAdded ? "Guide added" : undefined,
   });
+  const router = useRouter();
   const { errors, markDirty } = form;
   const [status, tone] = form.saveStatus;
 
+  const close = () => {
+    if (form.isDirty && !window.confirm("Close without saving? Your changes to this guide will be lost.")) return;
+    router.push(TREKKING_GUIDES_PATH, { scroll: false });
+  };
+
   return (
-    <aside
-      aria-label={guide ? `Edit ${guide.name}` : "Add trekking guide"}
-      className="flex flex-col overflow-hidden rounded-lg border border-solid border-border bg-surface max-desktop:fixed max-desktop:inset-0 max-desktop:z-50 max-desktop:rounded-none desktop:sticky desktop:top-21 desktop:max-h-[calc(100dvh-6.5rem)]"
+    <SideDrawer
+      kicker={guide ? "Edit trekking guide" : "New trekking guide"}
+      title={guide?.name ?? "Add trekking guide"}
+      status={
+        <p role="status" className={cn("m-0 text-xs font-semibold", STATUS_TONE[tone])}>
+          {status}
+        </p>
+      }
+      onClose={close}
     >
       <form noValidate onSubmit={form.handleSubmit} onChange={markDirty} className="flex min-h-0 flex-1 flex-col">
-        <div className="flex items-start justify-between gap-3 border-b border-solid border-border px-5 py-4">
-          <div className="min-w-0">
-            <p className="m-0 text-xs font-bold tracking-wider text-muted-foreground uppercase">{guide ? "Edit trekking guide" : "New trekking guide"}</p>
-            <h2 className="m-0 truncate font-display text-h4 text-ink">{guide?.name ?? "Add trekking guide"}</h2>
-            <p role="status" className={cn("m-0 text-xs font-semibold", STATUS_TONE[tone])}>
-              {status}
-            </p>
-          </div>
-          <Link href={TREKKING_GUIDES_PATH} scroll={false} aria-label="Close" className={iconButton}>
-            <Icon name="close" size={20} />
-          </Link>
-        </div>
-
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 py-4">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-5 max-tablet:px-5">
           {form.state.status === "error" && <FormAlert message={form.state.message} />}
           <GuidePhotoField initial={guide?.photo ?? null} name={values.name} onEdit={markDirty} />
           <GuideDetailsFields values={values} regions={regions} errors={errors} />
@@ -97,17 +97,17 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
           <GuideVisibilityFields values={values} treks={guide?.treks ?? []} />
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-5 py-3">
+        <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
           {guide && canRemove && <RemoveGuideButton guideId={guide.id} name={guide.name} trekCount={guide.treks.length} />}
           <span className="flex-1" />
-          <Link href={TREKKING_GUIDES_PATH} scroll={false} className={secondaryButton}>
+          <Dialog.Close type="button" className={secondaryButton}>
             Cancel
-          </Link>
+          </Dialog.Close>
           <button type="submit" disabled={form.isSaving} className={primaryButton}>
             {form.isSaving ? "Saving…" : guide ? "Save changes" : "Add guide"}
           </button>
         </div>
       </form>
-    </aside>
+    </SideDrawer>
   );
 };

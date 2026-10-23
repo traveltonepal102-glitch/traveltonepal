@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import { cn } from "@ttn/ui/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -21,11 +20,11 @@ type GuidesOverviewProps = {
   openId: string | null;
   /** "YYYY-MM-DD" in Nepal, to mark expired licences. */
   today: string;
-  /** The edit panel, when one is open. */
+  /** The edit drawer, when one is open (it shows over the list). */
   panel: ReactNode;
 };
 
-/** The Trekking guides screen (design: Admin-people, tab "Trekking guides"): cards, filters and the edit panel. */
+/** The Trekking guides screen (design: Admin-people, tab "Trekking guides"): cards, filters and the edit drawer. */
 export const GuidesOverview = ({ guides, regions, openId, today, panel }: GuidesOverviewProps) => {
   const [filters, setFilters] = useState(NO_GUIDE_FILTERS);
   const shown = filterGuides(guides, filters);
@@ -53,26 +52,24 @@ export const GuidesOverview = ({ guides, regions, openId, today, panel }: Guides
 
       <GuideFilterBar filters={filters} onChange={setFilters} regions={regions} languages={spokenLanguages(guides)} countLabel={countLabel} />
 
-      <div className={cn("grid items-start gap-5", panel && "desktop:grid-cols-[minmax(0,1fr)_460px]")}>
-        <ul className={cn("m-0 grid list-none gap-3.5 p-0 tablet:grid-cols-2", !panel && "desktop:grid-cols-3")}>
-          {shown.map((guide) => (
-            <li key={guide.id}>
-              <GuideCard
-                guide={guide}
-                regionNames={guide.regionIds.flatMap((id) => regionName.get(id) ?? [])}
-                licence={licenceStatus(guide, today)}
-                isOpen={guide.id === openId}
-              />
-            </li>
-          ))}
-          {!shown.length && (
-            <li className="rounded-lg border border-dashed border-line-strong bg-surface px-6 py-10 text-center text-muted-foreground tablet:col-span-full">
-              {guides.length ? "No guide matches these filters." : "No guides yet. Add the first one with “Add trekking guide”."}
-            </li>
-          )}
-        </ul>
-        {panel}
-      </div>
+      <ul className="m-0 grid list-none gap-3.5 p-0 tablet:grid-cols-2 desktop:grid-cols-3">
+        {shown.map((guide) => (
+          <li key={guide.id}>
+            <GuideCard
+              guide={guide}
+              regionNames={guide.regionIds.flatMap((id) => regionName.get(id) ?? [])}
+              licence={licenceStatus(guide, today)}
+              isOpen={guide.id === openId}
+            />
+          </li>
+        ))}
+        {!shown.length && (
+          <li className="rounded-lg border border-dashed border-line-strong bg-surface px-6 py-10 text-center text-muted-foreground tablet:col-span-full">
+            {guides.length ? "No guide matches these filters." : "No guides yet. Add the first one with “Add trekking guide”."}
+          </li>
+        )}
+      </ul>
+      {panel}
     </>
   );
 };
