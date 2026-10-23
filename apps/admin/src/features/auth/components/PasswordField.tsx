@@ -3,8 +3,14 @@ import { useState } from "react";
 
 import { TextField } from "./TextField";
 
+type PasswordFieldProps = {
+  isInvalid: boolean;
+  /** Focused first when the email is already filled in (a kept email). */
+  autoFocus?: boolean;
+};
+
 /** Password field with a show/hide button (the typed text stays in the field either way). */
-export const PasswordField = ({ isInvalid }: { isInvalid: boolean }) => {
+export const PasswordField = ({ isInvalid, autoFocus = false }: PasswordFieldProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -16,6 +22,7 @@ export const PasswordField = ({ isInvalid }: { isInvalid: boolean }) => {
       placeholder="Your password"
       autoComplete="current-password"
       isInvalid={isInvalid}
+      autoFocus={autoFocus}
       required
       trailing={
         <button
