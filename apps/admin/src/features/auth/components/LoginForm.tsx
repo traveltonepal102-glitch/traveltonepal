@@ -1,51 +1,21 @@
 "use client";
 
-import { useLoginFlow } from "../hooks/useLoginFlow";
+import Image from "next/image";
+import type { FormEvent } from "react";
+
 import { AuthHeading } from "./AuthHeading";
-import { CodeForm } from "./CodeForm";
 import { CredentialsForm } from "./CredentialsForm";
-import { TotpSetupInstructions } from "./TotpSetupInstructions";
 
-type LoginFormProps = {
-  loginUrl: string;
-  redirectTo: string;
-};
+// Sign-in is not connected yet (design only): submitting stays on the page and sends nothing.
+const ignoreSubmit = (event: FormEvent<HTMLFormElement>) => event.preventDefault();
 
-export const LoginForm = ({ loginUrl, redirectTo }: LoginFormProps) => {
-  const { step, error, isSubmitting, submitCredentials, submitCode, startOver } = useLoginFlow({
-    loginUrl,
-    redirectTo,
-  });
-
-  if (step.name === "credentials") {
-    return (
-      <>
-        <AuthHeading title="Sign in" description="Admin for the Travel To Nepal websites." />
-        <CredentialsForm error={error} isSubmitting={isSubmitting} onSubmit={submitCredentials} />
-      </>
-    );
-  }
-
-  const isSetup = step.name === "setup";
-
-  return (
-    <>
-      <AuthHeading
-        title={isSetup ? "Set up two-step sign-in" : "Enter your code"}
-        description={
-          isSetup
-            ? "Your account needs an authenticator app. You only do this once."
-            : `Open your authenticator app and enter the code for ${step.credentials.email}.`
-        }
-      />
-      {isSetup && <TotpSetupInstructions secret={step.secret} qrDataUrl={step.qrDataUrl} />}
-      <CodeForm
-        error={error}
-        isSubmitting={isSubmitting}
-        submitLabel={isSetup ? "Turn on and sign in" : "Sign in"}
-        onSubmit={submitCode}
-        onBack={startOver}
-      />
-    </>
-  );
-};
+/** Sign-in content: logo, heading and the email and password form. */
+export const LoginForm = () => (
+  <>
+    <div className="flex flex-col gap-3.5">
+      <Image src="/brand/logo.svg" alt="Travel To Nepal" width={75} height={44} className="h-11 w-auto self-start" preload />
+      <AuthHeading title="Sign in" description="For the Travel To Nepal team only." />
+    </div>
+    <CredentialsForm onSubmit={ignoreSubmit} />
+  </>
+);

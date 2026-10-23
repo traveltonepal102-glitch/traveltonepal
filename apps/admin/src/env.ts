@@ -1,11 +1,12 @@
+import "server-only";
 import { z } from "zod";
 
 const envSchema = z.object({
-  DATABASE_URI: z.url({ protocol: /^postgres(ql)?$/, error: "must be a postgres:// connection string" }),
-  PAYLOAD_SECRET: z.string().min(32, "must be at least 32 characters (openssl rand -hex 32)"),
-  TOTP_ENCRYPTION_KEY: z
-    .string()
-    .regex(/^[0-9a-f]{64}$/i, "must be 64 hex characters (openssl rand -hex 32)"),
+  /** Optional: the main website, for the "View website" link on the sign-in screen. Empty counts as not set. */
+  WEBSITE_URL: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.url({ protocol: /^https?$/, error: "must be an http(s) URL" }).optional(),
+  ),
 });
 
 const parseEnv = () => {

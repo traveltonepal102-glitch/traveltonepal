@@ -6,7 +6,7 @@ import { useId } from "react";
 
 import { ICON_TONES } from "@/components/shared/iconTones";
 import type { IconTone } from "@/components/shared/iconTones";
-import { SwitchTrack } from "@/components/ui/ToggleSwitch";
+import { SwitchTrack } from "@/components/ui/SwitchTrack";
 
 import type { ConsentChoices } from "../consent";
 

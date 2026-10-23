@@ -4,13 +4,13 @@
 
 - pnpm monorepo for the Nepal Trekking Multi-Site Network (see the TRD, PRD, Backend Schema and Implementation Plan docs).
 - `apps/web` — public Next.js site (App Router), built once per `SITE_ID`. Port 3000.
-- `apps/admin` — Payload CMS 3.91 on Postgres, port 3001. Custom screens live in `src/features/<feature>/` and are registered in `payload.config.ts` (`admin.components.views`); run `pnpm --filter admin generate:importmap` after adding one, and `generate:types` after changing a collection.
-- `packages/*` — shared code (`@ttn/ui`, etc.). Design tokens (colors, fonts, type scale) live in `packages/ui/theme.css` (tokens only; each app imports Tailwind itself — the admin without preflight, see `apps/admin/src/styles/admin.css`).
-- Next.js 16 has breaking changes: read the app's `AGENTS.md` and the bundled docs in `node_modules/next/dist/docs/` before writing Next.js code. For Payload, read its source in `node_modules/payload/dist` rather than guessing.
-- Run commands from the repo root: `pnpm dev` (both apps), `pnpm build`, `pnpm lint`, `pnpm test`; add packages with `pnpm add <pkg> --filter <app>`. Versions are pinned (see the Project Setup doc); update Next.js and Payload together.
+- `apps/admin` — our own admin portal (Next.js App Router, port 3001), built to the claude.ai design canvas "Travel To Nepal — Website v2" (the Admin-* artboards). No Payload/CMS framework. Frontend only for now: the screens have no backend yet.
+- `packages/*` — shared code (`@ttn/ui`, etc.). Design tokens (colors, fonts, type scale) live in `packages/ui/theme.css` (tokens only; each app imports Tailwind itself, see `apps/admin/src/styles/admin.css`).
+- Next.js 16 has breaking changes: read the app's `AGENTS.md` and the bundled docs in `node_modules/next/dist/docs/` before writing Next.js code. For Supabase, read the installed `@supabase/*` sources rather than guessing.
+- Run commands from the repo root: `pnpm dev` (both apps), `pnpm build`, `pnpm lint`, `pnpm test`; add packages with `pnpm add <pkg> --filter <app>`. Versions are pinned (see the Project Setup doc).
 - Contact details (email, phone/WhatsApp, registration number) live only in `packages/config/src/contact.ts`; import `CONTACT`, `getWhatsAppUrl` and `getEmailUrl` from `@ttn/config/contact`, never type them into components.
-- Local database: Homebrew `postgresql@17`, database `ttn_local`. Admin env vars are in `apps/admin/.env.example`.
-- Admin login (email + password + 6-digit TOTP, lock after 5 wrong tries) is in `apps/admin/src/features/auth`. The admin user is created/reset only by `pnpm --filter admin admin:reset <email> [reset-2fa]`; sign-up, forgot/reset password and Payload's create-first-user are blocked on purpose.
+- Backend: on hold. The admin will use Supabase; `@supabase/ssr` and `@supabase/supabase-js` are installed in `apps/admin` but not used yet (no client, migrations or env vars). Don't use a local Postgres. Admin env vars are in `apps/admin/.env.example`.
+- Admin sign-in (`apps/admin/src/features/auth`, `/login`) is a design-only screen: the form sends nothing, and the signed-in pages under `app/(portal)` are static placeholders with no sign-in check. Connect them to the backend before the admin goes online.
 - Turbopack's cache does not notice changes to imported CSS such as `packages/ui/theme.css`: after editing it, delete the app's `.next` folder before `dev` or `build`, or the old CSS is used.
 - In this monorepo, the `src/` structure in section 3 applies inside each app; code shared between apps belongs in `packages/`.
 
@@ -90,6 +90,23 @@ Adapt this example to the actual framework. Do not create every directory if it 
 - Use stable keys when rendering lists.
 - Handle loading, error, empty, and success states appropriately.
 - Use semantic HTML and accessible controls in web applications.
+- One exported component per file, and the file is named after it (`AdminBadge` lives in `AdminBadge.tsx`). A component another file imports gets its own file, even if it is small.
+- A small helper component used only inside one file may stay in that file, as long as it is not exported.
+- Two exceptions may export more than one component: a component's static, pre-rendered twin that shares the same private view (`TrekExplorer` and `TrekExplorerStatic`), and a "parts" file of small building blocks named for the group (`MenuParts.tsx`, `RequestFields.tsx`).
+
+```tsx
+// AdminBadge.tsx: exported, used by AuthShell and AuthPhotoPanel → its own file
+export const AdminBadge = () => <span className="…">Admin portal</span>;
+
+// ContactWays.tsx: WayCard is used only here → it stays, not exported
+const WayCard = ({ title, children }: WayCardProps) => <li className="…">{children}</li>;
+
+export const ContactWays = () => (
+  <ul>
+    <WayCard title="WhatsApp">…</WayCard>
+  </ul>
+);
+```
 
 ## 5. TypeScript Standards
 
