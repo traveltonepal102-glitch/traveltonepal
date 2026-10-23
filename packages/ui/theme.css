@@ -10,6 +10,8 @@
   --ttn-on-brand: #ffffff;
   --ttn-navy: #00284a;
   --ttn-navy-text: #b9c8d8;
+  --ttn-navy-muted: #9fb3c8; /* secondary text on navy */
+  --ttn-navy-label: #7f98b1; /* small uppercase labels on navy */
   --ttn-ink: #1f2328;
   --ttn-text: #334155;
   --ttn-muted: #64748b;
@@ -112,6 +114,8 @@
   --color-on-brand: var(--ttn-on-brand);
   --color-navy: var(--ttn-navy);
   --color-navy-text: var(--ttn-navy-text);
+  --color-navy-muted: var(--ttn-navy-muted);
+  --color-navy-label: var(--ttn-navy-label);
   --color-ink: var(--ttn-ink);
   --color-text: var(--ttn-text);
   --color-subtle: var(--ttn-subtle);

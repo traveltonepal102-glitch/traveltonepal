@@ -2,15 +2,19 @@ import { Icon } from "@ttn/ui/icon";
 
 import { signOut } from "../actions/signOut";
 
-/** A form, so signing out works without JavaScript and can't be triggered by simply opening a link. */
+/**
+ * Icon button for the navy sidebar. A form, so signing out works without JavaScript and can't be
+ * triggered by simply opening a link.
+ */
 export const SignOutButton = () => (
-  <form action={signOut}>
+  <form action={signOut} className="flex flex-none">
     <button
       type="submit"
-      className="m-0 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-solid border-border bg-surface px-3.5 font-sans text-body-sm font-semibold text-ink hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      aria-label="Sign out"
+      title="Sign out"
+      className="m-0 inline-flex size-8.5 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent text-navy-text hover:bg-white/8 hover:text-white focus-visible:outline-2 focus-visible:outline-sidebar-ring"
     >
-      <Icon name="logout" size={18} />
-      Sign out
+      <Icon name="logout" />
     </button>
   </form>
 );

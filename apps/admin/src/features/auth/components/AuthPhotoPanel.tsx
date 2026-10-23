@@ -17,7 +17,7 @@ export const AuthPhotoPanel = () => (
     <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-navy/55 via-navy/25 via-40% to-navy/92" />
 
     <div className="relative flex items-center justify-between gap-4">
-      <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={89} height={52} className="h-13 w-auto" />
+      <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={91} height={52} className="h-13 w-auto" />
       <AdminBadge />
     </div>
 

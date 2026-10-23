@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { PageHeader } from "@/components/shared/PageHeader";
+import { WorkInProgress } from "@/components/shared/WorkInProgress";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export const metadata: Metadata = { title: ADMIN_SECTIONS.dashboard.label };
 
 /** Placeholder until the dashboard is built (design: Admin-dashboard.dc.html). */
 const DashboardPage = async () => {
@@ -10,10 +13,10 @@ const DashboardPage = async () => {
   const firstName = admin.full_name.split(" ")[0] || admin.email;
 
   return (
-    <section className="mx-auto flex max-w-180 flex-col gap-2">
-      <h1 className="m-0 font-display text-[30px] font-extrabold text-ink">Namaste, {firstName}</h1>
-      <p className="m-0 text-[15px] text-muted-foreground">You are signed in. The dashboard comes next.</p>
-    </section>
+    <>
+      <PageHeader title={`Namaste, ${firstName}`} description={ADMIN_SECTIONS.dashboard.summary} />
+      <WorkInProgress />
+    </>
   );
 };
 

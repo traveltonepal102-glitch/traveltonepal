@@ -1,0 +1,81 @@
+import type { IconName } from "@ttn/ui/icon";
+
+export type AdminSection = {
+  label: string;
+  href: string;
+  icon: IconName;
+  /** One line under the page heading: what the screen is for. */
+  summary: string;
+};
+
+/** Every admin screen. The sidebar, the "New" menu and the pages all read from here. */
+export const ADMIN_SECTIONS = {
+  dashboard: {
+    label: "Dashboard",
+    href: "/",
+    icon: "dashboard",
+    summary: "An overview of your sites: visits, enquiries and what changed lately.",
+  },
+  treks: { label: "Treks", href: "/treks", icon: "hiking", summary: "Add and edit treks: itinerary, prices, photos and SEO." },
+  departures: {
+    label: "Departure dates",
+    href: "/departures",
+    icon: "event",
+    summary: "The fixed departure dates shown on each trek.",
+  },
+  regions: { label: "Regions", href: "/regions", icon: "map", summary: "Region pages: facts, best months, photos and FAQs." },
+  travelGuides: { label: "Travel guides", href: "/travel-guides", icon: "article", summary: "Write and publish travel guides." },
+  pages: { label: "Pages", href: "/pages", icon: "description", summary: "Fixed pages such as About us, Contact and Privacy." },
+  trekkingGuides: {
+    label: "Trekking guides",
+    href: "/trekking-guides",
+    icon: "hiking",
+    summary: "The guides who lead the treks. Add them once, pick them from a list anywhere.",
+  },
+  authors: { label: "Authors", href: "/authors", icon: "person", summary: "The people who write the travel guides." },
+  reviews: { label: "Reviews", href: "/reviews", icon: "rate_review", summary: "Traveller reviews shown on treks and regions." },
+  searchPerformance: {
+    label: "Search performance",
+    href: "/search-performance",
+    icon: "monitoring",
+    summary: "How your sites do on Google: clicks, searches and positions.",
+  },
+  photos: {
+    label: "Photos",
+    href: "/photos",
+    icon: "image",
+    summary: "Upload photos once and use them anywhere. Location data is removed.",
+  },
+  settings: {
+    label: "Site settings",
+    href: "/settings",
+    icon: "settings",
+    summary: "Site name, domain, languages and contact details.",
+  },
+} satisfies Record<string, AdminSection>;
+
+export type NavGroup = {
+  /** Shown above the group in the full menu; the first group has none. */
+  title?: string;
+  items: AdminSection[];
+};
+
+export const NAV_GROUPS: NavGroup[] = [
+  { items: [ADMIN_SECTIONS.dashboard] },
+  {
+    title: "Content",
+    items: [
+      ADMIN_SECTIONS.treks,
+      ADMIN_SECTIONS.departures,
+      ADMIN_SECTIONS.regions,
+      ADMIN_SECTIONS.travelGuides,
+      ADMIN_SECTIONS.pages,
+    ],
+  },
+  { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },
+  { title: "Growth", items: [ADMIN_SECTIONS.searchPerformance] },
+];
+
+/** The current screen's menu item: an exact match for the dashboard, otherwise the section and its sub-pages. */
+export const isActivePath = (pathname: string, href: string) =>
+  href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);

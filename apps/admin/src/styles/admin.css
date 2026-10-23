@@ -3,3 +3,19 @@
 
 /* Scan the shared UI package for class names */
 @source "../../../../packages/ui/src";
+
+/* Admin breakpoints (design: Admin-dashboard.dc.html). Under "desktop" the sidebar becomes a drawer;
+   under "tablet" the top bar drops the search and the "View site" button. */
+@theme {
+  --breakpoint-tablet: 43.8125rem; /* 701px */
+  --breakpoint-desktop: 68.8125rem; /* 1101px */
+}
+
+/* rail:… styles apply when the sidebar is set to "icons only" (wide screens only; phones always get the full drawer). */
+@custom-variant rail {
+  @media (width >= 68.8125rem) {
+    &:where([data-rail="true"], [data-rail="true"] *) {
+      @slot;
+    }
+  }
+}

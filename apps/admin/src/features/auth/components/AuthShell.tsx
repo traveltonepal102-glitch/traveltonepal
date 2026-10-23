@@ -23,7 +23,7 @@ export const AuthShell = ({ children }: AuthShellProps) => (
 
       <div className="flex min-h-full flex-col">
         <div className="flex items-center justify-between bg-navy px-5 py-4.5 lg:hidden">
-          <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={68} height={40} className="h-10 w-auto" />
+          <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={70} height={40} className="h-10 w-auto" />
           <AdminBadge />
         </div>
 

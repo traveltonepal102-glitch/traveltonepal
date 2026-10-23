@@ -1,30 +1,29 @@
-import Image from "next/image";
+import { cookies } from "next/headers";
 
-import { SignOutButton } from "@/features/auth/components/SignOutButton";
+import { env } from "@/env";
 import { ROLE_LABELS } from "@/features/auth/constants";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { AdminShell } from "@/features/shell/components/AdminShell";
+import { SidebarUser } from "@/features/shell/components/SidebarUser";
+import { RAIL_COOKIE } from "@/features/shell/constants";
 
 /**
- * Every signed-in screen. Layouts don't run again on every navigation, so each page and Server Action under
- * here calls requireAdmin() too; this check decides what the header shows.
+ * Every signed-in screen, inside the admin shell (sidebar and top bar). Layouts don't run again on every
+ * navigation, so each page and Server Action under here calls requireAdmin() too; this check decides
+ * what the sidebar shows.
  */
 const PortalLayout = async ({ children }: LayoutProps<"/">) => {
   const admin = await requireAdmin();
+  const isRail = (await cookies()).get(RAIL_COOKIE)?.value === "1";
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="flex items-center justify-between gap-4 border-b border-solid border-border bg-surface px-4 py-3 sm:px-6">
-        <Image src="/brand/logo.svg" alt="Travel To Nepal" width={58} height={34} className="h-8.5 w-auto" />
-        <div className="flex items-center gap-4">
-          <div className="hidden flex-col items-end sm:flex">
-            <span className="font-bold text-ink">{admin.full_name || admin.email}</span>
-            <span className="text-caption text-muted-foreground">{ROLE_LABELS[admin.role]}</span>
-          </div>
-          <SignOutButton />
-        </div>
-      </header>
-      <main className="flex-1 px-4 py-8 sm:px-6">{children}</main>
-    </div>
+    <AdminShell
+      isRailInitially={isRail}
+      websiteUrl={env.WEBSITE_URL}
+      user={<SidebarUser name={admin.full_name || admin.email} roleLabel={ROLE_LABELS[admin.role]} />}
+    >
+      {children}
+    </AdminShell>
   );
 };
 
