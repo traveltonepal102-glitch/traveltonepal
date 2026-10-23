@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { SectionPlaceholder } from "@/features/shell/components/SectionPlaceholder";
+import { RegionsOverview } from "@/features/regions/components/list/RegionsOverview";
+import { toRegionCardItem } from "@/features/regions/lib/regionCard";
+import { listRegions } from "@/features/regions/services/regionsRepository";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
-const SECTION = ADMIN_SECTIONS.regions;
+export const metadata: Metadata = { title: ADMIN_SECTIONS.regions.label };
 
-export const metadata: Metadata = { title: SECTION.label };
-
-/** Placeholder until the screen is built (design: Admin-regions.dc.html). */
+/** Regions list (design: Admin-regions.dc.html). Only a Super admin sees "Add region". */
 const RegionsPage = async () => {
-  await requireAdmin();
-  return <SectionPlaceholder section={SECTION} />;
+  const admin = await requireAdmin();
+  const regions = await listRegions();
+
+  return <RegionsOverview regions={regions.map(toRegionCardItem)} canAddRegion={admin.role === "super_admin"} />;
 };
 
 export default RegionsPage;

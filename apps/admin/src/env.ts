@@ -12,6 +12,14 @@ const envSchema = z.object({
     (value) => (value === "" ? undefined : value),
     z.url({ protocol: /^https?$/, error: "must be an http(s) URL" }).optional(),
   ),
+  /**
+   * Optional: where the sized photos are public, without a trailing slash (production: the CloudFront
+   * address, e.g. https://images.traveltonepal.com). Empty: Supabase Storage's public "photos" bucket.
+   */
+  PHOTOS_PUBLIC_URL: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.url({ protocol: /^https$/, error: "must be an https:// URL" }).optional(),
+  ),
 });
 
 const parseEnv = () => {

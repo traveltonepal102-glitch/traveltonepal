@@ -1,0 +1,112 @@
+import { describe, expect, it } from "vitest";
+
+import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
+import type { RichTextDoc } from "@/lib/richText/richText";
+
+import { readRegionForm, regionSchema } from "./regionSchema";
+
+const richText = (text: string): RichTextDoc => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
+const EMPTY_ANSWER = JSON.stringify(EMPTY_RICH_TEXT);
+
+const MONTHS = ["avoid", "avoid", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"];
+
+const buildForm = (fields: Record<string, string | string[]> = {}) => {
+  const form = new FormData();
+  const base: Record<string, string | string[]> = { name: "Langtang", slug: "langtang", monthRatings: MONTHS, ...fields };
+  for (const [name, value] of Object.entries(base)) {
+    for (const item of Array.isArray(value) ? value : [value]) form.append(name, item);
+  }
+  return form;
+};
+
+const parse = (fields?: Record<string, string | string[]>) => regionSchema.safeParse(readRegionForm(buildForm(fields)));
+
+const errorsOf = (fields: Record<string, string | string[]>) => {
+  const result = parse(fields);
+  if (result.success) throw new Error("expected the form to be rejected");
+  return toFieldErrors(result.error);
+};
+
+describe("regionSchema", () => {
+  it("accepts a region with only the name, web address and months", () => {
+    const result = parse();
+    expect(result.success).toBe(true);
+    expect(result.data).toMatchObject({ name: "Langtang", slug: "langtang", latitude: null, faqs: [], bestFor: [] });
+  });
+
+  it("tidies the input: trims text, lowercases the web address, reads numbers", () => {
+    const result = parse({ name: "  Langtang ", slug: " Langtang-Valley ", latitude: "28.21", longitude: "85.56" });
+    expect(result.data).toMatchObject({ name: "Langtang", slug: "langtang-valley", latitude: 28.21, longitude: 85.56 });
+  });
+
+  it("requires the name and a clean web address", () => {
+    expect(errorsOf({ name: " " }).name).toBe("Enter the region name.");
+    expect(errorsOf({ slug: "" }).slug).toBe("Enter the web address.");
+    for (const slug of ["mardi himal", "mardi_himal", "-mardi", "mardi--himal", "märdi"]) {
+      expect(errorsOf({ slug }).slug).toMatch(/lowercase letters/);
+    }
+  });
+
+  it("checks the map pin: numbers, inside Nepal, both or neither", () => {
+    expect(errorsOf({ latitude: "north", longitude: "85.5" }).latitude).toMatch(/Enter a number/);
+    expect(errorsOf({ latitude: "40", longitude: "85.5" }).latitude).toMatch(/between 26 and 31/);
+    expect(errorsOf({ latitude: "28.2" }).longitude).toMatch(/both latitude and longitude/);
+  });
+
+  it("enforces the length limits", () => {
+    expect(errorsOf({ tagline: "x".repeat(141) }).tagline).toBe("Use 140 characters or fewer.");
+    expect(errorsOf({ seoTitle: "x".repeat(71) }).seoTitle).toBe("Use 70 characters or fewer.");
+  });
+
+  it("allows up to 3 'best for' chips, ignoring blanks and repeats", () => {
+    expect(parse({ bestFor: ["Culture", "", "Culture", "No flights"] }).data?.bestFor).toEqual(["Culture", "No flights"]);
+    expect(errorsOf({ bestFor: ["A", "B", "C", "D"] }).bestFor).toBe("Pick up to 3.");
+  });
+
+  it("needs all 12 months, each with a known rating", () => {
+    expect(errorsOf({ monthRatings: MONTHS.slice(0, 11) }).monthRatings).toBe("Rate all 12 months.");
+    expect(errorsOf({ monthRatings: [...MONTHS.slice(0, 11), "great"] })).toHaveProperty("monthRatings.11");
+  });
+
+  it("drops empty question rows and flags half-filled ones at their own row number", () => {
+    const answer = richText("Yes, by law.");
+    const result = parse({ faqQuestion: ["", "Do I need a guide?"], faqAnswer: [EMPTY_ANSWER, JSON.stringify(answer)] });
+    expect(result.data?.faqs).toEqual([{ question: "Do I need a guide?", answer }]);
+
+    const errors = errorsOf({ faqQuestion: ["", "", "When to go?"], faqAnswer: [EMPTY_ANSWER, EMPTY_ANSWER, EMPTY_ANSWER] });
+    expect(errors["faqs.2.answer"]).toBe("Write the answer, or remove this row.");
+  });
+
+  it("reads the photos: cover, gallery order, and \"taken at\" only for photos in use", () => {
+    const [cover, first, second, removed] = [1, 2, 3, 4].map((n) => `00000000-0000-4000-8000-00000000000${n}`);
+    const result = parse({
+      coverPhotoId: cover,
+      galleryPhotoId: [second, first],
+      [`photoPlace.${first}`]: "  Kyanjin Gompa  ",
+      [`photoPlace.${removed}`]: "No longer in the region",
+    });
+    expect(result.data?.photos).toEqual({
+      coverPhotoId: cover,
+      galleryPhotoIds: [second, first],
+      details: [{ id: first, place: "Kyanjin Gompa" }],
+    });
+    expect(parse().data?.photos).toEqual({ coverPhotoId: null, galleryPhotoIds: [], details: [] });
+  });
+
+  it("rejects bad photo ids, a photo used twice and too many photos", () => {
+    const id = "00000000-0000-4000-8000-000000000001";
+    expect(errorsOf({ galleryPhotoId: ["../etc/passwd"] })).toHaveProperty(["photos.galleryPhotoIds.0"]);
+    expect(errorsOf({ coverPhotoId: id, galleryPhotoId: [id] })["photos.galleryPhotoIds"]).toMatch(/twice/);
+    const many = Array.from({ length: 31 }, (_, n) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`);
+    expect(errorsOf({ galleryPhotoId: many })["photos.galleryPhotoIds"]).toMatch(/up to 30/);
+  });
+
+  it("reads the introduction as rich text and rejects unsafe links in it", () => {
+    const introduction = richText("The valley next door to Kathmandu.");
+    expect(parse({ introduction: JSON.stringify(introduction) }).data?.introduction).toEqual(introduction);
+
+    const unsafe = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "x", marks: [{ type: "link", attrs: { href: "javascript:alert(1)" } }] }] }] };
+    expect(errorsOf({ introduction: JSON.stringify(unsafe) }).introduction).toMatch(/Links must start with https/);
+  });
+});

@@ -11,4 +11,7 @@ export const primaryButton = `${BUTTON} border border-solid border-brand bg-bran
 
 export const secondaryButton = `${BUTTON} border border-solid border-line-strong bg-surface text-ink hover:border-brand hover:text-brand`;
 
-export const iconButton = `${BASE} relative size-10 flex-none rounded-md border border-solid border-border bg-surface text-text hover:border-brand hover:text-brand data-popup-open:border-brand data-popup-open:text-brand`;
+/** A small borderless icon button for row and card actions (move, remove…). */
+export const ghostIconButton = `${BASE} size-8 flex-none rounded-sm border border-solid border-transparent bg-transparent text-text hover:border-line-strong hover:bg-surface hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`;
+
+export const iconButton =`${BASE} relative size-10 flex-none rounded-md border border-solid border-border bg-surface text-text hover:border-brand hover:text-brand data-popup-open:border-brand data-popup-open:text-brand`;

@@ -19,6 +19,17 @@ describe("buildContentSecurityPolicy", () => {
     expect(policy).toContain("upgrade-insecure-requests");
   });
 
+  it("allows photo storage only for images and uploads, nothing else", () => {
+    const policy = buildContentSecurityPolicy("abc123", false, {
+      images: ["https://images.example.com"],
+      uploads: ["https://storage.example.com"],
+    });
+    expect(directive(policy, "img-src")).toBe("img-src 'self' blob: data: https://images.example.com");
+    expect(directive(policy, "connect-src")).toBe("connect-src 'self' https://storage.example.com");
+    expect(directive(policy, "script-src")).not.toContain("example.com");
+    expect(directive(buildContentSecurityPolicy("abc123", false), "img-src")).toBe("img-src 'self' blob: data:");
+  });
+
   it("allows React's debugging and plain http in development only", () => {
     const policy = buildContentSecurityPolicy("abc123", true);
     expect(directive(policy, "script-src")).toContain("'unsafe-eval'");

@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { VARIANT_WIDTHS } from "./src/features/photos/constants";
+
 // Sent with every admin response: no framing (clickjacking), no MIME sniffing, no search indexing.
 // The Content-Security-Policy is set per request in src/proxy.ts (it carries a fresh nonce).
 const SECURITY_HEADERS = [
@@ -13,6 +15,8 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // next/image srcset uses exactly the widths each photo is stored in, so every entry is a real file.
+  images: { deviceSizes: VARIANT_WIDTHS, imageSizes: [] },
   turbopack: {
     rules: {
       "*.css": {
