@@ -20,7 +20,9 @@ export const removeAuthor = async (authorId: string): Promise<RemoveState> => {
   if (!z.uuid().safeParse(authorId).success) return { error: "This author no longer exists." };
 
   try {
-    if (!(await removeAuthorFromDatabase(authorId))) return { error: "This author no longer exists, or your account can't remove them." };
+    const result = await removeAuthorFromDatabase(authorId);
+    if (result === "has_articles") return { error: "This author wrote travel guides. Pick another author on those guides first." };
+    if (result === "not_removed") return { error: "This author no longer exists, or your account can't remove them." };
   } catch (error) {
     console.error(error);
     return { error: "The author couldn't be removed. Try again in a moment." };

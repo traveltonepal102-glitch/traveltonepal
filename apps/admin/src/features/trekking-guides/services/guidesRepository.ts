@@ -119,12 +119,12 @@ export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId
 
 /**
  * Removes a guide (and takes it off every trek). "not_removed": no such guide, or not allowed (RLS);
- * "is_author": the guide is also an author (removed from Authors first).
+ * "in_use": the guide is an author, checks a travel guide, or is shown in one (changed there first).
  */
-export const removeTrekkingGuide = async (guideId: string): Promise<"removed" | "not_removed" | "is_author"> => {
+export const removeTrekkingGuide = async (guideId: string): Promise<"removed" | "not_removed" | "in_use"> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from("trekking_guides").delete().eq("id", guideId).select("id");
-  if (error?.code === FOREIGN_KEY_VIOLATION) return "is_author";
+  if (error?.code === FOREIGN_KEY_VIOLATION) return "in_use";
   if (error) throw new Error(`Could not remove guide ${guideId}: ${error.message}`);
   return data.length > 0 ? "removed" : "not_removed";
 };

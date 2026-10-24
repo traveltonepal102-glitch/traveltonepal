@@ -7,8 +7,8 @@ import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
-import type { Departure, GroupPrice, ItineraryDay, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
+import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, MEAL_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
+import type { Departure, GroupPrice, ItineraryDay, Meal, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
 type TextRow = Database["public"]["Tables"]["trek_translations"]["Row"];
@@ -86,11 +86,14 @@ const toItinerary = (days: DayQueryRow[]): ItineraryDay[] =>
           altitudeM: day.altitude_m,
           sleepAltitudeM: day.sleep_altitude_m,
           isHighPoint: day.is_high_point,
+          meals: day.meals.filter(isMeal),
           description: richTextSchema.parse(text.description),
           photo: day.photo ? toPhoto(day.photo) : null,
         },
       ];
     });
+
+const isMeal = (value: string): value is Meal => (MEAL_VALUES as readonly string[]).includes(value);
 
 /** Stored JSON is checked before use, like any outside data. */
 const photoBadgesSchema = z
@@ -398,6 +401,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       sleep_altitude_m: day.sleepAltitudeM,
       is_high_point: day.isHighPoint,
       photo_id: day.photoId ?? "",
+      meals: day.meals,
       place: day.place,
       title: day.title,
       subtitle: day.subtitle,

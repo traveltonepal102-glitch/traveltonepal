@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { SectionPlaceholder } from "@/features/shell/components/SectionPlaceholder";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
+import { ArticlesOverview } from "@/features/travel-guides/components/list/ArticlesOverview";
+import { listArticles, listAuthorOptions, listSiteOptions } from "@/features/travel-guides/services/articleOptions";
+import { todayInNepal } from "@/utils/formatDateTime";
 
-const SECTION = ADMIN_SECTIONS.travelGuides;
+export const metadata: Metadata = { title: ADMIN_SECTIONS.travelGuides.label };
 
-export const metadata: Metadata = { title: SECTION.label };
-
-/** Placeholder until the screen is built (design: Admin-article-editor.dc.html). */
+/** Travel guides list (the design has only the editor, Admin-article-editor.dc.html; the list follows Treks). */
 const TravelGuidesPage = async () => {
   await requireAdmin();
-  return <SectionPlaceholder section={SECTION} />;
+  const [articles, sites, authors] = await Promise.all([listArticles(), listSiteOptions(), listAuthorOptions()]);
+
+  return <ArticlesOverview articles={articles} sites={sites} authors={authors} today={todayInNepal()} />;
 };
 
 export default TravelGuidesPage;

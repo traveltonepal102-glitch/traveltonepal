@@ -215,6 +215,96 @@ type AuthorRow = {
 
 type AuthorTranslationRow = { author_id: string; locale: "en" | "de"; job_title: string; bio: string };
 
+export type ArticleTopicValue = "best-time" | "planning" | "health" | "gear";
+export type ArticleStatusValue = "draft" | "published" | "hidden";
+
+type ArticleRow = {
+  id: string;
+  /** Null: the main site. */
+  site_region_id: string | null;
+  also_on_main_site: boolean;
+  slug: string;
+  topic: ArticleTopicValue;
+  status: ArticleStatusValue;
+  /** "YYYY-MM-DD", a Nepal date. */
+  published_on: string | null;
+  updated_on: string | null;
+  is_featured: boolean;
+  start_here_position: number | null;
+  author_id: string | null;
+  checker_guide_id: string | null;
+  main_trek_id: string | null;
+  photo_trek_id: string | null;
+  cover_photo_id: string | null;
+  /** Jan–Dec, shared by the guide's "Month by month" sections; null until set. */
+  month_ratings: MonthRating[] | null;
+  created_at: string;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+type ArticleTranslationRow = {
+  article_id: string;
+  locale: "en" | "de";
+  title: string;
+  intro: string;
+  card_text: string;
+  cover_alt: string;
+  highlight_tag: string;
+  updated_line: string;
+  /** [{ icon, label, value }] */
+  facts: Json;
+  seo_keyword: string;
+  seo_title: string;
+  seo_description: string;
+  /** Jan–Dec: [{ onTheTrail, crowds }], or [] */
+  month_notes: Json;
+  updated_at: string;
+};
+
+export type ArticleSectionTypeValue =
+  | "text"
+  | "paragraph"
+  | "quick"
+  | "callout"
+  | "check"
+  | "quote"
+  | "trek"
+  | "months"
+  | "days"
+  | "cost"
+  | "compare"
+  | "tip"
+  | "gquote"
+  | "meet"
+  | "image"
+  | "gallery"
+  | "map"
+  | "video"
+  | "faq"
+  | "cta";
+
+type ArticleSectionRow = {
+  id: string;
+  article_id: string;
+  position: number;
+  type: ArticleSectionTypeValue;
+  trek_id: string | null;
+  /** The same in every language, e.g. { tone } of a note, { view } of the months. */
+  settings: Json;
+};
+
+/** The section's words: text { heading, tocLabel, body }, quick { body }, trek {}, faq { items }. */
+type ArticleSectionTranslationRow = { section_id: string; locale: "en" | "de"; content: Json };
+
+type ArticleSectionGuideRow = { section_id: string; guide_id: string; position: number };
+
+type ArticleSectionPhotoRow = { section_id: string; photo_id: string; position: number };
+
+type ArticleRegionRow = { article_id: string; region_id: string };
+
+type ArticleRelatedRow = { article_id: string; related_article_id: string; position: number };
+
 type TrekkingGuideRegionRow = { guide_id: string; region_id: string };
 
 type TrekSimilarRow = { trek_id: string; similar_trek_id: string; position: number };
@@ -227,6 +317,8 @@ type TrekDayRow = {
   sleep_altitude_m: number | null;
   is_high_point: boolean;
   photo_id: string | null;
+  /** "breakfast" | "lunch" | "dinner" */
+  meals: string[];
 };
 
 type TrekGroupPriceRow = { id: string; trek_id: string; position: number; price_usd: number; is_default: boolean };
@@ -481,6 +573,70 @@ export type Database = {
         Update: Partial<AuthorTranslationRow>;
         Relationships: [Fk<"author_translations_author_id_fkey", "author_id", "authors">];
       };
+      articles: {
+        Row: ArticleRow;
+        Insert: Partial<ArticleRow> & Pick<ArticleRow, "slug" | "topic">;
+        Update: Partial<ArticleRow>;
+        Relationships: [
+          Fk<"articles_cover_photo_id_fkey", "cover_photo_id", "photos">,
+          Fk<"articles_author_id_fkey", "author_id", "authors">,
+          Fk<"articles_checker_guide_id_fkey", "checker_guide_id", "trekking_guides">,
+          Fk<"articles_site_region_id_fkey", "site_region_id", "regions">,
+          Fk<"articles_main_trek_id_fkey", "main_trek_id", "treks">,
+          Fk<"articles_photo_trek_id_fkey", "photo_trek_id", "treks">,
+        ];
+      };
+      article_translations: {
+        Row: ArticleTranslationRow;
+        Insert: Partial<ArticleTranslationRow> & Pick<ArticleTranslationRow, "article_id" | "locale" | "title">;
+        Update: Partial<ArticleTranslationRow>;
+        Relationships: [Fk<"article_translations_article_id_fkey", "article_id", "articles">];
+      };
+      article_sections: {
+        Row: ArticleSectionRow;
+        Insert: Partial<ArticleSectionRow> & Pick<ArticleSectionRow, "article_id" | "position" | "type">;
+        Update: Partial<ArticleSectionRow>;
+        Relationships: [Fk<"article_sections_article_id_fkey", "article_id", "articles">, Fk<"article_sections_trek_id_fkey", "trek_id", "treks">];
+      };
+      article_section_translations: {
+        Row: ArticleSectionTranslationRow;
+        Insert: Partial<ArticleSectionTranslationRow> & Pick<ArticleSectionTranslationRow, "section_id" | "locale">;
+        Update: Partial<ArticleSectionTranslationRow>;
+        Relationships: [Fk<"article_section_translations_section_id_fkey", "section_id", "article_sections">];
+      };
+      article_section_guides: {
+        Row: ArticleSectionGuideRow;
+        Insert: ArticleSectionGuideRow;
+        Update: Partial<ArticleSectionGuideRow>;
+        Relationships: [
+          Fk<"article_section_guides_section_id_fkey", "section_id", "article_sections">,
+          Fk<"article_section_guides_guide_id_fkey", "guide_id", "trekking_guides">,
+        ];
+      };
+      article_section_photos: {
+        Row: ArticleSectionPhotoRow;
+        Insert: ArticleSectionPhotoRow;
+        Update: Partial<ArticleSectionPhotoRow>;
+        Relationships: [
+          Fk<"article_section_photos_section_id_fkey", "section_id", "article_sections">,
+          Fk<"article_section_photos_photo_id_fkey", "photo_id", "photos">,
+        ];
+      };
+      article_regions: {
+        Row: ArticleRegionRow;
+        Insert: ArticleRegionRow;
+        Update: Partial<ArticleRegionRow>;
+        Relationships: [Fk<"article_regions_article_id_fkey", "article_id", "articles">, Fk<"article_regions_region_id_fkey", "region_id", "regions">];
+      };
+      article_related: {
+        Row: ArticleRelatedRow;
+        Insert: ArticleRelatedRow;
+        Update: Partial<ArticleRelatedRow>;
+        Relationships: [
+          Fk<"article_related_article_id_fkey", "article_id", "articles">,
+          Fk<"article_related_related_article_id_fkey", "related_article_id", "articles">,
+        ];
+      };
       trekking_guide_regions: {
         Row: TrekkingGuideRegionRow;
         Insert: TrekkingGuideRegionRow;
@@ -568,6 +724,10 @@ export type Database = {
         Args: { p_trek_id: string; p_locale: string; p_departures: Json };
         Returns: number;
       };
+      save_article: {
+        Args: { p_article_id: string | null; p_locale: string; p_article: Json; p_text: Json; p_region_ids: Json; p_related_ids: Json; p_sections: Json };
+        Returns: string;
+      };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
         Returns: string;
@@ -596,6 +756,9 @@ export type Database = {
       trek_tag: TrekTagValue;
       guide_badge: GuideBadgeValue;
       author_kind: AuthorKindValue;
+      article_topic: ArticleTopicValue;
+      article_status: ArticleStatusValue;
+      article_section_type: ArticleSectionTypeValue;
       departure_status: DepartureStatusValue;
       region_difficulty: RegionDifficultyValue;
     };

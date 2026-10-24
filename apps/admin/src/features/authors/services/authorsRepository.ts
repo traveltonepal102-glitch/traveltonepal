@@ -84,10 +84,14 @@ export const saveAuthor = async (values: AuthorFormValues, authorId: string | nu
   return { ok: false, reason: "failed" };
 };
 
-/** Removes an author. False when nothing was removed: no such author, or not allowed (RLS: Super admins only). */
-export const removeAuthor = async (authorId: string): Promise<boolean> => {
+/**
+ * Removes an author. "not_removed": no such author, or not allowed (RLS: Super admins only); "has_articles":
+ * they wrote travel guides (another author is picked on those first).
+ */
+export const removeAuthor = async (authorId: string): Promise<"removed" | "not_removed" | "has_articles"> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from("authors").delete().eq("id", authorId).select("id");
+  if (error?.code === FOREIGN_KEY_VIOLATION) return "has_articles";
   if (error) throw new Error(`Could not remove author ${authorId}: ${error.message}`);
-  return data.length > 0;
+  return data.length > 0 ? "removed" : "not_removed";
 };

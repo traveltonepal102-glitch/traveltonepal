@@ -19,10 +19,14 @@ export const useRowList = <Row extends object>(initial: Row[], onEdit: () => voi
 
   return {
     rows,
-    /** Returns the new row's key (e.g. to open it). */
-    add: (row: Row) => {
+    /** Adds a row at the end, or at index `at`. Returns the new row's key (e.g. to open it). */
+    add: (row: Row, at?: number) => {
       const key = crypto.randomUUID();
-      change((current) => [...current, { ...row, key }]);
+      change((current) => {
+        const next = [...current];
+        next.splice(at ?? current.length, 0, { ...row, key });
+        return next;
+      });
       return key;
     },
     remove: (key: string) => change((current) => current.filter((row) => row.key !== key)),

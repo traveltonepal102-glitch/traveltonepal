@@ -7,13 +7,13 @@ import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
 import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
+import { SortableList } from "@/components/ui/SortableList";
 import { TextField } from "@/components/ui/TextField";
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../../../constants";
-import { useItineraryDays } from "../../../hooks/useItineraryDays";
-import { parseAltitude } from "../../../lib/altitudeProfile";
+import { dayPeak, useItineraryDays } from "../../../hooks/useItineraryDays";
 import type { TrekValues } from "../../../types";
 import { PageHeadingFields } from "../PageHeadingFields";
 import { ItineraryDayCard } from "./ItineraryDayCard";
@@ -35,7 +35,7 @@ const dayErrors = (errors: FieldErrors, index: number): FieldErrors => {
 /** "Day-by-day itinerary": the heading, the text and route line above the days, and the days. */
 export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
   const plan = useItineraryDays(values.itinerary, onEdit);
-  const altitudes = plan.days.map((day) => parseAltitude(day.altitude));
+  const altitudes = plan.days.map(dayPeak);
   const known = altitudes.filter((altitude) => altitude !== null);
   const highest = known.length ? Math.max(...known) : null;
 
@@ -69,7 +69,7 @@ export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: T
 
       <FormSection
         title={`${plan.days.length} day${plan.days.length === 1 ? "" : "s"}`}
-        hint="Click a day to open it. Day numbers follow the order by themselves. The trek's length, highest point and altitude chart come from these days."
+        hint="Click a day to open it. Drag a day by its handle to move it; day numbers follow by themselves. The trek's length, highest point and altitude chart come from these days."
         aside={
           highest !== null && (
             <span className="rounded-full bg-saffron-tint px-2.5 py-0.5 text-xs font-bold whitespace-nowrap text-saffron-ink">
@@ -78,26 +78,26 @@ export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: T
           )
         }
       >
-        {plan.days.map((day, index) => {
-          const ownErrors = dayErrors(errors, index);
-          return (
-            <ItineraryDayCard
-              key={day.key}
-              day={day}
-              index={index}
-              count={plan.days.length}
-              isOpen={plan.openKey === day.key || Object.keys(ownErrors).length > 0}
-              errors={ownErrors}
-              photoChoices={photoChoices}
-              onToggleOpen={() => plan.toggleOpen(day.key)}
-              onChange={(patch) => plan.update(day.key, patch)}
-              onMove={(to) => plan.move(index, to)}
-              onDuplicate={() => plan.duplicate(day.key)}
-              onRemove={() => plan.remove(day.key)}
-              onToggleHighPoint={() => plan.toggleHighPoint(day.key)}
-            />
-          );
-        })}
+        <SortableList items={plan.days} itemLabel={(day, index) => `day ${index + 1}${day.title ? `, ${day.title}` : ""}`} onMove={plan.move} className="gap-2.5">
+          {(day, index, handle) => {
+            const ownErrors = dayErrors(errors, index);
+            return (
+              <ItineraryDayCard
+                day={day}
+                index={index}
+                isOpen={plan.openKey === day.key || Object.keys(ownErrors).length > 0}
+                errors={ownErrors}
+                photoChoices={photoChoices}
+                handle={handle}
+                onToggleOpen={() => plan.toggleOpen(day.key)}
+                onChange={(patch) => plan.update(day.key, patch)}
+                onDuplicate={() => plan.duplicate(day.key)}
+                onRemove={() => plan.remove(day.key)}
+                onToggleHighPoint={() => plan.toggleHighPoint(day.key)}
+              />
+            );
+          }}
+        </SortableList>
         <button
           type="button"
           onClick={plan.add}

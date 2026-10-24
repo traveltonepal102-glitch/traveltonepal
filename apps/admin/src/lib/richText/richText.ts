@@ -1,16 +1,18 @@
 import { z } from "zod";
 
 /**
- * Rich text as the admin saves it: a Tiptap (ProseMirror) JSON document limited to paragraphs, bold, italic,
- * links and lists. Stored as JSON, never HTML, and checked here on the server before saving: anything else
- * (headings, images, styles, unknown attributes) is rejected or dropped.
+ * Rich text as the admin saves it: a Tiptap (ProseMirror) JSON document limited to paragraphs, small headings,
+ * bold, italic, links and lists. Stored as JSON, never HTML, and checked here on the server before saving:
+ * anything else (other headings, images, styles, unknown attributes) is rejected or dropped.
  */
 export type RichTextMark = { type: "bold" } | { type: "italic" } | { type: "link"; attrs: { href: string } };
 export type RichTextInline = { type: "text"; text: string; marks?: RichTextMark[] } | { type: "hardBreak" };
 export type RichTextParagraph = { type: "paragraph"; content?: RichTextInline[] };
 export type RichTextListItem = { type: "listItem"; content: RichTextBlock[] };
 export type RichTextList = { type: "bulletList" | "orderedList"; content: RichTextListItem[] };
-export type RichTextBlock = RichTextParagraph | RichTextList;
+/** "Small heading" (level 3 in the document; the website picks the heading level that fits where it shows). */
+export type RichTextHeading = { type: "heading"; attrs: { level: 3 }; content?: RichTextInline[] };
+export type RichTextBlock = RichTextParagraph | RichTextHeading | RichTextList;
 export type RichTextDoc = { type: "doc"; content: RichTextBlock[] };
 
 export const EMPTY_RICH_TEXT: RichTextDoc = { type: "doc", content: [{ type: "paragraph" }] };
@@ -49,6 +51,8 @@ const inlineSchema = z.discriminatedUnion("type", [
 
 const paragraphSchema = z.object({ type: z.literal("paragraph"), content: z.array(inlineSchema).optional() });
 
+const headingSchema = z.object({ type: z.literal("heading"), attrs: z.object({ level: z.literal(3) }), content: z.array(inlineSchema).optional() });
+
 const listItemSchema: z.ZodType<RichTextListItem> = z.object({
   type: z.literal("listItem"),
   content: z.lazy(() => z.array(blockSchema).min(1)),
@@ -59,7 +63,7 @@ const listSchema: z.ZodType<RichTextList> = z.object({
   content: z.array(listItemSchema).min(1),
 });
 
-const blockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, listSchema]);
+const blockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, headingSchema, listSchema]);
 
 export const richTextDocSchema: z.ZodType<RichTextDoc> = z.object({
   type: z.literal("doc"),
@@ -69,7 +73,7 @@ export const richTextDocSchema: z.ZodType<RichTextDoc> = z.object({
 const inlineText = (inline: RichTextInline) => (inline.type === "text" ? inline.text : "\n");
 
 const blockText = (block: RichTextBlock): string =>
-  block.type === "paragraph"
+  block.type === "paragraph" || block.type === "heading"
     ? (block.content ?? []).map(inlineText).join("")
     : block.content.map((item) => item.content.map(blockText).join("\n")).join("\n");
 

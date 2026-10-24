@@ -4,21 +4,31 @@ import { useState } from "react";
 
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
+import { parseAltitude } from "../lib/altitudeProfile";
 import type { ItineraryDay } from "../types";
 
-/** A day as the editor holds it: altitudes as typed (e.g. "4,773"), plus a key that never changes. */
+/**
+ * A day as the editor holds it (as the design asks): the sleep altitude, the highest point only when the day
+ * goes higher, both as typed (e.g. "4,773"), plus a key that never changes.
+ */
 export type DayRow = Omit<ItineraryDay, "altitudeM" | "sleepAltitudeM"> & {
   key: string;
-  altitude: string;
+  topAltitude: string;
   sleepAltitude: string;
 };
 
+const asText = (value: number | null) => (value === null ? "" : String(value));
+
+/** Saved as altitudeM (the highest point) and sleepAltitudeM (only when lower). */
 const toRow = (day: ItineraryDay, index: number): DayRow => ({
   ...day,
   key: day.id ?? `new-${index}`,
-  altitude: day.altitudeM === null ? "" : String(day.altitudeM),
-  sleepAltitude: day.sleepAltitudeM === null ? "" : String(day.sleepAltitudeM),
+  topAltitude: day.sleepAltitudeM === null ? "" : asText(day.altitudeM),
+  sleepAltitude: asText(day.sleepAltitudeM ?? day.altitudeM),
 });
+
+/** The day's highest point as typed: the hike's top, else where you sleep. */
+export const dayPeak = (day: Pick<DayRow, "topAltitude" | "sleepAltitude">) => parseAltitude(day.topAltitude) ?? parseAltitude(day.sleepAltitude);
 
 const emptyRow = (): DayRow => ({
   key: crypto.randomUUID(),
@@ -27,8 +37,9 @@ const emptyRow = (): DayRow => ({
   title: "",
   subtitle: "",
   duration: "",
-  altitude: "",
+  topAltitude: "",
   sleepAltitude: "",
+  meals: ["breakfast", "lunch", "dinner"],
   isHighPoint: false,
   description: EMPTY_RICH_TEXT,
   photo: null,

@@ -18,10 +18,12 @@ type SelectFieldProps = {
   /** Visually hidden label (the context already says what it is). */
   isLabelHidden?: boolean;
   className?: string;
+  /** Told about each choice (the field stays uncontrolled). */
+  onValueChange?: (value: string) => void;
 };
 
 /** A labelled native dropdown for admin forms (native: works with keyboards, phones and screen readers). */
-export const SelectField = ({ name, label, options, defaultValue = "", placeholder, hint, error, isLabelHidden = false, className }: SelectFieldProps) => {
+export const SelectField = ({ name, label, options, defaultValue = "", placeholder, hint, error, isLabelHidden = false, className, onValueChange }: SelectFieldProps) => {
   const id = useId();
   const describedBy = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") || undefined;
 
@@ -34,6 +36,7 @@ export const SelectField = ({ name, label, options, defaultValue = "", placehold
         id={id}
         name={name}
         defaultValue={defaultValue}
+        onChange={onValueChange && ((event) => onValueChange(event.target.value))}
         aria-describedby={describedBy}
         aria-invalid={error ? true : undefined}
         className={cn(inputClass, "cursor-pointer pr-8")}

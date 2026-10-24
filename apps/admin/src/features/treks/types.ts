@@ -17,10 +17,13 @@ export type PhotoBadge = { label: string; icon: IconName; tone: "brand" | "green
 export type TrekPoint = { title: string; text: string };
 
 /** One day of the day-by-day plan (the website's ItineraryDay). */
+/** A meal included on a day ("Meals included"). */
+export type Meal = "breakfast" | "lunch" | "dinner";
+
 export type ItineraryDay = {
   /** null for a day added in the editor; the database gives it an id on Save. */
   id: string | null;
-  /** Short name under the altitude chart, e.g. "Lama Hotel". */
+  /** "Sleep at", e.g. "Teahouse, Lama Hotel"; also names the stop on the altitude chart and the route map. */
   place: string;
   title: string;
   /** One line under the title, e.g. "River gorge · Bamboo and rhododendron forest". */
@@ -36,6 +39,7 @@ export type ItineraryDay = {
   /** What happens on this day (rich text). */
   description: RichTextDoc;
   photo: Photo | null;
+  meals: Meal[];
 };
 
 /** A day as the editor's Save sends it. */

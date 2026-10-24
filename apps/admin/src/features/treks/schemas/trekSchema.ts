@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
-import { optionalWholeNumber, readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
+import { optionalWholeNumber, readList, readText, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { richTextField } from "@/lib/richText/richText";
 
 import {
@@ -160,10 +160,6 @@ export const trekSchema = z
     days: values.itinerary.length || (days ?? 0),
     maxAltitudeM: values.itinerary.length ? Math.max(...values.itinerary.map((day) => day.altitudeM)) : (maxAltitudeM ?? 0),
   })) satisfies z.ZodType<TrekFormValues, unknown>;
-
-/** Several plain text fields at once: { name: its text }. */
-const readTexts = <Name extends string>(formData: FormData, names: readonly Name[]) =>
-  Object.fromEntries(names.map((name) => [name, readText(formData, name)])) as Record<Name, string>;
 
 /** The editor's FormData as the schema expects it. */
 export const readTrekForm = (formData: FormData) => {

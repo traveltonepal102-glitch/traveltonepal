@@ -62,3 +62,7 @@ export const readText = (formData: FormData, name: string) => {
 /** All values of a repeated form field, in order. */
 export const readList = (formData: FormData, name: string) =>
   formData.getAll(name).filter((value): value is string => typeof value === "string");
+
+/** Several plain text fields at once: { name: its text } (Object.fromEntries can't keep the names' type). */
+export const readTexts = <Name extends string>(formData: FormData, names: readonly Name[]) =>
+  Object.fromEntries(names.map((name) => [name, readText(formData, name)])) as Record<Name, string>;

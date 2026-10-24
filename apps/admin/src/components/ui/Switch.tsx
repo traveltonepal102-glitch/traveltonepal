@@ -1,7 +1,8 @@
 import type { ChangeEvent } from "react";
 
 type SwitchProps = {
-  name: string;
+  /** Without one, nothing is sent (the form keeps the value elsewhere, e.g. a hidden field). */
+  name?: string;
   /** Sent when on (a checkbox: nothing is sent when off). */
   value?: string;
   /** What it switches, for screen readers, e.g. "Show Reviews". */

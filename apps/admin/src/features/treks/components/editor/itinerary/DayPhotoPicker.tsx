@@ -31,13 +31,10 @@ export const DayPhotoPicker = ({ photo, choices, onChange }: DayPhotoPickerProps
   return (
     <div className="flex flex-col gap-1.5">
       <span className={labelClass}>Photo</span>
-      <div className="flex items-center gap-3">
-        <span className="flex h-16 w-24 flex-none items-center justify-center overflow-hidden rounded-md bg-navy text-white/40">
-          {photo ? <PhotoImage key={photo.id} photo={photo} alt="" sizes="96px" className="h-full w-full object-cover" /> : <Icon name="image" />}
-        </span>
+      <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg bg-navy text-white/40">
+        {photo ? <PhotoImage key={photo.id} photo={photo} alt="" sizes="(min-width: 1200px) 220px, 50vw" className="h-full w-full object-cover" /> : <Icon name="image" size={32} />}
         <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
-          <Popover.Trigger className={smallButton} disabled={!choices.length}>
-            <Icon name="photo_library" size={16} />
+          <Popover.Trigger className={cn(smallButton, "absolute bottom-2 left-2")} disabled={!choices.length}>
             {photo ? "Change" : "Choose a photo"}
           </Popover.Trigger>
           <Popover.Portal>
@@ -69,7 +66,9 @@ export const DayPhotoPicker = ({ photo, choices, onChange }: DayPhotoPickerProps
           </Popover.Portal>
         </Popover.Root>
       </div>
-      {!choices.length && <p className="m-0 text-xs text-muted-foreground">Add photos in the Photos section and save first; then pick one here.</p>}
+      <span className="text-xs text-muted-foreground">
+        {choices.length ? "Optional. Its description comes from the photo library." : "Add photos in the Photos section and save first; then pick one here."}
+      </span>
       <input type="hidden" name="dayPhotoId" value={photo?.id ?? ""} />
     </div>
   );

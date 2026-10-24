@@ -2,7 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
-import type { DepartureStatus, FaqIcon, KnowIcon, PackingGroup, PackingIcon, SharedSectionKey, TrekDifficulty, TrekPhotos, TrekSeason, TrekStatus, TrekTag, TrekValues } from "./types";
+import type { DepartureStatus, FaqIcon, KnowIcon, Meal, PackingGroup, PackingIcon, SharedSectionKey, TrekDifficulty, TrekPhotos, TrekSeason, TrekStatus, TrekTag, TrekValues } from "./types";
 
 export const TREKS_PATH = "/treks";
 export const NEW_TREK_PATH = "/treks/new";
@@ -155,6 +155,15 @@ export const DIFFICULTIES: { value: TrekDifficulty; label: string; grades: numbe
 ];
 
 export const difficultyOf = (value: TrekDifficulty) => DIFFICULTIES.find((level) => level.value === value) ?? DIFFICULTIES[1];
+
+/** "Meals included" on a day, in the order of the day. */
+export const MEALS: { value: Meal; label: string }[] = [
+  { value: "breakfast", label: "Breakfast" },
+  { value: "lunch", label: "Lunch" },
+  { value: "dinner", label: "Dinner" },
+];
+
+export const MEAL_VALUES = ["breakfast", "lunch", "dinner"] as const satisfies readonly Meal[];
 
 export const SEASON_OPTIONS: { value: TrekSeason; label: string }[] = [
   { value: "spring", label: "Spring (Mar–May)" },

@@ -19,3 +19,8 @@ export const formatDateTime = (isoDate: string) => DATE_TIME.format(new Date(iso
  */
 export const todayInNepal = (now = new Date()) =>
   new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: ADMIN_TIME_ZONE }).format(now);
+
+const CALENDAR_DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+/** A Nepal calendar date "2026-10-12" → "12 Oct 2026", as it is (dates are never converted to a time zone). */
+export const formatCalendarDate = (date: string) => CALENDAR_DATE.format(new Date(`${date}T00:00:00Z`));

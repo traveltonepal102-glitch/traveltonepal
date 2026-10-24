@@ -21,7 +21,7 @@ export const removeTrekkingGuide = async (guideId: string): Promise<RemoveState>
 
   try {
     const result = await removeGuideFromDatabase(guideId);
-    if (result === "is_author") return { error: "This guide is also an author. Remove them from Authors first." };
+    if (result === "in_use") return { error: "This guide is also an author, checks a travel guide, or is shown in one. Change that there first." };
     if (result === "not_removed") return { error: "This guide no longer exists, or your account can't remove it." };
   } catch (error) {
     console.error(error);

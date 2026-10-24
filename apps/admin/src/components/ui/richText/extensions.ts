@@ -3,12 +3,12 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { isSafeHref } from "@/lib/richText/richText";
 
 /**
- * The editor knows only what src/lib/richText allows: paragraphs, bold, italic, links and lists. Anything
- * else pasted in (headings, colors, tables from Word or Google Docs) becomes plain paragraphs.
+ * The editor knows only what src/lib/richText allows: paragraphs, small headings, bold, italic, links and lists.
+ * Anything else pasted in (other headings, colors, tables from Word or Google Docs) becomes plain paragraphs.
  */
 export const RICH_TEXT_EXTENSIONS = [
   StarterKit.configure({
-    heading: false,
+    heading: { levels: [3] },
     blockquote: false,
     code: false,
     codeBlock: false,
