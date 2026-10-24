@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId, useState } from "react";
 
+import { FormGroup } from "@/components/editor/FormGroup";
 import { FieldError } from "@/components/ui/FieldError";
 import { inputClass, labelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
@@ -13,7 +14,6 @@ import { GUIDE_LIMITS as LIMIT } from "../../constants";
 import { licenceStatus } from "../../lib/guideRules";
 import type { LicenceStatus, TrekkingGuideValues } from "../../types";
 import { CertificatesField } from "./CertificatesField";
-import { GuideFormGroup } from "./GuideFormGroup";
 
 type GuideLicenceFieldsProps = {
   values: TrekkingGuideValues;
@@ -37,7 +37,7 @@ export const GuideLicenceFields = ({ values, today, errors }: GuideLicenceFields
   const status = STATUS[licence];
 
   return (
-    <GuideFormGroup title="Licence and training">
+    <FormGroup title="Licence and training">
       <div className="grid gap-3 tablet:grid-cols-2">
         <TextField
           name="licenceNumber"
@@ -71,6 +71,6 @@ export const GuideLicenceFields = ({ values, today, errors }: GuideLicenceFields
       </p>
       <span className="text-xs text-muted-foreground">Issued by Nepal’s Department of Tourism. The website only shows the blue “licence checked” tick.</span>
       <CertificatesField values={values} isLicensed={licence === "valid"} today={today} errors={errors} />
-    </GuideFormGroup>
+    </FormGroup>
   );
 };

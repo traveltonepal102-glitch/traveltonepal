@@ -1,10 +1,10 @@
+import { FormGroup } from "@/components/editor/FormGroup";
 import { ChoiceChips } from "@/components/ui/ChoiceChips";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { GUIDE_BADGES, GUIDE_LIMITS as LIMIT } from "../../constants";
 import type { TrekkingGuideValues } from "../../types";
-import { GuideFormGroup } from "./GuideFormGroup";
 import { LanguagesField } from "./LanguagesField";
 
 type GuideAboutFieldsProps = {
@@ -18,7 +18,7 @@ const numberText = (value: number | null) => (value === null ? "" : String(value
 
 /** "About them": what the guide card shows on trek, region and About pages. */
 export const GuideAboutFields = ({ values, errors, onEdit, onLanguagesChange }: GuideAboutFieldsProps) => (
-  <GuideFormGroup title="About them" where="Trek, region and About pages">
+  <FormGroup title="About them" where="Trek, region and About pages">
     <TextField name="role" label="Role" defaultValue={values.role} placeholder="e.g. Senior trek leader" maxLength={LIMIT.role} error={errors.role} />
     <div className="grid gap-3 tablet:grid-cols-2">
       <TextField
@@ -70,5 +70,5 @@ export const GuideAboutFields = ({ values, errors, onEdit, onLanguagesChange }: 
       maxLength={LIMIT.quote}
       error={errors.quote}
     />
-  </GuideFormGroup>
+  </FormGroup>
 );

@@ -8,6 +8,8 @@ type SwitchProps = {
   label: string;
   checked?: boolean;
   defaultChecked?: boolean;
+  /** Can't be changed now (and isn't sent with the form). */
+  disabled?: boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -15,7 +17,7 @@ type SwitchProps = {
  * An on/off switch (design: .ad-switch), built on a real checkbox with role="switch". Put it inside a
  * <label> with the visible text so the whole row toggles it.
  */
-export const Switch = ({ name, value = "on", label, checked, defaultChecked, onChange }: SwitchProps) => (
+export const Switch = ({ name, value = "on", label, checked, defaultChecked, disabled, onChange }: SwitchProps) => (
   <>
     <input
       type="checkbox"
@@ -24,13 +26,14 @@ export const Switch = ({ name, value = "on", label, checked, defaultChecked, onC
       value={value}
       checked={checked}
       defaultChecked={defaultChecked}
+      disabled={disabled}
       onChange={onChange}
       aria-label={label}
       className="peer sr-only"
     />
     <span
       aria-hidden="true"
-      className="relative h-6.5 w-11 flex-none rounded-full bg-line-strong transition-colors peer-checked:bg-whatsapp peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring after:absolute after:top-1 after:left-1 after:size-4.5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-4.5"
+      className="relative h-6.5 w-11 flex-none rounded-full bg-line-strong transition-colors peer-checked:bg-whatsapp peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring after:absolute after:top-1 after:left-1 after:size-4.5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-4.5 peer-disabled:opacity-50"
     />
   </>
 );

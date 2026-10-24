@@ -21,10 +21,11 @@ export const GuideCardPreview = ({ view, name, role, quote, languages, photo }: 
       <Icon name="visibility" size={16} />
       How the card looks on the trek page
     </span>
-    <div className="overflow-hidden rounded-xl border border-solid border-border bg-surface">
-      <div className="relative flex h-29 items-center justify-center bg-brand-tint">
+    {/* The trek page's card size (apps/web GuideCard in TrekGuides: up to 300px wide, 4:3 photo), so the crop matches. */}
+    <div className="w-full max-w-75 self-center overflow-hidden rounded-xl border border-solid border-border bg-surface">
+      <div className="relative flex aspect-4/3 items-center justify-center bg-brand-tint">
         {photo ? (
-          <PhotoImage photo={photo} alt="" sizes="(min-width: 1200px) 40vw, 100vw" className="h-full w-full object-cover" />
+          <PhotoImage photo={photo} alt="" sizes="300px" className="h-full w-full object-cover" />
         ) : (
           <span className="inline-flex size-18 items-center justify-center rounded-full bg-surface text-brand">
             <Icon name="person" size={34} />

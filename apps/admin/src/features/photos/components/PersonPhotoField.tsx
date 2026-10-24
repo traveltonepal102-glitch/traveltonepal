@@ -11,20 +11,22 @@ import { UploadProgressList } from "@/features/photos/components/UploadProgressL
 import { usePhotoUploads } from "@/features/photos/hooks/usePhotoUploads";
 import type { Photo } from "@/features/photos/types";
 
-type GuidePhotoFieldProps = {
+type PersonPhotoFieldProps = {
   initial: Photo | null;
-  /** The guide's name, for the image text. */
+  /** The person's name, for the image text. */
   name: string;
+  /** Under the buttons, e.g. "Square photo, face clearly visible." */
+  hint: string;
   onEdit: () => void;
   /** The photo the guide uses now, for the card preview. */
   onChange?: (photo: Photo | null) => void;
 };
 
 /**
- * The guide's photo. Uploads go to the photo library right away (location data removed); which photo the
- * guide uses is sent with Save as photoId.
+ * A person's photo (a trekking guide, an author). Uploads go to the photo library right away (location data
+ * removed); which photo the person uses is sent with Save as photoId.
  */
-export const GuidePhotoField = ({ initial, name, onEdit, onChange }: GuidePhotoFieldProps) => {
+export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange }: PersonPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const choose = (next: Photo | null) => {
     setPhoto(next);
@@ -38,7 +40,7 @@ export const GuidePhotoField = ({ initial, name, onEdit, onChange }: GuidePhotoF
       <div className="flex items-center gap-3.5">
         <span className="inline-flex size-21 flex-none items-center justify-center overflow-hidden rounded-xl bg-brand-tint text-brand">
           {photo ? (
-            <PhotoImage key={photo.id} photo={photo} alt={name.trim() || "Guide photo"} sizes="84px" className="h-full w-full object-cover" />
+            <PhotoImage key={photo.id} photo={photo} alt={name.trim() || "Photo"} sizes="84px" className="h-full w-full object-cover" />
           ) : (
             <Icon name="add_photo_alternate" size={34} />
           )}
@@ -53,7 +55,7 @@ export const GuidePhotoField = ({ initial, name, onEdit, onChange }: GuidePhotoF
               </button>
             )}
           </div>
-          <span className="text-xs text-muted-foreground">Square photo, face clearly visible. Location data is removed on upload.</span>
+          <span className="text-xs text-muted-foreground">{hint}</span>
         </div>
       </div>
       <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} />

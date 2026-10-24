@@ -1,15 +1,15 @@
 import { useId } from "react";
 import type { ReactNode } from "react";
 
-type GuideFormGroupProps = {
+type FormGroupProps = {
   title: string;
   /** Where these fields show, e.g. "Trek, region and About pages". */
   where?: string;
   children: ReactNode;
 };
 
-/** One group of the guide form (design: the drawer's groups, each under a line). */
-export const GuideFormGroup = ({ title, where, children }: GuideFormGroupProps) => {
+/** One group of fields in a drawer form (design: Admin-people's drawer groups, each under a line). */
+export const FormGroup = ({ title, where, children }: FormGroupProps) => {
   const titleId = useId();
   return (
     <section aria-labelledby={titleId} className="flex flex-col gap-3 border-t border-solid border-border pt-4">

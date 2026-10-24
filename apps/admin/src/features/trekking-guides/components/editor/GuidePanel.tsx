@@ -4,25 +4,26 @@ import { Dialog } from "@base-ui/react/dialog";
 import { cn } from "@ttn/ui/lib/utils";
 import { useRouter } from "next/navigation";
 
+import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
+import { FormGroup } from "@/components/editor/FormGroup";
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
+import { PhotoAndNameFields } from "@/components/shared/PhotoAndNameFields";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
-import { FormAlert } from "@/components/ui/FormAlert";
 import { ChoiceChips } from "@/components/ui/ChoiceChips";
+import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 import { TextField } from "@/components/ui/TextField";
 
+import { removeTrekkingGuide } from "../../actions/removeTrekkingGuide";
 import { GUIDE_LIMITS as LIMIT, TREKKING_GUIDES_PATH } from "../../constants";
 import { useGuideDraft } from "../../hooks/useGuideDraft";
 import { guideCardView } from "../../lib/guideCard";
 import type { TrekkingGuide, TrekkingGuideValues } from "../../types";
 import { GuideAboutFields } from "./GuideAboutFields";
 import { GuideCardPreview } from "./GuideCardPreview";
-import { GuideFormGroup } from "./GuideFormGroup";
 import { GuideLicenceFields } from "./GuideLicenceFields";
 import { GuideVisibilityFields } from "./GuideVisibilityFields";
-import { PhotoAndNameFields } from "./PhotoAndNameFields";
-import { RemoveGuideButton } from "./RemoveGuideButton";
 
 type GuidePanelProps = {
   /** saveTrekkingGuide bound to this guide's id (null for a new guide). */
@@ -90,6 +91,8 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
             name={values.name}
             photoConsent={values.photoConsent}
             typedName={draft.name}
+            nameMaxLength={LIMIT.name}
+            photoHint="Square photo, face clearly visible. Location data is removed on upload."
             errors={errors}
             onEdit={markDirty}
             onPhotoChange={setPhoto}
@@ -97,15 +100,15 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
           <GuideAboutFields values={values} errors={errors} onEdit={markDirty} onLanguagesChange={setLanguages} />
           <GuideLicenceFields values={values} today={today} errors={errors} />
           {regions.length > 0 && (
-            <GuideFormGroup title="Regions this guide leads">
+            <FormGroup title="Regions this guide leads">
               <ChoiceChips legend="Pick one or more" name="regionId" type="checkbox" options={regions.map((region) => ({ value: region.id, label: region.name }))} defaultValues={values.regionIds} error={errors.regionIds} />
               <span className="text-xs text-muted-foreground">Suggests this guide on treks in these regions and shows them on those region pages.</span>
-            </GuideFormGroup>
+            </FormGroup>
           )}
-          <GuideFormGroup title="Short bio">
+          <FormGroup title="Short bio">
             <TextField
               name="bio"
-              label="English"
+              label="Short bio in English"
               hint="Shown when this guide writes or checks a travel guide. German comes with the German website."
               multiline
               rows={3}
@@ -114,12 +117,18 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
               showCount
               error={errors.bio}
             />
-          </GuideFormGroup>
+          </FormGroup>
           <GuideVisibilityFields values={values} treks={guide?.treks ?? []} />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
-          {guide && canRemove && <RemoveGuideButton guideId={guide.id} name={guide.name} trekCount={guide.treks.length} />}
+          {guide && canRemove && (
+            <ConfirmRemoveButton
+              name={guide.name}
+              consequence={guide.treks.length ? `They also leave the ${guide.treks.length} trek${guide.treks.length === 1 ? "" : "s"} they are on.` : undefined}
+              action={removeTrekkingGuide.bind(null, guide.id)}
+            />
+          )}
           <span className="flex-1" />
           <Dialog.Close type="button" className={secondaryButton}>
             Cancel

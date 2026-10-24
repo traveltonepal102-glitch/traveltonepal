@@ -2,14 +2,12 @@
 
 import { useId } from "react";
 
+import { FormGroup } from "@/components/editor/FormGroup";
 import { FieldError } from "@/components/ui/FieldError";
 import { TextField } from "@/components/ui/TextField";
+import { PersonPhotoField } from "@/features/photos/components/PersonPhotoField";
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
-
-import { GUIDE_LIMITS as LIMIT } from "../../constants";
-import { GuideFormGroup } from "./GuideFormGroup";
-import { GuidePhotoField } from "./GuidePhotoField";
 
 type PhotoAndNameFieldsProps = {
   photo: Photo | null;
@@ -18,19 +16,22 @@ type PhotoAndNameFieldsProps = {
   photoConsent: boolean;
   /** The name as typed now, for the consent sentence. */
   typedName: string;
+  nameMaxLength: number;
+  photoHint: string;
+  nameHint?: string;
   errors: FieldErrors;
   onEdit: () => void;
   onPhotoChange: (photo: Photo | null) => void;
 };
 
-/** "Photo and name": the photo, the guide's consent to show it with their name, and the name. */
-export const PhotoAndNameFields = ({ photo, name, photoConsent, typedName, errors, onEdit, onPhotoChange }: PhotoAndNameFieldsProps) => {
+/** "Photo and name" (guides and authors): the photo, the person's consent to show it with their name, and the name. */
+export const PhotoAndNameFields = ({ photo, name, photoConsent, typedName, nameMaxLength, photoHint, nameHint, errors, onEdit, onPhotoChange }: PhotoAndNameFieldsProps) => {
   const id = useId();
   const firstName = typedName.split(/\s+/)[0] || "This person";
 
   return (
-    <GuideFormGroup title="Photo and name">
-      <GuidePhotoField initial={photo} name={typedName} onEdit={onEdit} onChange={onPhotoChange} />
+    <FormGroup title="Photo and name">
+      <PersonPhotoField initial={photo} name={typedName} hint={photoHint} onEdit={onEdit} onChange={onPhotoChange} />
       <div className="flex flex-col gap-1">
         <label className="flex cursor-pointer items-start gap-2.5 text-body-sm text-ink">
           <input
@@ -45,7 +46,7 @@ export const PhotoAndNameFields = ({ photo, name, photoConsent, typedName, error
         </label>
         <FieldError id={`${id}-error`} message={errors.photoConsent} />
       </div>
-      <TextField name="name" label="Full name" defaultValue={name} placeholder="First and last name" maxLength={LIMIT.name} error={errors.name} />
-    </GuideFormGroup>
+      <TextField name="name" label="Full name" hint={nameHint} defaultValue={name} placeholder="First and last name" maxLength={nameMaxLength} error={errors.name} />
+    </FormGroup>
   );
 };

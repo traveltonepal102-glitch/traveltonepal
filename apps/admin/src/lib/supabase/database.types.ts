@@ -191,6 +191,30 @@ type TrekkingGuideRow = {
 
 type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role: string; bio: string; quote: string };
 
+export type AuthorKindValue = "office" | "guide" | "guest";
+
+type AuthorRow = {
+  id: string;
+  kind: AuthorKindValue;
+  /** Only for kind "guide". */
+  guide_id: string | null;
+  name: string;
+  photo_id: string | null;
+  photo_consent: boolean;
+  /** "en" | "de" */
+  writes_in: string[];
+  topics: string[];
+  /** For Google; the first is the main link. */
+  profile_links: string[];
+  show_author_box: boolean;
+  show_on_about: boolean;
+  created_at: string;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+type AuthorTranslationRow = { author_id: string; locale: "en" | "de"; job_title: string; bio: string };
+
 type TrekkingGuideRegionRow = { guide_id: string; region_id: string };
 
 type TrekSimilarRow = { trek_id: string; similar_trek_id: string; position: number };
@@ -445,6 +469,18 @@ export type Database = {
         Update: Partial<TrekkingGuideTranslationRow>;
         Relationships: [Fk<"trekking_guide_translations_guide_id_fkey", "guide_id", "trekking_guides">];
       };
+      authors: {
+        Row: AuthorRow;
+        Insert: Partial<AuthorRow> & Pick<AuthorRow, "kind">;
+        Update: Partial<AuthorRow>;
+        Relationships: [Fk<"authors_photo_id_fkey", "photo_id", "photos">, Fk<"authors_guide_id_fkey", "guide_id", "trekking_guides">];
+      };
+      author_translations: {
+        Row: AuthorTranslationRow;
+        Insert: Partial<AuthorTranslationRow> & Pick<AuthorTranslationRow, "author_id" | "locale" | "job_title">;
+        Update: Partial<AuthorTranslationRow>;
+        Relationships: [Fk<"author_translations_author_id_fkey", "author_id", "authors">];
+      };
       trekking_guide_regions: {
         Row: TrekkingGuideRegionRow;
         Insert: TrekkingGuideRegionRow;
@@ -532,6 +568,10 @@ export type Database = {
         Args: { p_trek_id: string; p_locale: string; p_departures: Json };
         Returns: number;
       };
+      save_author: {
+        Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
+        Returns: string;
+      };
       save_trekking_guide: {
         Args: { p_guide_id: string | null; p_locale: string; p_guide: Json; p_text: Json; p_region_ids: Json };
         Returns: string;
@@ -555,6 +595,7 @@ export type Database = {
       trek_season: TrekSeasonValue;
       trek_tag: TrekTagValue;
       guide_badge: GuideBadgeValue;
+      author_kind: AuthorKindValue;
       departure_status: DepartureStatusValue;
       region_difficulty: RegionDifficultyValue;
     };

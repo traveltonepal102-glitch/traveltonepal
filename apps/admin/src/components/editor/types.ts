@@ -28,3 +28,6 @@ export type EditorSaveState =
   | { status: "error"; message: string; fieldErrors: FieldErrors };
 
 export type EditorSaveAction = (state: EditorSaveState, formData: FormData) => Promise<EditorSaveState>;
+
+/** What a remove action returns (Server Action state): an error to show, or nothing (it redirects when done). */
+export type RemoveState = { error: string | null };
