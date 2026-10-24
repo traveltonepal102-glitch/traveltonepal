@@ -19,6 +19,8 @@ import {
 } from "../constants";
 import type { TrekFormValues } from "../types";
 import { faqsSchema, readFaqs } from "./faqSchema";
+import { knowTopicsSchema, readKnowTopics } from "./knowSchema";
+import { readVideos, videosSchema } from "./videosSchema";
 import { itinerarySchema, readItinerary } from "./itinerarySchema";
 import { pointsSchema, readPoints } from "./pointsSchema";
 import { myMapsIdSchema, packingGroupsSchema, readPackingGroups } from "./practicalSchema";
@@ -61,7 +63,7 @@ export const trekSchema = z
     highlights: pointsSchema(MAX_HIGHLIGHTS),
     suitabilityIntro: text(LIMIT.suitabilityIntro),
     suitabilityPoints: pointsSchema(MAX_SUITABILITY_POINTS),
-    itineraryIntro: text(LIMIT.itineraryIntro),
+    itineraryIntro: richTextField(LIMIT.itineraryIntro),
     itinerary: itinerarySchema,
     included: pointsSchema(MAX_INCLUDED_ITEMS),
     excluded: pointsSchema(MAX_INCLUDED_ITEMS),
@@ -87,6 +89,38 @@ export const trekSchema = z
       .transform(unique)
       .refine((ids) => ids.length <= MAX_SIMILAR_TREKS, `Pick up to ${MAX_SIMILAR_TREKS} similar treks.`),
     guidesIntro: text(LIMIT.guidesIntro),
+    currentSeason: text(LIMIT.currentSeason),
+    category: text(LIMIT.category),
+    protectedArea: text(LIMIT.protectedArea),
+    daysNote: text(LIMIT.daysNote),
+    highPoint: text(LIMIT.highPoint),
+    optionalHighPoint: text(LIMIT.highPoint),
+    optionalHighPointM: optionalWholeNumber({ min: 500, max: 9000, label: "side trip's altitude" }),
+    activity: text(LIMIT.activity),
+    suitabilityHeading: text(LIMIT.heading),
+    itineraryHeading: text(LIMIT.heading),
+    routeLine: text(LIMIT.routeLine),
+    inclusionsHeading: text(LIMIT.heading),
+    guidesHeading: text(LIMIT.heading),
+    elevationHeading: text(LIMIT.heading),
+    elevationNote: text(LIMIT.elevationNote),
+    routeMapHeading: text(LIMIT.heading),
+    trekStart: text(LIMIT.place),
+    trekEnd: text(LIMIT.place),
+    pricingHeading: text(LIMIT.heading),
+    pricingIntro: text(LIMIT.pricingIntro),
+    packingHeading: text(LIMIT.heading),
+    knowHeading: text(LIMIT.heading),
+    knowIntro: text(LIMIT.knowIntro),
+    knowTopics: knowTopicsSchema,
+    faqHeading: text(LIMIT.heading),
+    similarHeading: text(LIMIT.heading),
+    similarIntro: text(LIMIT.similarIntro),
+    videos: videosSchema,
+    pdfMapPath: z
+      .string()
+      .transform((value) => value || null)
+      .pipe(z.string().regex(/^pdf-maps\/[0-9a-f-]{36}\.pdf$/, "Upload the PDF map again.").nullable()),
     guideIds: z
       .array(z.uuid("Pick the guides from the list."))
       .transform(unique)
@@ -96,10 +130,15 @@ export const trekSchema = z
     photos: photoSelectionSchema("trek"),
   })
   .superRefine((values, context) => {
-    // Without a day-by-day plan, Basics must give the length and the highest point.
+    // Without a day-by-day plan, the trip facts must give the length and the highest point.
     if (!values.itinerary.length) {
       if (values.days === null) context.addIssue({ code: "custom", path: ["days"], message: "Enter the number of days." });
       if (values.maxAltitudeM === null) context.addIssue({ code: "custom", path: ["maxAltitudeM"], message: "Enter the highest altitude." });
+    }
+    // A side trip needs both its name and its altitude.
+    if (Boolean(values.optionalHighPoint) !== (values.optionalHighPointM !== null)) {
+      const missing = values.optionalHighPoint ? "optionalHighPointM" : "optionalHighPoint";
+      context.addIssue({ code: "custom", path: [missing], message: "Enter both the side trip's name and its altitude, or neither." });
     }
     // The food budget is a range: both numbers or neither, the lower one first.
     const { mealBudgetMinUsd: low, mealBudgetMaxUsd: high } = values;
@@ -121,6 +160,10 @@ export const trekSchema = z
     days: values.itinerary.length || (days ?? 0),
     maxAltitudeM: values.itinerary.length ? Math.max(...values.itinerary.map((day) => day.altitudeM)) : (maxAltitudeM ?? 0),
   })) satisfies z.ZodType<TrekFormValues, unknown>;
+
+/** Several plain text fields at once: { name: its text }. */
+const readTexts = <Name extends string>(formData: FormData, names: readonly Name[]) =>
+  Object.fromEntries(names.map((name) => [name, readText(formData, name)])) as Record<Name, string>;
 
 /** The editor's FormData as the schema expects it. */
 export const readTrekForm = (formData: FormData) => {
@@ -179,6 +222,37 @@ export const readTrekForm = (formData: FormData) => {
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     guidesIntro: readText(formData, "guidesIntro"),
+    ...readTexts(formData, [
+      "currentSeason",
+      "category",
+      "protectedArea",
+      "daysNote",
+      "highPoint",
+      "optionalHighPoint",
+      "optionalHighPointM",
+      "activity",
+      "suitabilityHeading",
+      "itineraryHeading",
+      "routeLine",
+      "inclusionsHeading",
+      "guidesHeading",
+      "elevationHeading",
+      "elevationNote",
+      "routeMapHeading",
+      "trekStart",
+      "trekEnd",
+      "pricingHeading",
+      "pricingIntro",
+      "packingHeading",
+      "knowHeading",
+      "knowIntro",
+      "faqHeading",
+      "similarHeading",
+      "similarIntro",
+      "pdfMapPath",
+    ]),
+    knowTopics: readKnowTopics(formData),
+    videos: readVideos(formData),
     guideIds: readList(formData, "guideId"),
     photos: readPhotoSelection(formData),
   };

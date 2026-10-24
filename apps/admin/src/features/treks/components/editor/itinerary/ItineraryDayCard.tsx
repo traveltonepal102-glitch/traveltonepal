@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useId } from "react";
 
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
+import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { TextField } from "@/components/ui/TextField";
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
@@ -93,7 +94,15 @@ export const ItineraryDayCard = ({ day, index, count, isOpen, errors, photoChoic
             placeholder="3,870"
           />
         </div>
-        <TextField name="dayDescription" label="What happens on this day" multiline rows={4} value={day.description} onValueChange={(description) => onChange({ description })} error={errors.description} maxLength={LIMIT.dayDescription} />
+        <RichTextEditor
+          name="dayDescription"
+          label="What happens on this day"
+          size="compact"
+          defaultValue={day.description}
+          onChange={(description) => onChange({ description })}
+          error={errors.description}
+          maxLength={LIMIT.dayDescription}
+        />
         <DayPhotoPicker photo={day.photo} choices={photoChoices} onChange={(photo) => onChange({ photo })} />
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border pt-3">
           <button type="button" role="switch" aria-checked={day.isHighPoint} onClick={onToggleHighPoint} className={cn(smallButton, day.isHighPoint && "border-saffron bg-saffron-tint text-saffron-ink")}>

@@ -3,17 +3,19 @@
 import { useState } from "react";
 
 import { useRowList } from "@/hooks/useRowList";
+import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
+import type { RichTextDoc } from "@/lib/richText/richText";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import type { FaqIcon, FaqTopic } from "../types";
 
 /** A question row; its text stays in the (uncontrolled) fields, the key keeps it in place when rows move. */
-export type FaqQuestionRow = { key: string; question: string; answer: string };
+export type FaqQuestionRow = { key: string; question: string; answer: RichTextDoc };
 export type FaqTopicDraft = { title: string; icon: FaqIcon; items: FaqQuestionRow[] };
 
 export type FaqTopics = ReturnType<typeof useFaqTopics>;
 
-const newQuestion =(): FaqQuestionRow => ({ key: crypto.randomUUID(), question: "", answer: "" });
+const newQuestion = (): FaqQuestionRow => ({ key: crypto.randomUUID(), question: "", answer: EMPTY_RICH_TEXT });
 
 /** Topic numbers with an error ("faqs.2.items.0.answer" → 2), lowest first. */
 const topicsWithErrors = (errors: FieldErrors) =>
@@ -43,6 +45,8 @@ export const useFaqTopics = (initial: FaqTopic[], errors: FieldErrors, onEdit: (
   const setItems = (key: string, next: FaqQuestionRow[]) => topics.update(key, { items: next });
 
   return {
+    /** For editors the form can't see changes in (the rich text answers). */
+    markEdited: onEdit,
     topics: topics.rows,
     openKey: open?.key ?? null,
     errorIndexes,

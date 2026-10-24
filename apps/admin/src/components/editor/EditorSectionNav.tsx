@@ -83,7 +83,7 @@ export const EditorSectionNav = <Key extends string>({
               <Icon name={section.icon} size={18} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-body-sm font-bold whitespace-nowrap">{section.label}</span>
+              <span className="block text-body-sm font-bold whitespace-nowrap desktop:whitespace-normal">{section.label}</span>
               <span className={cn("block truncate text-xs max-desktop:hidden", statusKey === "warn" ? "text-saffron-deep" : "text-muted-foreground")}>
                 {note}
               </span>

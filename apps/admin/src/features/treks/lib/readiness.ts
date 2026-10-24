@@ -1,24 +1,38 @@
 import type { SectionReadiness } from "@/components/editor/types";
-import { isRichTextEmpty } from "@/lib/richText/richText";
+import { isRichTextEmpty, richTextToPlainText } from "@/lib/richText/richText";
 
-import { RECOMMENDED_FAQS, RECOMMENDED_HIGHLIGHTS, SHARED_SECTIONS } from "../constants";
+import { RECOMMENDED_FAQS, RECOMMENDED_HIGHLIGHTS, SHARED_SECTIONS, TREK_LIMITS } from "../constants";
 import type { TrekPhotos, TrekSectionKey, TrekValues } from "../types";
 import { getSeoChecks } from "./seoChecks";
 
-/** The sections an admin can fill in now (the others come in later steps). */
-export type ReadyTrekSectionKey = Extract<TrekSectionKey, "basics" | "photos" | "overview" | "itinerary" | "included" | "prices" | "practical" | "faq" | "seo" | "shared" | "guides">;
+/** Every section has something to fill in or check. */
+export type ReadyTrekSectionKey = TrekSectionKey;
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
-const TRIP_FACTS: (keyof TrekValues)[] = ["startFinish", "dailyWalking", "guideRatio", "seasonLabel", "accommodation", "transport", "distanceKm"];
+/** The boxes of the trip overview the admin types (the others come from the days, difficulty and season). */
+const TRIP_FACTS = ["startFinish", "dailyWalking", "guideRatio", "seasonLabel", "accommodation", "transport", "activity", "distanceKm"] as const;
 
-const isFilled = (value: TrekValues[keyof TrekValues]) => (typeof value === "string" ? value.trim() !== "" : value !== null);
+const isFilled = (value: string | number | null) => (typeof value === "string" ? value.trim() !== "" : value !== null);
 
-const basics = (trek: TrekValues): SectionReadiness => {
-  const missingFacts = TRIP_FACTS.filter((fact) => !isFilled(trek[fact])).length;
-  const missing = [!trek.summary.trim() && "the summary", missingFacts && plural(missingFacts, "trip fact")].filter(Boolean);
-  if (!missing.length) return { status: "done", note: "Name, difficulty, trip facts" };
-  return { status: "todo", note: `Add ${missing.join(" and ")}` };
+/** Needs the big heading and the summary; the season, the trek style tag and the high point are reminders. */
+const top = (trek: TrekValues): SectionReadiness => {
+  if (!trek.headline.trim()) return { status: "todo", note: "Add the big heading" };
+  if (!trek.summary.trim()) return { status: "todo", note: "Add the short summary" };
+  const missing = [!trek.currentSeason.trim() && "season", !trek.category.trim() && "trek style", !trek.highPoint.trim() && "high point"].filter(Boolean);
+  if (missing.length) return { status: "warn", note: `Add the ${missing.join(", ")}` };
+  return { status: "done", note: "Heading, lines, tags" };
+};
+
+const intro = (trek: TrekValues): SectionReadiness => {
+  if (isRichTextEmpty(trek.introduction)) return { status: "todo", note: "Add the introduction" };
+  return { status: "done", note: `${richTextToPlainText(trek.introduction).split(/\s+/).length} words` };
+};
+
+const facts = (trek: TrekValues): SectionReadiness => {
+  const missing = TRIP_FACTS.filter((fact) => !isFilled(trek[fact])).length;
+  if (missing) return { status: "todo", note: `Add ${plural(missing, "trip fact")}` };
+  return { status: "done", note: "12 facts" };
 };
 
 const photos = ({ cover, gallery }: TrekPhotos): SectionReadiness => {
@@ -26,20 +40,23 @@ const photos = ({ cover, gallery }: TrekPhotos): SectionReadiness => {
   return { status: "done", note: `Cover + ${plural(gallery.length, "photo")}` };
 };
 
-/** Needs the introduction and some highlights; "Is this trek for you?" and the 4–6 highlights are reminders. */
-const overview = (trek: TrekValues): SectionReadiness => {
-  if (isRichTextEmpty(trek.introduction)) return { status: "todo", note: "Add the introduction" };
+/** Needs highlights; fewer than the 4–6 the design asks for is a reminder. */
+const highlights = (trek: TrekValues): SectionReadiness => {
   if (!trek.highlights.length) return { status: "todo", note: "Add the highlights" };
   if (trek.highlights.length < RECOMMENDED_HIGHLIGHTS) return { status: "warn", note: `Only ${plural(trek.highlights.length, "highlight")}` };
-  if (!trek.suitabilityPoints.length) return { status: "warn", note: "Add “Is this trek for you?”" };
-  return { status: "done", note: `Intro, ${plural(trek.highlights.length, "highlight")}` };
+  return { status: "done", note: plural(trek.highlights.length, "highlight") };
+};
+
+const fit = (trek: TrekValues): SectionReadiness => {
+  if (!trek.suitabilityPoints.length) return { status: "todo", note: "Add the checklist" };
+  return { status: "done", note: plural(trek.suitabilityPoints.length, "topic") };
 };
 
 /** Needs days; a highlight day and a description for every day are reminders. */
 const itinerary = (trek: TrekValues): SectionReadiness => {
   const days = trek.itinerary;
   if (!days.length) return { status: "todo", note: "Add the days" };
-  const undescribed = days.filter((day) => !day.description.trim()).length;
+  const undescribed = days.filter((day) => isRichTextEmpty(day.description)).length;
   if (undescribed) return { status: "warn", note: `${plural(undescribed, "day")} without a description` };
   if (!days.some((day) => day.isHighPoint)) return { status: "warn", note: "Mark the highlight day" };
   return { status: "done", note: plural(days.length, "day") };
@@ -63,12 +80,30 @@ const prices = (trek: TrekValues, today: string): SectionReadiness => {
   return { status: "done", note: `${groups} · ${plural(upcoming, "date")}` };
 };
 
-/** Needs the map's place and a packing list (the trek page shows both sections). */
-const practical = (trek: TrekValues): SectionReadiness => {
-  if (!trek.mapPlace.trim()) return { status: "todo", note: "Add the place for the map" };
-  if (!trek.packingGroups.length) return { status: "todo", note: "Add the packing list" };
-  return { status: "done", note: `${trek.myMapsId ? "GPS trail map" : "Map"} · ${plural(trek.packingGroups.length, "packing card")}` };
+/** Needs something for the map to show; the printable PDF map is a reminder (its button stays hidden without one). */
+const route = (trek: TrekValues): SectionReadiness => {
+  if (!trek.mapPlace.trim() && !trek.myMapsId) return { status: "todo", note: "Add the map" };
+  if (!trek.pdfMapPath) return { status: "warn", note: "No printable map yet" };
+  return { status: "done", note: `${trek.myMapsId ? "GPS trail map" : "Map"} · PDF map` };
 };
+
+const packing = (trek: TrekValues): SectionReadiness => {
+  if (!trek.packingGroups.length) return { status: "todo", note: "Add the packing list" };
+  return { status: "done", note: plural(trek.packingGroups.length, "group") };
+};
+
+/** Needs topics; a heading longer than Google shows is a reminder. */
+const know = (trek: TrekValues): SectionReadiness => {
+  if (!trek.knowTopics.length) return { status: "todo", note: "Add the topics" };
+  if (trek.knowHeading.length > TREK_LIMITS.headingRecommended) return { status: "warn", note: "Heading is a bit long" };
+  return { status: "done", note: plural(trek.knowTopics.length, "topic") };
+};
+
+/** Optional: without picks the website chooses. */
+const similar = (trek: TrekValues): SectionReadiness => ({
+  status: "done",
+  note: trek.similarTrekIds.length ? plural(trek.similarTrekIds.length, "trek") : "Chosen by the website",
+});
 
 /** Needs questions; fewer than recommended is a reminder (Google gets every question on the trek). */
 const faq = (trek: TrekValues): SectionReadiness => {
@@ -84,8 +119,7 @@ const seo = (trek: TrekValues): SectionReadiness => {
   const checks = getSeoChecks(trek);
   const done = checks.filter((check) => check.isDone).length;
   if (done < checks.length) return { status: "warn", note: `${done} of ${checks.length} Google checks` };
-  const similar = trek.similarTrekIds.length ? plural(trek.similarTrekIds.length, "similar trek") : "similar treks automatic";
-  return { status: "done", note: `Title, description · ${similar}` };
+  return { status: "done", note: "Title and description" };
 };
 
 /** Needs at least one guide (the trek page leaves "Meet your trek guide" out without one). */
@@ -103,15 +137,21 @@ const shared = (trek: TrekValues): SectionReadiness => ({
 
 /** How complete each section is, from the saved values (the editor's checklist). `today`: "YYYY-MM-DD" in Nepal. */
 export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos, today: string): Record<ReadyTrekSectionKey, SectionReadiness> => ({
-  basics: basics(trek),
+  top: top(trek),
   photos: photos(trekPhotos),
-  overview: overview(trek),
+  intro: intro(trek),
+  facts: facts(trek),
+  highlights: highlights(trek),
+  fit: fit(trek),
   itinerary: itinerary(trek),
-  included: included(trek),
-  prices: prices(trek, today),
-  practical: practical(trek),
+  inclusions: included(trek),
+  guides: guides(trek),
+  route: route(trek),
+  pricing: prices(trek, today),
+  packing: packing(trek),
+  know: know(trek),
   faq: faq(trek),
+  similar: similar(trek),
   seo: seo(trek),
   shared: shared(trek),
-  guides: guides(trek),
 });

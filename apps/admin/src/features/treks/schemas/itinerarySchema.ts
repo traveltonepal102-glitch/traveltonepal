@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { optionalWholeNumber, readList, requiredText, text, wholeNumber } from "@/lib/forms/formFields";
+import { richTextField } from "@/lib/richText/richText";
 
 import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../constants";
 
@@ -20,7 +21,7 @@ const daySchema = z
     altitudeM: wholeNumber({ min: 0, max: 9000, label: "highest point" }),
     sleepAltitudeM: optionalWholeNumber({ min: 0, max: 9000, label: "sleep altitude" }),
     isHighPoint: z.string().transform((value) => value === "true"),
-    description: text(LIMIT.dayDescription),
+    description: richTextField(LIMIT.dayDescription),
     photoId: optionalId("The day's photo couldn't be read. Pick it again."),
   })
   .superRefine((day, context) => {

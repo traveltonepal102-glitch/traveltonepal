@@ -7,7 +7,7 @@ import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
+import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
 import type { Departure, GroupPrice, ItineraryDay, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
@@ -86,7 +86,7 @@ const toItinerary = (days: DayQueryRow[]): ItineraryDay[] =>
           altitudeM: day.altitude_m,
           sleepAltitudeM: day.sleep_altitude_m,
           isHighPoint: day.is_high_point,
-          description: text.description,
+          description: richTextSchema.parse(text.description),
           photo: day.photo ? toPhoto(day.photo) : null,
         },
       ];
@@ -100,10 +100,23 @@ const pointSchema = z.object({ title: z.string(), text: z.string() });
 const pointsSchema = z.array(pointSchema).catch([]);
 const packingGroupsSchema = z.array(z.object({ title: z.string(), icon: z.enum(PACKING_ICON_VALUES), items: z.array(pointSchema) })).catch([]);
 const faqsSchema = z
-  .array(z.object({ title: z.string(), icon: z.enum(FAQ_ICON_VALUES), items: z.array(z.object({ question: z.string(), answer: z.string() })) }))
+  .array(z.object({ title: z.string(), icon: z.enum(FAQ_ICON_VALUES), items: z.array(z.object({ question: z.string(), answer: richTextDocSchema })) }))
   .catch([]);
 const sharedSectionsSchema = z.array(z.enum(SHARED_SECTION_KEYS)).catch([]);
-const introductionSchema = richTextDocSchema.catch(EMPTY_RICH_TEXT);
+const richTextSchema = richTextDocSchema.catch(EMPTY_RICH_TEXT);
+const knowTopicsSchema = z
+  .array(
+    z.object({
+      icon: z.enum(KNOW_ICON_VALUES),
+      title: z.string(),
+      points: z.array(pointSchema),
+      note: z.string(),
+      photoId: z.string().nullable(),
+      videoId: z.string().nullable(),
+    }),
+  )
+  .catch([]);
+const videosSchema = z.array(z.object({ youtubeId: z.string(), title: z.string(), inGallery: z.boolean(), inGuide: z.boolean() })).catch([]);
 
 const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
   const [text] = row.trek_translations;
@@ -137,12 +150,12 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     seasonLabel: text.season_label,
     accommodation: text.accommodation,
     transport: text.transport,
-    introduction: introductionSchema.parse(text.introduction),
+    introduction: richTextSchema.parse(text.introduction),
     highlightsHeading: text.highlights_heading,
     highlights: pointsSchema.parse(text.highlights),
     suitabilityIntro: text.suitability_intro,
     suitabilityPoints: pointsSchema.parse(text.suitability_points),
-    itineraryIntro: text.itinerary_intro,
+    itineraryIntro: richTextSchema.parse(text.itinerary_intro),
     itinerary: toItinerary(row.trek_days),
     included: pointsSchema.parse(text.included),
     excluded: pointsSchema.parse(text.excluded),
@@ -165,6 +178,35 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     seoDescription: text.seo_description,
     hiddenSharedSections: sharedSectionsSchema.parse(row.hidden_shared_sections),
     guidesIntro: text.guides_intro,
+    currentSeason: text.current_season,
+    category: text.category,
+    protectedArea: text.protected_area,
+    daysNote: text.days_note,
+    highPoint: text.high_point,
+    optionalHighPoint: text.optional_high_point,
+    optionalHighPointM: row.optional_high_point_m,
+    activity: text.activity,
+    suitabilityHeading: text.suitability_heading,
+    itineraryHeading: text.itinerary_heading,
+    routeLine: text.route_line,
+    inclusionsHeading: text.inclusions_heading,
+    guidesHeading: text.guides_heading,
+    elevationHeading: text.elevation_heading,
+    elevationNote: text.elevation_note,
+    routeMapHeading: text.route_map_heading,
+    trekStart: text.trek_start,
+    trekEnd: text.trek_end,
+    pricingHeading: text.pricing_heading,
+    pricingIntro: text.pricing_intro,
+    packingHeading: text.packing_heading,
+    knowHeading: text.know_heading,
+    knowIntro: text.know_intro,
+    knowTopics: knowTopicsSchema.parse(text.know_topics),
+    faqHeading: text.faq_heading,
+    similarHeading: text.similar_heading,
+    similarIntro: text.similar_intro,
+    videos: videosSchema.parse(text.videos),
+    pdfMapPath: row.pdf_map_path,
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
   };
@@ -249,6 +291,14 @@ export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
   return data ? toTrek(data, regionNames) : null;
 });
 
+/** The trek's saved printable map (null without one), to delete it once a save replaces or removes it. */
+export const getTrekPdfMapPath = async (trekId: string): Promise<string | null> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("treks").select("pdf_map_path").eq("id", trekId).maybeSingle();
+  if (error) throw new Error(`Could not load trek ${trekId}: ${error.message}`);
+  return data?.pdf_map_path ?? null;
+};
+
 export type SaveTrekResult =
   | { ok: true; trekId: string }
   | { ok: false; reason: "slug_taken" | "missing_link" | "not_found" | "forbidden" | "failed" };
@@ -279,6 +329,8 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
       hidden_shared_sections: values.hiddenSharedSections,
+      optional_high_point_m: values.optionalHighPointM,
+      pdf_map_path: values.pdfMapPath ?? "",
       guide_ids: values.guideIds,
     },
     p_text: {
@@ -311,6 +363,33 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       seo_title: values.seoTitle,
       seo_description: values.seoDescription,
       guides_intro: values.guidesIntro,
+      current_season: values.currentSeason,
+      category: values.category,
+      protected_area: values.protectedArea,
+      days_note: values.daysNote,
+      high_point: values.highPoint,
+      optional_high_point: values.optionalHighPoint,
+      activity: values.activity,
+      suitability_heading: values.suitabilityHeading,
+      itinerary_heading: values.itineraryHeading,
+      route_line: values.routeLine,
+      inclusions_heading: values.inclusionsHeading,
+      guides_heading: values.guidesHeading,
+      elevation_heading: values.elevationHeading,
+      elevation_note: values.elevationNote,
+      route_map_heading: values.routeMapHeading,
+      trek_start: values.trekStart,
+      trek_end: values.trekEnd,
+      pricing_heading: values.pricingHeading,
+      pricing_intro: values.pricingIntro,
+      packing_heading: values.packingHeading,
+      know_heading: values.knowHeading,
+      know_intro: values.knowIntro,
+      know_topics: values.knowTopics,
+      faq_heading: values.faqHeading,
+      similar_heading: values.similarHeading,
+      similar_intro: values.similarIntro,
+      videos: values.videos,
     },
     p_photos: { gallery: values.photos.galleryPhotoIds, details: values.photos.details },
     p_days: values.itinerary.map((day) => ({

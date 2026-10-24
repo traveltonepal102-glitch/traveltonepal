@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
+import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
@@ -73,15 +74,14 @@ export const FaqTopicPanel = ({ topic, index, isOpen, faq, errors }: FaqTopicPan
               error={errors[`${field}.items.${row}.question`]}
               inputClassName="font-bold"
             />
-            <TextField
+            <RichTextEditor
               name={`faq${index}Answer`}
               label="Answer"
-              multiline
+              size="compact"
               defaultValue={item.answer}
-              placeholder="A short, direct answer in one or two sentences."
               maxLength={LIMIT.faqAnswer}
               error={errors[`${field}.items.${row}.answer`]}
-              inputClassName="min-h-18 resize-none [field-sizing:content]"
+              onEdit={faq.markEdited}
             />
           </div>
           <div className="flex flex-col gap-0.5 pt-6">

@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import type { RichTextDoc } from "@/lib/richText/richText";
+
 import { EMPTY_TREK_VALUES } from "../constants";
 import { getSeoChecks } from "./seoChecks";
+
+const doc = (text: string): RichTextDoc => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 
 const LANGTANG = {
   ...EMPTY_TREK_VALUES,
@@ -10,7 +14,7 @@ const LANGTANG = {
   seoTitle: "Langtang Valley Trek: 10 Days from $890",
   seoDescription: "x".repeat(150),
   groupPrices: [{ id: "p1", label: "2 people", shortLabel: "2 Pax", priceUsd: 965, team: "", isDefault: true }],
-  faqs: [{ title: "General", icon: "info" as const, items: [{ question: "Why?", answer: "Because." }] }],
+  faqs: [{ title: "General", icon: "info" as const, items: [{ question: "Why?", answer: doc("Because.") }] }],
 };
 
 const failing = (values: typeof LANGTANG) => getSeoChecks(values).filter((check) => !check.isDone).map((check) => check.label);

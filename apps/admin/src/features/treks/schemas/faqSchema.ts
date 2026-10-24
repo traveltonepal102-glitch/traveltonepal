@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 import { readList, text } from "@/lib/forms/formFields";
+import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 
 import { FAQ_ICON_VALUES, MAX_FAQ_QUESTIONS, MAX_FAQ_TOPICS, TREK_LIMITS as LIMIT } from "../constants";
 
 /** A question needs its answer and the other way round; a fully empty row is ignored. */
 const questionsSchema = z
   .array(
-    z.object({ question: text(LIMIT.faqQuestion), answer: text(LIMIT.faqAnswer) }).superRefine((item, context) => {
-      if (Boolean(item.question) === Boolean(item.answer)) return;
+    z.object({ question: text(LIMIT.faqQuestion), answer: richTextField(LIMIT.faqAnswer) }).superRefine((item, context) => {
+      if (Boolean(item.question) === !isRichTextEmpty(item.answer)) return;
       const missing = item.question ? "answer" : "question";
       context.addIssue({ code: "custom", path: [missing], message: `Write the ${missing}, or remove this question.` });
     }),

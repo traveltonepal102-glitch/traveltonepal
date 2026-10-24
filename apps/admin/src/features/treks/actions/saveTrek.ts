@@ -8,10 +8,11 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { removeUnusedTrekFile } from "@/lib/storage/trekFiles";
 
 import { TREKS_PATH, trekPath } from "../constants";
 import { readTrekForm, trekSchema } from "../schemas/trekSchema";
-import { saveTrek as saveTrekToDatabase } from "../services/treksRepository";
+import { getTrekPdfMapPath, saveTrek as saveTrekToDatabase } from "../services/treksRepository";
 
 const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveState => ({ status: "error", message, fieldErrors });
 
@@ -37,6 +38,7 @@ export const saveTrek = async (trekId: string | null, _previous: EditorSaveState
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
+  const previousPdfMap = trekId ? await getTrekPdfMapPath(trekId) : null;
   const result = await saveTrekToDatabase(parsed.data, trekId);
   if (!result.ok) {
     if (result.reason === "slug_taken") {
@@ -44,6 +46,9 @@ export const saveTrek = async (trekId: string | null, _previous: EditorSaveState
     }
     return failure(FAILURE_MESSAGES[result.reason]);
   }
+
+  // A replaced or removed printable map is public, so it is deleted once the trek no longer points to it.
+  if (previousPdfMap && previousPdfMap !== parsed.data.pdfMapPath) await removeUnusedTrekFile(previousPdfMap);
 
   revalidatePath(TREKS_PATH);
   revalidatePath(trekPath(result.trekId));

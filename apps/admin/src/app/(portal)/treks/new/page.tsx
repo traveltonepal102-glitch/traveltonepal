@@ -28,6 +28,7 @@ const NewTrekPage = async () => {
       regionId={null}
       isNew
       today={today}
+      pdfMapUrl={null}
     />
   );
 };

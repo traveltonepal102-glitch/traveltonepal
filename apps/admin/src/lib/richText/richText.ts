@@ -104,3 +104,9 @@ export const richTextField = (maxCharacters: number) =>
       return z.NEVER;
     })
     .refine((doc) => richTextToPlainText(doc).length <= maxCharacters, `Use ${maxCharacters} characters or fewer.`);
+
+/** Any value (e.g. the editor's own JSON) → a checked document; anything it can't be becomes empty. */
+export const toRichTextDoc = (value: unknown): RichTextDoc => {
+  const result = richTextDocSchema.safeParse(value);
+  return result.success ? result.data : EMPTY_RICH_TEXT;
+};

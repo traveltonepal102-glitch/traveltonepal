@@ -19,22 +19,48 @@ type TrekNameCardProps = {
   isNew: boolean;
 };
 
-/** Name, web address, region and the one-line summary (design: "Name and web address"). */
+/** Name, the big heading (H1), web address, region and the summary (design: "Name and big heading"). */
 export const TrekNameCard = ({ values, errors, regions, isNew }: TrekNameCardProps) => {
   const [slug, setSlug] = useState(values.slug);
   // A new trek gets its web address from the name until the admin types one.
   const [isSlugTyped, setIsSlugTyped] = useState(!isNew);
 
   return (
-    <FormSection title="Name and web address">
+    <FormSection title="Name and big heading">
+      <div className="grid gap-3 tablet:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <TextField
+          name="name"
+          label="Trek name"
+          hint="For menus, trek cards, the breadcrumb and the booking form."
+          defaultValue={values.name}
+          error={errors.name}
+          maxLength={LIMIT.name}
+          onValueChange={(name) => !isSlugTyped && setSlug(slugify(name))}
+          inputClassName="h-12.5 font-display text-xl font-bold"
+        />
+        <TextField
+          name="shortName"
+          label="Short name"
+          hint="As people say it: “Book the Langtang Trek with us”."
+          defaultValue={values.shortName}
+          placeholder="Langtang Trek"
+          maxLength={LIMIT.shortName}
+          error={errors.shortName}
+          inputClassName="h-12.5"
+        />
+      </div>
       <TextField
-        name="name"
-        label="Trek name"
-        defaultValue={values.name}
-        error={errors.name}
-        maxLength={LIMIT.name}
-        onValueChange={(name) => !isSlugTyped && setSlug(slugify(name))}
-        inputClassName="h-12.5 font-display text-xl font-bold"
+        name="headline"
+        label="Big heading at the top"
+        labelNote="H1"
+        hint="The title visitors and Google see first. Start with the main keyword."
+        defaultValue={values.headline}
+        placeholder="Langtang Valley Trek 10 Days (Itinerary, Cost, Complete Guide)"
+        maxLength={LIMIT.headline}
+        recommendedLength={LIMIT.headingRecommended}
+        showCount
+        error={errors.headline}
+        inputClassName="font-display text-lg font-bold"
       />
       <div className="grid gap-3 tablet:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <SlugField
@@ -68,7 +94,7 @@ export const TrekNameCard = ({ values, errors, regions, isNew }: TrekNameCardPro
         maxLength={LIMIT.summary}
         recommendedLength={LIMIT.summaryRecommended}
         showCount
-        hint="Used on trek cards and as the starting point for the Google description."
+        hint="Not shown on the trek page. Used on trek cards and as the starting point for the Google description."
       />
     </FormSection>
   );

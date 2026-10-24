@@ -8,6 +8,7 @@ import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRe
 import { saveTrek } from "@/features/treks/actions/saveTrek";
 import { TrekEditor } from "@/features/treks/components/editor/TrekEditor";
 import { getTrek, listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
+import { trekFileUrl } from "@/lib/storage/trekFiles";
 import { formatDateTime, todayInNepal } from "@/utils/formatDateTime";
 
 type TrekPageProps = PageProps<"/treks/[trekId]">;
@@ -50,6 +51,7 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       regionId={trek.regionId}
       isNew={false}
       today={today}
+      pdfMapUrl={trek.pdfMapPath ? trekFileUrl(trek.pdfMapPath) : null}
       lastSaved={`Saved ${formatDateTime(trek.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
     />

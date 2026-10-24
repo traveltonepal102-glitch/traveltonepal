@@ -16,7 +16,6 @@ import { MAX_PACKING_GROUPS, MAX_PACKING_ITEMS, PACKING_ICONS, STARTER_PACKING_G
 import type { PackingGroup } from "../../../types";
 
 type PackingListCardProps = {
-  intro: string;
   groups: PackingGroup[];
   errors: FieldErrors;
   onEdit: () => void;
@@ -28,21 +27,15 @@ const POINT_LIMITS = { title: LIMIT.pointTitle, text: LIMIT.pointText };
  * "Gear and essentials" on the trek page: one line of intro and up to 6 cards of items. Each card's items are
  * sent as packingItem<card number>Title/Text, so the names follow the card's place in the list.
  */
-export const PackingListCard = ({ intro, groups, errors, onEdit }: PackingListCardProps) => {
+export const PackingListCard = ({ groups, errors, onEdit }: PackingListCardProps) => {
   const list = useRowList<PackingGroup>(groups, onEdit);
   const isFull = list.rows.length >= MAX_PACKING_GROUPS;
 
   return (
-    <FormSection title="Packing list" hint="The trek page shows these cards under “Gear and essentials”. Each item is a bold lead-in and one line.">
-      <TextField
-        name="packingIntro"
-        label="Line above the cards"
-        defaultValue={intro}
-        placeholder="Tested gear for the valley: −10 °C nights at Kyanjin to 25 °C days in the forest."
-        maxLength={LIMIT.packingIntro}
-        error={errors.packingIntro}
-      />
-
+    <FormSection
+      title="Packing list"
+      hint="Each card's items are a bold lead-in and one line. The “Download printable checklist” file is made from this list by itself."
+    >
       {list.rows.map((group, index) => {
         const number = index + 1;
         return (

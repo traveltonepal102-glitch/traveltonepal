@@ -75,6 +75,9 @@ type TrekRow = {
   my_maps_id: string | null;
   /** Shared sections this trek doesn't show (see the trek editor's SHARED_SECTIONS). */
   hidden_shared_sections: string[];
+  optional_high_point_m: number | null;
+  /** pdf-maps/<uuid>.pdf in the trek-files bucket. */
+  pdf_map_path: string | null;
   created_at: string;
   updated_at: string;
   updated_by: string | null;
@@ -101,7 +104,8 @@ type TrekTranslationRow = {
   suitability_intro: string;
   /** [{ title, text }] */
   suitability_points: Json;
-  itinerary_intro: string;
+  /** Rich text (Tiptap JSON). */
+  itinerary_intro: Json;
   /** [{ title, text }] each: what's covered, what's not, meal tips, teahouse notes. */
   included: Json;
   excluded: Json;
@@ -118,6 +122,35 @@ type TrekTranslationRow = {
   short_name: string;
   /** One line above "Meet your trek guide". */
   guides_intro: string;
+  current_season: string;
+  category: string;
+  protected_area: string;
+  days_note: string;
+  high_point: string;
+  optional_high_point: string;
+  activity: string;
+  suitability_heading: string;
+  itinerary_heading: string;
+  route_line: string;
+  inclusions_heading: string;
+  guides_heading: string;
+  elevation_heading: string;
+  elevation_note: string;
+  route_map_heading: string;
+  trek_start: string;
+  trek_end: string;
+  pricing_heading: string;
+  pricing_intro: string;
+  packing_heading: string;
+  know_heading: string;
+  know_intro: string;
+  /** [{ icon, title, points: [{ title, text }], note, photoId, videoId }] */
+  know_topics: Json;
+  faq_heading: string;
+  similar_heading: string;
+  similar_intro: string;
+  /** [{ youtubeId, title, inGallery, inGuide }] */
+  videos: Json;
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
@@ -188,7 +221,8 @@ type TrekDayTranslationRow = {
   title: string;
   subtitle: string;
   duration: string;
-  description: string;
+  /** Rich text (Tiptap JSON). */
+  description: Json;
 };
 
 type TrekPhotoRow = { trek_id: string; photo_id: string; position: number };

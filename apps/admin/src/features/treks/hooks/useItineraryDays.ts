@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
+
 import type { ItineraryDay } from "../types";
 
 /** A day as the editor holds it: altitudes as typed (e.g. "4,773"), plus a key that never changes. */
@@ -28,7 +30,7 @@ const emptyRow = (): DayRow => ({
   altitude: "",
   sleepAltitude: "",
   isHighPoint: false,
-  description: "",
+  description: EMPTY_RICH_TEXT,
   photo: null,
 });
 

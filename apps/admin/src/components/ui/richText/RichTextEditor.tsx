@@ -6,7 +6,7 @@ import { useEffect, useId, useState } from "react";
 
 import { FieldError } from "@/components/ui/FieldError";
 import { hintClass, labelClass } from "@/components/ui/formStyles";
-import { richTextToPlainText } from "@/lib/richText/richText";
+import { richTextToPlainText, toRichTextDoc } from "@/lib/richText/richText";
 import type { RichTextDoc } from "@/lib/richText/richText";
 
 import { RICH_TEXT_EXTENSIONS } from "./extensions";
@@ -26,12 +26,14 @@ type RichTextEditorProps = {
   size?: "default" | "compact";
   /** Called on every change (the form can't see changes inside the editor). */
   onEdit?: () => void;
+  /** The document after each change, checked like the server checks it (e.g. to copy it elsewhere). */
+  onChange?: (doc: RichTextDoc) => void;
 };
 
 const MIN_HEIGHT = { default: "min-h-40", compact: "min-h-20" };
 
 /** Rich text field for admin forms: bold, italic, lists and links (see src/lib/richText). */
-export const RichTextEditor = ({ name, label, hint, error, defaultValue, maxLength, size = "default", onEdit }: RichTextEditorProps) => {
+export const RichTextEditor = ({ name, label, hint, error, defaultValue, maxLength, size = "default", onEdit, onChange }: RichTextEditorProps) => {
   const id = useId();
   const [json, setJson] = useState(() => JSON.stringify(defaultValue));
   const [length, setLength] = useState(() => richTextToPlainText(defaultValue).length);
@@ -46,6 +48,7 @@ export const RichTextEditor = ({ name, label, hint, error, defaultValue, maxLeng
       setJson(JSON.stringify(current.getJSON()));
       setLength(current.getText({ blockSeparator: "\n\n" }).trim().length);
       onEdit?.();
+      onChange?.(toRichTextDoc(current.getJSON()));
     },
   });
 

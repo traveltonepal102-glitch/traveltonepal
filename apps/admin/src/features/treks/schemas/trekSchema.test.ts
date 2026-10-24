@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import type { RichTextDoc } from "@/lib/richText/richText";
 
 import { readTrekForm, trekSchema } from "./trekSchema";
+
+const doc = (text: string): RichTextDoc => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
+/** What RichTextEditor posts for a one-paragraph text. */
+const json = (text: string) => JSON.stringify(doc(text));
 
 const REGION = "00000000-0000-4000-8000-000000000001";
 
@@ -283,13 +288,13 @@ describe("trekSchema", () => {
       faqTopicTitle: ["General information", "", "Altitude and health"],
       faqTopicIcon: ["calendar_month", "info", "medical_services"],
       faq0Question: ["How long is the trek?", ""],
-      faq0Answer: ["10 days from Kathmandu.", ""],
+      faq0Answer: [json("10 days from Kathmandu."), ""],
       faq2Question: ["What happens in an emergency?"],
-      faq2Answer: ["We arrange a helicopter with your insurer."],
+      faq2Answer: [json("We arrange a helicopter with your insurer.")],
     });
     expect(result.data?.faqs).toEqual([
-      { title: "General information", icon: "calendar_month", items: [{ question: "How long is the trek?", answer: "10 days from Kathmandu." }] },
-      { title: "Altitude and health", icon: "medical_services", items: [{ question: "What happens in an emergency?", answer: "We arrange a helicopter with your insurer." }] },
+      { title: "General information", icon: "calendar_month", items: [{ question: "How long is the trek?", answer: doc("10 days from Kathmandu.") }] },
+      { title: "Altitude and health", icon: "medical_services", items: [{ question: "What happens in an emergency?", answer: doc("We arrange a helicopter with your insurer.") }] },
     ]);
   });
 
@@ -298,7 +303,7 @@ describe("trekSchema", () => {
       faqTopicTitle: ["Permits", "", "Weather"],
       faqTopicIcon: ["description", "info", "rocket"],
       faq1Question: ["Do I need a permit?"],
-      faq1Answer: ["Yes."],
+      faq1Answer: [json("Yes.")],
       faq2Question: ["When is it cold?"],
       faq2Answer: [""],
     });
@@ -320,11 +325,11 @@ describe("trekSchema", () => {
   });
 
   it("stores the shared sections a trek hides, from the switches that are on", () => {
-    const allShown = ["founder", "consultation", "customization", "credentials", "reviews", "why_book", "differentiators", "booking_form", "newsletter"];
+    const allShown = ["founder", "consultation", "customization", "meals", "credentials", "reviews", "why_book", "differentiators", "booking_form", "booking_cta", "newsletter"];
     expect(parse({ sharedSectionShown: allShown }).data?.hiddenSharedSections).toEqual([]);
     const someOff = allShown.filter((key) => key !== "newsletter" && key !== "founder");
     expect(parse({ sharedSectionShown: someOff }).data?.hiddenSharedSections).toEqual(["founder", "newsletter"]);
-    expect(parse().data?.hiddenSharedSections).toHaveLength(9);
+    expect(parse().data?.hiddenSharedSections).toHaveLength(11);
     expect(parse({ sharedSectionShown: ["founder", "pop_up"] }).success).toBe(false);
   });
 
@@ -335,5 +340,60 @@ describe("trekSchema", () => {
     expect(errorsOf({ guideId: ["pemba"] })["guideIds.0"]).toBe("Pick the guides from the list.");
     const eleven = Array.from({ length: 11 }, (_, index) => `00000000-0000-4000-8000-0000000001${String(index).padStart(2, "0")}`);
     expect(errorsOf({ guideId: eleven }).guideIds).toBe("Pick up to 10 guides.");
+  });
+
+  it("needs a side trip's name and altitude together", () => {
+    expect(parse({ optionalHighPoint: "Tserko Ri", optionalHighPointM: "4,984" }).data).toMatchObject({ optionalHighPoint: "Tserko Ri", optionalHighPointM: 4984 });
+    expect(errorsOf({ optionalHighPoint: "Tserko Ri" }).optionalHighPointM).toBe("Enter both the side trip's name and its altitude, or neither.");
+    expect(errorsOf({ optionalHighPointM: "4984" }).optionalHighPoint).toBe("Enter both the side trip's name and its altitude, or neither.");
+  });
+
+  it("only takes a PDF map uploaded through the editor", () => {
+    const path = "pdf-maps/0b8f9a52-6f43-4d2a-9d9e-3c1f2b7a8e10.pdf";
+    expect(parse({ pdfMapPath: path }).data?.pdfMapPath).toBe(path);
+    expect(parse({ pdfMapPath: "" }).data?.pdfMapPath).toBeNull();
+    expect(errorsOf({ pdfMapPath: "../photos/secret.pdf" }).pdfMapPath).toBe("Upload the PDF map again.");
+  });
+
+  it("reads videos as YouTube ids, with where each one shows", () => {
+    const videos = { videoId: ["https://youtu.be/dQw4w9WgXcQ"], videoTitle: [" Kyanjin at sunrise "], videoInGallery: ["true"], videoInGuide: ["false"] };
+    expect(parse(videos).data?.videos).toEqual([{ youtubeId: "dQw4w9WgXcQ", title: "Kyanjin at sunrise", inGallery: true, inGuide: false }]);
+    expect(errorsOf({ ...videos, videoId: ["https://vimeo.com/1"] })["videos.0.youtubeId"]).toMatch(/Paste a YouTube video link/);
+    expect(errorsOf({ ...videos, videoTitle: [""] })["videos.0.title"]).toBe("Write the title shown on the trek page.");
+    const twice = { videoId: ["dQw4w9WgXcQ", "dQw4w9WgXcQ"], videoTitle: ["A", "B"], videoInGallery: ["true", "true"], videoInGuide: ["false", "false"] };
+    expect(errorsOf(twice).videos).toBe("A video is in the list twice.");
+  });
+
+  it("reads know-before-you-go topics with their points and photo or video", () => {
+    const photo = "00000000-0000-4000-8000-000000000031";
+    const result = parse({
+      knowIcon: ["cottage", "emergency", "route"],
+      knowTitle: ["Teahouses", "", "Getting there"],
+      knowNote: ["Book Kyanjin early in October.", "", ""],
+      knowMedia: [`photo:${photo}`, "", "video:dQw4w9WgXcQ"],
+      know0Title: ["Rooms"],
+      know0Text: ["Twin beds, shared toilets."],
+      know2Title: ["Jeep"],
+      know2Text: ["7 hours to Syabrubesi."],
+    });
+    expect(result.data?.knowTopics).toEqual([
+      { icon: "cottage", title: "Teahouses", points: [{ title: "Rooms", text: "Twin beds, shared toilets." }], note: "Book Kyanjin early in October.", photoId: photo, videoId: null },
+      { icon: "route", title: "Getting there", points: [{ title: "Jeep", text: "7 hours to Syabrubesi." }], note: "", photoId: null, videoId: "dQw4w9WgXcQ" },
+    ]);
+  });
+
+  it("checks each know-before-you-go topic at its own number", () => {
+    const errors = errorsOf({
+      knowIcon: ["cottage", "rocket", "route"],
+      knowTitle: ["Teahouses", "Altitude", ""],
+      knowNote: ["", "", "A note without a heading."],
+      knowMedia: ["", "photo:not-an-id", ""],
+      know1Title: ["Go slowly"],
+      know1Text: ["300 m a day above 3,000 m."],
+    });
+    expect(errors["knowTopics.0.points"]).toBe("Add at least one point, or remove this topic.");
+    expect(errors["knowTopics.1.icon"]).toBe("Pick an icon.");
+    expect(errors["knowTopics.1.media"]).toBe("Pick the photo or video again.");
+    expect(errors["knowTopics.2.title"]).toBe("Write the topic's heading, or remove this topic.");
   });
 });

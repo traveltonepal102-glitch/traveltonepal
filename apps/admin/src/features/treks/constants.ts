@@ -2,7 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
-import type { DepartureStatus, FaqIcon, PackingGroup, PackingIcon, SharedSectionKey, TrekDifficulty, TrekPhotos, TrekSeason, TrekStatus, TrekTag, TrekValues } from "./types";
+import type { DepartureStatus, FaqIcon, KnowIcon, PackingGroup, PackingIcon, SharedSectionKey, TrekDifficulty, TrekPhotos, TrekSeason, TrekStatus, TrekTag, TrekValues } from "./types";
 
 export const TREKS_PATH = "/treks";
 export const NEW_TREK_PATH = "/treks/new";
@@ -27,7 +27,7 @@ export const TREK_LIMITS = {
   suitabilityIntro: 300,
   pointTitle: 80,
   pointText: 300,
-  itineraryIntro: 1500,
+  itineraryIntro: 3000,
   dayPlace: 40,
   dayTitle: 160,
   daySubtitle: 160,
@@ -49,7 +49,67 @@ export const TREK_LIMITS = {
   seoDescriptionRecommended: 160,
   seoDescriptionMin: 120,
   guidesIntro: 300,
+  currentSeason: 20,
+  category: 40,
+  protectedArea: 60,
+  daysNote: 40,
+  highPoint: 60,
+  activity: 60,
+  heading: 120,
+  /** Google shows about this much of a heading; longer still saves, the counter turns amber. */
+  headingRecommended: 70,
+  routeLine: 160,
+  elevationNote: 200,
+  place: 80,
+  pricingIntro: 300,
+  knowIntro: 200,
+  knowNote: 300,
+  similarIntro: 200,
+  videoTitle: 100,
 } as const;
+
+export const MAX_KNOW_TOPICS = 8;
+export const MAX_KNOW_POINTS = 8;
+export const MAX_VIDEOS = 10;
+
+/** Parks and protected areas for the second tag above the heading ("" = none). */
+export const PROTECTED_AREAS = [
+  "Langtang National Park",
+  "Sagarmatha National Park",
+  "Annapurna Conservation Area",
+  "Manaslu Conservation Area",
+  "Kanchenjunga Conservation Area",
+  "Gaurishankar Conservation Area",
+  "Makalu Barun National Park",
+  "Shey Phoksundo National Park",
+];
+
+/** Icons a trek guide topic can use (as on the website's "Practical field knowledge"). */
+export const KNOW_ICONS: { value: KnowIcon; label: string }[] = [
+  { value: "wb_twilight", label: "Season" },
+  { value: "cottage", label: "Teahouse" },
+  { value: "soup_kitchen", label: "Food" },
+  { value: "emergency", label: "Emergency" },
+  { value: "health_and_safety", label: "Safety" },
+  { value: "route", label: "Route" },
+  { value: "description", label: "Permits" },
+  { value: "payments", label: "Money" },
+  { value: "groups", label: "People" },
+  { value: "backpack", label: "Gear" },
+];
+
+export const KNOW_ICON_VALUES = [
+  "wb_twilight",
+  "cottage",
+  "soup_kitchen",
+  "emergency",
+  "health_and_safety",
+  "route",
+  "description",
+  "payments",
+  "groups",
+  "backpack",
+] as const satisfies readonly KnowIcon[];
 
 export const MAX_DAYS = 60;
 export const MAX_INCLUDED_ITEMS = 20;
@@ -144,27 +204,32 @@ export const STARTER_PACKING_GROUPS: PackingGroup[] = [
 ];
 
 /** The shared sections of the trek page, in page order (the database checks the same keys). */
-export const SHARED_SECTIONS: { key: SharedSectionKey; label: string; description: string; icon: IconName }[] = [
-  { key: "founder", label: "Founder’s story", description: "A short note from our founder on planning every trek.", icon: "format_quote" },
-  { key: "consultation", label: "Free trip consultation", description: "Invites visitors to a free WhatsApp call before they book.", icon: "chat" },
-  { key: "customization", label: "Make it your own", description: "The custom itinerary box with its option chips, under Day by day.", icon: "tune" },
-  { key: "credentials", label: "Licences and memberships", description: "Government registration, TAAN and other badges.", icon: "verified" },
-  { key: "reviews", label: "Reviews", description: "Reviews of this trek. Shows only when the trek has some.", icon: "star" },
-  { key: "why_book", label: "Why book with us", description: "The promises from the About page.", icon: "workspace_premium" },
-  { key: "differentiators", label: "What makes us different", description: "How a local team compares with big agencies.", icon: "compare_arrows" },
-  { key: "booking_form", label: "WhatsApp booking form", description: "Builds a ready-made WhatsApp message. Nothing is stored.", icon: "send" },
-  { key: "newsletter", label: "Newsletter sign-up", description: "Email sign-up next to the similar treks.", icon: "mail" },
+/** The shared sections of the trek page, in page order (design: "Sections shared by every trek"; the database checks the keys). */
+export const SHARED_SECTIONS: { key: SharedSectionKey; label: string; description: string; where: string; icon: IconName }[] = [
+  { key: "founder", label: "Founder’s story", description: "A short note from our founder on planning every trek.", where: "After the trip overview", icon: "format_quote" },
+  { key: "consultation", label: "Ask us personally", description: "Invites people to message on WhatsApp or email before they book.", where: "After the founder’s story", icon: "chat" },
+  { key: "customization", label: "Custom itinerary and private changes", description: "The box with the 4 option chips under the days.", where: "After the day-by-day itinerary", icon: "tune" },
+  { key: "meals", label: "Why we don’t include meals", description: "The 4 reasons. The food budget is set per trek.", where: "In What’s covered", icon: "restaurant" },
+  { key: "why_book", label: "Why book your trek with us", description: "The 6 promises from the About page.", where: "After the route map", icon: "workspace_premium" },
+  { key: "credentials", label: "Credentials and government licences", description: "Government registration, TAAN and the certificate.", where: "After the group rates", icon: "verified" },
+  { key: "reviews", label: "Trekker reviews", description: "Reviews of this trek. Shows only when the trek has some.", where: "After the credentials", icon: "star" },
+  { key: "differentiators", label: "What makes this trip different", description: "How a local team compares with big agencies.", where: "After the reviews", icon: "compare_arrows" },
+  { key: "booking_form", label: "Booking form", description: "Builds a ready-made WhatsApp message. Nothing is stored.", where: "Before the packing list", icon: "send" },
+  { key: "booking_cta", label: "Booking box at the end", description: "“Book the [trek] with us” with the same WhatsApp form.", where: "After the questions", icon: "campaign" },
+  { key: "newsletter", label: "Newsletter sign-up", description: "Email sign-up next to the similar treks.", where: "Next to similar treks", icon: "mail" },
 ];
 
 export const SHARED_SECTION_KEYS = [
   "founder",
   "consultation",
   "customization",
+  "meals",
+  "why_book",
   "credentials",
   "reviews",
-  "why_book",
   "differentiators",
   "booking_form",
+  "booking_cta",
   "newsletter",
 ] as const satisfies readonly SharedSectionKey[];
 
@@ -244,7 +309,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   highlights: [],
   suitabilityIntro: "",
   suitabilityPoints: [],
-  itineraryIntro: "",
+  itineraryIntro: EMPTY_RICH_TEXT,
   itinerary: [],
   included: [],
   excluded: [],
@@ -269,6 +334,35 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   hiddenSharedSections: [],
   guidesIntro: "",
   guideIds: [],
+  currentSeason: "",
+  category: "",
+  protectedArea: "",
+  daysNote: "",
+  highPoint: "",
+  optionalHighPoint: "",
+  optionalHighPointM: null,
+  activity: "Trekking / hiking",
+  suitabilityHeading: "Is this trek for you?",
+  itineraryHeading: "day-by-day itinerary",
+  routeLine: "",
+  inclusionsHeading: "What’s covered · What’s not included",
+  guidesHeading: "Meet your trek guide",
+  elevationHeading: "Route and elevation profile",
+  elevationNote: "",
+  routeMapHeading: "",
+  trekStart: "",
+  trekEnd: "",
+  pricingHeading: "Group rates by team size",
+  pricingIntro: "Book directly with our Kathmandu team, with no middlemen. Every trek is private, so you choose your own start date.",
+  packingHeading: "",
+  knowHeading: "",
+  knowIntro: "Essential insights from our local trek leaders.",
+  knowTopics: [],
+  faqHeading: "",
+  similarHeading: "Similar trekking options in Nepal",
+  similarIntro: "Treks planned with you and led by local guides.",
+  videos: [],
+  pdfMapPath: null,
 };
 
 export const NO_TREK_PHOTOS: TrekPhotos = { cover: null, gallery: [] };

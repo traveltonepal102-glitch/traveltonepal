@@ -6,6 +6,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
+import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { TextField } from "@/components/ui/TextField";
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
@@ -14,7 +15,7 @@ import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../../../constants";
 import { useItineraryDays } from "../../../hooks/useItineraryDays";
 import { parseAltitude } from "../../../lib/altitudeProfile";
 import type { TrekValues } from "../../../types";
-import { AltitudeChart } from "./AltitudeChart";
+import { PageHeadingFields } from "../PageHeadingFields";
 import { ItineraryDayCard } from "./ItineraryDayCard";
 
 type TrekItinerarySectionProps = {
@@ -31,7 +32,7 @@ const dayErrors = (errors: FieldErrors, index: number): FieldErrors => {
   return Object.fromEntries(Object.entries(errors).flatMap(([field, message]) => (field.startsWith(prefix) ? [[field.slice(prefix.length), message]] : [])));
 };
 
-/** The plan above the days, the live altitude chart and the days (design: section "itinerary"). */
+/** "Day-by-day itinerary": the heading, the text and route line above the days, and the days. */
 export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
   const plan = useItineraryDays(values.itinerary, onEdit);
   const altitudes = plan.days.map((day) => parseAltitude(day.altitude));
@@ -40,22 +41,35 @@ export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: T
 
   return (
     <>
-      <FormSection title="About the plan" hint="A short paragraph above the days on the trek page.">
-        <TextField
+      <PageHeadingFields
+        eyebrow="Step-by-step route"
+        level="H2"
+        headingPrefix={`${plan.days.length}-day`}
+        heading={{ name: "itineraryHeading", defaultValue: values.itineraryHeading, placeholder: "day-by-day itinerary", error: errors.itineraryHeading }}
+      />
+
+      <FormSection title="Above the days">
+        <RichTextEditor
           name="itineraryIntro"
-          label="Introduction to the days"
-          multiline
-          rows={3}
+          label="Text under the heading"
           defaultValue={values.itineraryIntro}
           error={errors.itineraryIntro}
           maxLength={LIMIT.itineraryIntro}
-          placeholder="e.g. Ten unhurried days from Kathmandu to the glaciers of the upper Langtang valley and back…"
+          onEdit={onEdit}
+        />
+        <TextField
+          name="routeLine"
+          label="Route line above the days"
+          defaultValue={values.routeLine}
+          placeholder="Langtang Valley Trek route overview (Kathmandu – Syabrubesi – Kyanjin Gompa)"
+          maxLength={LIMIT.routeLine}
+          error={errors.routeLine}
         />
       </FormSection>
 
       <FormSection
-        title="Altitude profile"
-        hint="Drawn from each day's highest point. Shown on the trek page."
+        title={`${plan.days.length} day${plan.days.length === 1 ? "" : "s"}`}
+        hint="Click a day to open it. Day numbers follow the order by themselves. The trek's length, highest point and altitude chart come from these days."
         aside={
           highest !== null && (
             <span className="rounded-full bg-saffron-tint px-2.5 py-0.5 text-xs font-bold whitespace-nowrap text-saffron-ink">
@@ -63,13 +77,6 @@ export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: T
             </span>
           )
         }
-      >
-        <AltitudeChart altitudes={altitudes} />
-      </FormSection>
-
-      <FormSection
-        title={`${plan.days.length} day${plan.days.length === 1 ? "" : "s"}`}
-        hint="Click a day to open it. Day numbers follow the order by themselves. The trek's length and highest point come from these days."
       >
         {plan.days.map((day, index) => {
           const ownErrors = dayErrors(errors, index);

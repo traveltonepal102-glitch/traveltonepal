@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { EMPTY_RICH_TEXT, type RichTextDoc } from "@/lib/richText/richText";
+
 import { EMPTY_TREK_VALUES, NO_TREK_PHOTOS } from "../constants";
 import type { TrekValues } from "../types";
 import { getTrekReadiness } from "./readiness";
@@ -53,61 +55,32 @@ describe("filterTreks", () => {
   });
 });
 
+const doc = (text: string): RichTextDoc => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
+const readiness = (values: Partial<TrekValues> = {}) => getTrekReadiness({ ...EMPTY_TREK_VALUES, ...values }, NO_TREK_PHOTOS, TODAY);
+
 describe("getTrekReadiness", () => {
   it("lists what a new trek still needs", () => {
-    const readiness = getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY);
-    expect(readiness.basics).toEqual({ status: "todo", note: "Add the summary and 7 trip facts" });
-    expect(readiness.photos).toEqual({ status: "todo", note: "Add a cover photo" });
-    expect(readiness.overview).toEqual({ status: "todo", note: "Add the introduction" });
+    const empty = readiness();
+    expect(empty.top).toEqual({ status: "todo", note: "Add the big heading" });
+    expect(empty.photos).toEqual({ status: "todo", note: "Add a cover photo" });
+    expect(empty.intro).toEqual({ status: "todo", note: "Add the introduction" });
+    expect(empty.know).toEqual({ status: "todo", note: "Add the topics" });
+    expect(empty.similar).toEqual({ status: "done", note: "Chosen by the website" });
   });
 
-  it("asks for 4–6 highlights and a suitability checklist in the overview", () => {
-    const introduction = { type: "doc" as const, content: [{ type: "paragraph" as const, content: [{ type: "text" as const, text: "Intro." }] }] };
-    const point = { title: "Title", text: "Text." };
-    const withIntro = { ...EMPTY_TREK_VALUES, introduction };
-    expect(getTrekReadiness(withIntro, NO_TREK_PHOTOS, TODAY).overview).toEqual({ status: "todo", note: "Add the highlights" });
-    expect(getTrekReadiness({ ...withIntro, highlights: [point, point] }, NO_TREK_PHOTOS, TODAY).overview).toEqual({ status: "warn", note: "Only 2 highlights" });
-    const fourHighlights = { ...withIntro, highlights: [point, point, point, point] };
-    expect(getTrekReadiness(fourHighlights, NO_TREK_PHOTOS, TODAY).overview.note).toBe("Add “Is this trek for you?”");
-    expect(getTrekReadiness({ ...fourHighlights, suitabilityPoints: [point] }, NO_TREK_PHOTOS, TODAY).overview).toEqual({ status: "done", note: "Intro, 4 highlights" });
+  it("needs the heading and summary at the top, then reminds about the lines around them", () => {
+    expect(readiness({ headline: "Langtang Valley Trek" }).top.note).toBe("Add the short summary");
+    const written = { headline: "Langtang Valley Trek", summary: "Glaciers and yak pastures." };
+    expect(readiness(written).top).toEqual({ status: "warn", note: "Add the season, trek style, high point" });
+    expect(readiness({ ...written, currentSeason: "2026/2027", category: "Teahouse trek", highPoint: "Kyanjin Ri" }).top.status).toBe("done");
   });
 
-  it("asks for days, a description for each day and a highlight day", () => {
-    const planDay = { id: "d1", place: "", title: "Day", subtitle: "", duration: "", altitudeM: 2000, sleepAltitudeM: null, isHighPoint: false, description: "", photo: null };
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).itinerary).toEqual({ status: "todo", note: "Add the days" });
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, itinerary: [planDay, planDay] }, NO_TREK_PHOTOS, TODAY).itinerary.note).toBe("2 days without a description");
-    const described = { ...planDay, description: "Walk." };
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, itinerary: [described] }, NO_TREK_PHOTOS, TODAY).itinerary.note).toBe("Mark the highlight day");
-    const plan = [described, { ...described, isHighPoint: true }];
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, itinerary: plan }, NO_TREK_PHOTOS, TODAY).itinerary).toEqual({ status: "done", note: "2 days" });
+  it("counts the introduction's words", () => {
+    expect(readiness({ introduction: doc("A quiet valley north of Kathmandu.") }).intro).toEqual({ status: "done", note: "6 words" });
   });
 
-  it("asks for what's covered, then what's not and the food budget", () => {
-    const point = { title: "Permits", text: "TIMS card." };
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).included).toEqual({ status: "todo", note: "Add what the price includes" });
-    const covered = { ...EMPTY_TREK_VALUES, included: [point, point] };
-    expect(getTrekReadiness(covered, NO_TREK_PHOTOS, TODAY).included.note).toBe("Add what is not included");
-    expect(getTrekReadiness({ ...covered, excluded: [point] }, NO_TREK_PHOTOS, TODAY).included.note).toBe("Add the daily food budget");
-    const full = { ...covered, excluded: [point], mealBudgetMinUsd: 20, mealBudgetMaxUsd: 30 };
-    expect(getTrekReadiness(full, NO_TREK_PHOTOS, TODAY).included).toEqual({ status: "done", note: "2 included · 1 not" });
-  });
-
-  it("asks for group prices, and for upcoming dates on a fixed-date trek", () => {
-    const price = { id: "p1", label: "2 people", shortLabel: "2 Pax", priceUsd: 965, team: "", isDefault: true };
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "todo", note: "Add the group prices" });
-    const priced = { ...EMPTY_TREK_VALUES, groupPrices: [price] };
-    expect(getTrekReadiness(priced, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "done", note: "1 group price · your dates" });
-    const past = { id: "d1", startDate: "2026-01-10", status: "open" as const, note: "" };
-    const fixed = { ...priced, hasFixedDates: true, departures: [past] };
-    expect(getTrekReadiness(fixed, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "warn", note: "No upcoming dates" });
-    const upcoming = { ...past, id: "d2", startDate: TODAY };
-    expect(getTrekReadiness({ ...fixed, departures: [past, upcoming] }, NO_TREK_PHOTOS, TODAY).prices.note).toBe("1 group price · 1 date");
-  });
-
-  it("is done when the summary and all trip facts are filled in", () => {
-    const trek: TrekValues = {
-      ...EMPTY_TREK_VALUES,
-      summary: "Glaciers and yak pastures.",
+  it("is done when every typed trip fact is filled in", () => {
+    const trek = {
       startFinish: "Kathmandu / Syabrubesi",
       dailyWalking: "5 to 7 hours a day",
       guideRatio: "1 : 4 + porters",
@@ -116,42 +89,94 @@ describe("getTrekReadiness", () => {
       transport: "Jeep to Syabrubesi",
       distanceKm: 75,
     };
-    expect(getTrekReadiness(trek, NO_TREK_PHOTOS, TODAY).basics.status).toBe("done");
-    expect(getTrekReadiness({ ...trek, transport: " " }, NO_TREK_PHOTOS, TODAY).basics.note).toBe("Add 1 trip fact");
+    expect(readiness(trek).facts.status).toBe("done");
+    expect(readiness({ ...trek, transport: " " }).facts.note).toBe("Add 1 trip fact");
+    expect(readiness({ ...trek, activity: "" }).facts.note).toBe("Add 1 trip fact");
   });
 
-  it("asks for the map place and a packing list", () => {
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).practical).toEqual({ status: "todo", note: "Add the place for the map" });
-    const mapped = { ...EMPTY_TREK_VALUES, mapPlace: "Kyanjin Gompa, Langtang, Nepal" };
-    expect(getTrekReadiness(mapped, NO_TREK_PHOTOS, TODAY).practical).toEqual({ status: "todo", note: "Add the packing list" });
-    const packed = { ...mapped, packingGroups: [{ title: "Clothing", icon: "apparel" as const, items: [{ title: "Hat", text: "warm." }] }] };
-    expect(getTrekReadiness(packed, NO_TREK_PHOTOS, TODAY).practical).toEqual({ status: "done", note: "Map · 1 packing card" });
-    expect(getTrekReadiness({ ...packed, myMapsId: "1AbCdEfGhIjK" }, NO_TREK_PHOTOS, TODAY).practical.note).toBe("GPS trail map · 1 packing card");
+  it("asks for 4–6 highlights and a suitability checklist", () => {
+    const point = { title: "Title", text: "Text." };
+    expect(readiness().highlights).toEqual({ status: "todo", note: "Add the highlights" });
+    expect(readiness({ highlights: [point, point] }).highlights).toEqual({ status: "warn", note: "Only 2 highlights" });
+    expect(readiness({ highlights: [point, point, point, point] }).highlights).toEqual({ status: "done", note: "4 highlights" });
+    expect(readiness().fit).toEqual({ status: "todo", note: "Add the checklist" });
+    expect(readiness({ suitabilityPoints: [point] }).fit).toEqual({ status: "done", note: "1 topic" });
   });
 
-  it("asks for questions, and for at least 6 of them", () => {
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).faq).toEqual({ status: "todo", note: "Add the questions" });
-    const item = { question: "Why?", answer: "Because." };
-    const topic = { title: "General", icon: "info" as const, items: [item, item, item] };
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, faqs: [topic] }, NO_TREK_PHOTOS, TODAY).faq).toEqual({ status: "warn", note: "Only 3 questions" });
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, faqs: [topic, topic] }, NO_TREK_PHOTOS, TODAY).faq).toEqual({ status: "done", note: "6 questions · 2 topics" });
+  it("asks for days, a description for each day and a highlight day", () => {
+    const planDay = { id: "d1", place: "", title: "Day", subtitle: "", duration: "", altitudeM: 2000, sleepAltitudeM: null, isHighPoint: false, description: EMPTY_RICH_TEXT, photo: null };
+    expect(readiness().itinerary).toEqual({ status: "todo", note: "Add the days" });
+    expect(readiness({ itinerary: [planDay, planDay] }).itinerary.note).toBe("2 days without a description");
+    const described = { ...planDay, description: doc("Walk.") };
+    expect(readiness({ itinerary: [described] }).itinerary.note).toBe("Mark the highlight day");
+    expect(readiness({ itinerary: [described, { ...described, isHighPoint: true }] }).itinerary).toEqual({ status: "done", note: "2 days" });
   });
 
-  it("asks for the Google title and description, then for the Google checks", () => {
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).seo).toEqual({ status: "todo", note: "Add the Google title and description" });
-    const written = { ...EMPTY_TREK_VALUES, seoTitle: "Langtang Valley Trek", seoDescription: "Short." };
-    expect(getTrekReadiness(written, NO_TREK_PHOTOS, TODAY).seo).toEqual({ status: "warn", note: "1 of 7 Google checks" });
-  });
-
-  it("counts the shared sections that show", () => {
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).shared).toEqual({ status: "done", note: "9 of 9 shown" });
-    expect(getTrekReadiness({ ...EMPTY_TREK_VALUES, hiddenSharedSections: ["newsletter"] }, NO_TREK_PHOTOS, TODAY).shared.note).toBe("8 of 9 shown");
+  it("asks for what's covered, then what's not and the food budget", () => {
+    const point = { title: "Permits", text: "TIMS card." };
+    expect(readiness().inclusions).toEqual({ status: "todo", note: "Add what the price includes" });
+    const covered = { included: [point, point] };
+    expect(readiness(covered).inclusions.note).toBe("Add what is not included");
+    expect(readiness({ ...covered, excluded: [point] }).inclusions.note).toBe("Add the daily food budget");
+    expect(readiness({ ...covered, excluded: [point], mealBudgetMinUsd: 20, mealBudgetMaxUsd: 30 }).inclusions).toEqual({ status: "done", note: "2 included · 1 not" });
   });
 
   it("asks for guides, then for the line about them", () => {
-    expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "todo", note: "Pick the guides" });
-    const picked = { ...EMPTY_TREK_VALUES, guideIds: ["g1", "g2"] };
-    expect(getTrekReadiness(picked, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "warn", note: "Add the line about the guides" });
-    expect(getTrekReadiness({ ...picked, guidesIntro: "Local guides." }, NO_TREK_PHOTOS, TODAY).guides).toEqual({ status: "done", note: "2 guides" });
+    expect(readiness().guides).toEqual({ status: "todo", note: "Pick the guides" });
+    expect(readiness({ guideIds: ["g1", "g2"] }).guides).toEqual({ status: "warn", note: "Add the line about the guides" });
+    expect(readiness({ guideIds: ["g1", "g2"], guidesIntro: "Local guides." }).guides).toEqual({ status: "done", note: "2 guides" });
+  });
+
+  it("asks for the map, then reminds about the printable PDF map", () => {
+    expect(readiness().route).toEqual({ status: "todo", note: "Add the map" });
+    const mapped = { mapPlace: "Kyanjin Gompa, Langtang, Nepal" };
+    expect(readiness(mapped).route).toEqual({ status: "warn", note: "No printable map yet" });
+    const pdfMapPath = "pdf-maps/0b8f9a52-6f43-4d2a-9d9e-3c1f2b7a8e10.pdf";
+    expect(readiness({ ...mapped, pdfMapPath }).route.note).toBe("Map · PDF map");
+    expect(readiness({ ...mapped, pdfMapPath, myMapsId: "1AbCdEfGhIjK" }).route.note).toBe("GPS trail map · PDF map");
+  });
+
+  it("asks for group prices, and for upcoming dates on a fixed-date trek", () => {
+    const price = { id: "p1", label: "2 people", shortLabel: "2 Pax", priceUsd: 965, team: "", isDefault: true };
+    expect(readiness().pricing).toEqual({ status: "todo", note: "Add the group prices" });
+    expect(readiness({ groupPrices: [price] }).pricing).toEqual({ status: "done", note: "1 group price · your dates" });
+    const past = { id: "d1", startDate: "2026-01-10", status: "open" as const, note: "" };
+    const fixed = { groupPrices: [price], hasFixedDates: true, departures: [past] };
+    expect(readiness(fixed).pricing).toEqual({ status: "warn", note: "No upcoming dates" });
+    expect(readiness({ ...fixed, departures: [past, { ...past, id: "d2", startDate: TODAY }] }).pricing.note).toBe("1 group price · 1 date");
+  });
+
+  it("asks for a packing list", () => {
+    expect(readiness().packing).toEqual({ status: "todo", note: "Add the packing list" });
+    const packingGroups = [{ title: "Clothing", icon: "apparel" as const, items: [{ title: "Hat", text: "warm." }] }];
+    expect(readiness({ packingGroups }).packing).toEqual({ status: "done", note: "1 group" });
+  });
+
+  it("asks for know-before-you-go topics, and flags a long heading", () => {
+    const topic = { icon: "cottage" as const, title: "Teahouses", points: [], note: "", photoId: null, videoId: null };
+    expect(readiness({ knowTopics: [topic] }).know).toEqual({ status: "done", note: "1 topic" });
+    expect(readiness({ knowTopics: [topic], knowHeading: "x".repeat(71) }).know).toEqual({ status: "warn", note: "Heading is a bit long" });
+  });
+
+  it("asks for questions, and for at least 6 of them", () => {
+    expect(readiness().faq).toEqual({ status: "todo", note: "Add the questions" });
+    const item = { question: "Why?", answer: doc("Because.") };
+    const topic = { title: "General", icon: "info" as const, items: [item, item, item] };
+    expect(readiness({ faqs: [topic] }).faq).toEqual({ status: "warn", note: "Only 3 questions" });
+    expect(readiness({ faqs: [topic, topic] }).faq).toEqual({ status: "done", note: "6 questions · 2 topics" });
+  });
+
+  it("counts the similar treks picked", () => {
+    expect(readiness({ similarTrekIds: ["a", "b"] }).similar).toEqual({ status: "done", note: "2 treks" });
+  });
+
+  it("asks for the Google title and description, then for the Google checks", () => {
+    expect(readiness().seo).toEqual({ status: "todo", note: "Add the Google title and description" });
+    expect(readiness({ seoTitle: "Langtang Valley Trek", seoDescription: "Short." }).seo).toEqual({ status: "warn", note: "1 of 7 Google checks" });
+  });
+
+  it("counts the shared sections that show", () => {
+    expect(readiness().shared).toEqual({ status: "done", note: "11 of 11 shown" });
+    expect(readiness({ hiddenSharedSections: ["newsletter", "meals"] }).shared.note).toBe("9 of 11 shown");
   });
 });

@@ -64,6 +64,7 @@ export const SharedSectionsCard = ({ hiddenSharedSections }: SharedSectionsCardP
                 <span className="min-w-0 flex-1">
                   <span className="block font-bold text-ink">{section.label}</span>
                   <span className="block text-xs text-muted-foreground">{section.description}</span>
+                  <span className="block text-[11px] font-semibold text-brand">{section.where}</span>
                 </span>
                 <Switch
                   name="sharedSectionShown"

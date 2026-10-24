@@ -2,6 +2,7 @@
 
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
+import Link from "next/link";
 import { useId, useState } from "react";
 
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
@@ -9,6 +10,7 @@ import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
 import { inputClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
+import { DEPARTURES_PATH } from "@/features/departures/constants";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
@@ -132,6 +134,9 @@ export const DeparturesCard = ({ hasFixedDates, departures, today, errors, onEdi
             <Icon name="add" size={16} />
             Add a date
           </button>
+          <Link href={DEPARTURES_PATH} className="text-caption font-bold text-brand">
+            Repeat or copy a season
+          </Link>
           <span className="text-xs text-muted-foreground">Dates in the past are hidden from the website automatically.</span>
         </div>
         <FieldError id="departures-error" message={errors.departures} />

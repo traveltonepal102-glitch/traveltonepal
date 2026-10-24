@@ -51,7 +51,7 @@ export const TrekFaqSection = ({ faqs, errors, onEdit }: TrekFaqSectionProps) =>
       <FieldError id="faqs-error" message={errors.faqs} />
       <p className="m-0 flex items-center gap-2 text-xs text-muted-foreground">
         <Icon name="travel_explore" size={16} className="flex-none text-brand" />
-        All questions on this trek are added as FAQ data for Google. Answers are plain text, as on the trek page.
+        All questions on this trek are added as FAQ data for Google. Google gets the answers as plain text; the page shows their formatting.
       </p>
     </>
   );

@@ -33,7 +33,8 @@ export type ItineraryDay = {
   sleepAltitudeM: number | null;
   /** The trek's high point: highlighted on the trek page. One day at most. */
   isHighPoint: boolean;
-  description: string;
+  /** What happens on this day (rich text). */
+  description: RichTextDoc;
   photo: Photo | null;
 };
 
@@ -77,7 +78,7 @@ export type PackingGroup = { title: string; icon: PackingIcon; items: TrekPoint[
 export type PackingIcon = Extract<IconName, "apparel" | "footprint" | "backpack" | "medical_services" | "water_drop" | "description">;
 
 /** One topic of the trek's questions, e.g. "Altitude and health" (the website's FaqGroup). Answers are plain text. */
-export type FaqTopic = { title: string; icon: FaqIcon; items: { question: string; answer: string }[] };
+export type FaqTopic = { title: string; icon: FaqIcon; items: { question: string; answer: RichTextDoc }[] };
 
 export type FaqIcon = Extract<
   IconName,
@@ -103,12 +104,39 @@ export type SharedSectionKey =
   | "founder"
   | "consultation"
   | "customization"
+  | "meals"
   | "credentials"
   | "reviews"
   | "why_book"
   | "differentiators"
   | "booking_form"
+  | "booking_cta"
   | "newsletter";
+
+/** A YouTube video on the trek: only the video's id is saved, nothing is uploaded. */
+export type TrekVideo = {
+  /** From the YouTube link, e.g. "dQw4w9WgXcQ". */
+  youtubeId: string;
+  /** Shown on the trek page. */
+  title: string;
+  /** "Show in": the photo gallery, and/or offered for the trek guide topics. */
+  inGallery: boolean;
+  inGuide: boolean;
+};
+
+/** One topic of the trek guide ("Practical field knowledge"), e.g. "Best season and weather windows". */
+export type KnowTopic = {
+  icon: KnowIcon;
+  title: string;
+  points: TrekPoint[];
+  /** A smaller line after the points, e.g. about winter and the monsoon. */
+  note: string;
+  /** A photo from the trek's photos, or one of its videos (not both). */
+  photoId: string | null;
+  videoId: string | null;
+};
+
+export type KnowIcon = Extract<IconName, "wb_twilight" | "cottage" | "soup_kitchen" | "emergency" | "health_and_safety" | "route" | "description" | "payments" | "groups" | "backpack">;
 
 /** Everything the trek editor saves (one language). */
 export type TrekValues = {
@@ -141,8 +169,8 @@ export type TrekValues = {
   /** "Is this trek for you?": one line of intro and an honest checklist. */
   suitabilityIntro: string;
   suitabilityPoints: TrekPoint[];
-  /** The paragraph above the day-by-day plan. */
-  itineraryIntro: string;
+  /** The text above the day-by-day plan (rich text). */
+  itineraryIntro: RichTextDoc;
   itinerary: ItineraryDay[];
   /** "What's covered" / "What's not included": the title is the bold lead-in, e.g. "Permits". */
   included: TrekPoint[];
@@ -180,6 +208,46 @@ export type TrekValues = {
   /** "Meet your trek guide": one line about the guides, and the guides in page order. */
   guidesIntro: string;
   guideIds: string[];
+  /** e.g. "2026/2027": "… season open" above the heading and "Verified route …" on the trip overview. */
+  currentSeason: string;
+  /** The tags above the heading: the trek style ("Classic valley trek") and the park (optional). */
+  category: string;
+  protectedArea: string;
+  /** After the length in the line under the heading, e.g. "Kathmandu return" → "10 days (Kathmandu return)". */
+  daysNote: string;
+  /** Name of the highest point (its altitude comes from the days), e.g. "Kyanjin Ri". */
+  highPoint: string;
+  /** A higher side trip some trekkers add, e.g. Tserko Ri at 4,984 m (both or neither). */
+  optionalHighPoint: string;
+  optionalHighPointM: number | null;
+  /** The 12th box of the trip overview, e.g. "Trekking / hiking". */
+  activity: string;
+  /** Section headings and the lines under them, as on the page. */
+  suitabilityHeading: string;
+  /** After the number of days, e.g. "day-by-day itinerary" → "10-day day-by-day itinerary". */
+  itineraryHeading: string;
+  /** Above the days, e.g. "Langtang Valley Trek route overview (Kathmandu – Syabrubesi – Kyanjin Gompa)". */
+  routeLine: string;
+  inclusionsHeading: string;
+  guidesHeading: string;
+  elevationHeading: string;
+  /** Next to the altitude chart, e.g. "You sleep no higher than 3,870 m …". */
+  elevationNote: string;
+  routeMapHeading: string;
+  trekStart: string;
+  trekEnd: string;
+  pricingHeading: string;
+  pricingIntro: string;
+  packingHeading: string;
+  knowHeading: string;
+  knowIntro: string;
+  knowTopics: KnowTopic[];
+  faqHeading: string;
+  similarHeading: string;
+  similarIntro: string;
+  videos: TrekVideo[];
+  /** The printable map (trek-files bucket), or null: "Download PDF map" shows only with one. */
+  pdfMapPath: string | null;
 };
 
 export type TrekPhotos = PhotoSelection;
@@ -217,15 +285,22 @@ export type SimilarTrekOption = {
 /** A region to pick in the trek editor. */
 export type RegionOption = { id: string; name: string };
 
+/** The editor's sections, in the order of the trek page (design: Admin-trek-editor). */
 export type TrekSectionKey =
-  | "basics"
+  | "top"
   | "photos"
-  | "overview"
+  | "intro"
+  | "facts"
+  | "highlights"
+  | "fit"
   | "itinerary"
-  | "prices"
-  | "included"
+  | "inclusions"
   | "guides"
-  | "practical"
+  | "route"
+  | "pricing"
+  | "packing"
+  | "know"
   | "faq"
+  | "similar"
   | "seo"
   | "shared";
