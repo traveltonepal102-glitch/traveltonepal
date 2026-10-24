@@ -1,5 +1,6 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
+
+import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { TrekSummary } from "../types";
 import { TrekPhotoPlaceholder } from "./TrekPhotoPlaceholder";
@@ -17,7 +18,7 @@ type TrekCardMediaProps = {
 export const TrekCardMedia = ({ trek, className, sizes, showBadge = false }: TrekCardMediaProps) => (
   <div className={`relative overflow-hidden bg-brand-tint ${className}`}>
     {trek.image ? (
-      <Image src={trek.image.src} alt={trek.image.alt} fill sizes={sizes} className="object-cover" />
+      <SiteImage image={trek.image} sizes={sizes} className="object-cover" />
     ) : (
       <TrekPhotoPlaceholder />
     )}

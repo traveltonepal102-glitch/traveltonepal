@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -9,6 +10,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
 import { removeUnusedTrekFile } from "@/lib/storage/trekFiles";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKS_PATH, trekPath } from "../constants";
 import { readTrekForm, trekSchema } from "../schemas/trekSchema";
@@ -50,6 +52,7 @@ export const saveTrek = async (trekId: string | null, _previous: EditorSaveState
   // A replaced or removed printable map is public, so it is deleted once the trek no longer points to it.
   if (previousPdfMap && previousPdfMap !== parsed.data.pdfMapPath) await removeUnusedTrekFile(previousPdfMap);
 
+  refreshWebsite([WEBSITE_CACHE_TAGS.treks]);
   revalidatePath(TREKS_PATH);
   revalidatePath(trekPath(result.trekId));
   if (trekId === null) redirect(`${trekPath(result.trekId)}?added=1`);

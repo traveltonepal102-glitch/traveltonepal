@@ -44,29 +44,31 @@ export const TrekFilterList = ({ heading, filters, allKey, treks, endCard }: Tre
     <>
       <div className="flex flex-wrap items-end justify-between gap-4.5">
         {heading}
-        {/* Phones: the chips scroll sideways edge to edge, so the row is the full width plus both gutters. */}
-        <div
-          role="group"
-          aria-label="Filter treks"
-          className={`flex gap-2 pb-0.5 max-md:w-[calc(100%+2rem)] ${SWIPE_ROW} ${SWIPE_ROW_RESET}`}
-        >
-          {filters.map((filter) => {
-            const isActive = filter.key === activeKey;
-            return (
-              <button
-                key={filter.key}
-                type="button"
-                aria-pressed={isActive}
-                onClick={() => selectFilter(filter.key)}
-                className={`min-h-11 flex-none cursor-pointer rounded-full px-4.5 text-body-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-                  isActive ? "bg-ink font-bold text-white" : "border-[1.5px] border-line-strong bg-surface font-semibold text-ink hover:border-brand"
-                }`}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
-        </div>
+        {/* No filters: no chip row. Phones: the chips scroll sideways edge to edge, so the row is the full width plus both gutters. */}
+        {filters.length > 0 && (
+          <div
+            role="group"
+            aria-label="Filter treks"
+            className={`flex gap-2 pb-0.5 max-md:w-[calc(100%+2rem)] ${SWIPE_ROW} ${SWIPE_ROW_RESET}`}
+          >
+            {filters.map((filter) => {
+              const isActive = filter.key === activeKey;
+              return (
+                <button
+                  key={filter.key}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => selectFilter(filter.key)}
+                  className={`min-h-11 flex-none cursor-pointer rounded-full px-4.5 text-body-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+                    isActive ? "bg-ink font-bold text-white" : "border-[1.5px] border-line-strong bg-surface font-semibold text-ink hover:border-brand"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <p aria-live="polite" className="sr-only">

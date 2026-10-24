@@ -1,5 +1,4 @@
 import { VARIANT_WIDTHS } from "../constants";
-import type { Photo } from "../types";
 
 /**
  * The widths to make for a photo this wide: the standard widths it covers, plus its own width when that is
@@ -12,9 +11,5 @@ export const pickVariantWidths = (sourceWidth: number): number[] => {
   return widths;
 };
 
-/** The smallest variant at least `wanted` px wide (or the largest there is). */
-export const pickVariant = (variantWidths: number[], wanted: number) =>
-  [...variantWidths].sort((a, b) => a - b).find((width) => width >= wanted) ?? Math.max(...variantWidths);
-
-export const photoUrl = (photo: Pick<Photo, "baseUrl" | "variantWidths">, wanted: number) =>
-  `${photo.baseUrl}/${pickVariant(photo.variantWidths, wanted)}.webp`;
+// Picking the file for a width is shared with the website.
+export { pickVariant, photoUrl } from "@ttn/ui/lib/photos";

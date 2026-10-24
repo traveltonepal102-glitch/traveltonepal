@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -8,6 +9,7 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { TRAVEL_GUIDES_PATH, articlePath } from "../constants";
 import { articleSchema, readArticleForm } from "../schemas/articleSchema";
@@ -56,6 +58,7 @@ export const saveArticle = async (articleId: string | null, _previous: EditorSav
     return failure(message, field ? { [field[0]]: field[1] } : {});
   }
 
+  refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides]);
   revalidatePath(TRAVEL_GUIDES_PATH, "layout");
   if (articleId === null) redirect(`${articlePath(result.articleId)}?added=1`);
   return { status: "saved" };

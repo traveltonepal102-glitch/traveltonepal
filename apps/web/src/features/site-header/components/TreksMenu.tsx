@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { ROUTES } from "@/lib/routes";
 
-import { TREK_COLUMNS } from "../navigation";
+import type { TrekColumn } from "../navigation";
 import { MenuColumnTitle, MenuItemLink, PanelCard, PanelFooter } from "./MenuParts";
 
 const TrekAdviceCard = () => (
@@ -27,10 +27,17 @@ const TrekAdviceCard = () => (
   </a>
 );
 
-export const TreksMenu = () => (
+type TreksMenuProps = {
+  /** trekColumns: popular treks (when any), by length, by style. */
+  columns: readonly TrekColumn[];
+  /** The footer line, e.g. "12 treks across 9 regions · private treks on your dates" (treksMenuNote). */
+  note: string;
+};
+
+export const TreksMenu = ({ columns, note }: TreksMenuProps) => (
   <PanelCard className="p-6">
     <div className="grid grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.1fr)] gap-7">
-      {TREK_COLUMNS.map((column) => (
+      {columns.map((column) => (
         <div key={column.title} className="flex flex-col gap-1">
           <MenuColumnTitle>{column.title}</MenuColumnTitle>
           {column.links.map((link) => (
@@ -41,7 +48,7 @@ export const TreksMenu = () => (
       <TrekAdviceCard />
     </div>
     <PanelFooter
-      note="[COUNT] treks across 9 regions · private treks on your dates"
+      note={note}
       linkLabel="View all treks"
       href={ROUTES.treks}
     />

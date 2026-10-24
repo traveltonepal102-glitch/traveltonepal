@@ -1,10 +1,9 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
+import { SiteImage } from "@/components/ui/SiteImage";
 import { ROUTES } from "@/lib/routes";
 
-import { REGION_LINKS } from "../navigation";
 import type { RegionLink } from "../navigation";
 import { PanelCard, PanelFooter } from "./MenuParts";
 
@@ -20,7 +19,8 @@ const RegionItem = ({ region, index }: { region: RegionLink; index: number }) =>
       className={`relative inline-flex size-12 flex-none items-center justify-center overflow-hidden rounded-md text-white ${TILE_COLORS[index % TILE_COLORS.length]}`}
     >
       {region.image ? (
-        <Image src={region.image} alt="" fill sizes="48px" className="object-cover" />
+        // The region's name is next to it, so the picture is decorative here.
+        <SiteImage image={{ ...region.image, alt: "" }} sizes="48px" className="object-cover" />
       ) : (
         <Icon name="landscape" size={22} />
       )}
@@ -32,10 +32,11 @@ const RegionItem = ({ region, index }: { region: RegionLink; index: number }) =>
   </Link>
 );
 
-export const RegionsMenu = () => (
+/** The Regions menu: a tile per region (regionLinks). */
+export const RegionsMenu = ({ links }: { links: readonly RegionLink[] }) => (
   <PanelCard className="p-6">
     <div className="grid grid-cols-3 gap-2">
-      {REGION_LINKS.map((region, index) => (
+      {links.map((region, index) => (
         <RegionItem key={region.href} region={region} index={index} />
       ))}
     </div>

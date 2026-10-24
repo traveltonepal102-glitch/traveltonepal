@@ -1,8 +1,9 @@
 import Link from "next/link";
 
+import { formatCountWord } from "@/lib/format";
 import { guidePath } from "@/lib/routes";
 
-import { formatCountWord, formatTotalReadTime } from "../format";
+import { formatTotalReadTime } from "../format";
 import type { TravelGuide } from "../types";
 import { WRAP } from "./styles";
 

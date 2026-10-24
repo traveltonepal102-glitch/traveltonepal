@@ -3,9 +3,11 @@ import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 import Link from "next/link";
 
+import { listRegions } from "@/features/regions/services/regionsRepository";
+import { listTreks } from "@/features/treks/services/treksRepository";
 import { ROUTES } from "@/lib/routes";
 
-import { ABOUT_LINKS, GUIDE_LINKS, NAV_TABS } from "../navigation";
+import { ABOUT_LINKS, GUIDE_LINKS, NAV_TABS, regionLinks, trekColumns, treksMenuNote } from "../navigation";
 import { HeaderMenuProvider } from "./HeaderMenuProvider";
 import type { HeaderVariant } from "./HeaderMenuProvider";
 import { MenuPanel } from "./MenuPanel";
@@ -23,9 +25,13 @@ type SiteHeaderProps = {
   variant?: HeaderVariant;
 };
 
-/** Shared website header (design: Header.dc.html): utility bar, main bar, dropdown menus. */
-export const SiteHeader = ({ variant = "solid" }: SiteHeaderProps) => {
+/**
+ * Shared website header (design: Header.dc.html): utility bar, main bar, dropdown menus. The Treks and Regions
+ * menus come from the database (the same cached reads as the home page).
+ */
+export const SiteHeader = async ({ variant = "solid" }: SiteHeaderProps) => {
   const isOverlay = variant === "overlay";
+  const [regions, treks] = await Promise.all([listRegions(), listTreks()]);
 
   return (
     <HeaderMenuProvider variant={variant}>
@@ -83,10 +89,10 @@ export const SiteHeader = ({ variant = "solid" }: SiteHeaderProps) => {
       </header>
 
       <MenuPanel menu="treks">
-        <TreksMenu />
+        <TreksMenu columns={trekColumns(treks)} note={treksMenuNote(treks.length, regions.length)} />
       </MenuPanel>
       <MenuPanel menu="regions">
-        <RegionsMenu />
+        <RegionsMenu links={regionLinks(regions)} />
       </MenuPanel>
       <MenuPanel menu="guides">
         <TopicsMenu links={GUIDE_LINKS} allLabel="All travel guides" allHref={ROUTES.guides} align="center" />

@@ -1,9 +1,9 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { guidePath } from "@/lib/routes";
+import { SiteImage } from "@/components/ui/SiteImage";
+import { guideHref } from "@/features/guide-article/guideArticles";
 
 import type { GuideSummary } from "../types";
 import { CARD_FOCUS, STRETCHED_LINK } from "./styles";
@@ -27,10 +27,8 @@ export const GuideCard = ({ guide, footer = READ_THE_GUIDE }: GuideCardProps) =>
     className={`group relative flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-card transition-shadow hover:shadow-raised ${CARD_FOCUS}`}
   >
     <div className="relative aspect-video overflow-hidden bg-brand-tint lg:aspect-4/3">
-      <Image
-        src={guide.image.src}
-        alt={guide.image.alt}
-        fill
+      <SiteImage
+        image={guide.image}
         sizes="(min-width: 1024px) 340px, (min-width: 768px) 50vw, 100vw"
         className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
@@ -41,7 +39,7 @@ export const GuideCard = ({ guide, footer = READ_THE_GUIDE }: GuideCardProps) =>
     </div>
     <div className="flex flex-1 flex-col gap-1.5 px-4.5 pt-4 pb-4.5">
       <h3 className="text-h3">
-        <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
+        <Link href={guideHref(guide.slug)} className={STRETCHED_LINK}>
           {guide.title}
         </Link>
       </h3>
@@ -51,16 +49,20 @@ export const GuideCard = ({ guide, footer = READ_THE_GUIDE }: GuideCardProps) =>
   </article>
 );
 
+type FeaturedGuideCardProps = {
+  guide: GuideSummary;
+  /** How wide the card shows (the photo's size); half the row by default, the full row when it is alone. */
+  sizes?: string;
+};
+
 /** The big featured guide: full-bleed photo, chip, large title, button. One link (the title). */
-export const FeaturedGuideCard = ({ guide }: { guide: GuideSummary }) => (
+export const FeaturedGuideCard = ({ guide, sizes = "(min-width: 1024px) 520px, 100vw" }: FeaturedGuideCardProps) => (
   <article
     className={`group relative flex h-full min-h-100 flex-col justify-end gap-3 overflow-hidden rounded-xl bg-navy p-5.5 text-white md:min-h-95 md:p-8 lg:min-h-105 ${CARD_FOCUS}`}
   >
-    <Image
-      src={guide.image.src}
-      alt={guide.image.alt}
-      fill
-      sizes="(min-width: 1024px) 520px, 100vw"
+    <SiteImage
+      image={guide.image}
+      sizes={sizes}
       // Keep the top of the photo (the peaks) when the card is wide, e.g. full-width on tablets.
       className="object-cover object-[50%_25%] transition-transform duration-500 group-hover:scale-105"
     />
@@ -71,7 +73,7 @@ export const FeaturedGuideCard = ({ guide }: { guide: GuideSummary }) => (
       {guide.tag}
     </span>
     <h3 className="relative max-w-135 text-h2-sm text-white md:text-h1-sm">
-      <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
+      <Link href={guideHref(guide.slug)} className={STRETCHED_LINK}>
         {guide.title}
       </Link>
     </h3>

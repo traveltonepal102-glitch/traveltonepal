@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatCountWord, formatGuideCount, formatGuideMonth, formatReadTime, formatTotalReadTime } from "./format";
+import { formatGuideCount, formatGuideMonth, formatReadTime, formatTotalReadTime } from "./format";
 import { countGuidesByTopic, pickGuideHighlights, pickGuidesBySlug, regionsWithGuides } from "./guideLists";
 import type { GuideTopicId } from "./topics";
 import { START_HERE_SLUGS, TRAVEL_GUIDES } from "./travelGuides";
@@ -30,11 +30,6 @@ describe("guide formatting", () => {
     expect(formatReadTime(8)).toBe("8 min read");
     expect(formatGuideCount(1)).toBe("1 guide");
     expect(formatGuideCount(4)).toBe("4 guides");
-  });
-
-  it("writes counts up to ten in words", () => {
-    expect(formatCountWord(6)).toBe("six");
-    expect(formatCountWord(12)).toBe("12");
   });
 
   it("rounds the total reading time to 5 minutes, never below 5", () => {

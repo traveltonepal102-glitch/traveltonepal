@@ -1,3 +1,5 @@
+import type { SiteImageSource } from "@/lib/images";
+
 export type TrekDifficulty = "Easy" | "Moderate" | "Challenging" | "Strenuous";
 
 /** Character of a trek, used by the home chips and the Treks page "Quiet trails" shortcut. */
@@ -28,5 +30,5 @@ export type TrekSummary = {
   badge?: string;
   isPopular: boolean;
   hasFixedDates: boolean;
-  image?: { src: string; alt: string };
+  image?: SiteImageSource;
 };

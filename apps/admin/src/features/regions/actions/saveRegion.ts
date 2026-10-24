@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -8,6 +9,7 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { REGIONS_PATH, regionPath } from "../constants";
 import { readRegionForm, regionSchema } from "../schemas/regionSchema";
@@ -57,6 +59,8 @@ export const saveRegion = async (
     return failure(FAILURE_MESSAGES[result.reason]);
   }
 
+  // Trek cards show their region's name, and travel guides their region site, so those refresh too.
+  refreshWebsite([WEBSITE_CACHE_TAGS.regions, WEBSITE_CACHE_TAGS.treks, WEBSITE_CACHE_TAGS.travelGuides]);
   revalidatePath(REGIONS_PATH);
   revalidatePath(regionPath(result.regionId));
   if (regionId === null) redirect(`${regionPath(result.regionId)}?added=1`);

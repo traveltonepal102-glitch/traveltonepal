@@ -3,6 +3,7 @@ import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
 import { ROUTES } from "@/lib/routes";
+import { HAS_GERMAN_SITE } from "@/lib/site";
 
 import { NAV_TABS } from "../navigation";
 
@@ -21,16 +22,18 @@ export const MobileMenuContent = () => (
         <Icon name="arrow_forward" className="text-subtle" />
       </Link>
     ))}
-    <p className="py-4 text-body-sm text-text">
-      Language:{" "}
-      <a href={ROUTES.home} aria-current="true" className="font-bold text-brand">
-        English
-      </a>{" "}
-      ·{" "}
-      <a href={ROUTES.german} lang="de" hrefLang="de" className="text-text hover:text-brand">
-        Deutsch
-      </a>
-    </p>
+    {HAS_GERMAN_SITE && (
+      <p className="py-4 text-body-sm text-text">
+        Language:{" "}
+        <a href={ROUTES.home} aria-current="true" className="font-bold text-brand">
+          English
+        </a>{" "}
+        ·{" "}
+        <a href={ROUTES.german} lang="de" hrefLang="de" className="text-text hover:text-brand">
+          Deutsch
+        </a>
+      </p>
+    )}
     <a
       href={getWhatsAppUrl()}
       target="_blank"

@@ -1,4 +1,5 @@
 import "server-only";
+import { REVALIDATE_SECRET_MIN_LENGTH } from "@ttn/config/websiteCache";
 import { z } from "zod";
 
 // Server-only: the browser never talks to Supabase, so none of these are NEXT_PUBLIC_.
@@ -7,7 +8,10 @@ const envSchema = z.object({
   SUPABASE_PUBLISHABLE_KEY: z.string().startsWith("sb_publishable_", "must be the publishable key (sb_publishable_…)"),
   /** Bypasses Row Level Security. Used only for the sign-in lock (src/lib/supabase/admin.ts). */
   SUPABASE_SECRET_KEY: z.string().startsWith("sb_secret_", "must be a secret key (sb_secret_…)"),
-  /** Optional: the main website, for the "View website" link on the sign-in screen. Empty counts as not set. */
+  /**
+   * Optional: the main website, for the "View website" link and for refreshing it after a save (with
+   * REVALIDATE_SECRET). Empty counts as not set.
+   */
   WEBSITE_URL: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z.url({ protocol: /^https?$/, error: "must be an http(s) URL" }).optional(),
@@ -19,6 +23,14 @@ const envSchema = z.object({
   PHOTOS_PUBLIC_URL: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z.url({ protocol: /^https$/, error: "must be an https:// URL" }).optional(),
+  ),
+  /**
+   * Optional: the password the website's refresh route expects (the same value in apps/web). With WEBSITE_URL,
+   * a save shows on the website at once; without, within the hour.
+   */
+  REVALIDATE_SECRET: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().min(REVALIDATE_SECRET_MIN_LENGTH, `must be at least ${REVALIDATE_SECRET_MIN_LENGTH} characters`).optional(),
   ),
 });
 

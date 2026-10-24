@@ -1,5 +1,7 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import type { SiteImageSource } from "@/lib/images";
+
 import type { GuideTopicId } from "./topics";
 
 /** What a guide card needs; full travel guides come from Payload later. */
@@ -10,7 +12,7 @@ export type GuideSummary = {
   /** Topic chip, e.g. "Permits". */
   tag: string;
   tagIcon: IconName;
-  image: { src: string; alt: string };
+  image: SiteImageSource;
 };
 
 /** A guide on the Travel guides page: its topic (which gives the chip) and byline. */

@@ -1,3 +1,5 @@
+import type { SiteImageSource } from "@/lib/images";
+
 /** A trekking region, as the header menu, the trek finder and the home region tiles need it. */
 export type RegionSummary = {
   slug: string;
@@ -6,7 +8,7 @@ export type RegionSummary = {
   maxAltitudeM: number;
   /** One line for the featured home tile. */
   tagline?: string;
-  image?: { src: string; alt: string };
+  image?: SiteImageSource;
 };
 
 /** The nine regions. Demo values from the website design until regions come from Payload (CMS phase). */

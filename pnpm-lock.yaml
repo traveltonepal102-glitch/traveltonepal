@@ -195,6 +195,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: 3.31.4
         version: 3.31.4
+      '@ttn/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@ttn/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -247,6 +250,9 @@ importers:
       '@hookform/resolvers':
         specifier: 5.9.1
         version: 5.9.1(ajv@8.18.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.0))(zod@4.6.7)
+      '@supabase/supabase-js':
+        specifier: 2.117.3
+        version: 2.117.3
       '@ttn/config':
         specifier: workspace:*
         version: link:../../packages/config

@@ -2,13 +2,12 @@ import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import Form from "next/form";
 
-import { REGIONS } from "@/features/regions/regions";
+import type { RegionSummary } from "@/features/regions/regions";
 import { TREK_LENGTHS, TREK_SEASONS } from "@/features/treks/filters";
 import { ROUTES } from "@/lib/routes";
 
+import { allRegionsLabel } from "../homeContent";
 import { FinderSelect } from "./FinderSelect";
-
-const REGION_OPTIONS = REGIONS.map((region) => ({ value: region.slug, label: region.name }));
 
 const TRUST_POINTS: readonly { icon: IconName; text: string }[] = [
   { icon: "verified", text: "Licensed by the Nepal Government · TAAN member" },
@@ -20,7 +19,7 @@ const TRUST_POINTS: readonly { icon: IconName; text: string }[] = [
  * Trek finder card overlapping the hero's bottom edge, then the trust points.
  * A plain GET form to /treks (works before JavaScript loads); next/form adds client-side navigation.
  */
-export const TrekFinder = () => (
+export const TrekFinder = ({ regions }: { regions: RegionSummary[] }) => (
   <div className="relative z-10 mx-auto -mt-20 max-w-content px-4 md:px-5">
     <Form
       action={ROUTES.treks}
@@ -31,8 +30,8 @@ export const TrekFinder = () => (
         name="region"
         label="Where"
         icon="location_on"
-        anyLabel={`All ${REGIONS.length} regions`}
-        options={REGION_OPTIONS}
+        anyLabel={allRegionsLabel(regions.length)}
+        options={regions.map((region) => ({ value: region.slug, label: region.name }))}
       />
       <FinderSelect name="length" label="How long" icon="schedule" anyLabel="Any length" options={TREK_LENGTHS} />
       <FinderSelect name="season" label="When" icon="wb_sunny" anyLabel="Any season" options={TREK_SEASONS} />

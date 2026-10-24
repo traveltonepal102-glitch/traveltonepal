@@ -2,15 +2,26 @@ import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
 import { FeaturedGuideCard, GuideCard } from "@/features/guides/components/GuideCard";
-import { FEATURED_GUIDES } from "@/features/guides/featuredGuides";
+import type { GuideSummary } from "@/features/guides/types";
 import { ROUTES } from "@/lib/routes";
 
 /**
- * "Before you go" travel guides (design: Main.dc.html).
- * Desktop: featured guide (wider) + two cards. Tablet: featured on its own row, two cards below. Phone: one column.
+ * The row's columns by how many guides there are, so it never has empty places. Three (the design): desktop
+ * featured (wider) + two cards, tablet featured on its own row and two cards below. Phones: one column.
  */
-export const GuidesSection = () => {
-  const [featured, ...others] = FEATURED_GUIDES;
+const LAYOUTS = {
+  1: { grid: "", featured: "" },
+  2: { grid: "md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]", featured: "" },
+  3: { grid: "md:grid-cols-2 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1fr)]", featured: "md:col-span-full lg:col-span-1" },
+} as const;
+
+/** "Before you go" travel guides (design: Main.dc.html): the featured guide and up to two more. */
+export const GuidesSection = ({ guides }: { guides: GuideSummary[] }) => {
+  const [featured, ...rest] = guides;
+  // Nothing published yet: no section, rather than an empty one.
+  if (!featured) return null;
+  const others = rest.slice(0, 2);
+  const layout = LAYOUTS[others.length === 0 ? 1 : others.length === 1 ? 2 : 3];
 
   return (
     <section aria-labelledby="guides-title" className="py-16 md:py-24">
@@ -34,9 +45,9 @@ export const GuidesSection = () => {
           </Link>
         </div>
 
-        <ul className="grid gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          <li className="md:col-span-full lg:col-span-1">
-            <FeaturedGuideCard guide={featured} />
+        <ul className={`grid gap-4 md:gap-5 ${layout.grid}`}>
+          <li className={layout.featured}>
+            <FeaturedGuideCard guide={featured} sizes={others.length === 0 ? "(min-width: 1280px) 1200px, 100vw" : undefined} />
           </li>
           {others.map((guide) => (
             <li key={guide.slug}>

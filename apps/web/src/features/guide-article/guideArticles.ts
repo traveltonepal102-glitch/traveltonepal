@@ -1,6 +1,7 @@
 import { TRAVEL_GUIDES } from "@/features/guides/travelGuides";
 import { getRegionOverview } from "@/features/regions/overviews";
 import { TREKS } from "@/features/treks/treks";
+import { ROUTES, guidePath } from "@/lib/routes";
 
 import { BEST_TIME_TO_TREK_LANGTANG } from "./content/bestTimeToTrekLangtang";
 import type { GuideArticle, GuideArticleContent } from "./types";
@@ -10,6 +11,12 @@ const GUIDE_ARTICLE_CONTENT: readonly GuideArticleContent[] = [BEST_TIME_TO_TREK
 
 /** Slugs to prerender at build time. */
 export const GUIDE_ARTICLE_SLUGS: readonly string[] = GUIDE_ARTICLE_CONTENT.map((content) => content.slug);
+
+/** True when the guide has a page, so links to it don't end on a 404. */
+export const hasGuidePage = (slug: string) => GUIDE_ARTICLE_SLUGS.includes(slug);
+
+/** The guide's page, or the travel guides list while it has none (like regionHref and trekHref). */
+export const guideHref = (slug: string) => (hasGuidePage(slug) ? guidePath(slug) : ROUTES.guides);
 
 /** The guide, its page content, its trek and its region's month ratings joined; undefined when there is no page. */
 export const getGuideArticle = (slug: string): GuideArticle | undefined => {

@@ -1,18 +1,22 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { formatCount } from "@/lib/format";
+import type { SiteImageSource } from "@/lib/images";
 import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
-import { ROUTES, regionPath, trekPath } from "@/lib/routes";
+import { ROUTES, trekPath } from "@/lib/routes";
 import { guideListHref } from "@/features/guides/guideFiltering";
-import { REGIONS } from "@/features/regions/regions";
+import { regionHref } from "@/features/region-detail/regionDetails";
+import type { RegionSummary } from "@/features/regions/regions";
+import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { TREK_LENGTHS, treksFilterPath } from "@/features/treks/filters";
 import type { TrekLength } from "@/features/treks/filters";
 import { formatAltitude, formatUsd } from "@/features/treks/format";
-import { POPULAR_TREKS } from "@/features/treks/popularTreks";
+import type { TrekSummary } from "@/features/treks/types";
 
 /**
- * Header menu content, as in the website design (Header.dc.html).
- * Popular treks and regions are demo values until they come from Payload (CMS phase).
+ * Header menu content, as in the website design (Header.dc.html). Popular treks and regions come from the
+ * database (SiteHeader reads them); the rest is fixed.
  */
 export type MenuKey = Exclude<SectionKey, "contact">;
 
@@ -24,7 +28,7 @@ export type MenuLink = { name: string; meta: string; href: string; icon: IconNam
 
 export type TrekColumn = { title: string; links: MenuLink[] };
 
-export type RegionLink = { name: string; meta: string; href: string; image?: string };
+export type RegionLink = { name: string; meta: string; href: string; image?: SiteImageSource };
 
 /** Icon tile colors, from the design system's tints. */
 export type TileTone = "brand" | "saffron" | "green" | "navy";
@@ -44,16 +48,19 @@ const LENGTH_LINKS: Record<TrekLength, { name: string; icon: IconName }> = {
   long: { name: "Long and remote", icon: "route" },
 };
 
-export const TREK_COLUMNS: readonly TrekColumn[] = [
-  {
-    title: "Popular treks",
-    links: POPULAR_TREKS.slice(0, POPULAR_TREKS_IN_MENU).map((trek) => ({
+const popularColumn = (treks: readonly TrekSummary[]): TrekColumn => ({
+  title: "Popular treks",
+  links: popularTreksWithPage(treks)
+    .slice(0, POPULAR_TREKS_IN_MENU)
+    .map((trek) => ({
       name: trek.name,
-      meta: trek.priceFromUsd ? `${trek.days} days · from ${formatUsd(trek.priceFromUsd)}` : `${trek.days} days`,
+      meta: trek.priceFromUsd ? `${formatCount(trek.days, "day")} · from ${formatUsd(trek.priceFromUsd)}` : formatCount(trek.days, "day"),
       href: trekPath(trek.slug),
       icon: "hiking",
     })),
-  },
+});
+
+const FIXED_TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "By length",
     links: TREK_LENGTHS.map((length) => ({
@@ -73,12 +80,26 @@ export const TREK_COLUMNS: readonly TrekColumn[] = [
   },
 ];
 
-export const REGION_LINKS: readonly RegionLink[] = REGIONS.map((region) => ({
-  name: region.name,
-  meta: `Up to ${formatAltitude(region.maxAltitudeM)}`,
-  href: regionPath(region.slug),
-  image: region.image?.src,
-}));
+/** The Treks menu's columns: popular published treks (left out while there are none), by length, by style. */
+export const trekColumns = (treks: readonly TrekSummary[]): TrekColumn[] => {
+  const popular = popularColumn(treks);
+  return popular.links.length > 0 ? [popular, ...FIXED_TREK_COLUMNS] : [...FIXED_TREK_COLUMNS];
+};
+
+/** The Treks menu's footer line: "12 treks across 9 regions · private treks on your dates". */
+export const treksMenuNote = (trekCount: number, regionCount: number) =>
+  trekCount > 0 && regionCount > 0
+    ? `${formatCount(trekCount, "trek")} across ${formatCount(regionCount, "region")} · private treks on your dates`
+    : "Private treks on your dates";
+
+/** The Regions menu: every region, opening its page (its treks while it has no page yet). */
+export const regionLinks = (regions: readonly RegionSummary[]): RegionLink[] =>
+  regions.map((region) => ({
+    name: region.name,
+    meta: `Up to ${formatAltitude(region.maxAltitudeM)}`,
+    href: regionHref(region.slug),
+    image: region.image,
+  }));
 
 /** Each opens the Travel guides list filtered to that topic (the same links as the page's topic cards). */
 export const GUIDE_LINKS: readonly TopicLink[] = [

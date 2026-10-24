@@ -2,6 +2,7 @@ import { CONTACT, getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
 import { ROUTES } from "@/lib/routes";
+import { HAS_GERMAN_SITE } from "@/lib/site";
 
 import type { HeaderVariant } from "./HeaderMenuProvider";
 
@@ -30,17 +31,19 @@ export const UtilityBar = ({ variant }: { variant: HeaderVariant }) => (
           {CONTACT.phoneDisplay}
           <span className="sr-only"> on WhatsApp</span>
         </a>
-        <nav aria-label="Language" className="flex items-center gap-1">
-          <a href={ROUTES.home} aria-current="true" className={`${LINK} font-bold text-white`}>
-            EN
-          </a>
-          <span aria-hidden="true" className="opacity-50">
-            /
-          </span>
-          <a href={ROUTES.german} lang="de" hrefLang="de" className={LINK}>
-            DE
-          </a>
-        </nav>
+        {HAS_GERMAN_SITE && (
+          <nav aria-label="Language" className="flex items-center gap-1">
+            <a href={ROUTES.home} aria-current="true" className={`${LINK} font-bold text-white`}>
+              EN
+            </a>
+            <span aria-hidden="true" className="opacity-50">
+              /
+            </span>
+            <a href={ROUTES.german} lang="de" hrefLang="de" className={LINK}>
+              DE
+            </a>
+          </nav>
+        )}
       </div>
     </div>
   </div>

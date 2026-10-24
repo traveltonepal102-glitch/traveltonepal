@@ -1,9 +1,9 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
+import { SiteImage } from "@/components/ui/SiteImage";
+import { regionHref } from "@/features/region-detail/regionDetails";
 import { formatAltitude } from "@/features/treks/format";
-import { regionPath } from "@/lib/routes";
 
 import type { RegionSummary } from "../regions";
 import { RegionTileArt } from "./RegionTileArt";
@@ -21,17 +21,16 @@ type RegionTileProps = {
 
 export const RegionTile = ({ region, index, isFeatured = false }: RegionTileProps) => (
   <Link
-    href={regionPath(region.slug)}
+    // A region without its own page yet opens its treks.
+    href={regionHref(region.slug)}
     className={`group relative flex h-full flex-col gap-1.5 overflow-hidden rounded-xl text-white transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
       isFeatured ? "p-7" : "p-4.5"
     } ${TILE_COLORS[index % TILE_COLORS.length]}`}
   >
     {region.image ? (
       <>
-        <Image
-          src={region.image.src}
-          alt={region.image.alt}
-          fill
+        <SiteImage
+          image={region.image}
           sizes={isFeatured ? "(min-width: 768px) 600px, 85vw" : "(min-width: 768px) 300px, 85vw"}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />

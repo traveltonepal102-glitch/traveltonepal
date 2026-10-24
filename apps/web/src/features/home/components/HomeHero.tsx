@@ -9,8 +9,9 @@ import { HeroBackdrop } from "./HeroBackdrop";
 /**
  * Home hero (design: Main.dc.html). The overlay header sits on top of it (see app/page.tsx), so the
  * top padding includes the header height: 76px on phones, 112px from md up (utility bar + main bar).
+ * `intro` is the line under the heading (homeIntro: it counts the regions).
  */
-export const HomeHero = () => (
+export const HomeHero = ({ intro }: { intro: string }) => (
   <section aria-labelledby="home-hero-title" className="relative bg-navy text-white">
     <HeroBackdrop />
 
@@ -23,7 +24,7 @@ export const HomeHero = () => (
         Walk the Himalaya with people who call it home.
       </h1>
       <p className="max-w-145 text-body-lg text-navy-text">
-        Nine trekking regions, guides born in the valleys they lead, and a real person to plan it with you on WhatsApp.
+        {intro}
       </p>
       <div className="flex flex-wrap gap-3 pt-1">
         <ButtonLink href={ROUTES.treks} variant="accent" size="lg" trailingIcon="arrow_forward" className="max-md:w-full">
