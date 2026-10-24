@@ -201,25 +201,26 @@ describe("trekSchema", () => {
     });
   });
 
-  const departures = (...rows: [string, boolean, string][]) => ({
+  const departures = (...rows: [string, string, string][]) => ({
     departureId: rows.map(() => ""),
     departureDate: rows.map(([date]) => date),
-    departureGuaranteed: rows.map(([, isGuaranteed]) => String(isGuaranteed)),
+    departureStatus: rows.map(([, status]) => status),
     departureNote: rows.map(([, , note]) => note),
   });
 
-  it("reads departure dates sorted by date, with the fixed-dates switch", () => {
-    const result = parse({ hasFixedDates: "on", ...departures(["2027-03-18", false, "Spring bloom"], ["2026-11-02", true, "4 places left"]) });
+  it("reads departure dates sorted by date, with their status and the fixed-dates switch", () => {
+    const result = parse({ hasFixedDates: "on", ...departures(["2027-03-18", "open", "Spring bloom"], ["2026-11-02", "guaranteed", "4 places left"]) });
     expect(result.data?.hasFixedDates).toBe(true);
     expect(result.data?.departures.map((departure) => departure.startDate)).toEqual(["2026-11-02", "2027-03-18"]);
-    expect(result.data?.departures[0]).toMatchObject({ isGuaranteed: true, note: "4 places left" });
+    expect(result.data?.departures[0]).toMatchObject({ status: "guaranteed", note: "4 places left" });
     expect(parse().data?.hasFixedDates).toBe(false);
   });
 
-  it("only takes real dates, one departure per day", () => {
-    expect(errorsOf(departures(["", false, ""]))["departures.0.startDate"]).toBe("Pick the date.");
-    expect(errorsOf(departures(["2026-02-30", false, ""]))["departures.0.startDate"]).toBe("Pick a real date.");
-    expect(errorsOf(departures(["2026-11-02", false, ""], ["2026-11-02", true, ""]))["departures.1.startDate"]).toBe("There is already a departure on this day.");
+  it("only takes real dates, one departure per day, and known statuses", () => {
+    expect(errorsOf(departures(["", "open", ""]))["departures.0.startDate"]).toBe("Pick the date.");
+    expect(errorsOf(departures(["2026-02-30", "open", ""]))["departures.0.startDate"]).toBe("Pick a real date.");
+    expect(errorsOf(departures(["2026-11-02", "open", ""], ["2026-11-02", "full", ""]))["departures.1.startDate"]).toBe("There is already a departure on this day.");
+    expect(errorsOf(departures(["2026-11-02", "sold", ""]))["departures.0.status"]).toBe("Pick the date's status.");
   });
 
   it("reads photo badges in order and checks them", () => {

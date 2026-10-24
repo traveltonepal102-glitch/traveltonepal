@@ -65,7 +65,7 @@ const toDepartures = (rows: TrekQueryRow["trek_departures"]): Departure[] =>
     .map((row) => ({
       id: row.id,
       startDate: row.start_date,
-      isGuaranteed: row.is_guaranteed,
+      status: row.status,
       note: row.trek_departure_translations[0]?.note ?? "",
     }));
 
@@ -336,7 +336,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
     p_departures: values.departures.map((departure) => ({
       id: departure.id ?? "",
       start_date: departure.startDate,
-      is_guaranteed: departure.isGuaranteed,
+      status: departure.status,
       note: departure.note,
     })),
   });

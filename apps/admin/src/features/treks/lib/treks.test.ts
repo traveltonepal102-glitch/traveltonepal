@@ -97,7 +97,7 @@ describe("getTrekReadiness", () => {
     expect(getTrekReadiness(EMPTY_TREK_VALUES, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "todo", note: "Add the group prices" });
     const priced = { ...EMPTY_TREK_VALUES, groupPrices: [price] };
     expect(getTrekReadiness(priced, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "done", note: "1 group price · your dates" });
-    const past = { id: "d1", startDate: "2026-01-10", isGuaranteed: false, note: "" };
+    const past = { id: "d1", startDate: "2026-01-10", status: "open" as const, note: "" };
     const fixed = { ...priced, hasFixedDates: true, departures: [past] };
     expect(getTrekReadiness(fixed, NO_TREK_PHOTOS, TODAY).prices).toEqual({ status: "warn", note: "No upcoming dates" });
     const upcoming = { ...past, id: "d2", startDate: TODAY };

@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { readList, requiredText, text, wholeNumber } from "@/lib/forms/formFields";
+import { calendarDate, readList, requiredText, text, wholeNumber } from "@/lib/forms/formFields";
 
-import { MAX_DEPARTURES, MAX_GROUP_PRICES, PRICE_LIMITS as LIMIT } from "../constants";
+import { DEPARTURE_STATUS_VALUES, MAX_DEPARTURES, MAX_GROUP_PRICES, PRICE_LIMITS as LIMIT } from "../constants";
 
 const optionalId = z
   .string()
@@ -24,20 +24,10 @@ export const groupPricesSchema = z
   .max(MAX_GROUP_PRICES, `Up to ${MAX_GROUP_PRICES} group sizes.`)
   .refine((prices) => !prices.length || prices.filter((price) => price.isDefault).length === 1, "Choose the most popular group size.");
 
-/** A real calendar day as "YYYY-MM-DD" (the date picker's format). */
-const calendarDate = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Pick the date.")
-  .refine((value) => {
-    const date = new Date(`${value}T00:00:00Z`);
-    return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);
-  }, "Pick a real date.")
-  .refine((value) => value >= "2020-01-01" && value <= "2100-12-31", "Pick a date between 2020 and 2100.");
-
 const departureSchema = z.object({
   id: optionalId,
   startDate: calendarDate,
-  isGuaranteed: z.string().transform((value) => value === "true"),
+  status: z.enum(DEPARTURE_STATUS_VALUES, "Pick the date's status."),
   note: text(LIMIT.note),
 });
 
@@ -73,11 +63,11 @@ export const readGroupPrices = (formData: FormData) => {
 
 /** The departure rows in the editor's FormData. */
 export const readDepartures = (formData: FormData) => {
-  const [dates, guaranteed, notes] = ["departureDate", "departureGuaranteed", "departureNote"].map((name) => readList(formData, name));
+  const [dates, statuses, notes] = ["departureDate", "departureStatus", "departureNote"].map((name) => readList(formData, name));
   return readList(formData, "departureId").map((id, index) => ({
     id,
     startDate: dates[index] ?? "",
-    isGuaranteed: guaranteed[index] ?? "false",
+    status: statuses[index] ?? "",
     note: notes[index] ?? "",
   }));
 };

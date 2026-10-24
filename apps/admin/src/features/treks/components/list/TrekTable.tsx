@@ -54,7 +54,7 @@ export const TrekTable = ({ treks }: { treks: TrekListItem[] }) => (
           <th className={headClass}>Difficulty</th>
           <th className={cn(headClass, "text-right")}>From</th>
           <th className={headClass}>Status</th>
-          <th className={headClass}>Edited</th>
+          <th className={headClass}>Edited (Nepal time)</th>
           <th className={headClass}>
             <span className="sr-only">Actions</span>
           </th>

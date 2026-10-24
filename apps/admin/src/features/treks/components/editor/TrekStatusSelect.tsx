@@ -16,11 +16,11 @@ type TrekStatusSelectProps = {
 export const TrekStatusSelect = ({ defaultValue }: TrekStatusSelectProps) => {
   const id = useId();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex min-w-0 items-center gap-2 max-tablet:flex-1">
       <label htmlFor={id} className="text-caption font-bold text-ink max-tablet:sr-only">
         Status
       </label>
-      <select id={id} name="status" defaultValue={defaultValue} className={cn(inputClass, "h-10 w-auto cursor-pointer pr-8 font-semibold")}>
+      <select id={id} name="status" defaultValue={defaultValue} className={cn(inputClass, "h-10 w-auto cursor-pointer pr-8 font-semibold max-tablet:w-full")}>
         {STATUS_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label} · {option.hint}

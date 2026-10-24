@@ -165,7 +165,17 @@ type TrekDayRow = {
 type TrekGroupPriceRow = { id: string; trek_id: string; position: number; price_usd: number; is_default: boolean };
 type TrekGroupPriceTranslationRow = { price_id: string; locale: "en" | "de"; label: string; short_label: string; team: string };
 /** start_date is "YYYY-MM-DD". */
-type TrekDepartureRow = { id: string; trek_id: string; start_date: string; is_guaranteed: boolean };
+export type DepartureStatusValue = "guaranteed" | "open" | "almost_full" | "full";
+
+type TrekDepartureRow = {
+  id: string;
+  trek_id: string;
+  start_date: string;
+  status: DepartureStatusValue;
+  special_price_usd: number | null;
+  /** Never shown on the website. */
+  team_note: string;
+};
 type TrekDepartureTranslationRow = { departure_id: string; locale: "en" | "de"; note: string };
 
 type TrekDayTranslationRow = {
@@ -452,6 +462,14 @@ export type Database = {
         };
         Returns: string;
       };
+      save_departure: {
+        Args: { p_departure_id: string | null; p_locale: string; p_departure: Json };
+        Returns: string;
+      };
+      add_departures: {
+        Args: { p_trek_id: string; p_locale: string; p_departures: Json };
+        Returns: number;
+      };
       save_trekking_guide: {
         Args: { p_guide_id: string | null; p_locale: string; p_guide: Json; p_text: Json; p_region_ids: Json };
         Returns: string;
@@ -475,6 +493,7 @@ export type Database = {
       trek_season: TrekSeasonValue;
       trek_tag: TrekTagValue;
       first_aid_level: FirstAidLevel;
+      departure_status: DepartureStatusValue;
     };
     CompositeTypes: { [_ in never]: never };
   };

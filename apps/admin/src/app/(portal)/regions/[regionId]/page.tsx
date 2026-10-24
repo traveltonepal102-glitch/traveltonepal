@@ -45,7 +45,7 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
       regionTreks={treks.filter((trek) => trek.regionId === region.id)}
       otherTreks={treks.filter((trek) => trek.regionId !== region.id)}
       guides={guides.filter((guide) => guide.regionIds.includes(region.id)).map((guide) => toGuideOption(guide, today))}
-      lastSaved={`Saved ${formatDateTime(region.updatedAt)}`}
+      lastSaved={`Saved ${formatDateTime(region.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
     />
   );

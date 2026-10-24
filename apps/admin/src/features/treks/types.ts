@@ -3,6 +3,7 @@ import type { IconName } from "@ttn/ui/icon";
 import type { PhotoSelection } from "@/features/photos/hooks/usePhotoSelection";
 import type { Photo, PhotoDetails } from "@/features/photos/types";
 import type { RichTextDoc } from "@/lib/richText/richText";
+import type { DepartureStatusValue } from "@/lib/supabase/database.types";
 
 export type TrekStatus = "draft" | "published" | "hidden";
 export type TrekDifficulty = "easy" | "moderate" | "challenging" | "strenuous";
@@ -54,13 +55,18 @@ export type GroupPrice = {
   isDefault: boolean;
 };
 
+/**
+ * How a date is booking: Guaranteed (runs whatever the group size), Open, Almost full or Full. Bookings happen
+ * on WhatsApp, so it is changed by hand.
+ */
+export type DepartureStatus = DepartureStatusValue;
+
 /** A fixed start date (the website's Departure). */
 export type Departure = {
   id: string | null;
   /** "YYYY-MM-DD" */
   startDate: string;
-  /** Runs whatever the group size. */
-  isGuaranteed: boolean;
+  status: DepartureStatus;
   /** e.g. "4 places left" */
   note: string;
 };

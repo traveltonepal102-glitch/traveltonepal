@@ -1,5 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { NEW_DEPARTURE_PATH } from "@/features/departures/constants";
 import { NEW_GUIDE_PATH } from "@/features/trekking-guides/constants";
 import { NEW_TREK_PATH } from "@/features/treks/constants";
 
@@ -24,7 +25,7 @@ export const NEW_ITEMS: NewItem[] = [
     hint: "Shows a date picker on the trek",
     icon: "event",
     tone: "brand",
-    href: ADMIN_SECTIONS.departures.href,
+    href: NEW_DEPARTURE_PATH,
   },
   { label: "Travel guide", hint: "Write it yourself", icon: "article", tone: "brand", href: ADMIN_SECTIONS.travelGuides.href },
   {

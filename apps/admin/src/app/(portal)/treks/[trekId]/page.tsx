@@ -50,7 +50,7 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       regionId={trek.regionId}
       isNew={false}
       today={today}
-      lastSaved={`Saved ${formatDateTime(trek.updatedAt)}`}
+      lastSaved={`Saved ${formatDateTime(trek.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
     />
   );

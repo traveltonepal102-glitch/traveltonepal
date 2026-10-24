@@ -17,6 +17,16 @@ export const slugField = (example: string) =>
     .max(MAX_SLUG_LENGTH, `Use ${MAX_SLUG_LENGTH} characters or fewer.`)
     .regex(SLUG_PATTERN, `Use lowercase letters, numbers and dashes, like ${example}.`);
 
+/** A real calendar day as "YYYY-MM-DD" (the date picker's format). */
+export const calendarDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Pick the date.")
+  .refine((value) => {
+    const date = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);
+  }, "Pick a real date.")
+  .refine((value) => value >= "2020-01-01" && value <= "2100-12-31", "Pick a date between 2020 and 2100.");
+
 type NumberRange = { min: number; max: number; label: string };
 
 /** "4,773" or "4 773" → 4773 (people type numbers the way they read them). */

@@ -14,6 +14,8 @@ import { SiteSwitcher } from "./SiteSwitcher";
 
 type SidebarProps = {
   isOpen: boolean;
+  /** Sliding out after a close (the only time the closed drawer animates). */
+  isClosing: boolean;
   isRail: boolean;
   onClose: () => void;
   onToggleRail: () => void;
@@ -25,7 +27,7 @@ const sidebarButton =
   "m-0 cursor-pointer items-center justify-center rounded-md border-0 focus-visible:outline-2 focus-visible:outline-sidebar-ring";
 
 /** Navy menu: full width (256px), icons only (76px) on wide screens, or a drawer on narrow ones. */
-export const Sidebar = ({ isOpen, isRail, onClose, onToggleRail, closeButtonRef, user }: SidebarProps) => {
+export const Sidebar = ({ isOpen, isClosing, isRail, onClose, onToggleRail, closeButtonRef, user }: SidebarProps) => {
   const pathname = usePathname();
   const railLabel = isRail ? "Show the full menu" : "Show icons only";
 
@@ -44,12 +46,14 @@ export const Sidebar = ({ isOpen, isRail, onClose, onToggleRail, closeButtonRef,
       className={cn(
         "z-90 flex w-64 flex-none flex-col bg-navy text-navy-text",
         "desktop:sticky desktop:top-0 desktop:h-dvh desktop:transition-[width] desktop:duration-200 rail:w-19",
-        "max-desktop:fixed max-desktop:inset-y-0 max-desktop:left-0 max-desktop:shadow-[0_0_40px_rgba(0,0,0,0.3)] max-desktop:duration-200",
+        "max-desktop:fixed max-desktop:inset-y-0 max-desktop:left-0 max-desktop:shadow-[0_0_40px_rgba(0,0,0,0.3)]",
         // Visibility animates only on close (it stays visible while sliding out); on open it switches at
-        // once, so focus can move into the drawer straight away.
-        isOpen
-          ? "max-desktop:transition-[translate]"
-          : "max-desktop:invisible max-desktop:-translate-x-full max-desktop:transition-[translate,visibility]",
+        // once, so focus can move into the drawer straight away. Closed and not closing: no animation, so
+        // shrinking the window to phone width hides it at once instead of sliding it out. (A duration without a
+        // transition property would animate every property, so the two always go together.)
+        isOpen && "max-desktop:transition-[translate] max-desktop:duration-200",
+        !isOpen && "max-desktop:invisible max-desktop:-translate-x-full",
+        isClosing && "max-desktop:transition-[translate,visibility] max-desktop:duration-200",
       )}
     >
       <div className="flex min-h-19 items-center justify-between gap-2.5 pt-4.5 pr-3.5 pb-3.5 pl-4.5 rail:justify-center rail:px-0">

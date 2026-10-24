@@ -41,6 +41,7 @@ export const AdminShell = ({ isRailInitially, user, websiteUrl, children }: Admi
 
       <Sidebar
         isOpen={menu.isOpen}
+        isClosing={menu.isClosing}
         isRail={isRail}
         onClose={menu.close}
         onToggleRail={toggleRail}

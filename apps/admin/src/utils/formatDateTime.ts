@@ -9,9 +9,13 @@ const DATE_TIME = new Intl.DateTimeFormat("en-GB", {
   timeZone: ADMIN_TIME_ZONE,
 });
 
-/** "2026-10-23T05:47:00Z" → "23 Oct, 11:32" (Nepal time). */
+/** "2026-10-23T05:47:00Z" → "23 Oct, 11:32" (Nepal time: say so where it is shown, e.g. "… Nepal time"). */
 export const formatDateTime = (isoDate: string) => DATE_TIME.format(new Date(isoDate));
 
-/** Today in Nepal as "YYYY-MM-DD" (en-CA writes dates that way), e.g. to tell past departure dates. */
+/**
+ * Today in Nepal as "YYYY-MM-DD" (en-CA writes dates that way), e.g. to tell past departure dates.
+ * Departure dates are Nepal dates (the day the trek starts in Kathmandu), shown the same to everyone and never
+ * converted to the viewer's time zone, like a flight's date at its departure airport.
+ */
 export const todayInNepal = (now = new Date()) =>
   new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: ADMIN_TIME_ZONE }).format(now);

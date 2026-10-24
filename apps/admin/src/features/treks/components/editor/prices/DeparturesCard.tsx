@@ -12,8 +12,11 @@ import { TextField } from "@/components/ui/TextField";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_DEPARTURES, PRICE_LIMITS as LIMIT } from "../../../constants";
-import type { Departure } from "../../../types";
+import { DEPARTURE_STATUSES, MAX_DEPARTURES, PRICE_LIMITS as LIMIT } from "../../../constants";
+import type { Departure, DepartureStatus } from "../../../types";
+
+/** The status a menu value stands for (menu values come from DEPARTURE_STATUSES). */
+const statusOf = (value: string, current: DepartureStatus) => DEPARTURE_STATUSES.find((status) => status.value === value)?.value ?? current;
 
 type DeparturesCardProps = {
   hasFixedDates: boolean;
@@ -41,7 +44,7 @@ export const DeparturesCard = ({ hasFixedDates, departures, today, errors, onEdi
   return (
     <FormSection
       title="Departure dates"
-      hint="Optional. With dates, the trek page shows a date picker. Without, it shows “Your dates, your pace”."
+      hint="Optional. With dates, the trek page shows a date picker. Without, it shows “Your dates, your pace”. Dates are Nepal dates: the day the trek starts in Kathmandu."
       aside={
         <label className="flex cursor-pointer items-center gap-2 text-caption font-bold whitespace-nowrap text-ink">
           <input type="checkbox" name="hasFixedDates" checked={isOn} onChange={(event) => setIsOn(event.target.checked)} className="size-4 accent-brand" />
@@ -65,9 +68,8 @@ export const DeparturesCard = ({ hasFixedDates, departures, today, errors, onEdi
           const isPast = Boolean(row.startDate) && row.startDate < today;
           const dateId = `${id}-date-${row.key}`;
           return (
-            <div key={row.key} className={cn("grid items-start gap-2 rounded-lg border border-solid border-border p-2 tablet:grid-cols-[180px_140px_minmax(0,1fr)_40px]", isPast && "bg-page")}>
+            <div key={row.key} className={cn("grid items-start gap-2 rounded-lg border border-solid border-border p-2 tablet:grid-cols-[180px_150px_minmax(0,1fr)_40px]", isPast && "bg-page")}>
               <input type="hidden" name="departureId" value={row.id ?? ""} />
-              <input type="hidden" name="departureGuaranteed" value={String(row.isGuaranteed)} />
               <div className="flex flex-col gap-1">
                 <label htmlFor={dateId} className="sr-only">
                   Start date, row {index + 1}
@@ -87,9 +89,21 @@ export const DeparturesCard = ({ hasFixedDates, departures, today, errors, onEdi
                 </span>
                 <FieldError id={`${dateId}-error`} message={rowError(index, "startDate")} />
               </div>
-              <label className="flex h-10.5 cursor-pointer items-center gap-2 text-caption font-bold">
-                <input type="checkbox" checked={row.isGuaranteed} onChange={(event) => list.update(row.key, { isGuaranteed: event.target.checked })} className="size-4 accent-whatsapp" />
-                <span className={row.isGuaranteed ? "text-whatsapp" : "text-muted-foreground"}>Guaranteed</span>
+              <label className="flex flex-col">
+                <span className="sr-only">Status, row {index + 1}</span>
+                <select
+                  name="departureStatus"
+                  value={row.status}
+                  onChange={(event) => list.update(row.key, { status: statusOf(event.target.value, row.status) })}
+                  aria-invalid={rowError(index, "status") ? true : undefined}
+                  className={cn(inputClass, "cursor-pointer pr-8 font-semibold")}
+                >
+                  {DEPARTURE_STATUSES.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
               </label>
               <TextField
                 name="departureNote"
@@ -111,7 +125,7 @@ export const DeparturesCard = ({ hasFixedDates, departures, today, errors, onEdi
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={() => list.add({ id: null, startDate: "", isGuaranteed: false, note: "" })}
+            onClick={() => list.add({ id: null, startDate: "", status: "open", note: "" })}
             disabled={list.rows.length >= MAX_DEPARTURES}
             className={cn(secondaryButton, "min-h-8 px-3 text-caption")}
           >
