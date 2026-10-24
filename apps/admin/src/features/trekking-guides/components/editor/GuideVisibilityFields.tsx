@@ -1,11 +1,11 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
-import { labelClass } from "@/components/ui/formStyles";
 import { Switch } from "@/components/ui/Switch";
 import { trekPath } from "@/features/treks/constants";
 
 import type { TrekkingGuide, TrekkingGuideValues } from "../../types";
+import { GuideFormGroup } from "./GuideFormGroup";
 
 type GuideVisibilityFieldsProps = {
   values: TrekkingGuideValues;
@@ -16,13 +16,12 @@ type GuideVisibilityFieldsProps = {
 const SWITCHES = [
   { name: "showOnAbout", label: "Show on the About page", sub: "In “Our guides and team”" },
   { name: "canLeadTreks", label: "Can be picked on trek pages", sub: "“Meet your trek guide” section" },
-  { name: "canFactCheck", label: "Can fact-check articles", sub: "Shown as “Checked by” under travel guides" },
+  { name: "canFactCheck", label: "Can check travel guides", sub: "Shown as “Checked by” at the top of travel guides" },
 ] as const;
 
 /** Where the guide appears (design: "Where this person appears"), and the treks they are on. */
 export const GuideVisibilityFields = ({ values, treks }: GuideVisibilityFieldsProps) => (
-  <div className="flex flex-col gap-2">
-    <span className={labelClass}>Where this guide appears</span>
+  <GuideFormGroup title="Where this guide appears">
     {SWITCHES.map((item) => (
       <label key={item.name} className="flex cursor-pointer items-center gap-3 rounded-lg border border-solid border-border p-3 hover:border-line-strong">
         <span className="min-w-0 flex-1">
@@ -47,5 +46,5 @@ export const GuideVisibilityFields = ({ values, treks }: GuideVisibilityFieldsPr
         </ul>
       </div>
     )}
-  </div>
+  </GuideFormGroup>
 );

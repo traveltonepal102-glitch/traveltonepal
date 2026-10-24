@@ -8,16 +8,20 @@ import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FormAlert } from "@/components/ui/FormAlert";
+import { ChoiceChips } from "@/components/ui/ChoiceChips";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 import { TextField } from "@/components/ui/TextField";
 
 import { GUIDE_LIMITS as LIMIT, TREKKING_GUIDES_PATH } from "../../constants";
+import { useGuideDraft } from "../../hooks/useGuideDraft";
+import { guideCardView } from "../../lib/guideCard";
 import type { TrekkingGuide, TrekkingGuideValues } from "../../types";
-import { GuideDetailsFields } from "./GuideDetailsFields";
+import { GuideAboutFields } from "./GuideAboutFields";
+import { GuideCardPreview } from "./GuideCardPreview";
+import { GuideFormGroup } from "./GuideFormGroup";
 import { GuideLicenceFields } from "./GuideLicenceFields";
-import { GuidePhotoField } from "./GuidePhotoField";
 import { GuideVisibilityFields } from "./GuideVisibilityFields";
-import { LanguagesField } from "./LanguagesField";
+import { PhotoAndNameFields } from "./PhotoAndNameFields";
 import { RemoveGuideButton } from "./RemoveGuideButton";
 
 type GuidePanelProps = {
@@ -50,6 +54,8 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
   const router = useRouter();
   const { errors, markDirty } = form;
   const [status, tone] = form.saveStatus;
+  const { draft, readForm, setLanguages, setPhoto } = useGuideDraft({ ...values, photo: guide?.photo ?? null });
+  const firstRegion = regions.find((region) => draft.regionIds.includes(region.id));
 
   const close = () => {
     if (form.isDirty && !window.confirm("Close without saving? Your changes to this guide will be lost.")) return;
@@ -67,33 +73,48 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
       }
       onClose={close}
     >
-      <form noValidate onSubmit={form.handleSubmit} onChange={markDirty} className="flex min-h-0 flex-1 flex-col">
+      <form
+        noValidate
+        onSubmit={form.handleSubmit}
+        onChange={(event) => {
+          markDirty();
+          readForm(event);
+        }}
+        className="flex min-h-0 flex-1 flex-col"
+      >
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-5 max-tablet:px-5">
           {form.state.status === "error" && <FormAlert message={form.state.message} />}
-          <GuidePhotoField initial={guide?.photo ?? null} name={values.name} onEdit={markDirty} />
-          <GuideDetailsFields values={values} regions={regions} errors={errors} />
+          <GuideCardPreview view={guideCardView(draft, firstRegion?.name, today)} name={draft.name} role={draft.role} quote={draft.quote} languages={draft.languages} photo={draft.photo} />
+          <PhotoAndNameFields
+            photo={guide?.photo ?? null}
+            name={values.name}
+            photoConsent={values.photoConsent}
+            typedName={draft.name}
+            errors={errors}
+            onEdit={markDirty}
+            onPhotoChange={setPhoto}
+          />
+          <GuideAboutFields values={values} errors={errors} onEdit={markDirty} onLanguagesChange={setLanguages} />
           <GuideLicenceFields values={values} today={today} errors={errors} />
-          <LanguagesField initial={values.languages} error={errors.languages} onEdit={markDirty} />
-          <TextField
-            name="bio"
-            label="Short bio"
-            hint="Shown on the About page, trek pages and under articles."
-            multiline
-            rows={4}
-            defaultValue={values.bio}
-            maxLength={LIMIT.bio}
-            showCount
-            error={errors.bio}
-          />
-          <TextField
-            name="quote"
-            label="A line in their own words"
-            labelNote="(optional)"
-            defaultValue={values.quote}
-            placeholder="“What I love most about this trail is…”"
-            maxLength={LIMIT.quote}
-            error={errors.quote}
-          />
+          {regions.length > 0 && (
+            <GuideFormGroup title="Regions this guide leads">
+              <ChoiceChips legend="Pick one or more" name="regionId" type="checkbox" options={regions.map((region) => ({ value: region.id, label: region.name }))} defaultValues={values.regionIds} error={errors.regionIds} />
+              <span className="text-xs text-muted-foreground">Suggests this guide on treks in these regions and shows them on those region pages.</span>
+            </GuideFormGroup>
+          )}
+          <GuideFormGroup title="Short bio">
+            <TextField
+              name="bio"
+              label="English"
+              hint="Shown when this guide writes or checks a travel guide. German comes with the German website."
+              multiline
+              rows={3}
+              defaultValue={values.bio}
+              maxLength={LIMIT.bio}
+              showCount
+              error={errors.bio}
+            />
+          </GuideFormGroup>
           <GuideVisibilityFields values={values} treks={guide?.treks ?? []} />
         </div>
 

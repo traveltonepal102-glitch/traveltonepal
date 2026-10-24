@@ -1,31 +1,33 @@
-import type { IconName } from "@ttn/ui/icon";
-
 import type { Photo } from "@/features/photos/types";
-import type { FirstAidLevel } from "@/lib/supabase/database.types";
+import type { GuideBadgeValue } from "@/lib/supabase/database.types";
 
-export type FirstAid = FirstAidLevel;
+/** The badge on the guide's photo: what they are best at (one per guide). */
+export type GuideBadge = GuideBadgeValue;
 
-/** Icon of the specialty printed on the guide's photo (the database checks the same names). */
-export type SpecialtyIcon = Extract<IconName, "mountain_flag" | "temple_buddhist" | "person" | "medical_services" | "hiking" | "groups" | "landscape">;
+/** Training in "Training and certificates" (the licence is its own field). */
+export type GuideCertificate = "nathm" | "wfr" | "first_aid" | "nma" | "language";
 
 /** Everything the guide form saves (one language for the text). The website's TrekGuide is made from it. */
 export type TrekkingGuideValues = {
   name: string;
+  /** The guide agreed that we show their photo and name; needed before they show anywhere. */
+  photoConsent: boolean;
   role: string;
-  /** Home village and district, e.g. "Briddim, Rasuwa". */
-  home: string;
+  homeVillage: string;
+  homeDistrict: string;
   age: number | null;
   yearsGuiding: number | null;
-  /** On the photo, e.g. "Langtang local". */
-  specialty: string;
-  specialtyIcon: SpecialtyIcon;
+  badge: GuideBadge;
   languages: string[];
   regionIds: string[];
   /** Admin only, never on the website. */
   licenceNumber: string;
   /** "YYYY-MM": the licence is valid to the end of that month. */
   licenceValidUntil: string | null;
-  firstAid: FirstAid;
+  certificates: GuideCertificate[];
+  /** "YYYY-MM", only with the certificate ticked. */
+  wfrValidUntil: string | null;
+  firstAidValidUntil: string | null;
   bio: string;
   /** A line in the guide's own words. */
   quote: string;

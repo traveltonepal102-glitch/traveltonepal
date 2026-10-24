@@ -15,10 +15,12 @@ type LanguagesFieldProps = {
   initial: string[];
   error?: string;
   onEdit: () => void;
+  /** The languages as they are now, for the card preview. */
+  onChange?: (languages: string[]) => void;
 };
 
 /** The languages a guide speaks, as removable chips (design: "Languages spoken"). Each is sent as `language`. */
-export const LanguagesField = ({ initial, error, onEdit }: LanguagesFieldProps) => {
+export const LanguagesField = ({ initial, error, onEdit, onChange }: LanguagesFieldProps) => {
   const id = useId();
   const [languages, setLanguages] = useState(initial);
   const [draft, setDraft] = useState("");
@@ -26,6 +28,7 @@ export const LanguagesField = ({ initial, error, onEdit }: LanguagesFieldProps) 
 
   const change = (next: string[]) => {
     setLanguages(next);
+    onChange?.(next);
     onEdit();
   };
 

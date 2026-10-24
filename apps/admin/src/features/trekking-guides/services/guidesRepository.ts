@@ -4,7 +4,7 @@ import { z } from "zod";
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { GUIDE_LOCALE, SPECIALTY_ICON_VALUES } from "../constants";
+import { GUIDE_CERTIFICATE_VALUES, GUIDE_LOCALE } from "../constants";
 import type { TrekkingGuide, TrekkingGuideFormValues } from "../types";
 
 /** Postgres error codes the save can raise. */
@@ -18,7 +18,12 @@ const GUIDE_COLUMNS = `*,
   trekking_guide_regions(region_id),
   trek_guides(trek_id)` as const;
 
-const specialtyIconSchema = z.enum(SPECIALTY_ICON_VALUES).catch("mountain_flag");
+/** Stored certificates as the form knows them (the database checks the same names). */
+const certificatesSchema = z.array(z.enum(GUIDE_CERTIFICATE_VALUES)).catch([]);
+
+/** A stored month's first day ("2027-03-01") → the form's month ("2027-03"). */
+const toMonth = (date: string | null) => date?.slice(0, 7) ?? null;
+const toDate = (month: string | null) => (month ? `${month}-01` : "");
 
 /** Trek names in English by id, to list where each guide is used. */
 const trekNames = async () => {
@@ -45,20 +50,22 @@ export const listTrekkingGuides = async (): Promise<TrekkingGuide[]> => {
         updatedAt: row.updated_at,
         name: row.name,
         photo: row.photo ? toPhoto(row.photo) : null,
+        photoConsent: row.photo_consent,
         role: text?.role ?? "",
-        specialty: text?.specialty ?? "",
         bio: text?.bio ?? "",
         quote: text?.quote ?? "",
-        home: row.home,
+        homeVillage: row.home_village,
+        homeDistrict: row.home_district,
         age: row.age,
         yearsGuiding: row.years_guiding,
-        specialtyIcon: specialtyIconSchema.parse(row.specialty_icon),
+        badge: row.badge,
         languages: row.languages,
         regionIds: row.trekking_guide_regions.map((region) => region.region_id),
         licenceNumber: row.licence_number,
-        // Stored as the month's first day; the form works in months.
-        licenceValidUntil: row.licence_valid_until?.slice(0, 7) ?? null,
-        firstAid: row.first_aid,
+        licenceValidUntil: toMonth(row.licence_valid_until),
+        certificates: certificatesSchema.parse(row.certificates),
+        wfrValidUntil: toMonth(row.wfr_valid_until),
+        firstAidValidUntil: toMonth(row.first_aid_valid_until),
         showOnAbout: row.show_on_about,
         canLeadTreks: row.can_lead_treks,
         canFactCheck: row.can_fact_check,
@@ -81,19 +88,23 @@ export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId
     p_guide: {
       name: values.name,
       photo_id: values.photoId ?? "",
-      home: values.home,
+      photo_consent: values.photoConsent,
+      home_village: values.homeVillage,
+      home_district: values.homeDistrict,
       age: values.age,
       years_guiding: values.yearsGuiding,
-      specialty_icon: values.specialtyIcon,
+      badge: values.badge,
       languages: values.languages,
       licence_number: values.licenceNumber,
-      licence_valid_until: values.licenceValidUntil ? `${values.licenceValidUntil}-01` : "",
-      first_aid: values.firstAid,
+      licence_valid_until: toDate(values.licenceValidUntil),
+      certificates: values.certificates,
+      wfr_valid_until: toDate(values.wfrValidUntil),
+      first_aid_valid_until: toDate(values.firstAidValidUntil),
       show_on_about: values.showOnAbout,
       can_lead_treks: values.canLeadTreks,
       can_fact_check: values.canFactCheck,
     },
-    p_text: { role: values.role, specialty: values.specialty, bio: values.bio, quote: values.quote },
+    p_text: { role: values.role, bio: values.bio, quote: values.quote },
     p_region_ids: values.regionIds,
   });
 

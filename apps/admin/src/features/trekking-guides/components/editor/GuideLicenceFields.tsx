@@ -6,13 +6,14 @@ import { useId, useState } from "react";
 
 import { FieldError } from "@/components/ui/FieldError";
 import { inputClass, labelClass } from "@/components/ui/formStyles";
-import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { FIRST_AID_OPTIONS, GUIDE_LIMITS as LIMIT } from "../../constants";
+import { GUIDE_LIMITS as LIMIT } from "../../constants";
 import { licenceStatus } from "../../lib/guideRules";
 import type { LicenceStatus, TrekkingGuideValues } from "../../types";
+import { CertificatesField } from "./CertificatesField";
+import { GuideFormGroup } from "./GuideFormGroup";
 
 type GuideLicenceFieldsProps = {
   values: TrekkingGuideValues;
@@ -27,20 +28,21 @@ const STATUS: Record<LicenceStatus, { label: string; icon: "verified" | "warning
   none: { label: "No licence number yet", icon: "info", className: "bg-page text-muted-foreground" },
 };
 
-/** Licence and first aid (design: guide only). The licence number stays in the admin; the website shows a badge. */
+/** "Licence and training". The licence number stays in the admin; the website shows the "licence checked" tick. */
 export const GuideLicenceFields = ({ values, today, errors }: GuideLicenceFieldsProps) => {
   const monthId = useId();
   const [licenceNumber, setLicenceNumber] = useState(values.licenceNumber);
   const [validUntil, setValidUntil] = useState(values.licenceValidUntil ?? "");
-  const status = STATUS[licenceStatus({ licenceNumber, licenceValidUntil: validUntil || null }, today)];
+  const licence = licenceStatus({ licenceNumber, licenceValidUntil: validUntil || null }, today);
+  const status = STATUS[licence];
 
   return (
-    <>
+    <GuideFormGroup title="Licence and training">
       <div className="grid gap-3 tablet:grid-cols-2">
         <TextField
           name="licenceNumber"
-          label="Guide licence number"
-          hint="Only admins see it."
+          label="Trekking guide licence no."
+          hint="Kept private: only admins see it."
           value={licenceNumber}
           onValueChange={setLicenceNumber}
           maxLength={LIMIT.licenceNumber}
@@ -48,7 +50,7 @@ export const GuideLicenceFields = ({ values, today, errors }: GuideLicenceFields
         />
         <div className="flex flex-col gap-1.5">
           <label htmlFor={monthId} className={labelClass}>
-            Valid until
+            Licence valid until
           </label>
           <input
             id={monthId}
@@ -67,7 +69,8 @@ export const GuideLicenceFields = ({ values, today, errors }: GuideLicenceFields
         <Icon name={status.icon} size={18} className="flex-none" />
         {status.label}
       </p>
-      <SelectField name="firstAid" label="First aid training" options={FIRST_AID_OPTIONS} defaultValue={values.firstAid} error={errors.firstAid} />
-    </>
+      <span className="text-xs text-muted-foreground">Issued by Nepal’s Department of Tourism. The website only shows the blue “licence checked” tick.</span>
+      <CertificatesField values={values} isLicensed={licence === "valid"} today={today} errors={errors} />
+    </GuideFormGroup>
   );
 };

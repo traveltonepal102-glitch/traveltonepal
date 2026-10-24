@@ -8,7 +8,7 @@ const REGION = "00000000-0000-4000-8000-000000000001";
 
 const buildForm = (fields: Record<string, string | string[]> = {}) => {
   const form = new FormData();
-  const base: Record<string, string | string[]> = { name: "Pemba Tamang", role: "Trek leader", specialtyIcon: "mountain_flag", firstAid: "wfr", ...fields };
+  const base: Record<string, string | string[]> = { name: "Pemba Tamang", role: "Trek leader", badge: "local", ...fields };
   for (const [name, value] of Object.entries(base)) {
     for (const item of Array.isArray(value) ? value : [value]) form.append(name, item);
   }
@@ -43,7 +43,7 @@ describe("guideSchema", () => {
   });
 
   it("reads numbers, switches, regions and the licence month", () => {
-    const result = parse({ age: "38", yearsGuiding: "16", showOnAbout: "on", regionId: [REGION, REGION], licenceValidUntil: "2027-03" });
+    const result = parse({ age: "38", yearsGuiding: "16", showOnAbout: "on", photoConsent: "on", regionId: [REGION, REGION], licenceValidUntil: "2027-03" });
     expect(result.data).toMatchObject({ age: 38, yearsGuiding: 16, showOnAbout: true, regionIds: [REGION], licenceValidUntil: "2027-03" });
     expect(errorsOf({ age: "12" }).age).toMatch(/between 18 and 90/);
     expect(errorsOf({ licenceValidUntil: "2027-13" }).licenceValidUntil).toBe("Pick the month the licence runs out.");
@@ -56,8 +56,24 @@ describe("guideSchema", () => {
     expect(errorsOf({ language: eleven }).languages).toBe("Up to 10 languages.");
   });
 
-  it("only takes known icons and first aid levels", () => {
-    expect(errorsOf({ specialtyIcon: "rocket" }).specialtyIcon).toBe("Pick an icon.");
-    expect(errorsOf({ firstAid: "doctor" }).firstAid).toBe("Pick the first aid training.");
+  it("reads the home village and district, the badge and the certificates", () => {
+    const result = parse({ homeVillage: " Briddim ", homeDistrict: "Rasuwa", badge: "culture", certificate: ["nathm", "wfr", "nathm"], wfrValidUntil: "2027-03" });
+    expect(result.data).toMatchObject({ homeVillage: "Briddim", homeDistrict: "Rasuwa", badge: "culture", certificates: ["nathm", "wfr"], wfrValidUntil: "2027-03" });
+    expect(errorsOf({ badge: "rocket" }).badge).toBe("Pick the badge on the photo.");
+    expect(errorsOf({ certificate: ["doctor"] })["certificates.0"]).toBe("Pick the training from the list.");
+    expect(errorsOf({ certificate: ["wfr"], wfrValidUntil: "2027-13" }).wfrValidUntil).toBe("Pick the month the WFR certificate runs out.");
+  });
+
+  it("keeps an end month only for a ticked certificate", () => {
+    expect(parse({ wfrValidUntil: "2027-03", firstAidValidUntil: "2027-04" }).data).toMatchObject({ wfrValidUntil: null, firstAidValidUntil: null });
+    expect(parse({ certificate: ["first_aid"], firstAidValidUntil: "2027-04" }).data?.firstAidValidUntil).toBe("2027-04");
+  });
+
+  it("needs the guide's consent before they show anywhere on the website", () => {
+    const message = "Tick this once the guide has agreed, or switch off every place this guide appears.";
+    expect(errorsOf({ showOnAbout: "on" }).photoConsent).toBe(message);
+    expect(errorsOf({ canFactCheck: "on" }).photoConsent).toBe(message);
+    expect(parse({ showOnAbout: "on", canLeadTreks: "on", photoConsent: "on" }).data).toMatchObject({ photoConsent: true, showOnAbout: true });
+    expect(parse().success).toBe(true);
   });
 });

@@ -159,21 +159,28 @@ type TrekTranslationRow = {
 
 type TrekGuideRow = { trek_id: string; guide_id: string; position: number };
 
-export type FirstAidLevel = "wfr" | "basic" | "none";
+/** The badge printed on a guide's photo (its words and icon are set by the admin and the website). */
+export type GuideBadgeValue = "local" | "culture" | "solo" | "rescue" | "family" | "photo";
 
 type TrekkingGuideRow = {
   id: string;
   name: string;
   photo_id: string | null;
-  home: string;
+  /** The guide agreed that we show their photo and name. */
+  photo_consent: boolean;
+  home_village: string;
+  home_district: string;
   age: number | null;
   years_guiding: number | null;
-  specialty_icon: string;
+  badge: GuideBadgeValue;
   languages: string[];
   /** Admin only, never on the website. */
   licence_number: string;
   licence_valid_until: string | null;
-  first_aid: FirstAidLevel;
+  /** "nathm" | "wfr" | "first_aid" | "nma" | "language" */
+  certificates: string[];
+  wfr_valid_until: string | null;
+  first_aid_valid_until: string | null;
   show_on_about: boolean;
   can_lead_treks: boolean;
   can_fact_check: boolean;
@@ -182,7 +189,7 @@ type TrekkingGuideRow = {
   updated_by: string | null;
 };
 
-type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role: string; specialty: string; bio: string; quote: string };
+type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role: string; bio: string; quote: string };
 
 type TrekkingGuideRegionRow = { guide_id: string; region_id: string };
 
@@ -547,7 +554,7 @@ export type Database = {
       trek_difficulty: TrekDifficultyValue;
       trek_season: TrekSeasonValue;
       trek_tag: TrekTagValue;
-      first_aid_level: FirstAidLevel;
+      guide_badge: GuideBadgeValue;
       departure_status: DepartureStatusValue;
       region_difficulty: RegionDifficultyValue;
     };

@@ -1,6 +1,8 @@
+import type { IconName } from "@ttn/ui/icon";
+
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
-import type { FirstAid, SpecialtyIcon, TrekkingGuideValues } from "./types";
+import type { GuideBadge, GuideCertificate, TrekkingGuideValues } from "./types";
 
 export const TREKKING_GUIDES_PATH = ADMIN_SECTIONS.trekkingGuides.href;
 /** The list with a guide's edit panel open (the panel lives on the list, as in the design). */
@@ -14,8 +16,8 @@ export const GUIDE_LOCALE = "en";
 export const GUIDE_LIMITS = {
   name: 80,
   role: 80,
-  home: 80,
-  specialty: 30,
+  homeVillage: 60,
+  homeDistrict: 60,
   bio: 300,
   quote: 200,
   licenceNumber: 40,
@@ -24,32 +26,34 @@ export const GUIDE_LIMITS = {
 
 export const MAX_LANGUAGES = 10;
 
-export const SPECIALTY_ICONS: { value: SpecialtyIcon; label: string }[] = [
-  { value: "mountain_flag", label: "Mountain" },
-  { value: "temple_buddhist", label: "Culture" },
-  { value: "person", label: "Person" },
-  { value: "medical_services", label: "First aid" },
-  { value: "hiking", label: "Hiker" },
-  { value: "groups", label: "Group" },
-  { value: "landscape", label: "Landscape" },
+/** "Badge on the photo" (design order). `label` is printed on the photo; "local" prints "<first region> local". */
+export const GUIDE_BADGES: { value: GuideBadge; label: string; icon: IconName }[] = [
+  { value: "local", label: "Local to the region", icon: "mountain_flag" },
+  { value: "culture", label: "Culture guide", icon: "temple_buddhist" },
+  { value: "solo", label: "Solo trekkers", icon: "person" },
+  { value: "rescue", label: "Rescue trained", icon: "medical_services" },
+  { value: "family", label: "Family treks", icon: "family_restroom" },
+  { value: "photo", label: "Photography", icon: "image" },
 ];
 
-export const SPECIALTY_ICON_VALUES = [
-  "mountain_flag",
-  "temple_buddhist",
-  "person",
-  "medical_services",
-  "hiking",
-  "groups",
-  "landscape",
-] as const satisfies readonly SpecialtyIcon[];
+export const GUIDE_BADGE_VALUES = ["local", "culture", "solo", "rescue", "family", "photo"] as const satisfies readonly GuideBadge[];
 
-/** First aid training. `badge` is what the website prints on the photo (with a valid licence: "Licensed"). */
-export const FIRST_AID_OPTIONS: { value: FirstAid; label: string; badge: string }[] = [
-  { value: "wfr", label: "Wilderness First Responder", badge: "WFR certified" },
-  { value: "basic", label: "Basic first aid", badge: "First aid" },
-  { value: "none", label: "None yet", badge: "" },
+/** The licence as the card names it ("Cert:" line); it comes from a valid licence number, not the checklist. */
+export const LICENCE_LABEL = { label: "Trekking guide licence (Department of Tourism)", short: "Govt. licence" } as const;
+
+/**
+ * "Training and certificates" (design order). `short` makes the card's "Cert:" line; `hasEndMonth` asks when it
+ * runs out (an expired one no longer counts on the card).
+ */
+export const GUIDE_CERTIFICATES: { value: GuideCertificate; label: string; short: string; hasEndMonth: boolean }[] = [
+  { value: "nathm", label: "Trekking guide training (NATHM)", short: "NATHM trained", hasEndMonth: false },
+  { value: "wfr", label: "Wilderness First Responder (WFR)", short: "WFR", hasEndMonth: true },
+  { value: "first_aid", label: "Basic first aid", short: "First aid", hasEndMonth: true },
+  { value: "nma", label: "Mountaineering course (NMA)", short: "NMA", hasEndMonth: false },
+  { value: "language", label: "Language certificate", short: "Language cert.", hasEndMonth: false },
 ];
+
+export const GUIDE_CERTIFICATE_VALUES = ["nathm", "wfr", "first_aid", "nma", "language"] as const satisfies readonly GuideCertificate[];
 
 /** Offered while typing a language; any other language can be typed. */
 export const LANGUAGE_SUGGESTIONS = [
@@ -73,17 +77,20 @@ export const LANGUAGE_SUGGESTIONS = [
 /** A new guide before anything is typed (English and Nepali, as most guides speak both). */
 export const EMPTY_GUIDE_VALUES: TrekkingGuideValues = {
   name: "",
+  photoConsent: false,
   role: "",
-  home: "",
+  homeVillage: "",
+  homeDistrict: "",
   age: null,
   yearsGuiding: null,
-  specialty: "",
-  specialtyIcon: "mountain_flag",
+  badge: "local",
   languages: ["English", "Nepali"],
   regionIds: [],
   licenceNumber: "",
   licenceValidUntil: null,
-  firstAid: "none",
+  certificates: [],
+  wfrValidUntil: null,
+  firstAidValidUntil: null,
   bio: "",
   quote: "",
   showOnAbout: true,

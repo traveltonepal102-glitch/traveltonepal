@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
+import type { IconName } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId } from "react";
 import type { ChangeEvent, ReactNode } from "react";
@@ -13,7 +14,8 @@ type ChoiceChipsProps = {
   name: string;
   /** "radio": exactly one; "checkbox": any number. */
   type: "radio" | "checkbox";
-  options: { value: string; label: string; sublabel?: string }[];
+  /** With `icon`, the chip shows it instead of the tick that marks a chosen chip. */
+  options: { value: string; label: string; sublabel?: string; icon?: IconName }[];
   defaultValues: string[];
   onChange?: (values: string[]) => void;
   error?: string;
@@ -46,8 +48,8 @@ export const ChoiceChips = ({ legend, name, type, options, defaultValues, onChan
               onChange={handleChange}
               className="peer sr-only"
             />
-            <span className="inline-flex min-h-8.5 items-center gap-1.5 rounded-full border border-solid border-input bg-surface px-3.5 text-caption font-bold text-text peer-checked:border-brand peer-checked:bg-brand peer-checked:text-on-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring hover:border-brand [&_svg]:hidden peer-checked:[&_svg]:block">
-              <Icon name="check" size={16} />
+            <span className="inline-flex min-h-8.5 items-center gap-1.5 rounded-full border border-solid border-input bg-surface px-3.5 text-caption font-bold text-text peer-checked:border-brand peer-checked:bg-brand peer-checked:text-on-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring hover:border-brand [&_.chip-tick]:hidden peer-checked:[&_.chip-tick]:block">
+              <Icon name={option.icon ?? "check"} size={16} className={option.icon ? undefined : "chip-tick"} />
               {option.label}
               {option.sublabel && <span className="font-medium opacity-80">{option.sublabel}</span>}
             </span>

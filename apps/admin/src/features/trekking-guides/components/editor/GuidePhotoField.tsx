@@ -16,16 +16,19 @@ type GuidePhotoFieldProps = {
   /** The guide's name, for the image text. */
   name: string;
   onEdit: () => void;
+  /** The photo the guide uses now, for the card preview. */
+  onChange?: (photo: Photo | null) => void;
 };
 
 /**
  * The guide's photo. Uploads go to the photo library right away (location data removed); which photo the
  * guide uses is sent with Save as photoId.
  */
-export const GuidePhotoField = ({ initial, name, onEdit }: GuidePhotoFieldProps) => {
+export const GuidePhotoField = ({ initial, name, onEdit, onChange }: GuidePhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const choose = (next: Photo | null) => {
     setPhoto(next);
+    onChange?.(next);
     onEdit();
   };
   const uploads = usePhotoUploads<"portrait">({ regionId: null, onUploaded: (uploaded) => choose(uploaded) });
