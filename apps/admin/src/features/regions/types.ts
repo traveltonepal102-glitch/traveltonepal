@@ -1,10 +1,23 @@
 import type { Photo, PhotoDetails } from "@/features/photos/types";
 import type { RichTextDoc } from "@/lib/richText/richText";
-import type { MonthRating } from "@/lib/supabase/database.types";
+import type { IconName } from "@ttn/ui/icon";
+
+import type { MonthRating, RegionDifficultyValue } from "@/lib/supabase/database.types";
 
 export type SeasonKey = "spring" | "monsoon" | "autumn" | "winter";
 
 export type RegionFaq = { question: string; answer: RichTextDoc };
+
+/** The website's six difficulty levels (cards, filters and the compare table use them). */
+export type RegionDifficulty = RegionDifficultyValue;
+
+/** A "why trek here" card under the introduction, e.g. "Gentle climb: good for a first Himalayan trek". */
+export type WhyPoint = { icon: WhyPointIcon; title: string; text: string };
+
+export type WhyPointIcon = Extract<
+  IconName,
+  "landscape" | "temple_buddhist" | "directions_walk" | "volunteer_activism" | "mountain_flag" | "groups" | "wb_sunny" | "cottage" | "hiking" | "route"
+>;
 
 /** A trek from another region suggested on this region's page, e.g. "Nearby · same trailhead". */
 export type NearbyTrek = { trekId: string; label: string; note: string };
@@ -20,12 +33,32 @@ export type RegionValues = {
   tagline: string;
   introduction: RichTextDoc;
   bestFor: string[];
-  highestPoint: string;
+  /** Where space is tight, e.g. "Tamang Heritage" (optional). */
+  shortName: string;
+  /** One or two lines on the Regions page cards. */
+  summary: string;
+  /** The fourth small label over the top photo, e.g. "No flights needed". */
+  heroHighlight: string;
+  /** "About the region": the heading above the introduction. */
+  overviewHeading: string;
+  whyPoints: WhyPoint[];
+  /** Highest point trekkers reach, in metres. */
+  maxAltitudeM: number | null;
   trekLength: string;
-  difficulty: string;
+  difficulty: RegionDifficulty | null;
+  /** Short, e.g. "Drive" or "Fly to Lukla" (key facts and the Regions page). */
   gettingThere: string;
+  /** Flown in: the website shows a plane instead of a road. */
+  isFlight: boolean;
+  /** One line on the Regions page, e.g. "Drive to Syabrubesi (7–8 hrs)". */
   gettingThereDetails: string;
+  /** Short, e.g. "Langtang NP + TIMS" (key facts). */
   permits: string;
+  /** "Where it is" lines. */
+  fromKathmandu: string;
+  nearestAirport: string;
+  permitsDetails: string;
+  whereYouSleep: string;
   /** Jan–Dec, always 12. */
   monthRatings: MonthRating[];
   seasons: Record<SeasonKey, string>;
@@ -43,6 +76,8 @@ export type RegionValues = {
   customRoutePitch: string;
   /** Guides who lead here but are switched off for the region page (the others show automatically). */
   hiddenGuideIds: string[];
+  /** "Compare with other regions": up to 4, in order; empty lets the website choose. */
+  compareRegionIds: string[];
 };
 
 /** The region's photos as the editor shows them: the cover slot and the gallery, in order. */
@@ -65,4 +100,16 @@ export type Region = RegionValues & {
 };
 
 /** The editor's sections (design: Admin-region-editor). */
-export type RegionSectionKey = "basics" | "photos" | "facts" | "months" | "treks" | "guides" | "articles" | "faq" | "seo";
+export type RegionSectionKey =
+  | "basics"
+  | "facts"
+  | "about"
+  | "where"
+  | "treks"
+  | "months"
+  | "guides"
+  | "photos"
+  | "articles"
+  | "faq"
+  | "compare"
+  | "seo";

@@ -135,4 +135,35 @@ describe("regionSchema", () => {
     expect(parse({ regionGuideListed: [a, b, c], regionGuideShown: [b] }).data?.hiddenGuideIds).toEqual([a, c]);
     expect(parse({ regionGuideListed: [a], regionGuideShown: [a] }).data?.hiddenGuideIds).toEqual([]);
   });
+
+  it("reads the website's page fields: highest point, difficulty, drive or fly, cards and compare", () => {
+    const other = "00000000-0000-4000-8000-000000000051";
+    const result = parse({
+      maxAltitudeM: "4,984",
+      difficulty: "moderate",
+      access: "fly",
+      heroHighlight: " No flights needed ",
+      whyIcon: ["landscape", "route"],
+      whyTitle: ["Big mountains, fast", ""],
+      whyText: ["Langtang Lirung after 4 days.", ""],
+      compareRegionId: [other, other],
+    });
+    expect(result.data).toMatchObject({
+      maxAltitudeM: 4984,
+      difficulty: "moderate",
+      isFlight: true,
+      heroHighlight: "No flights needed",
+      whyPoints: [{ icon: "landscape", title: "Big mountains, fast", text: "Langtang Lirung after 4 days." }],
+      compareRegionIds: [other],
+    });
+    expect(parse().data).toMatchObject({ maxAltitudeM: null, difficulty: null, isFlight: false, whyPoints: [], compareRegionIds: [] });
+  });
+
+  it("checks the new fields", () => {
+    expect(errorsOf({ maxAltitudeM: "12000" }).maxAltitudeM).toMatch(/between 500 and 9,000/);
+    expect(errorsOf({ difficulty: "very hard" }).difficulty).toBe("Pick the difficulty.");
+    expect(errorsOf({ whyIcon: ["landscape"], whyTitle: ["Gentle climb"], whyText: [""] })["whyPoints.0.text"]).toBe("Write the text, or remove this card.");
+    const five = [1, 2, 3, 4, 5].map((n) => `00000000-0000-4000-8000-00000000006${n}`);
+    expect(errorsOf({ compareRegionId: five }).compareRegionIds).toBe("Pick up to 4 regions.");
+  });
 });

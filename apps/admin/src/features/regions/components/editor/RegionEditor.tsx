@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
+import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
 import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
 import { PendingSection } from "@/components/editor/PendingSection";
 import type { EditorSaveAction } from "@/components/editor/types";
@@ -16,12 +17,15 @@ import { REGIONS_PATH } from "../../constants";
 import { getRegionReadiness } from "../../lib/readiness";
 import { REGION_SECTIONS, firstSectionWithError, sectionsWithErrors } from "../../sections";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../../types";
+import { AboutSection } from "./about/AboutSection";
 import { BasicsSection } from "./BasicsSection";
+import { CompareSection } from "./CompareSection";
 import { FactsSection } from "./FactsSection";
 import { FaqSection } from "./FaqSection";
 import { MonthsSection } from "./MonthsSection";
 import { RegionGuidesSection } from "./RegionGuidesSection";
 import { SeoSection } from "./SeoSection";
+import { WhereSection } from "./WhereSection";
 import { RegionTreksSection } from "./treks/RegionTreksSection";
 
 type RegionEditorProps = {
@@ -39,6 +43,8 @@ type RegionEditorProps = {
   otherTreks: SimilarTrekOption[];
   /** Every guide with this region in Trekking guides. */
   guides: GuideOption[];
+  /** Every other region, to compare with. */
+  otherRegions: { id: string; name: string }[];
   /** e.g. "Saved 23 Oct, 11:32" (formatted on the server, so it matches the admin's time zone setting). */
   lastSaved?: string;
   isJustAdded?: boolean;
@@ -58,6 +64,7 @@ export const RegionEditor = ({
   regionTreks,
   otherTreks,
   guides,
+  otherRegions,
   lastSaved,
   isJustAdded = false,
 }: RegionEditorProps) => {
@@ -99,21 +106,28 @@ export const RegionEditor = ({
         />
 
         <div className="flex min-w-0 flex-col gap-4">
-          <div>
-            <h2 className="m-0 font-display text-[26px] leading-tight font-extrabold text-ink max-tablet:text-[22px]">{active.label}</h2>
-            <p className="m-0 max-w-170 text-muted-foreground">{active.description}</p>
-          </div>
+          <EditorSectionHeading section={active} name={values.name} />
 
           <div hidden={activeKey !== "basics"} className="flex flex-col gap-4">
-            <BasicsSection
-              values={values}
-              errors={errors}
-              isNew={isNew}
-              websiteDomain={websiteDomain}
-              slug={slug}
-              onSlugChange={setSlug}
-              onEdit={markDirty}
-            />
+            <BasicsSection values={values} errors={errors} isNew={isNew} websiteDomain={websiteDomain} slug={slug} onSlugChange={setSlug} />
+          </div>
+          <div hidden={activeKey !== "facts"}>
+            <FactsSection values={values} errors={errors} />
+          </div>
+          <div hidden={activeKey !== "about"}>
+            <AboutSection values={values} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "where"} className="flex flex-col gap-4">
+            <WhereSection values={values} errors={errors} />
+          </div>
+          <div hidden={activeKey !== "treks"} className="flex flex-col gap-4">
+            <RegionTreksSection values={values} regionName={values.name} regionTreks={regionTreks} otherTreks={otherTreks} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "months"} className="flex flex-col gap-4">
+            <MonthsSection values={values} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "guides"}>
+            <RegionGuidesSection regionName={values.name} guides={guides} hiddenGuideIds={values.hiddenGuideIds} />
           </div>
           <div hidden={activeKey !== "photos"} className="flex flex-col gap-4">
             <CoverAndGallery
@@ -124,20 +138,11 @@ export const RegionEditor = ({
               error={photosError}
             />
           </div>
-          <div hidden={activeKey !== "facts"}>
-            <FactsSection values={values} errors={errors} />
-          </div>
-          <div hidden={activeKey !== "months"} className="flex flex-col gap-4">
-            <MonthsSection values={values} errors={errors} onEdit={markDirty} />
-          </div>
-          <div hidden={activeKey !== "treks"} className="flex flex-col gap-4">
-            <RegionTreksSection values={values} regionName={values.name} regionTreks={regionTreks} otherTreks={otherTreks} errors={errors} onEdit={markDirty} />
-          </div>
-          <div hidden={activeKey !== "guides"}>
-            <RegionGuidesSection regionName={values.name} guides={guides} hiddenGuideIds={values.hiddenGuideIds} />
-          </div>
           <div hidden={activeKey !== "faq"}>
             <FaqSection faqs={values.faqs} errors={errors} onEdit={markDirty} />
+          </div>
+          <div hidden={activeKey !== "compare"}>
+            <CompareSection compareRegionIds={values.compareRegionIds} regions={otherRegions} error={errors.compareRegionIds} onEdit={markDirty} />
           </div>
           <div hidden={activeKey !== "seo"}>
             <SeoSection values={values} errors={errors} slug={slug} />

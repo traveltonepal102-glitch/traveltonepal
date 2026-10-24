@@ -5,7 +5,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { saveRegion } from "@/features/regions/actions/saveRegion";
 import { RegionEditor } from "@/features/regions/components/editor/RegionEditor";
 import { EMPTY_REGION_VALUES, NO_REGION_PHOTOS, REGIONS_PATH } from "@/features/regions/constants";
-import { listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
+import { listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
 
 export const metadata: Metadata = { title: "New region" };
 
@@ -14,7 +14,7 @@ const NewRegionPage = async () => {
   const admin = await requireAdmin();
   if (admin.role !== "super_admin") redirect(REGIONS_PATH);
   // A new region has no treks or guides of its own yet; every trek can be suggested as nearby.
-  const treks = await listSimilarTrekOptions(null);
+  const [treks, regions] = await Promise.all([listSimilarTrekOptions(null), listRegionOptions()]);
 
   return (
     <RegionEditor
@@ -27,6 +27,7 @@ const NewRegionPage = async () => {
       regionTreks={[]}
       otherTreks={treks}
       guides={[]}
+      otherRegions={regions}
     />
   );
 };

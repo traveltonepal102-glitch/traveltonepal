@@ -1,10 +1,19 @@
 import { z } from "zod";
 
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
-import { readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
+import { optionalWholeNumber, readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 
-import { MAX_BEST_FOR, MAX_FAQS, MAX_NEARBY_TREKS, REGION_LIMITS as LIMIT } from "../constants";
+import {
+  MAX_BEST_FOR,
+  MAX_COMPARE_REGIONS,
+  MAX_FAQS,
+  MAX_NEARBY_TREKS,
+  MAX_WHY_POINTS,
+  REGION_DIFFICULTY_VALUES,
+  REGION_LIMITS as LIMIT,
+  WHY_POINT_ICON_VALUES,
+} from "../constants";
 import type { RegionFormValues } from "../types";
 
 /** Empty → null; otherwise a number in range (the database checks the same range). */
@@ -36,6 +45,18 @@ const faqsSchema = z
   .transform((rows) => rows.filter((row) => row.question))
   .refine((rows) => rows.length <= MAX_FAQS, `Keep it to ${MAX_FAQS} questions.`);
 
+/** A "why trek here" card needs a title and a line; a fully empty card is ignored. */
+const whyPointsSchema = z
+  .array(
+    z.object({ icon: z.enum(WHY_POINT_ICON_VALUES, "Pick an icon."), title: text(LIMIT.whyTitle), text: text(LIMIT.whyText) }).superRefine((point, context) => {
+      if (Boolean(point.title) === Boolean(point.text)) return;
+      const missing = point.title ? "text" : "title";
+      context.addIssue({ code: "custom", path: [missing], message: `Write the ${missing}, or remove this card.` });
+    }),
+  )
+  .transform((points) => points.filter((point) => point.title))
+  .refine((points) => points.length <= MAX_WHY_POINTS, `Up to ${MAX_WHY_POINTS} cards.`);
+
 /** The region editor's form (read with readRegionForm). Checked again on the server before saving. */
 export const regionSchema = z
   .object({
@@ -51,12 +72,29 @@ export const regionSchema = z
       .array(text(LIMIT.bestForItem))
       .transform((items) => [...new Set(items.filter(Boolean))])
       .pipe(z.array(z.string()).max(MAX_BEST_FOR, `Pick up to ${MAX_BEST_FOR}.`)),
-    highestPoint: text(LIMIT.fact),
+    shortName: text(LIMIT.shortName),
+    summary: text(LIMIT.summary),
+    heroHighlight: text(LIMIT.heroHighlight),
+    overviewHeading: text(LIMIT.overviewHeading),
+    whyPoints: whyPointsSchema,
+    maxAltitudeM: optionalWholeNumber({ min: 500, max: 9000, label: "highest point" }),
     trekLength: text(LIMIT.fact),
-    difficulty: text(LIMIT.fact),
+    difficulty: z
+      .string()
+      .transform((value) => value || null)
+      .pipe(z.enum(REGION_DIFFICULTY_VALUES, "Pick the difficulty.").nullable()),
     gettingThere: text(LIMIT.fact),
+    isFlight: z.enum(["drive", "fly"]).transform((value) => value === "fly"),
     gettingThereDetails: text(LIMIT.factDetails),
     permits: text(LIMIT.fact),
+    fromKathmandu: text(LIMIT.fromKathmandu),
+    nearestAirport: text(LIMIT.nearestAirport),
+    permitsDetails: text(LIMIT.permitsDetails),
+    whereYouSleep: text(LIMIT.whereYouSleep),
+    compareRegionIds: z
+      .array(z.uuid("Pick the regions from the list."))
+      .transform((ids) => [...new Set(ids)])
+      .refine((ids) => ids.length <= MAX_COMPARE_REGIONS, `Pick up to ${MAX_COMPARE_REGIONS} regions.`),
     monthRatings: z.array(z.enum(["best", "possible", "avoid"])).length(12, "Rate all 12 months."),
     seasons: z.object({
       spring: text(LIMIT.seasonNote),
@@ -95,6 +133,13 @@ export const regionSchema = z
     hiddenGuideIds: [...new Set(guidesListed.filter((id) => !guidesShown.includes(id)))],
   })) satisfies z.ZodType<RegionFormValues, unknown>;
 
+/** "Why trek here" cards in FormData: whyIcon, whyTitle and whyText, one of each per card in order. */
+const readWhyPoints = (formData: FormData) => {
+  const icons = readList(formData, "whyIcon");
+  const texts = readList(formData, "whyText");
+  return readList(formData, "whyTitle").map((title, index) => ({ icon: icons[index] ?? "", title, text: texts[index] ?? "" }));
+};
+
 /** Nearby treks in FormData: nearbyTrekId, nearbyTrekLabel and nearbyTrekNote, one of each per row in order. */
 const readNearbyTreks = (formData: FormData) => {
   const labels = readList(formData, "nearbyTrekLabel");
@@ -117,12 +162,23 @@ export const readRegionForm = (formData: FormData) => {
     tagline: readText(formData, "tagline"),
     introduction: readText(formData, "introduction"),
     bestFor: readList(formData, "bestFor"),
-    highestPoint: readText(formData, "highestPoint"),
+    shortName: readText(formData, "shortName"),
+    summary: readText(formData, "summary"),
+    heroHighlight: readText(formData, "heroHighlight"),
+    overviewHeading: readText(formData, "overviewHeading"),
+    whyPoints: readWhyPoints(formData),
+    maxAltitudeM: readText(formData, "maxAltitudeM"),
     trekLength: readText(formData, "trekLength"),
     difficulty: readText(formData, "difficulty"),
     gettingThere: readText(formData, "gettingThere"),
+    isFlight: readText(formData, "access") || "drive",
     gettingThereDetails: readText(formData, "gettingThereDetails"),
     permits: readText(formData, "permits"),
+    fromKathmandu: readText(formData, "fromKathmandu"),
+    nearestAirport: readText(formData, "nearestAirport"),
+    permitsDetails: readText(formData, "permitsDetails"),
+    whereYouSleep: readText(formData, "whereYouSleep"),
+    compareRegionIds: readList(formData, "compareRegionId"),
     monthRatings: readList(formData, "monthRatings"),
     seasons: {
       spring: readText(formData, "seasons.spring"),

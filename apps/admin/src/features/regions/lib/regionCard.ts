@@ -23,16 +23,19 @@ export type RegionCardItem = {
 
 /** In the editor's order, with the short names the cards use. */
 const SECTION_NAMES: Record<ReadySectionKey, string> = {
-  basics: "Basics",
-  photos: "Photos",
-  facts: "Facts",
-  months: "Months",
+  basics: "Top of the page",
+  facts: "Key facts",
+  about: "About",
+  where: "Where it is",
   treks: "Treks",
+  months: "Best time",
   guides: "Guides",
+  photos: "Photos",
   faq: "Questions",
+  compare: "Other regions",
   seo: "Google",
 };
-const SECTION_KEYS: ReadySectionKey[] = ["basics", "photos", "facts", "months", "treks", "guides", "faq", "seo"];
+const SECTION_KEYS: ReadySectionKey[] = ["basics", "facts", "about", "where", "treks", "months", "guides", "photos", "faq", "compare", "seo"];
 
 export const toRegionCardItem = (region: Region): RegionCardItem => {
   const readiness = getRegionReadiness(region, region.photos, region.leadingGuideIds);

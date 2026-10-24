@@ -8,6 +8,11 @@ export type EditorSection<Key extends string> = {
   label: string;
   icon: IconName;
   description: string;
+  /**
+   * The section's heading as the website shows it, e.g. "Trek in {name}" ({name}: the item's name), so the
+   * editor reads like the page. Without one, the label is the heading.
+   */
+  pageTitle?: string;
   /** Sections that wait on another feature (e.g. "trekking guides"); shown as "Work in progress". */
   waitsFor?: string;
 };

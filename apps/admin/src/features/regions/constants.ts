@@ -1,7 +1,7 @@
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 import type { MonthRating } from "@/lib/supabase/database.types";
 
-import type { RegionPhotos, RegionValues, SeasonKey } from "./types";
+import type { RegionDifficulty, RegionPhotos, RegionValues, SeasonKey, WhyPointIcon } from "./types";
 
 export const REGIONS_PATH = "/regions";
 export const NEW_REGION_PATH = "/regions/new";
@@ -24,6 +24,16 @@ export const REGION_LIMITS = {
   bestForItem: 40,
   fact: 80,
   factDetails: 200,
+  shortName: 40,
+  summary: 200,
+  heroHighlight: 40,
+  overviewHeading: 120,
+  whyTitle: 60,
+  whyText: 160,
+  fromKathmandu: 120,
+  nearestAirport: 80,
+  permitsDetails: 120,
+  whereYouSleep: 80,
   seasonNote: 400,
   faqQuestion: 200,
   faqAnswer: 1500,
@@ -38,6 +48,47 @@ export const REGION_LIMITS = {
 } as const;
 
 export const MAX_NEARBY_TREKS = 6;
+export const MAX_WHY_POINTS = 4;
+export const MAX_COMPARE_REGIONS = 4;
+
+/** The website's difficulty levels, easiest first (the database checks the same values). */
+export const REGION_DIFFICULTIES: { value: RegionDifficulty; label: string }[] = [
+  { value: "easy", label: "Easy" },
+  { value: "easy_moderate", label: "Easy–moderate" },
+  { value: "moderate", label: "Moderate" },
+  { value: "easy_challenging", label: "Easy–challenging" },
+  { value: "challenging", label: "Challenging" },
+  { value: "strenuous", label: "Strenuous" },
+];
+
+export const REGION_DIFFICULTY_VALUES = ["easy", "easy_moderate", "moderate", "easy_challenging", "challenging", "strenuous"] as const satisfies readonly RegionDifficulty[];
+
+/** Icons a "why trek here" card can use. */
+export const WHY_POINT_ICONS: { value: WhyPointIcon; label: string }[] = [
+  { value: "landscape", label: "Mountains" },
+  { value: "mountain_flag", label: "Summit" },
+  { value: "temple_buddhist", label: "Culture" },
+  { value: "directions_walk", label: "Walking" },
+  { value: "hiking", label: "Hiker" },
+  { value: "route", label: "Route" },
+  { value: "cottage", label: "Teahouse" },
+  { value: "groups", label: "People" },
+  { value: "wb_sunny", label: "Weather" },
+  { value: "volunteer_activism", label: "Local support" },
+];
+
+export const WHY_POINT_ICON_VALUES = [
+  "landscape",
+  "mountain_flag",
+  "temple_buddhist",
+  "directions_walk",
+  "hiking",
+  "route",
+  "cottage",
+  "groups",
+  "wb_sunny",
+  "volunteer_activism",
+] as const satisfies readonly WhyPointIcon[];
 
 /** Google shows about this much; longer still saves, the counter turns amber. */
 export const SEO_TITLE_RECOMMENDED = 60;
@@ -76,12 +127,22 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   tagline: "",
   introduction: EMPTY_RICH_TEXT,
   bestFor: [],
-  highestPoint: "",
+  shortName: "",
+  summary: "",
+  heroHighlight: "",
+  overviewHeading: "",
+  whyPoints: [],
+  maxAltitudeM: null,
   trekLength: "",
-  difficulty: "",
+  difficulty: null,
   gettingThere: "",
+  isFlight: false,
   gettingThereDetails: "",
   permits: "",
+  fromKathmandu: "",
+  nearestAirport: "",
+  permitsDetails: "",
+  whereYouSleep: "",
   monthRatings: Array.from({ length: 12 }, () => "avoid"),
   seasons: { spring: "", monsoon: "", autumn: "", winter: "" },
   faqs: [],
@@ -94,6 +155,7 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   nearbyTreks: [],
   customRoutePitch: "",
   hiddenGuideIds: [],
+  compareRegionIds: [],
 };
 
 export const NO_REGION_PHOTOS: RegionPhotos = { cover: null, gallery: [] };

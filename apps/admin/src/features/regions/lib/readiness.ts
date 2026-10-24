@@ -6,33 +6,48 @@ import type { RegionPhotos, RegionSectionKey, RegionValues } from "../types";
 import { formatBestMonths } from "./bestMonths";
 
 /** The sections an admin can fill in now (Travel guides waits on travel guides). */
-export type ReadySectionKey = Extract<RegionSectionKey, "basics" | "photos" | "facts" | "months" | "treks" | "guides" | "faq" | "seo">;
+export type ReadySectionKey = Exclude<RegionSectionKey, "articles">;
+
+const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
 const countFilled = (values: string[]) => values.filter((value) => value.trim()).length;
 
+/** Needs the tagline; the photo highlight and the Regions-page card text are reminders. */
 const basics = (region: RegionValues): SectionReadiness => {
-  const missing = [
-    !region.tagline && "tagline",
-    isRichTextEmpty(region.introduction) && "introduction",
-    region.latitude === null && "map pin",
-  ].filter(Boolean);
-  if (!missing.length) return { status: "done", note: "Name, location, intro" };
-  return { status: "todo", note: `Add the ${missing.join(", ")}` };
+  if (!region.tagline.trim()) return { status: "todo", note: "Add the tagline" };
+  const missing = [!region.heroHighlight.trim() && "the photo highlight", !region.summary.trim() && "the card summary"].filter(Boolean);
+  if (missing.length) return { status: "warn", note: `Add ${missing.join(" and ")}` };
+  return { status: "done", note: "Tagline, highlight, card" };
 };
 
 const facts = (region: RegionValues): SectionReadiness => {
-  const all = [
-    region.highestPoint,
-    region.trekLength,
-    region.difficulty,
-    region.gettingThere,
-    region.gettingThereDetails,
-    region.permits,
-  ];
-  const filled = countFilled(all);
-  if (filled === all.length) return { status: "done", note: "Altitude, length, permits" };
+  const all = [region.maxAltitudeM !== null, Boolean(region.trekLength.trim()), region.difficulty !== null, Boolean(region.gettingThere.trim()), Boolean(region.permits.trim())];
+  const filled = all.filter(Boolean).length;
+  if (filled === all.length) return { status: "done", note: "Altitude, length, difficulty, access" };
   return { status: "todo", note: `${filled} of ${all.length} filled in` };
 };
+
+/** Needs the introduction; the heading and the "why trek here" cards are reminders. */
+const about = (region: RegionValues): SectionReadiness => {
+  if (isRichTextEmpty(region.introduction)) return { status: "todo", note: "Add the introduction" };
+  if (!region.overviewHeading.trim()) return { status: "warn", note: "Add the heading" };
+  if (!region.whyPoints.length) return { status: "warn", note: "Add the “why trek here” cards" };
+  return { status: "done", note: `Intro, ${plural(region.whyPoints.length, "card")}` };
+};
+
+/** Needs the map pin; the four "how to get there" lines are a reminder. */
+const where = (region: RegionValues): SectionReadiness => {
+  if (region.latitude === null) return { status: "todo", note: "Add the map pin" };
+  const lines = countFilled([region.fromKathmandu, region.nearestAirport, region.permitsDetails, region.whereYouSleep]);
+  if (lines < 4) return { status: "warn", note: `${lines} of 4 lines filled in` };
+  return { status: "done", note: "Map pin, 4 lines" };
+};
+
+/** Optional: without picks the website chooses. */
+const compare = (region: RegionValues): SectionReadiness => ({
+  status: "done",
+  note: region.compareRegionIds.length ? plural(region.compareRegionIds.length, "region") : "Chosen by the website",
+});
 
 const months = (region: RegionValues): SectionReadiness => {
   const best = formatBestMonths(region.monthRatings);
@@ -53,8 +68,6 @@ const seo = (region: RegionValues): SectionReadiness => {
   if (region.seoTitle && region.seoDescription) return { status: "done", note: "Title and description" };
   return { status: "todo", note: "Add the Google title and description" };
 };
-
-const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
 /** Only the cover is needed; "taken at" is optional and never asked for. */
 const photos = ({ cover, gallery }: RegionPhotos): SectionReadiness => {
@@ -87,12 +100,15 @@ export const getRegionReadiness = (
   leadingGuideIds: string[],
 ): Record<ReadySectionKey, SectionReadiness> => ({
   basics: basics(region),
-  photos: photos(regionPhotos),
   facts: facts(region),
-  months: months(region),
+  about: about(region),
+  where: where(region),
   treks: treks(region),
+  months: months(region),
   guides: guides(region, leadingGuideIds),
+  photos: photos(regionPhotos),
   faq: faq(region),
+  compare: compare(region),
   seo: seo(region),
 });
 

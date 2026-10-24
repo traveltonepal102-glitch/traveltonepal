@@ -20,6 +20,9 @@ type RegionRow = {
   cover_photo_id: string | null;
   /** One of the region's own treks, shown as its signature trek. */
   featured_trek_id: string | null;
+  max_altitude_m: number | null;
+  difficulty: RegionDifficultyValue | null;
+  is_flight: boolean;
   created_at: string;
   updated_at: string;
   updated_by: string | null;
@@ -208,9 +211,7 @@ type RegionTranslationRow = {
   /** Rich text (Tiptap JSON), see src/lib/richText. */
   introduction: Json;
   best_for: string[];
-  highest_point: string;
   trek_length: string;
-  difficulty: string;
   getting_there: string;
   getting_there_details: string;
   permits: string;
@@ -225,8 +226,22 @@ type RegionTranslationRow = {
   featured_trek_label: string;
   featured_trek_pitch: string;
   custom_route_pitch: string;
+  short_name: string;
+  summary: string;
+  hero_highlight: string;
+  overview_heading: string;
+  /** [{ icon, title, text }] */
+  why_points: Json;
+  from_kathmandu: string;
+  nearest_airport: string;
+  permits_details: string;
+  where_you_sleep: string;
   updated_at: string;
 };
+
+export type RegionDifficultyValue = "easy" | "easy_moderate" | "moderate" | "easy_challenging" | "challenging" | "strenuous";
+
+type RegionCompareRow = { region_id: string; other_region_id: string; position: number };
 
 type RegionNearbyTrekRow = { region_id: string; trek_id: string; position: number };
 
@@ -283,6 +298,12 @@ export type Database = {
             referencedColumns: ["region_id", "trek_id"];
           },
         ];
+      };
+      region_compare: {
+        Row: RegionCompareRow;
+        Insert: RegionCompareRow;
+        Update: Partial<RegionCompareRow>;
+        Relationships: [Fk<"region_compare_region_id_fkey", "region_id", "regions">, Fk<"region_compare_other_region_id_fkey", "other_region_id", "regions">];
       };
       region_hidden_guides: {
         Row: RegionHiddenGuideRow;
@@ -494,6 +515,7 @@ export type Database = {
       trek_tag: TrekTagValue;
       first_aid_level: FirstAidLevel;
       departure_status: DepartureStatusValue;
+      region_difficulty: RegionDifficultyValue;
     };
     CompositeTypes: { [_ in never]: never };
   };

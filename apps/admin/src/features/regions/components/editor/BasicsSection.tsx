@@ -6,15 +6,13 @@ import { useId, useState } from "react";
 
 import { FormSection } from "@/components/ui/FormSection";
 import { inputClass, labelClass } from "@/components/ui/formStyles";
-import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { SlugField } from "@/components/ui/SlugField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
+import { slugify } from "@/utils/slugify";
 
 import { MAIN_SITE_REGIONS_PREFIX, REGION_LIMITS as LIMIT } from "../../constants";
-import { slugify } from "@/utils/slugify";
 import type { RegionValues } from "../../types";
-import { BestForPicker } from "./BestForPicker";
 
 type BasicsSectionProps = {
   values: RegionValues;
@@ -23,11 +21,13 @@ type BasicsSectionProps = {
   websiteDomain: string | null;
   slug: string;
   onSlugChange: (slug: string) => void;
-  onEdit: () => void;
 };
 
-/** Name, web addresses, map pin, tagline, introduction and "best for" (design: section "basics"). */
-export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSlugChange, onEdit }: BasicsSectionProps) => {
+/**
+ * "Top of the page" (the website's hero): name and web address, the lines over the big photo, and the region's
+ * card on the Regions page.
+ */
+export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSlugChange }: BasicsSectionProps) => {
   const id = useId();
   // A new region gets its web address from the name until the admin types one.
   const [isSlugTyped, setIsSlugTyped] = useState(!isNew);
@@ -38,7 +38,7 @@ export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSl
 
   return (
     <>
-      <FormSection title="Name and web addresses">
+      <FormSection title="Name and web address">
         <div className="grid gap-3 tablet:grid-cols-2">
           <TextField
             name="name"
@@ -49,14 +49,7 @@ export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSl
             onValueChange={handleNameChange}
             inputClassName="h-12.5 font-display text-xl font-bold"
           />
-          <TextField
-            name="district"
-            label="District or area"
-            defaultValue={values.district}
-            error={errors.district}
-            maxLength={LIMIT.district}
-            inputClassName="h-12.5"
-          />
+          <TextField name="district" label="District or area" hint="Shown as “Rasuwa, Nepal” over the photo." defaultValue={values.district} error={errors.district} maxLength={LIMIT.district} inputClassName="h-12.5" />
         </div>
         <div className="grid gap-3 tablet:grid-cols-2">
           <SlugField
@@ -83,33 +76,45 @@ export const BasicsSection = ({ values, errors, isNew, websiteDomain, slug, onSl
       </FormSection>
 
       <FormSection
-        title="Location on the Nepal map"
-        hint="Places the region pin on the map on the Regions page and the home page. Routes are drawn on each trek, not here."
+        title="Over the big photo"
+        hint="The photo itself is the cover in Photos. Over it the website shows four small labels: highest point, trek length and difficulty (from Key facts), then the highlight below."
       >
-        <div className="grid gap-3 tablet:grid-cols-3">
-          <TextField name="latitude" label="Latitude" inputMode="decimal" placeholder="28.2100" defaultValue={values.latitude?.toString()} error={errors.latitude} />
-          <TextField name="longitude" label="Longitude" inputMode="decimal" placeholder="85.5600" defaultValue={values.longitude?.toString()} error={errors.longitude} />
-          <TextField name="pinLabel" label="Label next to the pin" defaultValue={values.pinLabel} error={errors.pinLabel} maxLength={LIMIT.pinLabel} />
-        </div>
-        <p className="m-0 flex items-start gap-2.5 rounded-md border border-solid border-border bg-page px-3 py-2.5 text-caption">
-          <Icon name="info" size={18} className="flex-none text-brand" />
-          How to find the numbers: open Google Maps, right-click the main village of the region (for Langtang, Kyanjin Gompa),
-          and click the numbers at the top of the menu to copy them.
-        </p>
+        <TextField name="tagline" label="Tagline" hint="The line under the region name." defaultValue={values.tagline} error={errors.tagline} maxLength={LIMIT.tagline} showCount multiline rows={2} />
+        <TextField
+          name="heroHighlight"
+          label="Highlight on the photo"
+          hint="The fourth small label over the photo: a short selling point, e.g. “No flights needed”."
+          defaultValue={values.heroHighlight}
+          placeholder="No flights needed"
+          maxLength={LIMIT.heroHighlight}
+          error={errors.heroHighlight}
+        />
       </FormSection>
 
-      <FormSection title="Text" hint="The tagline shows on the region card. The intro opens the region page.">
-        <TextField name="tagline" label="Tagline" defaultValue={values.tagline} error={errors.tagline} maxLength={LIMIT.tagline} showCount />
-        <RichTextEditor
-          name="introduction"
-          label="Introduction"
-          defaultValue={values.introduction}
-          error={errors.introduction}
-          maxLength={LIMIT.introduction}
-          hint="Press Enter for a new paragraph. Select words to make them bold, italic or a link."
-          onEdit={onEdit}
+      <FormSection title="On the Regions page" hint="The region’s card on the Regions page and its line in the compare table.">
+        <div className="grid gap-3 tablet:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <TextField name="shortName" label="Short name" labelNote="(optional)" hint="Where space is tight." defaultValue={values.shortName} placeholder="Tamang Heritage" maxLength={LIMIT.shortName} error={errors.shortName} />
+          <TextField
+            name="gettingThereDetails"
+            label="How to get there, one line"
+            defaultValue={values.gettingThereDetails}
+            placeholder="Drive to Syabrubesi (7–8 hrs)"
+            maxLength={LIMIT.factDetails}
+            error={errors.gettingThereDetails}
+          />
+        </div>
+        <TextField
+          name="summary"
+          label="Card summary"
+          hint="One or two lines on the region card."
+          multiline
+          rows={2}
+          defaultValue={values.summary}
+          placeholder="Glaciers, yak pastures and the monastery at Kyanjin Gompa, the closest big-mountain valley to Kathmandu."
+          maxLength={LIMIT.summary}
+          showCount
+          error={errors.summary}
         />
-        <BestForPicker defaultValue={values.bestFor} error={errors.bestFor} onEdit={onEdit} />
       </FormSection>
     </>
   );

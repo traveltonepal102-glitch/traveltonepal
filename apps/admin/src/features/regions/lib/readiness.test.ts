@@ -47,11 +47,14 @@ describe("formatBestMonths", () => {
 describe("getRegionReadiness", () => {
   it("lists what a new region still needs", () => {
     const readiness = getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []);
-    expect(readiness.basics).toEqual({ status: "todo", note: "Add the tagline, introduction, map pin" });
-    expect(readiness.facts).toEqual({ status: "todo", note: "0 of 6 filled in" });
+    expect(readiness.basics).toEqual({ status: "todo", note: "Add the tagline" });
+    expect(readiness.facts).toEqual({ status: "todo", note: "0 of 5 filled in" });
+    expect(readiness.about).toEqual({ status: "todo", note: "Add the introduction" });
+    expect(readiness.where).toEqual({ status: "todo", note: "Add the map pin" });
     expect(readiness.months.status).toBe("todo");
     expect(readiness.faq).toEqual({ status: "todo", note: "No questions yet" });
-    expect(countDoneSections(readiness)).toBe(0);
+    expect(readiness.compare).toEqual({ status: "done", note: "Chosen by the website" });
+    expect(countDoneSections(readiness)).toBe(1);
     expect(readiness.photos.status).toBe("todo");
   });
 
@@ -69,13 +72,21 @@ describe("getRegionReadiness", () => {
       latitude: 28.21,
       longitude: 85.56,
       tagline: "Glaciers and yak pastures.",
+      heroHighlight: "No flights needed",
+      summary: "The closest big-mountain valley to Kathmandu.",
+      overviewHeading: "The valley next door to Kathmandu",
       introduction: richText("The valley next door to Kathmandu."),
-      highestPoint: "4,984 m",
+      whyPoints: [{ icon: "landscape", title: "Big mountains, fast", text: "Langtang Lirung after 4 days." }],
+      maxAltitudeM: 4984,
       trekLength: "7–12 days",
-      difficulty: "Moderate",
+      difficulty: "moderate",
       gettingThere: "Drive",
       gettingThereDetails: "Drive to Syabrubesi",
       permits: "Langtang NP + TIMS",
+      fromKathmandu: "120 km",
+      nearestAirport: "Kathmandu (KTM)",
+      permitsDetails: "Langtang National Park",
+      whereYouSleep: "Teahouses",
       monthRatings: months("xxgggxxxxggx"),
       seasons: { spring: "Warm.", monsoon: "Rain.", autumn: "Clear.", winter: "Cold." },
       faqs: Array.from({ length: 6 }, () => faq),
@@ -83,7 +94,16 @@ describe("getRegionReadiness", () => {
       seoDescription: "Trek Langtang.",
       featuredTrekId: "trek-1",
     };
-    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }, ["guide-1"]))).toBe(8);
+    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }, ["guide-1"]))).toBe(11);
+  });
+
+  it("reminds about the photo chip, the card summary, the heading, the cards and the four lines", () => {
+    const started = { ...EMPTY, tagline: "Glaciers.", introduction: richText("Intro."), latitude: 28.21, longitude: 85.56, fromKathmandu: "120 km" };
+    const readiness = getRegionReadiness(started, NO_REGION_PHOTOS, []);
+    expect(readiness.basics).toEqual({ status: "warn", note: "Add the photo highlight and the card summary" });
+    expect(readiness.about).toEqual({ status: "warn", note: "Add the heading" });
+    expect(getRegionReadiness({ ...started, overviewHeading: "Next door" }, NO_REGION_PHOTOS, []).about.note).toBe("Add the “why trek here” cards");
+    expect(readiness.where).toEqual({ status: "warn", note: "1 of 4 lines filled in" });
   });
 });
 
@@ -99,6 +119,8 @@ describe("photos readiness", () => {
 describe("firstSectionWithError", () => {
   it("opens the first section, in display order, that has an error", () => {
     expect(firstSectionWithError(["seoTitle", "faqs.2.answer", "permits"])).toBe("facts");
+    expect(firstSectionWithError(["whereYouSleep", "whyPoints.1.text"])).toBe("about");
+    expect(firstSectionWithError(["compareRegionIds"])).toBe("compare");
     expect(firstSectionWithError(["seasons.spring"])).toBe("months");
     expect(firstSectionWithError([])).toBeUndefined();
   });

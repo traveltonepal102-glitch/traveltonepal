@@ -7,7 +7,7 @@ import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { REGION_LOCALE } from "../constants";
+import { REGION_LOCALE, WHY_POINT_ICON_VALUES } from "../constants";
 import type { Region, RegionFormValues } from "../types";
 
 type RegionRow = Database["public"]["Tables"]["regions"]["Row"];
@@ -22,13 +22,14 @@ const NOT_FOUND = "P0002";
 const RLS_VIOLATION = "42501";
 
 const REGION_COLUMNS = `id, slug, district, website_domain, latitude, longitude, month_ratings, cover_photo_id, featured_trek_id,
-  created_at, updated_at, updated_by,
+  max_altitude_m, difficulty, is_flight, created_at, updated_at, updated_by,
   region_translations!inner(*),
   cover:photos!regions_cover_photo_id_fkey(${PHOTO_COLUMNS}),
   region_photos(position, photo:photos(${PHOTO_COLUMNS})),
   region_nearby_treks(position, trek_id, region_nearby_trek_translations(locale, label, note)),
   region_hidden_guides(guide_id),
-  trekking_guide_regions(guide_id)` as const;
+  trekking_guide_regions(guide_id),
+  region_compare!region_compare_region_id_fkey(position, other_region_id)` as const;
 
 type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
@@ -39,6 +40,7 @@ type RegionQueryRow = RegionRow & {
   region_nearby_treks: { position: number; trek_id: string; region_nearby_trek_translations: { locale: string; label: string; note: string }[] }[];
   region_hidden_guides: { guide_id: string }[];
   trekking_guide_regions: { guide_id: string }[];
+  region_compare: { position: number; other_region_id: string }[];
 };
 
 /** Nearby treks in order, with their English label and note. */
@@ -53,6 +55,7 @@ const toNearbyTreks = (rows: RegionQueryRow["region_nearby_treks"]) =>
 /** Stored JSON is checked before use, like any outside data. */
 const introductionSchema = richTextDocSchema.catch(EMPTY_RICH_TEXT);
 const faqsSchema = z.array(z.object({ question: z.string(), answer: richTextDocSchema })).catch([]);
+const whyPointsSchema = z.array(z.object({ icon: z.enum(WHY_POINT_ICON_VALUES), title: z.string(), text: z.string() })).catch([]);
 
 const toRegion = (row: RegionQueryRow): Region => {
   const [text] = row.region_translations;
@@ -75,12 +78,22 @@ const toRegion = (row: RegionQueryRow): Region => {
     tagline: text.tagline,
     introduction: introductionSchema.parse(text.introduction),
     bestFor: text.best_for,
-    highestPoint: text.highest_point,
+    shortName: text.short_name,
+    summary: text.summary,
+    heroHighlight: text.hero_highlight,
+    overviewHeading: text.overview_heading,
+    whyPoints: whyPointsSchema.parse(text.why_points),
+    maxAltitudeM: row.max_altitude_m,
     trekLength: text.trek_length,
-    difficulty: text.difficulty,
+    difficulty: row.difficulty,
     gettingThere: text.getting_there,
+    isFlight: row.is_flight,
     gettingThereDetails: text.getting_there_details,
     permits: text.permits,
+    fromKathmandu: text.from_kathmandu,
+    nearestAirport: text.nearest_airport,
+    permitsDetails: text.permits_details,
+    whereYouSleep: text.where_you_sleep,
     seasons: {
       spring: text.season_spring,
       monsoon: text.season_monsoon,
@@ -97,6 +110,7 @@ const toRegion = (row: RegionQueryRow): Region => {
     nearbyTreks: toNearbyTreks(row.region_nearby_treks),
     customRoutePitch: text.custom_route_pitch,
     hiddenGuideIds: row.region_hidden_guides.map((item) => item.guide_id),
+    compareRegionIds: [...row.region_compare].sort((a, b) => a.position - b.position).map((item) => item.other_region_id),
   };
 };
 
@@ -149,6 +163,10 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
       featured_trek_id: values.featuredTrekId ?? "",
       nearby_treks: values.nearbyTreks.map((trek) => ({ trek_id: trek.trekId, label: trek.label, note: trek.note })),
       hidden_guide_ids: values.hiddenGuideIds,
+      max_altitude_m: values.maxAltitudeM,
+      difficulty: values.difficulty ?? "",
+      is_flight: values.isFlight,
+      compare_region_ids: values.compareRegionIds,
     },
     p_text: {
       name: values.name,
@@ -156,12 +174,19 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
       tagline: values.tagline,
       introduction: values.introduction,
       best_for: values.bestFor,
-      highest_point: values.highestPoint,
       trek_length: values.trekLength,
-      difficulty: values.difficulty,
       getting_there: values.gettingThere,
       getting_there_details: values.gettingThereDetails,
       permits: values.permits,
+      short_name: values.shortName,
+      summary: values.summary,
+      hero_highlight: values.heroHighlight,
+      overview_heading: values.overviewHeading,
+      why_points: values.whyPoints,
+      from_kathmandu: values.fromKathmandu,
+      nearest_airport: values.nearestAirport,
+      permits_details: values.permitsDetails,
+      where_you_sleep: values.whereYouSleep,
       season_spring: values.seasons.spring,
       season_monsoon: values.seasons.monsoon,
       season_autumn: values.seasons.autumn,
