@@ -6,6 +6,7 @@ import { saveRegion } from "@/features/regions/actions/saveRegion";
 import { RegionEditor } from "@/features/regions/components/editor/RegionEditor";
 import { EMPTY_REGION_VALUES, NO_REGION_PHOTOS, REGIONS_PATH } from "@/features/regions/constants";
 import { listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
+import { todayInNepal } from "@/utils/formatDateTime";
 
 export const metadata: Metadata = { title: "New region" };
 
@@ -28,6 +29,8 @@ const NewRegionPage = async () => {
       otherTreks={treks}
       guides={[]}
       otherRegions={regions}
+      articles={[]}
+      today={todayInNepal()}
     />
   );
 };

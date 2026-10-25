@@ -78,6 +78,8 @@ export type RegionValues = {
   hiddenGuideIds: string[];
   /** "Compare with other regions": up to 4, in order; empty lets the website choose. */
   compareRegionIds: string[];
+  /** "Before you go": up to 3 of the region's travel guides shown first, in order (the rest follow, newest first). */
+  pinnedArticleIds: string[];
 };
 
 /** The region's photos as the editor shows them: the cover slot and the gallery, in order. */
@@ -95,6 +97,8 @@ export type Region = RegionValues & {
   websiteDomain: string | null;
   /** Every guide with this region in their regions (Trekking guides), shown or not. */
   leadingGuideIds: string[];
+  /** Every travel guide about this region (ticked in the guide's settings), any status. */
+  articleIds: string[];
   updatedAt: string;
   photos: RegionPhotos;
 };

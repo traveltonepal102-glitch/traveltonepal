@@ -5,11 +5,11 @@ import { useState } from "react";
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
 import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
-import { PendingSection } from "@/components/editor/PendingSection";
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
+import type { RegionArticleItem } from "@/features/travel-guides/lib/articleListItem";
 import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import type { SimilarTrekOption } from "@/features/treks/types";
 
@@ -23,6 +23,7 @@ import { CompareSection } from "./CompareSection";
 import { FactsSection } from "./FactsSection";
 import { FaqSection } from "./FaqSection";
 import { MonthsSection } from "./MonthsSection";
+import { RegionArticlesSection } from "./RegionArticlesSection";
 import { RegionGuidesSection } from "./RegionGuidesSection";
 import { SeoSection } from "./SeoSection";
 import { WhereSection } from "./WhereSection";
@@ -45,6 +46,10 @@ type RegionEditorProps = {
   guides: GuideOption[];
   /** Every other region, to compare with. */
   otherRegions: { id: string; name: string }[];
+  /** Every travel guide about this region (none for a new region). */
+  articles: RegionArticleItem[];
+  /** "YYYY-MM-DD" in Nepal. */
+  today: string;
   /** e.g. "Saved 23 Oct, 11:32" (formatted on the server, so it matches the admin's time zone setting). */
   lastSaved?: string;
   isJustAdded?: boolean;
@@ -65,6 +70,8 @@ export const RegionEditor = ({
   otherTreks,
   guides,
   otherRegions,
+  articles,
+  today,
   lastSaved,
   isJustAdded = false,
 }: RegionEditorProps) => {
@@ -101,7 +108,12 @@ export const RegionEditor = ({
           sections={REGION_SECTIONS}
           activeKey={activeKey}
           onSelect={form.setActiveKey}
-          readiness={getRegionReadiness(values, photos, guides.map((guide) => guide.id))}
+          readiness={getRegionReadiness(
+            values,
+            photos,
+            guides.map((guide) => guide.id),
+            articles.map((article) => article.id),
+          )}
           errorKeys={sectionsWithErrors(Object.keys(errors))}
         />
 
@@ -138,6 +150,9 @@ export const RegionEditor = ({
               error={photosError}
             />
           </div>
+          <div hidden={activeKey !== "articles"}>
+            <RegionArticlesSection regionName={values.name} articles={articles} pinnedArticleIds={values.pinnedArticleIds} today={today} onEdit={markDirty} />
+          </div>
           <div hidden={activeKey !== "faq"}>
             <FaqSection faqs={values.faqs} errors={errors} onEdit={markDirty} />
           </div>
@@ -147,7 +162,6 @@ export const RegionEditor = ({
           <div hidden={activeKey !== "seo"}>
             <SeoSection values={values} errors={errors} slug={slug} />
           </div>
-          {active.waitsFor && <PendingSection waitsFor={active.waitsFor} />}
         </div>
       </div>
     </form>

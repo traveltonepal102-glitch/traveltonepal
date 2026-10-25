@@ -130,6 +130,14 @@ describe("regionSchema", () => {
     expect(errorsOf({ featuredTrekId: "langtang" }).featuredTrekId).toBe("Pick the featured trek from the list.");
   });
 
+  it("reads the pinned travel guides in order, each once, up to 3", () => {
+    const id = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
+    expect(parse({ pinnedArticleId: [id(2), id(1), id(2)] }).data?.pinnedArticleIds).toEqual([id(2), id(1)]);
+    expect(parse().data?.pinnedArticleIds).toEqual([]);
+    expect(errorsOf({ pinnedArticleId: [id(1), id(2), id(3), id(4)] }).pinnedArticleIds).toBe("Pin up to 3 travel guides.");
+    expect(errorsOf({ pinnedArticleId: ["not-an-id"] })["pinnedArticleIds.0"]).toBe("Pin travel guides from the list.");
+  });
+
   it("stores the guides switched off, from every guide listed and the switches that are on", () => {
     const [a, b, c] = ["00000000-0000-4000-8000-000000000041", "00000000-0000-4000-8000-000000000042", "00000000-0000-4000-8000-000000000043"];
     expect(parse({ regionGuideListed: [a, b, c], regionGuideShown: [b] }).data?.hiddenGuideIds).toEqual([a, c]);

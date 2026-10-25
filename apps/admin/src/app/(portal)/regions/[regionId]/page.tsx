@@ -6,6 +6,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { saveRegion } from "@/features/regions/actions/saveRegion";
 import { RegionEditor } from "@/features/regions/components/editor/RegionEditor";
 import { getRegion } from "@/features/regions/services/regionsRepository";
+import { listRegionArticles } from "@/features/travel-guides/services/articleOptions";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
@@ -38,6 +39,7 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
     listRegionOptions(),
     searchParams,
   ]);
+  const articles = await listRegionArticles(region.id);
   const today = todayInNepal();
 
   return (
@@ -52,6 +54,8 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
       otherTreks={treks.filter((trek) => trek.regionId !== region.id)}
       otherRegions={regions.filter((other) => other.id !== region.id)}
       guides={guides.filter((guide) => guide.regionIds.includes(region.id)).map((guide) => toGuideOption(guide, today))}
+      articles={articles}
+      today={today}
       lastSaved={`Saved ${formatDateTime(region.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
     />

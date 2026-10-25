@@ -51,6 +51,9 @@ export const MAX_NEARBY_TREKS = 6;
 export const MAX_WHY_POINTS = 4;
 export const MAX_COMPARE_REGIONS = 4;
 
+/** "Before you go": travel guides a region can pin to show first (save_region checks it too). */
+export const MAX_PINNED_ARTICLES = 3;
+
 /** The website's difficulty levels, easiest first (the database checks the same values). */
 export const REGION_DIFFICULTIES: { value: RegionDifficulty; label: string }[] = [
   { value: "easy", label: "Easy" },
@@ -156,6 +159,7 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   customRoutePitch: "",
   hiddenGuideIds: [],
   compareRegionIds: [],
+  pinnedArticleIds: [],
 };
 
 export const NO_REGION_PHOTOS: RegionPhotos = { cover: null, gallery: [] };

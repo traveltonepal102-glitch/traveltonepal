@@ -46,7 +46,7 @@ describe("formatBestMonths", () => {
 
 describe("getRegionReadiness", () => {
   it("lists what a new region still needs", () => {
-    const readiness = getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []);
+    const readiness = getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []);
     expect(readiness.basics).toEqual({ status: "todo", note: "Add the tagline" });
     expect(readiness.facts).toEqual({ status: "todo", note: "0 of 5 filled in" });
     expect(readiness.about).toEqual({ status: "todo", note: "Add the introduction" });
@@ -60,7 +60,7 @@ describe("getRegionReadiness", () => {
 
   it("warns about too few questions and missing season notes", () => {
     const faq = { question: "Q?", answer: richText("A.") };
-    const readiness = getRegionReadiness({ ...EMPTY, faqs: [faq, faq], monthRatings: months("xxgggxxxxggx") }, NO_REGION_PHOTOS, []);
+    const readiness = getRegionReadiness({ ...EMPTY, faqs: [faq, faq], monthRatings: months("xxgggxxxxggx") }, NO_REGION_PHOTOS, [], []);
     expect(readiness.faq).toEqual({ status: "warn", note: "Only 2 questions" });
     expect(readiness.months).toEqual({ status: "warn", note: "Best: Mar–May, Oct–Nov · 0 of 4 season notes" });
   });
@@ -94,25 +94,25 @@ describe("getRegionReadiness", () => {
       seoDescription: "Trek Langtang.",
       featuredTrekId: "trek-1",
     };
-    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }, ["guide-1"]))).toBe(11);
+    expect(countDoneSections(getRegionReadiness(full, { cover: photo("a"), gallery: [photo("b")] }, ["guide-1"], ["article-1"]))).toBe(12);
   });
 
   it("reminds about the photo chip, the card summary, the heading, the cards and the four lines", () => {
     const started = { ...EMPTY, tagline: "Glaciers.", introduction: richText("Intro."), latitude: 28.21, longitude: 85.56, fromKathmandu: "120 km" };
-    const readiness = getRegionReadiness(started, NO_REGION_PHOTOS, []);
+    const readiness = getRegionReadiness(started, NO_REGION_PHOTOS, [], []);
     expect(readiness.basics).toEqual({ status: "warn", note: "Add the photo highlight and the card summary" });
     expect(readiness.about).toEqual({ status: "warn", note: "Add the heading" });
-    expect(getRegionReadiness({ ...started, overviewHeading: "Next door" }, NO_REGION_PHOTOS, []).about.note).toBe("Add the “why trek here” cards");
+    expect(getRegionReadiness({ ...started, overviewHeading: "Next door" }, NO_REGION_PHOTOS, [], []).about.note).toBe("Add the “why trek here” cards");
     expect(readiness.where).toEqual({ status: "warn", note: "1 of 4 lines filled in" });
   });
 });
 
 describe("photos readiness", () => {
   it("needs only a cover; an empty \"taken at\" is never a warning", () => {
-    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).photos).toEqual({ status: "todo", note: "Add a cover photo" });
-    const readiness = getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b"), photo("c", "Kyanjin Gompa")] }, []);
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []).photos).toEqual({ status: "todo", note: "Add a cover photo" });
+    const readiness = getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b"), photo("c", "Kyanjin Gompa")] }, [], []);
     expect(readiness.photos).toEqual({ status: "done", note: "Cover + 2 photos" });
-    expect(getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b")] }, []).photos.note).toBe("Cover + 1 photo");
+    expect(getRegionReadiness(EMPTY, { cover: photo("a"), gallery: [photo("b")] }, [], []).photos.note).toBe("Cover + 1 photo");
   });
 });
 
@@ -128,14 +128,29 @@ describe("firstSectionWithError", () => {
 
 describe("treks and guides readiness", () => {
   it("needs a featured trek; nearby treks are counted", () => {
-    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).treks).toEqual({ status: "todo", note: "Pick the featured trek" });
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []).treks).toEqual({ status: "todo", note: "Pick the featured trek" });
     const featured = { ...EMPTY, featuredTrekId: "t1", nearbyTreks: [{ trekId: "t2", label: "", note: "" }] };
-    expect(getRegionReadiness(featured, NO_REGION_PHOTOS, []).treks).toEqual({ status: "done", note: "Featured trek · 1 nearby" });
+    expect(getRegionReadiness(featured, NO_REGION_PHOTOS, [], []).treks).toEqual({ status: "done", note: "Featured trek · 1 nearby" });
   });
 
   it("counts the guides who lead here and aren't switched off", () => {
-    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, []).guides).toEqual({ status: "todo", note: "No guides lead here yet" });
-    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1"]).guides.note).toBe("All guides switched off");
-    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1", "g2", "g3"]).guides).toEqual({ status: "done", note: "2 guides" });
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []).guides).toEqual({ status: "todo", note: "No guides lead here yet" });
+    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1"], []).guides.note).toBe("All guides switched off");
+    expect(getRegionReadiness({ ...EMPTY, hiddenGuideIds: ["g1"] }, NO_REGION_PHOTOS, ["g1", "g2", "g3"], []).guides).toEqual({ status: "done", note: "2 guides" });
+  });
+});
+
+describe("travel guides readiness", () => {
+  it("reminds when no travel guide is about the region yet", () => {
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []).articles).toEqual({ status: "warn", note: "No travel guides yet" });
+  });
+
+  it("counts the travel guides about the region and the pinned ones", () => {
+    expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], ["a1"]).articles).toEqual({ status: "done", note: "1 guide" });
+    expect(getRegionReadiness({ ...EMPTY, pinnedArticleIds: ["a1", "a2"] }, NO_REGION_PHOTOS, [], ["a1", "a2", "a3"]).articles).toEqual({ status: "done", note: "3 guides · 2 pinned" });
+  });
+
+  it("opens the travel guides section for a pin error", () => {
+    expect(firstSectionWithError(["pinnedArticleIds"])).toBe("articles");
   });
 });

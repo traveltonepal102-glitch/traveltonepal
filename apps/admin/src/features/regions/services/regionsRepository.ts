@@ -18,6 +18,8 @@ type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 const FOREIGN_KEY_VIOLATION = "23503";
 const UNIQUE_VIOLATION = "23505";
 const CHECK_VIOLATION = "23514";
+/** save_region's hint when a pinned travel guide isn't about the region (any more). */
+const PINNED_NOT_IN_REGION = "pinned_article_not_in_region";
 const NOT_FOUND = "P0002";
 const RLS_VIOLATION = "42501";
 
@@ -29,7 +31,8 @@ const REGION_COLUMNS = `id, slug, district, website_domain, latitude, longitude,
   region_nearby_treks(position, trek_id, region_nearby_trek_translations(locale, label, note)),
   region_hidden_guides(guide_id),
   trekking_guide_regions(guide_id),
-  region_compare!region_compare_region_id_fkey(position, other_region_id)` as const;
+  region_compare!region_compare_region_id_fkey(position, other_region_id),
+  article_regions(article_id, pin_position)` as const;
 
 type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
@@ -41,7 +44,15 @@ type RegionQueryRow = RegionRow & {
   region_hidden_guides: { guide_id: string }[];
   trekking_guide_regions: { guide_id: string }[];
   region_compare: { position: number; other_region_id: string }[];
+  article_regions: { article_id: string; pin_position: number | null }[];
 };
+
+/** The pinned travel guides, in their pinned order. */
+const toPinnedArticleIds = (rows: RegionQueryRow["article_regions"]) =>
+  rows
+    .flatMap(({ article_id, pin_position }) => (pin_position === null ? [] : [{ id: article_id, position: pin_position }]))
+    .sort((a, b) => a.position - b.position)
+    .map((pin) => pin.id);
 
 /** Nearby treks in order, with their English label and note. */
 const toNearbyTreks = (rows: RegionQueryRow["region_nearby_treks"]) =>
@@ -63,6 +74,7 @@ const toRegion = (row: RegionQueryRow): Region => {
     id: row.id,
     websiteDomain: row.website_domain,
     leadingGuideIds: row.trekking_guide_regions.map((item) => item.guide_id),
+    articleIds: row.article_regions.map((item) => item.article_id),
     updatedAt: row.updated_at,
     photos: {
       cover: row.cover ? toPhoto(row.cover) : null,
@@ -111,6 +123,7 @@ const toRegion = (row: RegionQueryRow): Region => {
     customRoutePitch: text.custom_route_pitch,
     hiddenGuideIds: row.region_hidden_guides.map((item) => item.guide_id),
     compareRegionIds: [...row.region_compare].sort((a, b) => a.position - b.position).map((item) => item.other_region_id),
+    pinnedArticleIds: toPinnedArticleIds(row.article_regions),
   };
 };
 
@@ -142,7 +155,7 @@ export const getRegion = cache(async (regionId: string): Promise<Region | null> 
 
 export type SaveRegionResult =
   | { ok: true; regionId: string }
-  | { ok: false; reason: "slug_taken" | "photo_missing" | "featured_not_in_region" | "not_found" | "forbidden" | "failed" };
+  | { ok: false; reason: "slug_taken" | "photo_missing" | "featured_not_in_region" | "pinned_article_not_in_region" | "not_found" | "forbidden" | "failed" };
 
 /**
  * Adds (regionId null) or updates a region, its English text and its photos in one transaction (save_region).
@@ -167,6 +180,7 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
       difficulty: values.difficulty ?? "",
       is_flight: values.isFlight,
       compare_region_ids: values.compareRegionIds,
+      pinned_article_ids: values.pinnedArticleIds,
     },
     p_text: {
       name: values.name,
@@ -204,7 +218,8 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
 
   if (!error) return { ok: true, regionId: data };
   if (error.code === UNIQUE_VIOLATION) return { ok: false, reason: "slug_taken" };
-  if (error.code === CHECK_VIOLATION) return { ok: false, reason: "featured_not_in_region" };
+  // save_region names which check failed in the hint (both are check violations).
+  if (error.code === CHECK_VIOLATION) return { ok: false, reason: error.hint === PINNED_NOT_IN_REGION ? PINNED_NOT_IN_REGION : "featured_not_in_region" };
   if (error.code === FOREIGN_KEY_VIOLATION) return { ok: false, reason: "photo_missing" };
   if (error.code === NOT_FOUND) return { ok: false, reason: "not_found" };
   if (error.code === RLS_VIOLATION) return { ok: false, reason: "forbidden" };

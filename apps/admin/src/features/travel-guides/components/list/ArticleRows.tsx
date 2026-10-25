@@ -1,14 +1,12 @@
 import { Icon } from "@ttn/ui/icon";
-import { cn } from "@ttn/ui/lib/utils";
 import Link from "next/link";
 
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
-import { formatCalendarDate, formatDateTime } from "@/utils/formatDateTime";
+import { formatDateTime } from "@/utils/formatDateTime";
 
-import { ARTICLE_STATUSES, ARTICLE_TOPICS, articlePath } from "../../constants";
+import { ARTICLE_TOPICS, articlePath } from "../../constants";
 import type { ArticleListItem } from "../../lib/articleListItem";
-import { isScheduled } from "../../lib/articleListItem";
-import type { ArticleStatus } from "../../types";
+import { ArticleStatusLine } from "../ArticleStatusLine";
 
 type ArticleRowsProps = {
   articles: ArticleListItem[];
@@ -18,24 +16,7 @@ type ArticleRowsProps = {
   today: string;
 };
 
-const STATUS_STYLES: Record<ArticleStatus, { dot: string; text: string }> = {
-  published: { dot: "bg-whatsapp", text: "text-whatsapp" },
-  draft: { dot: "bg-saffron", text: "text-saffron-ink" },
-  hidden: { dot: "bg-subtle", text: "text-muted-foreground" },
-};
-
 const topicLabel = (article: ArticleListItem) => ARTICLE_TOPICS.find((topic) => topic.value === article.topic)?.label ?? "";
-
-const StatusLine = ({ article, today }: { article: ArticleListItem; today: string }) => {
-  const style = STATUS_STYLES[article.status];
-  const label = isScheduled(article, today) && article.publishedOn ? `Goes live ${formatCalendarDate(article.publishedOn)}` : ARTICLE_STATUSES.find((status) => status.value === article.status)?.label;
-  return (
-    <span className={cn("inline-flex items-center gap-1.5 text-caption font-bold whitespace-nowrap", style.text)}>
-      <span aria-hidden="true" className={cn("size-2 rounded-full", style.dot)} />
-      {label}
-    </span>
-  );
-};
 
 /** One row per guide (a card on phones): photo, title, topic, website, author, status and last edit. */
 export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRowsProps) => (
@@ -62,7 +43,7 @@ export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRo
           <span className="text-caption max-tablet:hidden">{siteName(article.siteRegionId)}</span>
           <span className="truncate text-caption max-tablet:hidden">{authorName(article.authorId) || "No author yet"}</span>
           <span className="flex flex-col gap-0.5">
-            <StatusLine article={article} today={today} />
+            <ArticleStatusLine article={article} today={today} />
             <span className="text-xs text-muted-foreground">Edited {formatDateTime(article.updatedAt)}</span>
           </span>
         </Link>

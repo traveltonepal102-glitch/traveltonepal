@@ -9,6 +9,7 @@ import {
   MAX_COMPARE_REGIONS,
   MAX_FAQS,
   MAX_NEARBY_TREKS,
+  MAX_PINNED_ARTICLES,
   MAX_WHY_POINTS,
   REGION_DIFFICULTY_VALUES,
   REGION_LIMITS as LIMIT,
@@ -117,6 +118,10 @@ export const regionSchema = z
       .refine((treks) => new Set(treks.map((trek) => trek.trekId)).size === treks.length, "A trek is in the list twice. Remove one.")
       .refine((treks) => treks.length <= MAX_NEARBY_TREKS, `Suggest up to ${MAX_NEARBY_TREKS} nearby treks.`),
     customRoutePitch: text(LIMIT.customRoutePitch),
+    pinnedArticleIds: z
+      .array(z.uuid("Pin travel guides from the list."))
+      .transform((ids) => [...new Set(ids)])
+      .refine((ids) => ids.length <= MAX_PINNED_ARTICLES, `Pin up to ${MAX_PINNED_ARTICLES} travel guides.`),
     // The switches send the guides that show; the region stores the ones it hides.
     guidesListed: z.array(z.uuid()),
     guidesShown: z.array(z.uuid()),
@@ -195,6 +200,7 @@ export const readRegionForm = (formData: FormData) => {
     featuredTrekPitch: readText(formData, "featuredTrekPitch"),
     nearbyTreks: readNearbyTreks(formData),
     customRoutePitch: readText(formData, "customRoutePitch"),
+    pinnedArticleIds: readList(formData, "pinnedArticleId"),
     guidesListed: readList(formData, "regionGuideListed"),
     guidesShown: readList(formData, "regionGuideShown"),
     photos: readPhotoSelection(formData),

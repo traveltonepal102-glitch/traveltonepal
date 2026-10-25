@@ -58,7 +58,6 @@ export const REGION_SECTIONS: RegionSection[] = [
     pageTitle: "Before you go to {name}",
     icon: "article",
     description: "Travel guides about this region. Pin the best ones.",
-    waitsFor: "travel guides",
   },
   {
     key: "faq",
@@ -105,6 +104,7 @@ const FIELD_SECTIONS: Record<string, RegionSectionKey> = {
   permitsDetails: "where",
   whereYouSleep: "where",
   compareRegionIds: "compare",
+  pinnedArticleIds: "articles",
   monthRatings: "months",
   seasons: "months",
   faqs: "faq",

@@ -5,8 +5,8 @@ import { RECOMMENDED_FAQS } from "../constants";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../types";
 import { formatBestMonths } from "./bestMonths";
 
-/** The sections an admin can fill in now (Travel guides waits on travel guides). */
-export type ReadySectionKey = Exclude<RegionSectionKey, "articles">;
+/** Every section has its readiness now. */
+export type ReadySectionKey = RegionSectionKey;
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
@@ -90,14 +90,22 @@ const guides = (region: RegionValues, leadingGuideIds: string[]): SectionReadine
   return { status: "done", note: plural(shown, "guide") };
 };
 
+/** Travel guides show by themselves (any guide with this region ticked); none yet is a reminder, pins are optional. */
+const articles = (region: RegionValues, articleIds: string[]): SectionReadiness => {
+  if (!articleIds.length) return { status: "warn", note: "No travel guides yet" };
+  const pinned = region.pinnedArticleIds.length;
+  return { status: "done", note: pinned ? `${plural(articleIds.length, "guide")} · ${pinned} pinned` : plural(articleIds.length, "guide") };
+};
+
 /**
  * How complete each section is, from the saved values (the editor's checklist and the region cards).
- * `leadingGuideIds`: every guide with this region in Trekking guides.
+ * `leadingGuideIds`: every guide with this region in Trekking guides; `articleIds`: every travel guide about it.
  */
 export const getRegionReadiness = (
   region: RegionValues,
   regionPhotos: RegionPhotos,
   leadingGuideIds: string[],
+  articleIds: string[],
 ): Record<ReadySectionKey, SectionReadiness> => ({
   basics: basics(region),
   facts: facts(region),
@@ -107,6 +115,7 @@ export const getRegionReadiness = (
   months: months(region),
   guides: guides(region, leadingGuideIds),
   photos: photos(regionPhotos),
+  articles: articles(region, articleIds),
   faq: faq(region),
   compare: compare(region),
   seo: seo(region),

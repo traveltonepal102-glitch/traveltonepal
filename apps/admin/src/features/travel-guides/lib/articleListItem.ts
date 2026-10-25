@@ -19,6 +19,9 @@ export type ArticleListItem = {
   cover: Photo | null;
 };
 
+/** A travel guide as a region's "Before you go" list in the region editor shows it. */
+export type RegionArticleItem = Pick<ArticleListItem, "id" | "title" | "topic" | "status" | "publishedOn" | "cover">;
+
 /** "all" / a region's id / "main" for the main site. */
 export type ArticleFilters = { query: string; site: string; topic: ArticleTopic | ""; status: ArticleStatus | "" };
 

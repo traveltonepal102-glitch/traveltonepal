@@ -301,7 +301,8 @@ type ArticleSectionGuideRow = { section_id: string; guide_id: string; position: 
 
 type ArticleSectionPhotoRow = { section_id: string; photo_id: string; position: number };
 
-type ArticleRegionRow = { article_id: string; region_id: string };
+/** pin_position: 0–2 when the region pins the guide first ("Before you go"), else null. */
+type ArticleRegionRow = { article_id: string; region_id: string; pin_position: number | null };
 
 type ArticleRelatedRow = { article_id: string; related_article_id: string; position: number };
 
@@ -624,7 +625,7 @@ export type Database = {
       };
       article_regions: {
         Row: ArticleRegionRow;
-        Insert: ArticleRegionRow;
+        Insert: Omit<ArticleRegionRow, "pin_position"> & Partial<Pick<ArticleRegionRow, "pin_position">>;
         Update: Partial<ArticleRegionRow>;
         Relationships: [Fk<"article_regions_article_id_fkey", "article_id", "articles">, Fk<"article_regions_region_id_fkey", "region_id", "regions">];
       };

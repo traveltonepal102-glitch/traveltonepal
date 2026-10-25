@@ -4,7 +4,7 @@ import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosReposit
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { ARTICLE_LOCALE } from "../constants";
-import type { ArticleListItem } from "../lib/articleListItem";
+import type { ArticleListItem, RegionArticleItem } from "../lib/articleListItem";
 import type { ArticleOptions } from "../types";
 import { listLibraryPhotos, listSectionGuides } from "./sectionOptions";
 
@@ -117,6 +117,27 @@ export const listArticles = async (): Promise<ArticleListItem[]> => {
     isFeatured: row.is_featured,
     startHerePosition: row.start_here_position,
     updatedAt: row.updated_at,
+    cover: row.cover ? toPhoto(row.cover) : null,
+  }));
+};
+
+/** Every travel guide about a region (the region ticked in its settings), any status, most recently edited first. */
+export const listRegionArticles = async (regionId: string): Promise<RegionArticleItem[]> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select(`id, topic, status, published_on, cover:photos!articles_cover_photo_id_fkey(${PHOTO_COLUMNS}), article_translations!inner(title), article_regions!inner(region_id)`)
+    .eq("article_translations.locale", ARTICLE_LOCALE)
+    .eq("article_regions.region_id", regionId)
+    .order("updated_at", { ascending: false });
+  if (error) throw new Error(`Could not load the travel guides about region ${regionId}: ${error.message}`);
+
+  return data.map((row) => ({
+    id: row.id,
+    title: row.article_translations[0]?.title ?? "",
+    topic: row.topic,
+    status: row.status,
+    publishedOn: row.published_on,
     cover: row.cover ? toPhoto(row.cover) : null,
   }));
 };
