@@ -6,15 +6,17 @@ import { formatAltitude } from "@/features/treks/format";
 import type { RegionDetail, RegionFact } from "../types";
 import { WRAP } from "./styles";
 
-/** Six key facts on a card that overlaps the bottom of the hero. */
+/** Up to six key facts on a card that overlaps the bottom of the hero; facts not filled in are left out. */
 export const RegionFacts = ({ region }: { region: RegionDetail }) => {
-  const facts: readonly RegionFact[] = [
+  const allFacts: readonly RegionFact[] = [
     { icon: "altitude", tone: "brand", label: "Highest point", value: formatAltitude(region.maxAltitudeM) },
     { icon: "calendar_month", tone: "brand", label: "Trek length", value: region.trekLength },
     { icon: "speed", tone: "danger", label: "Difficulty", value: region.difficulty },
-    ...region.facts,
+    { icon: "route", tone: "navy", label: "Getting there", value: region.access.short },
+    { icon: "description", tone: "navy", label: "Permits", value: region.permits },
     { icon: "wb_sunny", tone: "saffron", label: "Best months", value: region.bestMonthsLabel },
   ];
+  const facts = allFacts.filter((fact) => fact.value);
 
   return (
     <div className={`${WRAP} relative z-5 -mt-14`}>

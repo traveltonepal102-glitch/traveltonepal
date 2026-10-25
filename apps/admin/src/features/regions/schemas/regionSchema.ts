@@ -41,8 +41,22 @@ const faqRowSchema = z
     context.addIssue({ code: "custom", path: [missing], message: `Write the ${missing}, or remove this row.` });
   });
 
+/** The page would ask it twice: the later row is flagged (before empty rows are dropped, so its number holds). */
+const flagRepeatedQuestions = (rows: { question: string }[], context: z.RefinementCtx) => {
+  const asked = new Set<string>();
+  rows.forEach((row, index) => {
+    const question = row.question.toLowerCase();
+    if (!question) return;
+    if (asked.has(question)) {
+      context.addIssue({ code: "custom", path: [index, "question"], message: "This question is already asked above." });
+    }
+    asked.add(question);
+  });
+};
+
 const faqsSchema = z
   .array(faqRowSchema)
+  .superRefine(flagRepeatedQuestions)
   .transform((rows) => rows.filter((row) => row.question))
   .refine((rows) => rows.length <= MAX_FAQS, `Keep it to ${MAX_FAQS} questions.`);
 

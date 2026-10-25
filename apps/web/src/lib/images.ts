@@ -1,4 +1,4 @@
-import { photoAltText } from "@ttn/ui/lib/photos";
+import { photoAltText, photoUrl } from "@ttn/ui/lib/photos";
 
 import type { CoverColumns } from "@/lib/supabase/database.types";
 
@@ -13,6 +13,13 @@ export type SiteImageSource = {
   /** Tiny blurred preview shown while the photo loads. */
   placeholder?: string;
 };
+
+/**
+ * One file of the picture, about `width` px wide, for links and structured data (share previews, Google): a library
+ * photo's prepared size, or the /public file itself.
+ */
+export const imageFileUrl = (image: SiteImageSource, width: number) =>
+  image.variantWidths?.length ? photoUrl({ baseUrl: image.src, variantWidths: image.variantWidths }, width) : image.src;
 
 /** A row's cover photo as a SiteImageSource; `subject` names what it shows, for its image text. */
 export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: string, alt?: string): SiteImageSource | undefined => {

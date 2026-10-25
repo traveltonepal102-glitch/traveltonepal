@@ -39,3 +39,10 @@ export const HIMALAYA_PATH = `M${HIMALAYA.map(([lon, lat]) => {
   const { x, y } = projectToMap(lon, lat - 0.05);
   return `${x} ${y}`;
 }).join(" L")}`;
+
+/** Close enough to show the whole region around its centre. */
+const REGION_ZOOM = "9";
+
+/** The classic Google place embed of a region: no API key, one pin at its map pin, terrain view. */
+export const regionMapEmbedUrl = ({ lat, lon }: { lat: number; lon: number }) =>
+  `https://maps.google.com/maps?${new URLSearchParams({ q: `${lat},${lon}`, z: REGION_ZOOM, t: "p", output: "embed" })}`;

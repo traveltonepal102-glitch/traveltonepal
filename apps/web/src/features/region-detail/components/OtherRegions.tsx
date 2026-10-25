@@ -1,17 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
 
+import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
+import type { RegionCard } from "@/features/regions/regionRows";
 import { formatAltitude } from "@/features/treks/format";
 import { ROUTES } from "@/lib/routes";
 
-import { regionHref, regionsToCompare } from "../regionDetails";
+import { regionHref } from "../regionDetails";
 import { RegionSectionHeading } from "./RegionSectionHeading";
 import { CARD, WRAP } from "./styles";
 
 /** "Compare with other regions": each card opens the region's page, or its treks while it has no page. */
-export const OtherRegions = ({ slugs }: { slugs: readonly string[] }) => {
-  const regions = regionsToCompare(slugs);
+export const OtherRegions = ({ regions }: { regions: readonly RegionCard[] }) => {
   if (regions.length === 0) return null;
 
   return (
@@ -27,12 +27,16 @@ export const OtherRegions = ({ slugs }: { slugs: readonly string[] }) => {
           {regions.map((region) => (
             <li key={region.slug}>
               <Link
-                href={regionHref(region.slug)}
+                href={regionHref(region)}
                 className={`${CARD} block overflow-hidden text-inherit transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
               >
                 <span className="relative block h-37.5 bg-navy">
                   {region.image ? (
-                    <Image src={region.image.src} alt="" fill sizes="(min-width: 1280px) 300px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+                    <SiteImage
+                      image={{ ...region.image, alt: "" }}
+                      sizes="(min-width: 1280px) 300px, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                    />
                   ) : (
                     <RegionTileArt />
                   )}

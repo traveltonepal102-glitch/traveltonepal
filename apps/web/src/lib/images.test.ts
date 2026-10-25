@@ -1,7 +1,7 @@
 import { photoUrl } from "@ttn/ui/lib/photos";
 import { describe, expect, it } from "vitest";
 
-import { coverImage } from "./images";
+import { coverImage, imageFileUrl } from "./images";
 
 const BASE = "https://example.supabase.co/storage/v1/object/public/photos";
 const row = { cover_id: "p1", cover_width: 2400, cover_height: 1600, cover_variant_widths: [400, 800, 1200, 2400], cover_placeholder: "data:image/webp;base64,x", cover_place: "Kyanjin Gompa" };
@@ -26,5 +26,13 @@ describe("coverImage", () => {
   it("picks the smallest prepared size that fills the space", () => {
     expect(photoUrl({ baseUrl: `${BASE}/p1`, variantWidths: [400, 800, 1200] }, 600)).toBe(`${BASE}/p1/800.webp`);
     expect(photoUrl({ baseUrl: `${BASE}/p1`, variantWidths: [400, 800] }, 3000)).toBe(`${BASE}/p1/800.webp`);
+  });
+});
+
+describe("imageFileUrl", () => {
+  it("links a library photo's prepared size, or a /public file as it is", () => {
+    const photo = coverImage(row, BASE, "Langtang region");
+    expect(photo && imageFileUrl(photo, 1200)).toBe(`${BASE}/p1/1200.webp`);
+    expect(imageFileUrl({ src: "/images/langtang-peaks.jpg", alt: "Langtang" }, 1200)).toBe("/images/langtang-peaks.jpg");
   });
 });

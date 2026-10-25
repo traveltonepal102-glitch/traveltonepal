@@ -1,3 +1,4 @@
+import { formatBestMonths } from "@ttn/ui/lib/bestMonths";
 import { describe, expect, it } from "vitest";
 
 import type { RichTextDoc } from "@/lib/richText/richText";
@@ -8,7 +9,6 @@ import type { Photo } from "@/features/photos/types";
 import { EMPTY_REGION_VALUES, NO_REGION_PHOTOS } from "../constants";
 import { firstSectionWithError } from "../sections";
 import type { RegionValues } from "../types";
-import { formatBestMonths } from "./bestMonths";
 import { countDoneSections, getRegionReadiness } from "./readiness";
 
 const months = (code: string): MonthRating[] =>

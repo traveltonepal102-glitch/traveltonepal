@@ -21,13 +21,13 @@ const sectionLinks = (region: RegionDetail): RegionSectionLink[] => [
   { id: "overview", label: "Overview" },
   { id: "treks", label: "Treks" },
   { id: "best-time", label: "Best time" },
-  ...(region.guideIds.length > 0 ? [{ id: "guides", label: "Guides" }] : []),
+  ...(region.guides.length > 0 ? [{ id: "guides", label: "Guides" }] : []),
   ...(region.photos.length > 0 ? [{ id: "photos", label: "Photos" }] : []),
   ...(region.articles.length > 0 ? [{ id: "travel-guides", label: "Travel guides" }] : []),
   ...(region.faqs.length > 0 ? [{ id: "faq", label: "Questions" }] : []),
 ];
 
-/** Region page (design: Region.dc.html). */
+/** Region page (design: Region.dc.html), from the region's content in the admin. */
 export const RegionDetailPage = ({ region }: { region: RegionDetail }) => (
   <>
     <JsonLd data={regionJsonLd(region)} />
@@ -37,11 +37,11 @@ export const RegionDetailPage = ({ region }: { region: RegionDetail }) => (
     <RegionOverview region={region} />
     <RegionTreks region={region} />
     <RegionBestTime region={region} />
-    <RegionGuides regionName={region.name} guideIds={region.guideIds} />
+    <RegionGuides regionName={region.name} guides={region.guides} />
     <RegionPhotos regionName={region.name} photos={region.photos} />
     <RegionTravelGuides regionName={region.name} articles={region.articles} />
     <RegionFaq region={region} />
-    <OtherRegions slugs={region.compareWith} />
+    <OtherRegions regions={region.compareWith} />
     <RegionCta regionName={region.name} />
   </>
 );

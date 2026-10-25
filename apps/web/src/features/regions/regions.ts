@@ -9,10 +9,15 @@ export type RegionSummary = {
   /** One line for the featured home tile. */
   tagline?: string;
   image?: SiteImageSource;
+  /** True when the region has its own page (links go there; others go to its treks instead). */
+  hasPage: boolean;
 };
 
-/** The nine regions. Demo values from the website design until regions come from Payload (CMS phase). */
-export const REGIONS: readonly RegionSummary[] = [
+/**
+ * The nine regions, for the website's region order and counts. The regions themselves come from the database
+ * (regionsRepository); these demo values remain only where the database isn't read yet.
+ */
+export const REGIONS: readonly Omit<RegionSummary, "hasPage">[] = [
   {
     slug: "everest",
     name: "Everest",

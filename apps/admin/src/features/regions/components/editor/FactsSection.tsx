@@ -2,6 +2,7 @@
 
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
+import { formatBestMonths } from "@ttn/ui/lib/bestMonths";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId } from "react";
 import type { ReactNode } from "react";
@@ -12,7 +13,6 @@ import { inputClass, tileLabelClass } from "@/components/ui/formStyles";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { REGION_DIFFICULTIES, REGION_LIMITS as LIMIT } from "../../constants";
-import { formatBestMonths } from "../../lib/bestMonths";
 import type { RegionValues } from "../../types";
 
 type FactTileProps = {

@@ -1,11 +1,10 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
+import { MONTH_NAMES } from "@ttn/ui/lib/bestMonths";
 
 import type { MonthRating, RegionDetail } from "../types";
 import { RegionSectionHeading } from "./RegionSectionHeading";
 import { CARD, WRAP } from "./styles";
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
 
 const RATINGS: Record<MonthRating, { label: string; cell: string; swatch: string; season: string; icon: IconName }> = {
   best: { label: "Best", cell: "bg-month-best text-white", swatch: "bg-month-best", season: "border-t-whatsapp text-whatsapp", icon: "wb_sunny" },
@@ -33,8 +32,8 @@ export const RegionBestTime = ({ region }: { region: RegionDetail }) => (
     <div className={`${CARD} flex flex-col gap-3 p-4.5 md:p-5.5`}>
       <ol className="grid grid-cols-6 gap-1.5 lg:grid-cols-12">
         {region.months.map((rating, index) => (
-          <li key={MONTHS[index]} className={`flex flex-col gap-0.5 rounded-md py-3.5 text-center ${RATINGS[rating].cell}`}>
-            <span className="text-[15px] font-extrabold">{MONTHS[index]}</span>
+          <li key={MONTH_NAMES[index]} className={`flex flex-col gap-0.5 rounded-md py-3.5 text-center ${RATINGS[rating].cell}`}>
+            <span className="text-[15px] font-extrabold">{MONTH_NAMES[index]}</span>
             <span className="text-[11px] font-semibold">{RATINGS[rating].label}</span>
           </li>
         ))}
@@ -49,20 +48,22 @@ export const RegionBestTime = ({ region }: { region: RegionDetail }) => (
       </ul>
     </div>
 
-    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {region.seasons.map((season) => {
-        const look = RATINGS[season.rating];
-        return (
-          <li key={season.name} className={`${CARD} flex flex-col gap-2 border-t-4 p-4.5 ${look.season}`}>
-            <p className="inline-flex items-center gap-2 font-extrabold">
-              <Icon name={look.icon} />
-              {look.label}
-            </p>
-            <h3 className="text-[17px] font-bold">{season.name}</h3>
-            <p className="text-body-sm text-text">{season.text}</p>
-          </li>
-        );
-      })}
-    </ul>
+    {region.seasons.length > 0 && (
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {region.seasons.map((season) => {
+          const look = RATINGS[season.rating];
+          return (
+            <li key={season.name} className={`${CARD} flex flex-col gap-2 border-t-4 p-4.5 ${look.season}`}>
+              <p className="inline-flex items-center gap-2 font-extrabold">
+                <Icon name={look.icon} />
+                {look.label}
+              </p>
+              <h3 className="text-[17px] font-bold">{season.name}</h3>
+              <p className="text-body-sm text-text">{season.text}</p>
+            </li>
+          );
+        })}
+      </ul>
+    )}
   </section>
 );

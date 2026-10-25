@@ -6,6 +6,7 @@ export const WEBSITE_CACHE_TAGS = {
   regions: "regions",
   treks: "treks",
   travelGuides: "travel-guides",
+  trekkingGuides: "trekking-guides",
 } as const;
 
 export type WebsiteCacheTag = (typeof WEBSITE_CACHE_TAGS)[keyof typeof WEBSITE_CACHE_TAGS];

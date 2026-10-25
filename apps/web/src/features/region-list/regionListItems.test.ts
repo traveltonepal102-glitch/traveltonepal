@@ -21,6 +21,7 @@ const card = (slug: string, overrides: Partial<RegionCard> = {}): RegionCard => 
   bestForTags: [],
   summary: "",
   months: Array.from({ length: 12 }, () => "possible" as const),
+  hasPage: false,
   ...overrides,
 });
 
@@ -32,7 +33,7 @@ const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary =
 
 describe("regionListItems", () => {
   const items = regionListItems(
-    [card("annapurna"), card("langtang", { name: "Langtang" }), card("everest")],
+    [card("annapurna"), card("langtang", { name: "Langtang", hasPage: true }), card("everest")],
     [trek("langtang-valley", { regionSlug: "langtang" }), trek("everest-base-camp", { regionSlug: "everest", name: "Everest Base Camp" })],
   );
   const [annapurna, langtang, everest] = items;

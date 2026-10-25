@@ -78,6 +78,16 @@ describe("regionSchema", () => {
     expect(errors["faqs.2.answer"]).toBe("Write the answer, or remove this row.");
   });
 
+  it("flags a question already asked higher up, ignoring case and spaces", () => {
+    const answer = JSON.stringify(richText("Yes."));
+    const errors = errorsOf({
+      faqQuestion: ["Do I need a permit?", "", " do i need a permit? "],
+      faqAnswer: [answer, EMPTY_ANSWER, answer],
+    });
+    expect(errors["faqs.2.question"]).toBe("This question is already asked above.");
+    expect(errors).not.toHaveProperty(["faqs.0.question"]);
+  });
+
   it("reads the photos: cover, gallery order, and \"taken at\" only for photos in use", () => {
     const [cover, first, second, removed] = [1, 2, 3, 4].map((n) => `00000000-0000-4000-8000-00000000000${n}`);
     const result = parse({

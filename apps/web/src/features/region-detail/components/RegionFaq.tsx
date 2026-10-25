@@ -1,5 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { RichText } from "@/components/shared/RichText";
+
 import type { RegionDetail } from "../types";
 import { RegionSectionHeading } from "./RegionSectionHeading";
 import { CARD, WRAP } from "./styles";
@@ -16,7 +18,7 @@ export const RegionFaq = ({ region }: { region: RegionDetail }) => {
       <RegionSectionHeading id="region-faq-title" kicker="Questions" title={`${region.name} questions, answered`} isCentered />
       <div className={`${CARD} overflow-hidden`}>
         {region.faqs.map((item, index) => (
-          <details key={item.question} name="region-faq" open={index === 0} className="group border-b border-[#eef2f6] last:border-b-0 open:bg-[#f4f8fc]">
+          <details key={index} name="region-faq" open={index === 0} className="group border-b border-[#eef2f6] last:border-b-0 open:bg-[#f4f8fc]">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3.5 px-5.5 py-4.5 text-base font-bold text-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
               {item.question}
               <span
@@ -26,7 +28,7 @@ export const RegionFaq = ({ region }: { region: RegionDetail }) => {
                 <Icon name="keyboard_arrow_down" size={18} />
               </span>
             </summary>
-            <p className="px-5.5 pb-4.5 text-text">{item.answer}</p>
+            <RichText doc={item.answer} headingLevel="h4" className="flex flex-col gap-3 px-5.5 pb-4.5 text-text" />
           </details>
         ))}
       </div>

@@ -1,10 +1,10 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import { useState } from "react";
 
 import { PhotoViewer } from "@/components/shared/photo-viewer/PhotoViewer";
+import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { RegionPhoto } from "../types";
 
@@ -28,10 +28,8 @@ export const RegionPhotoGrid = ({ photos, title }: RegionPhotoGridProps) => {
               aria-label={`Open photo: ${photo.alt}`}
               className="group relative block size-full cursor-zoom-in overflow-hidden rounded-lg bg-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              <Image
-                src={photo.src}
-                alt=""
-                fill
+              <SiteImage
+                image={{ ...photo, alt: "" }}
                 sizes={index === 0 ? "(min-width: 768px) 600px, 100vw" : "(min-width: 768px) 300px, 50vw"}
                 className="object-cover transition-transform duration-300 group-hover:scale-104"
               />
@@ -46,7 +44,7 @@ export const RegionPhotoGrid = ({ photos, title }: RegionPhotoGridProps) => {
         ))}
       </ul>
       <PhotoViewer
-        photos={photos.map((photo) => ({ src: photo.src, alt: photo.alt, caption: photo.place }))}
+        photos={photos.map(({ place, ...photo }) => ({ ...photo, caption: place }))}
         title={title}
         index={viewerIndex}
         onIndexChange={setViewerIndex}

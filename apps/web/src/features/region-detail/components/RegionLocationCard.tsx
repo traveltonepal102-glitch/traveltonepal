@@ -1,47 +1,46 @@
 import { Icon } from "@ttn/ui/icon";
 
-import { KATHMANDU, NEPAL_MAP_VIEWBOX, NEPAL_OUTLINE_PATH, projectToMap } from "@/features/regions/nepalMap";
+import { MapConsentGate } from "@/components/shared/MapConsentGate";
+import { NEPAL_MAP_VIEWBOX, NEPAL_OUTLINE_PATH, projectToMap, regionMapEmbedUrl } from "@/features/regions/nepalMap";
 
 import type { RegionDetail } from "../types";
 import { CARD } from "./styles";
 
 const LABEL_HALO = "[paint-order:stroke] stroke-white [stroke-linejoin:round]";
 
-/** "Where it is": the region on a map of Nepal, with how to get there. */
-export const RegionLocationCard = ({ region }: { region: RegionDetail }) => {
+/** Until the visitor loads the Google map: Nepal with only the region's pin. */
+const DrawnPin = ({ region }: { region: RegionDetail }) => {
   const pin = projectToMap(region.location.lon, region.location.lat);
-
   return (
-    <aside aria-labelledby="region-where-title" className={`${CARD} flex flex-col gap-3.5 p-5`}>
-      <h3 id="region-where-title" className="text-lg font-bold">
-        Where it is
-      </h3>
-      <div className="rounded-xl bg-linear-to-b from-[#f4f8fc] to-brand-tint p-2">
-        <svg
-          viewBox={NEPAL_MAP_VIEWBOX}
-          role="img"
-          aria-label={`Map of Nepal showing ${region.name} relative to Kathmandu`}
-          className="block h-auto w-full font-sans"
-        >
-          <path d={NEPAL_OUTLINE_PATH} fill="#fff" stroke="#9db6ce" strokeWidth={3} strokeLinejoin="round" />
-          <line x1={KATHMANDU.x} y1={KATHMANDU.y} x2={pin.x} y2={pin.y} strokeWidth={3} strokeDasharray="8 8" className="stroke-brand" />
-          <rect
-            x={KATHMANDU.x - 7}
-            y={KATHMANDU.y - 7}
-            width={14}
-            height={14}
-            transform={`rotate(45 ${KATHMANDU.x} ${KATHMANDU.y})`}
-            className="fill-ink"
-          />
-          <text x={KATHMANDU.x + 18} y={KATHMANDU.y + 32} fontSize={26} fontWeight={700} strokeWidth={6} className={`fill-text ${LABEL_HALO}`}>
-            Kathmandu
-          </text>
-          <circle cx={pin.x} cy={pin.y} r={16} stroke="#fff" strokeWidth={4} className="fill-saffron" />
-          <text x={pin.x} y={pin.y - 28} textAnchor="middle" fontSize={30} fontWeight={800} strokeWidth={7} className={`fill-navy ${LABEL_HALO}`}>
-            {region.name}
-          </text>
-        </svg>
-      </div>
+    <div className="bg-linear-to-b from-[#f4f8fc] to-brand-tint p-2">
+      <svg viewBox={NEPAL_MAP_VIEWBOX} role="img" aria-label={`Map of Nepal showing where ${region.name} is`} className="block h-auto w-full font-sans">
+        <path d={NEPAL_OUTLINE_PATH} fill="#fff" stroke="#9db6ce" strokeWidth={3} strokeLinejoin="round" />
+        <circle cx={pin.x} cy={pin.y} r={16} stroke="#fff" strokeWidth={4} className="fill-saffron" />
+        <text x={pin.x} y={pin.y - 28} textAnchor="middle" fontSize={30} fontWeight={800} strokeWidth={7} className={`fill-navy ${LABEL_HALO}`}>
+          {region.name}
+        </text>
+      </svg>
+    </div>
+  );
+};
+
+/** "Where it is": the region on a Google map (loaded on request), with how to get there. */
+export const RegionLocationCard = ({ region }: { region: RegionDetail }) => (
+  <aside aria-labelledby="region-where-title" className={`${CARD} flex flex-col gap-3.5 p-5`}>
+    <h3 id="region-where-title" className="text-lg font-bold">
+      Where it is
+    </h3>
+    <MapConsentGate preview={<DrawnPin region={region} />} previewLabel={`Map of ${region.name}`} noticePlacement="below">
+      <iframe
+        src={regionMapEmbedUrl(region.location)}
+        title={`Google map of the ${region.name} region`}
+        loading="lazy"
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+        className="block aspect-4/3 w-full border-0"
+      />
+    </MapConsentGate>
+    {region.gettingThere.length > 0 && (
       <dl className="flex flex-col">
         {region.gettingThere.map((item) => (
           <div key={item.label} className="flex items-start gap-3 border-t border-[#eef2f6] pt-3 pb-1">
@@ -53,6 +52,6 @@ export const RegionLocationCard = ({ region }: { region: RegionDetail }) => {
           </div>
         ))}
       </dl>
-    </aside>
-  );
-};
+    )}
+  </aside>
+);

@@ -1,8 +1,12 @@
 import type { IconName } from "@ttn/ui/icon";
+import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import type { IconTone } from "@/components/shared/iconTones";
-import type { MonthRating, RegionOverview } from "@/features/regions/overviews";
-import type { RegionSummary } from "@/features/regions/regions";
+import type { GuideSummary } from "@/features/guides/types";
+import type { MonthRating } from "@/features/regions/overviews";
+import type { RegionCard } from "@/features/regions/regionRows";
+import type { TrekSummary } from "@/features/treks/types";
+import type { SiteImageSource } from "@/lib/images";
 
 export type { MonthRating };
 
@@ -12,49 +16,49 @@ export type RegionPoint = { icon: IconName; tone: IconTone; title: string; text:
 
 export type SeasonNote = { name: string; rating: MonthRating; text: string };
 
-export type RegionPhoto = {
-  src: string;
-  alt: string;
+export type RegionPhoto = SiteImageSource & {
   /** Where it was taken, shown in the photo viewer, e.g. "Kyanjin Gompa". */
   place?: string;
 };
 
-/** A travel guide about the region, linked from "Before you go". */
-export type RegionArticle = {
-  slug: string;
-  title: string;
-  category: string;
-  tone: IconTone;
-  readMinutes: number;
-  image: RegionPhoto;
+/** A trek the page suggests: the featured one (with its pitch as `note`) or a nearby one. */
+export type RegionTrekPick = { trek: TrekSummary; label: string; note: string };
+
+/** A guide who leads treks in the region ("Your guides"). */
+export type RegionGuide = {
+  id: string;
+  name: string;
+  role: string;
+  /** e.g. "10+ yrs guiding"; missing when not filled in. */
+  experience?: string;
+  quote?: string;
+  languages: readonly string[];
+  isLicensed: boolean;
+  photo?: SiteImageSource;
 };
 
-/** Everything the region page shows beyond REGIONS and its overview (district, location, months...). */
-export type RegionDetailContent = {
-  slug: string;
+export type RegionFaqItem = { question: string; answer: RichTextDoc };
+
+/** Everything the region page shows: the region's card (facts, map pin, months) and the rest of its page. */
+export type RegionDetail = RegionCard & {
   seo: { title: string; description: string };
-  /** Hero line under the name. */
-  tagline: string;
-  heroImage: RegionPhoto;
-  bestMonthsLabel: string;
-  /** Extra hero chip, e.g. "No flights needed". */
+  /** Extra hero chip, e.g. "No flights needed"; blank to leave out. */
   heroHighlight: string;
-  facts: readonly RegionFact[];
-  overview: { heading: string; paragraphs: readonly string[]; bestFor: readonly string[]; points: readonly RegionPoint[] };
-  /** "Where it is" card lines (getting there, airport, permits, lodging). */
+  /** e.g. "Mar–May, Oct–Nov"; blank when no month is rated best. */
+  bestMonthsLabel: string;
+  overview: { heading: string; introduction: RichTextDoc; points: readonly RegionPoint[] };
+  /** "Where it is" card lines (getting there, airport, permits, lodging); blank ones left out. */
   gettingThere: readonly { icon: IconName; label: string; value: string }[];
-  /** The region's signature trek (needs a trek page) and why. */
-  featuredTrek: { slug: string; label: string; pitch: string };
-  /** Other treks near the region, e.g. sharing the trailhead. */
-  nearbyTreks: readonly { slug: string; label: string; note: string }[];
+  featuredTrek?: RegionTrekPick;
+  nearbyTreks: readonly RegionTrekPick[];
   customRoutePitch: string;
+  /** Seasons with a note, in calendar order from spring. */
   seasons: readonly SeasonNote[];
-  guideIds: readonly string[];
+  guides: readonly RegionGuide[];
   photos: readonly RegionPhoto[];
-  articles: readonly RegionArticle[];
-  faqs: readonly { question: string; answer: string }[];
-  /** Regions to compare with, by slug, in display order. */
-  compareWith: readonly string[];
+  /** "Before you go": travel guides about the region, pinned first. */
+  articles: readonly GuideSummary[];
+  faqs: readonly RegionFaqItem[];
+  /** Regions to compare with: the admin's picks, else the nearest ones. */
+  compareWith: readonly RegionCard[];
 };
-
-export type RegionDetail = RegionSummary & RegionOverview & RegionDetailContent;

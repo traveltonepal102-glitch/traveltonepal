@@ -19,6 +19,9 @@ const DIFFICULTY: Record<NonNullable<WebRegionRow["difficulty"]>, RegionDifficul
   strenuous: "Strenuous",
 };
 
+/** The map pin and difficulty: the Regions page's map and tables need both, and so does a region's own page. */
+const hasMapFacts = (row: WebRegionRow) => row.latitude !== null && row.longitude !== null && row.difficulty !== null;
+
 /** One row as a region summary; undefined while it is missing its name or highest point (every region shows both). */
 const toRegionSummary = (row: WebRegionRow, photosBaseUrl: string): RegionSummary | undefined => {
   const name = firstText(row.name);
@@ -29,6 +32,8 @@ const toRegionSummary = (row: WebRegionRow, photosBaseUrl: string): RegionSummar
     maxAltitudeM: row.max_altitude_m,
     tagline: firstText(row.tagline, row.summary),
     image: coverImage(row, photosBaseUrl, `${name} region`),
+    // Its introduction is written (has_page) and it has what its page's map and facts show.
+    hasPage: row.has_page && hasMapFacts(row),
   };
 };
 

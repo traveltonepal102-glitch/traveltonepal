@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
+
+import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { ViewerPhoto } from "./types";
 
@@ -38,7 +39,7 @@ export const ViewerThumbnails = ({ photos, currentIndex, onSelect }: ViewerThumb
                 isCurrent ? "scale-108 border-3 border-saffron opacity-100 ring-3 ring-saffron/30" : "border-2 border-transparent opacity-45 hover:opacity-80"
               }`}
             >
-              <Image src={photo.src} alt="" fill sizes="72px" className="object-cover" />
+              <SiteImage image={{ ...photo, alt: "" }} sizes="72px" className="object-cover" />
             </button>
           </li>
         );

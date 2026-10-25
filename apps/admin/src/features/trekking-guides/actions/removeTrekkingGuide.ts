@@ -1,11 +1,13 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import type { RemoveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKKING_GUIDES_PATH } from "../constants";
 import { removeTrekkingGuide as removeGuideFromDatabase } from "../services/guidesRepository";
@@ -28,6 +30,7 @@ export const removeTrekkingGuide = async (guideId: string): Promise<RemoveState>
     return { error: "The guide couldn't be removed. Try again in a moment." };
   }
 
+  refreshWebsite([WEBSITE_CACHE_TAGS.trekkingGuides]);
   revalidatePath(TREKKING_GUIDES_PATH);
   redirect(TREKKING_GUIDES_PATH);
 };

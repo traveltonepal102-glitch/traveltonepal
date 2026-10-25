@@ -22,7 +22,7 @@ type RegionTileProps = {
 export const RegionTile = ({ region, index, isFeatured = false }: RegionTileProps) => (
   <Link
     // A region without its own page yet opens its treks.
-    href={regionHref(region.slug)}
+    href={regionHref(region)}
     className={`group relative flex h-full flex-col gap-1.5 overflow-hidden rounded-xl text-white transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
       isFeatured ? "p-7" : "p-4.5"
     } ${TILE_COLORS[index % TILE_COLORS.length]}`}

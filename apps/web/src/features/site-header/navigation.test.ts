@@ -12,7 +12,13 @@ const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary =
   return { ...summary, ...overrides };
 };
 
-const region = (slug: string, overrides: Partial<RegionSummary> = {}): RegionSummary => ({ slug, name: slug, maxAltitudeM: 4984, ...overrides });
+const region = (slug: string, overrides: Partial<RegionSummary> = {}): RegionSummary => ({
+  slug,
+  name: slug,
+  maxAltitudeM: 4984,
+  hasPage: false,
+  ...overrides,
+});
 
 describe("trekColumns", () => {
   it("lists popular treks that have a page, with days and price", () => {
@@ -52,7 +58,7 @@ describe("treksMenuNote", () => {
 
 describe("regionLinks", () => {
   it("opens the region's page, or its treks while it has no page yet", () => {
-    const links = regionLinks([region("langtang", { name: "Langtang" }), region("everest", { name: "Everest", maxAltitudeM: 5545 })]);
+    const links = regionLinks([region("langtang", { name: "Langtang", hasPage: true }), region("everest", { name: "Everest", maxAltitudeM: 5545 })]);
     expect(links).toEqual([
       { name: "Langtang", meta: "Up to 4,984 m", href: "/regions/langtang", image: undefined },
       { name: "Everest", meta: "Up to 5,545 m", href: "/treks?region=everest", image: undefined },

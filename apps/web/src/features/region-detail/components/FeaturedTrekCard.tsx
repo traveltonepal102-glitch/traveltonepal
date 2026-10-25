@@ -1,22 +1,24 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
-import { departureOptions } from "@/features/trek-detail/pricing";
-import type { TrekDetail } from "@/features/trek-detail/types";
+import { SiteImage } from "@/components/ui/SiteImage";
+import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
+import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { formatAltitude, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
 
+import type { RegionTrekPick } from "../types";
 import { CARD, PILL } from "./styles";
 
-type FeaturedTrekCardProps = { trek: TrekDetail; label: string; pitch: string };
-
-/** The region's signature trek: photo with badges, facts, price, next departure and two actions. */
-export const FeaturedTrekCard = ({ trek, label, pitch }: FeaturedTrekCardProps) => {
-  const photo = trek.image ?? trek.photos[0];
-  const nextDeparture = departureOptions(trek.departures)[0];
+/**
+ * The region's signature trek: photo with badges, facts, price and its actions. While the trek has no page, asking
+ * on WhatsApp is the main action.
+ */
+export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
+  const { trek, label, note } = pick;
+  const hasPage = hasTrekPage(trek.slug);
   const meta: readonly { icon: IconName; text: string }[] = [
     { icon: "calendar_month", text: `${trek.days} days` },
     { icon: "speed", text: trek.difficulty },
@@ -26,13 +28,11 @@ export const FeaturedTrekCard = ({ trek, label, pitch }: FeaturedTrekCardProps) 
 
   return (
     <article className={`${CARD} grid overflow-hidden lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]`}>
-      <div className="relative min-h-60 lg:min-h-85">
-        {photo && <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 640px, 100vw" className="object-cover" />}
+      <div className="relative min-h-60 bg-navy lg:min-h-85">
+        {trek.image ? <SiteImage image={trek.image} sizes="(min-width: 1024px) 640px, 100vw" className="object-cover" /> : <RegionTileArt />}
         <p className="absolute top-4 left-4 flex flex-wrap gap-1.5 text-xs font-extrabold">
           {trek.badge && <span className="rounded-full bg-saffron px-3 py-1.25 text-navy">{trek.badge}</span>}
-          {trek.departures.length > 0 && (
-            <span className="rounded-full bg-white/94 px-3 py-1.25 text-brand">{trek.departures.length} fixed dates</span>
-          )}
+          {trek.hasFixedDates && <span className="rounded-full bg-white/94 px-3 py-1.25 text-brand">Fixed dates</span>}
         </p>
       </div>
 
@@ -47,37 +47,37 @@ export const FeaturedTrekCard = ({ trek, label, pitch }: FeaturedTrekCardProps) 
             </li>
           ))}
         </ul>
-        <p className="text-text">{pitch}</p>
+        {note && <p className="text-text">{note}</p>}
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3.5 border-t border-[#eef2f6] pt-3">
-          <div>
-            {trek.priceFromUsd ? (
-              <p>
-                <span className="text-caption text-muted-foreground">From </span>
-                <span className="font-display text-price text-navy">{formatUsd(trek.priceFromUsd)}</span>
-                <span className="text-caption text-muted-foreground"> per person</span>
-              </p>
-            ) : (
-              <p className="font-display text-h4 text-navy">Price on request</p>
-            )}
-            {nextDeparture && (
-              <p className="text-caption font-semibold text-whatsapp">
-                Next departure: {nextDeparture.label} · {nextDeparture.note}
-              </p>
-            )}
-          </div>
+          {trek.priceFromUsd ? (
+            <p>
+              <span className="text-caption text-muted-foreground">From </span>
+              <span className="font-display text-price text-navy">{formatUsd(trek.priceFromUsd)}</span>
+              <span className="text-caption text-muted-foreground"> per person</span>
+            </p>
+          ) : (
+            <p className="font-display text-h4 text-navy">Price on request</p>
+          )}
           <div className="flex flex-wrap gap-2.5">
-            <Link href={trekPath(trek.slug)} className={`${PILL} bg-brand text-on-brand hover:bg-brand-hover focus-visible:outline-ring`}>
-              View trek
-            </Link>
+            {hasPage && (
+              <Link href={trekPath(trek.slug)} className={`${PILL} bg-brand text-on-brand hover:bg-brand-hover focus-visible:outline-ring`}>
+                View trek
+              </Link>
+            )}
             <a
               href={trekInquiryUrl(trek)}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${PILL} border border-whatsapp bg-surface text-whatsapp hover:bg-green-tint focus-visible:outline-ring`}
+              className={`${PILL} focus-visible:outline-ring ${
+                hasPage ? "border border-whatsapp bg-surface text-whatsapp hover:bg-green-tint" : "bg-whatsapp text-white hover:bg-whatsapp/90"
+              }`}
             >
               <Icon name="chat" size={18} />
-              Ask
-              <span className="sr-only">about the {trek.name} on WhatsApp</span>
+              {hasPage ? "Ask" : "Ask on WhatsApp"}
+              <span className="sr-only">
+                about the {trek.name}
+                {hasPage && " on WhatsApp"}
+              </span>
             </a>
           </div>
         </div>

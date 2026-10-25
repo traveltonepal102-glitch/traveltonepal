@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -8,6 +9,7 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKKING_GUIDES_PATH, guidePath } from "../constants";
 import { guideSchema, readGuideForm } from "../schemas/guideSchema";
@@ -40,6 +42,8 @@ export const saveTrekkingGuide = async (guideId: string | null, _previous: Edito
   const result = await saveGuideToDatabase(parsed.data, guideId);
   if (!result.ok) return failure(FAILURE_MESSAGES[result.reason]);
 
+  // Region pages show the guides who lead treks there.
+  refreshWebsite([WEBSITE_CACHE_TAGS.trekkingGuides]);
   revalidatePath(TREKKING_GUIDES_PATH);
   if (guideId === null) redirect(`${guidePath(result.guideId)}&added=1`);
   return { status: "saved" };

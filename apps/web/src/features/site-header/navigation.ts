@@ -97,7 +97,7 @@ export const regionLinks = (regions: readonly RegionSummary[]): RegionLink[] =>
   regions.map((region) => ({
     name: region.name,
     meta: `Up to ${formatAltitude(region.maxAltitudeM)}`,
-    href: regionHref(region.slug),
+    href: regionHref(region),
     image: region.image,
   }));
 

@@ -1,9 +1,10 @@
+import { formatBestMonths } from "@ttn/ui/lib/bestMonths";
+
 import type { SectionReadiness } from "@/components/editor/types";
 import { isRichTextEmpty } from "@/lib/richText/richText";
 
 import { RECOMMENDED_FAQS } from "../constants";
 import type { RegionPhotos, RegionSectionKey, RegionValues } from "../types";
-import { formatBestMonths } from "./bestMonths";
 
 /** Every section has its readiness now. */
 export type ReadySectionKey = RegionSectionKey;

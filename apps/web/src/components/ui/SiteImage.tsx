@@ -11,13 +11,15 @@ type SiteImageProps = {
   sizes: string;
   className?: string;
   priority?: boolean;
+  /** e.g. the photo viewer's tap to zoom. */
+  onClick?: () => void;
 };
 
 /**
  * A page picture filling its box: a library photo at the prepared size that fits, or a file in /public.
  * A client component: next/image needs the size picker (a function) in the browser.
  */
-export const SiteImage = ({ image, sizes, className, priority }: SiteImageProps) => {
+export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteImageProps) => {
   const { variantWidths } = image;
   return (
     <Image
@@ -30,6 +32,7 @@ export const SiteImage = ({ image, sizes, className, priority }: SiteImageProps)
       loader={variantWidths?.length ? ({ width }) => photoUrl({ baseUrl: image.src, variantWidths }, width) : undefined}
       placeholder={image.placeholder ? "blur" : "empty"}
       blurDataURL={image.placeholder}
+      onClick={onClick}
       className={className}
     />
   );

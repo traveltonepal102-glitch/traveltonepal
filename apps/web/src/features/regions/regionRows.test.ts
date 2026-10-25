@@ -29,6 +29,7 @@ const row = (slug: string, overrides: Partial<WebRegionRow> = {}): WebRegionRow 
   getting_there_details: "Drive to Syabrubesi (7–8 hrs)",
   permits: "Langtang NP + TIMS",
   best_for: ["Close to Kathmandu", "No flights"],
+  has_page: false,
   ...overrides,
 });
 
@@ -78,6 +79,24 @@ describe("toRegionSummaries", () => {
   it("shows nothing for no rows", () => {
     expect(toRegionSummaries([], BASE)).toEqual([]);
   });
+
+  it("gives a region its own page once its introduction is written and its map pin and difficulty are set", () => {
+    const pages = toRegionSummaries(
+      [
+        row("langtang", { has_page: true }),
+        row("annapurna", { has_page: false }),
+        row("everest", { has_page: true, latitude: null }),
+        row("manaslu", { has_page: true, difficulty: null }),
+      ],
+      BASE,
+    );
+    expect(pages.map((region) => [region.slug, region.hasPage])).toEqual([
+      ["everest", false],
+      ["annapurna", false],
+      ["manaslu", false],
+      ["langtang", true],
+    ]);
+  });
 });
 
 describe("toRegionCards", () => {
@@ -90,6 +109,7 @@ describe("toRegionCards", () => {
       maxAltitudeM: 5000,
       tagline: "Close to Kathmandu.",
       image: undefined,
+      hasPage: false,
       district: "Rasuwa",
       location: { lat: 28.21, lon: 85.56 },
       trekLength: "7–12 days",

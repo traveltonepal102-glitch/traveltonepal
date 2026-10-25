@@ -1,11 +1,16 @@
+import { richTextToPlainText } from "@ttn/ui/lib/richText";
 import type { Metadata } from "next";
 
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
+import { imageFileUrl } from "@/lib/images";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath } from "@/lib/routes";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 import type { RegionDetail } from "./types";
+
+/** Share previews and Google use one large file per photo. */
+const SHARE_IMAGE_WIDTH = 1200;
 
 /** Home / Regions / Langtang: shown on the page and sent as JSON-LD. */
 export const regionBreadcrumbs = (region: RegionDetail): BreadcrumbItem[] => [
@@ -16,6 +21,7 @@ export const regionBreadcrumbs = (region: RegionDetail): BreadcrumbItem[] => [
 
 export const regionMetadata = (region: RegionDetail): Metadata => {
   const path = regionPath(region.slug);
+  const { image } = region;
   return {
     title: region.seo.title,
     description: region.seo.description,
@@ -26,7 +32,7 @@ export const regionMetadata = (region: RegionDetail): Metadata => {
       url: path,
       title: region.seo.title,
       description: region.seo.description,
-      images: [{ url: region.heroImage.src, alt: region.heroImage.alt }],
+      images: image ? [{ url: imageFileUrl(image, SHARE_IMAGE_WIDTH), alt: image.alt }] : undefined,
     },
     twitter: { card: "summary_large_image" },
   };
@@ -52,7 +58,7 @@ export const regionJsonLd = (region: RegionDetail): JsonLdData => {
         name: `${region.name}, Nepal`,
         description: region.seo.description,
         url,
-        image: region.photos.map((photo) => absoluteUrl(photo.src)),
+        image: [...(region.image ? [region.image] : []), ...region.photos].map((photo) => absoluteUrl(imageFileUrl(photo, SHARE_IMAGE_WIDTH))),
         geo: { "@type": "GeoCoordinates", latitude: region.location.lat, longitude: region.location.lon },
         containedInPlace: { "@type": "Country", name: "Nepal" },
       },
@@ -63,7 +69,7 @@ export const regionJsonLd = (region: RegionDetail): JsonLdData => {
               mainEntity: region.faqs.map((item) => ({
                 "@type": "Question",
                 name: item.question,
-                acceptedAnswer: { "@type": "Answer", text: item.answer },
+                acceptedAnswer: { "@type": "Answer", text: richTextToPlainText(item.answer) },
               })),
             },
           ]

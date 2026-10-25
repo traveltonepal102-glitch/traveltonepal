@@ -1,9 +1,10 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
+
+import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { ViewerPhoto } from "./types";
 import { ViewerThumbnails } from "./ViewerThumbnails";
@@ -87,11 +88,9 @@ export const PhotoViewer = ({ photos, title, index, onIndexChange }: PhotoViewer
 
           <div className="relative min-h-0 flex-1 overflow-hidden md:px-22">
             <div className="relative h-full w-full">
-              <Image
+              <SiteImage
                 key={photo.src}
-                src={photo.src}
-                alt={photo.alt}
-                fill
+                image={photo}
                 sizes="100vw"
                 onClick={toggleZoom}
                 className={`rounded-md object-contain transition-transform duration-250 select-none ${isZoomed ? "scale-180 cursor-zoom-out" : "cursor-zoom-in"}`}

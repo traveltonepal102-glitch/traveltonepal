@@ -1,8 +1,9 @@
+import { formatBestMonths } from "@ttn/ui/lib/bestMonths";
+
 import type { Photo } from "@/features/photos/types";
 import type { MonthRating } from "@/lib/supabase/database.types";
 
 import type { Region } from "../types";
-import { formatBestMonths } from "./bestMonths";
 import type { ReadySectionKey } from "./readiness";
 import { getRegionReadiness } from "./readiness";
 

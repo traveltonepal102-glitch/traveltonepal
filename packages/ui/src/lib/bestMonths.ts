@@ -1,12 +1,13 @@
-import type { MonthRating } from "@/lib/supabase/database.types";
+/** How good a month is for trekking (Jan–Dec, 12 per region; the database's month_rating). */
+export type MonthRating = "best" | "possible" | "avoid";
 
-import { MONTH_NAMES } from "../constants";
+export const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
 
 /**
  * The best months as short ranges: "Mar–May, Oct–Nov". A run over the new year joins up ("Nov–Feb").
- * Empty when no month is rated best.
+ * Empty when no month is rated best. The admin and the website show the same text.
  */
-export const formatBestMonths = (ratings: MonthRating[]): string => {
+export const formatBestMonths = (ratings: readonly MonthRating[]): string => {
   const runs: [number, number][] = [];
   ratings.forEach((rating, month) => {
     if (rating !== "best") return;
