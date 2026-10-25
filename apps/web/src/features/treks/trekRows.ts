@@ -11,9 +11,13 @@ const DIFFICULTY: Record<WebTrekRow["difficulty"], TrekDifficulty> = {
   strenuous: "Strenuous",
 };
 
+/** The website's "Recommended" order: popular treks first, then A–Z, then by address so it never flips. */
+const byRecommended = (a: TrekSummary, b: TrekSummary) =>
+  Number(b.isPopular) - Number(a.isPopular) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug);
+
 /**
- * The web_treks rows (published treks) as trek summaries, A–Z. A trek still missing its name, days or highest
- * point isn't shown (every card shows them).
+ * The web_treks rows (published treks) as trek summaries, in the "Recommended" order. A trek still missing its
+ * name, days or highest point isn't shown (every card shows them).
  */
 export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: string): TrekSummary[] =>
   rows
@@ -41,4 +45,4 @@ export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: stri
         },
       ];
     })
-    .sort((a, b) => a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug));
+    .sort(byRecommended);

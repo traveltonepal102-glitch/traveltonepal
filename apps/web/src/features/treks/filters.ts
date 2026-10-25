@@ -20,6 +20,9 @@ export const TREK_SEASONS = [
   { value: "winter", label: "Winter · Dec–Feb" },
 ] as const;
 
+/** The Treks page results (with the filters), for links that jump to them. */
+export const TREK_RESULTS_ID = "trek-results";
+
 /** Quick shortcuts above the results; one at a time. */
 export const TREK_SHORTCUTS = [
   { value: "popular", label: "Most popular", icon: "star" },

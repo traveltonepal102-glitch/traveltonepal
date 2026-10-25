@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { useTrekFilters } from "../../hooks/useTrekFilters";
 import { EMPTY_TREK_FILTERS, activeFilterCount, filterAndSortTreks } from "../../filtering";
+import { TREK_RESULTS_ID } from "../../filters";
 import type { TrekFilters } from "../../filtering";
 import { ActiveFilterChips } from "./ActiveFilterChips";
 import { FilterSidebar } from "./FilterSidebar";
@@ -26,7 +27,7 @@ const TrekExplorerView = (props: TrekExplorerViewProps) => {
     <>
       <ShortcutBar active={filters.shortcut} onPick={(shortcut) => update({ shortcut })} />
 
-      <section aria-label="Treks" className="pt-7 pb-12">
+      <section id={TREK_RESULTS_ID} aria-label="Treks" className="scroll-mt-4 pt-7 pb-12">
         <div className="mx-auto max-w-content gap-7 px-4 md:px-6 lg:grid lg:grid-cols-[272px_minmax(0,1fr)] lg:items-start">
           <FilterSidebar
             id={SIDEBAR_ID}

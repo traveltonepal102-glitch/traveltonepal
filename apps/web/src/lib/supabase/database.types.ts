@@ -24,6 +24,20 @@ export type WebRegionRow = CoverColumns & {
   summary: string;
   max_altitude_m: number | null;
   website_domain: string | null;
+  district: string;
+  /** Map pin, in degrees; both null until the pin is set. */
+  latitude: number | null;
+  longitude: number | null;
+  difficulty: "easy" | "easy_moderate" | "moderate" | "easy_challenging" | "challenging" | "strenuous" | null;
+  is_flight: boolean;
+  /** Jan–Dec, always 12. */
+  month_ratings: ("best" | "possible" | "avoid")[];
+  trek_length: string;
+  getting_there: string;
+  getting_there_details: string;
+  permits: string;
+  /** Up to 3 short phrases. */
+  best_for: string[];
 };
 
 export type WebTrekRow = CoverColumns & {

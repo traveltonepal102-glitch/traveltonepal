@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { formatAltitude } from "@/features/treks/format";
+import { formatCount } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 
 import { WRAP } from "./styles";
@@ -11,16 +12,17 @@ import { WRAP } from "./styles";
 type RegionsHeroProps = {
   regionCount: number;
   trekCount: number;
-  /** Lowest and highest "highest point" of the regions, in metres. */
-  altitudeRange: { min: number; max: number };
+  /** Lowest and highest "highest point" of the regions, in metres; none without regions. */
+  altitudeRange?: { min: number; max: number };
 };
 
 /** Regions page hero: breadcrumb, title, intro and four quick facts over a valley photo. */
 export const RegionsHero = ({ regionCount, trekCount, altitudeRange }: RegionsHeroProps) => {
+  // A count of zero isn't a fact worth showing.
   const stats: readonly { icon: IconName; text: string }[] = [
-    { icon: "landscape", text: `${regionCount} regions` },
-    { icon: "hiking", text: `${trekCount} treks` },
-    { icon: "mountain_flag", text: `From ${formatAltitude(altitudeRange.min)} to ${formatAltitude(altitudeRange.max)}` },
+    ...(regionCount > 0 ? [{ icon: "landscape" as const, text: formatCount(regionCount, "region") }] : []),
+    ...(trekCount > 0 ? [{ icon: "hiking" as const, text: formatCount(trekCount, "trek") }] : []),
+    ...(altitudeRange ? [{ icon: "mountain_flag" as const, text: `From ${formatAltitude(altitudeRange.min)} to ${formatAltitude(altitudeRange.max)}` }] : []),
     { icon: "verified", text: "All permits arranged" },
   ];
 
@@ -32,7 +34,7 @@ export const RegionsHero = ({ regionCount, trekCount, altitudeRange }: RegionsHe
 
       <div className={`${WRAP} relative flex flex-col gap-4 pt-5.5 pb-12`}>
         <Breadcrumbs tone="onDark" items={[{ label: "Home", href: ROUTES.home }, { label: "Regions" }]} />
-        <p className="text-eyebrow text-saffron uppercase">{regionCount} trekking regions</p>
+        <p className="text-eyebrow text-saffron uppercase">{regionCount > 1 ? `${regionCount} trekking regions` : "Trekking regions"}</p>
         <h1 id="regions-title" className="max-w-195 text-[30px] leading-[1.08] font-extrabold tracking-tight text-white md:text-[44px]">
           Trekking regions of Nepal: find the valley that fits you
         </h1>

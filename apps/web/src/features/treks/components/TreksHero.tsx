@@ -3,6 +3,7 @@ import type { IconName } from "@ttn/ui/icon";
 import Image from "next/image";
 
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { formatCount } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 
 import { TrekSearchForm } from "./TrekSearchForm";
@@ -14,9 +15,10 @@ type TreksHeroProps = {
 
 /** Treks page hero (design: Treks.dc.html): breadcrumb, title, intro, quick facts and trek search. */
 export const TreksHero = ({ trekCount, regionCount }: TreksHeroProps) => {
+  // A count of zero isn't a fact worth showing.
   const facts: readonly { icon: IconName; text: string }[] = [
-    { icon: "hiking", text: `${trekCount} treks` },
-    { icon: "landscape", text: `${regionCount} regions` },
+    ...(trekCount > 0 ? [{ icon: "hiking" as const, text: formatCount(trekCount, "trek") }] : []),
+    ...(regionCount > 0 ? [{ icon: "landscape" as const, text: formatCount(regionCount, "region") }] : []),
     { icon: "groups", text: "Private, on your dates" },
     { icon: "verified", text: "Licensed local operator" },
   ];

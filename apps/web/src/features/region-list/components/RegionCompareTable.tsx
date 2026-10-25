@@ -9,6 +9,9 @@ import { CARD, DIFFICULTY_CHIP, DIFFICULTY_CHIPS, WRAP } from "./styles";
 const CELL = "px-4 py-3";
 const COLUMNS = ["Max altitude", "Trek length", "Difficulty", "Getting there", "Permits", "Best for"] as const;
 
+/** A fact not filled in yet in the admin, as an empty cell would read like a mistake. */
+const NOT_SET = "—";
+
 /** "Compare the regions": every region's key facts in one table (scrolls sideways on phones). */
 export const RegionCompareTable = ({ regions }: { regions: readonly RegionListItem[] }) => (
   <section aria-labelledby="regions-compare-title" className="pt-10 pb-4">
@@ -46,13 +49,13 @@ export const RegionCompareTable = ({ regions }: { regions: readonly RegionListIt
                   </Link>
                 </th>
                 <td className={`${CELL} font-bold`}>{formatAltitude(region.maxAltitudeM)}</td>
-                <td className={CELL}>{region.trekLength}</td>
+                <td className={CELL}>{region.trekLength || NOT_SET}</td>
                 <td className={CELL}>
                   <span className={`${DIFFICULTY_CHIP} ${DIFFICULTY_CHIPS[region.difficulty]}`}>{region.difficulty}</span>
                 </td>
-                <td className={CELL}>{region.access.long}</td>
-                <td className={CELL}>{region.permits}</td>
-                <td className={CELL}>{region.bestFor}</td>
+                <td className={CELL}>{region.access.long || NOT_SET}</td>
+                <td className={CELL}>{region.permits || NOT_SET}</td>
+                <td className={CELL}>{region.bestFor || NOT_SET}</td>
               </tr>
             ))}
           </tbody>

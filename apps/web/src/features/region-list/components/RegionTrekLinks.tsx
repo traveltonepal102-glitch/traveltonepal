@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { formatCount } from "@/lib/format";
+
 import type { RegionTrekLink } from "../regionListItems";
 
 const ROW =
@@ -9,7 +11,7 @@ const ROW =
 export const RegionTrekLinks = ({ treks }: { treks: readonly RegionTrekLink[] }) => (
   <ul className="flex flex-col gap-1.5">
     {treks.map((trek) => {
-      const days = <span className="text-brand">{trek.days} days</span>;
+      const days = <span className="text-brand">{formatCount(trek.days, "day")}</span>;
       return (
         <li key={trek.slug}>
           {trek.isInquiry ? (

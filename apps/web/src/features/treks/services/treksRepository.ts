@@ -8,7 +8,7 @@ import { createWebsiteClient } from "@/lib/supabase/server";
 import { toTrekSummaries } from "../trekRows";
 import type { TrekSummary } from "../types";
 
-/** Every published trek, A–Z. Throws when the database can't be read (a failed refresh keeps the last good page). */
+/** Every published trek, popular first, then A–Z. Throws when the database can't be read (a failed refresh keeps the last good page). */
 export const listTreks = async (): Promise<TrekSummary[]> => {
   "use cache";
   cacheTag(CACHE_TAGS.treks);

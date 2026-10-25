@@ -7,14 +7,19 @@ import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import type { RegionListItem } from "./regionListItems";
 
 const TITLE = "Trekking regions of Nepal: compare and choose";
-const DESCRIPTION =
-  "Compare Nepal's 9 trekking regions on one map: altitude, trek length, access, permits and the best months, from Langtang near Kathmandu to remote Kanchenjunga.";
 
-export const regionsMetadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: ROUTES.regions },
-  openGraph: { type: "website", siteName: SITE_NAME, url: ROUTES.regions, title: TITLE, description: DESCRIPTION },
+/** "Compare Nepal's 9 trekking regions on one map: …" (the count follows the regions). */
+export const regionsDescription = (regionCount: number) =>
+  `Compare Nepal's ${regionCount > 1 ? `${regionCount} ` : ""}trekking regions on one map: altitude, trek length, access, permits and the best months, from Langtang near Kathmandu to remote Kanchenjunga.`;
+
+export const regionsMetadata = (regionCount: number): Metadata => {
+  const description = regionsDescription(regionCount);
+  return {
+    title: TITLE,
+    description,
+    alternates: { canonical: ROUTES.regions },
+    openGraph: { type: "website", siteName: SITE_NAME, url: ROUTES.regions, title: TITLE, description },
+  };
 };
 
 /** BreadcrumbList and an ItemList of the regions (with a URL only for regions that have a page). */
@@ -37,7 +42,7 @@ export const regionsJsonLd = (regions: readonly RegionListItem[]): JsonLdData =>
         item: {
           "@type": "TouristDestination",
           name: `${region.name}, Nepal`,
-          description: region.summary,
+          ...(region.summary ? { description: region.summary } : {}),
           geo: { "@type": "GeoCoordinates", latitude: region.location.lat, longitude: region.location.lon },
           ...(region.hasPage ? { url: absoluteUrl(region.href) } : {}),
         },

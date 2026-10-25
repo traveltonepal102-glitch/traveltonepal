@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { WebRegionRow } from "@/lib/supabase/database.types";
 
-import { toRegionSummaries } from "./regionRows";
+import { toRegionCards, toRegionSummaries } from "./regionRows";
 
 const BASE = "https://photos.example.com";
 const NO_COVER = { cover_id: null, cover_width: null, cover_height: null, cover_variant_widths: null, cover_placeholder: null, cover_place: null };
@@ -18,6 +18,17 @@ const row = (slug: string, overrides: Partial<WebRegionRow> = {}): WebRegionRow 
   max_altitude_m: 5000,
   website_domain: null,
   ...NO_COVER,
+  district: "Rasuwa",
+  latitude: 28.21,
+  longitude: 85.56,
+  difficulty: "moderate",
+  is_flight: false,
+  month_ratings: ["possible", "possible", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"],
+  trek_length: "7–12 days",
+  getting_there: "Drive",
+  getting_there_details: "Drive to Syabrubesi (7–8 hrs)",
+  permits: "Langtang NP + TIMS",
+  best_for: ["Close to Kathmandu", "No flights"],
   ...overrides,
 });
 
@@ -66,5 +77,66 @@ describe("toRegionSummaries", () => {
 
   it("shows nothing for no rows", () => {
     expect(toRegionSummaries([], BASE)).toEqual([]);
+  });
+});
+
+describe("toRegionCards", () => {
+  it("maps a region's facts, months and photo for the Regions page", () => {
+    const [card] = toRegionCards([row("langtang", { name: "Langtang", short_name: " Langtang ", summary: " Close to Kathmandu. " })], BASE);
+    expect(card).toEqual({
+      slug: "langtang",
+      name: "Langtang",
+      shortName: "Langtang",
+      maxAltitudeM: 5000,
+      tagline: "Close to Kathmandu.",
+      image: undefined,
+      district: "Rasuwa",
+      location: { lat: 28.21, lon: 85.56 },
+      trekLength: "7–12 days",
+      difficulty: "Moderate",
+      access: { short: "Drive", long: "Drive to Syabrubesi (7–8 hrs)", isFlight: false },
+      permits: "Langtang NP + TIMS",
+      bestFor: "Close to Kathmandu, No flights",
+      bestForTags: ["Close to Kathmandu", "No flights"],
+      summary: "Close to Kathmandu.",
+      months: ["possible", "possible", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"],
+    });
+  });
+
+  it("names every difficulty the database allows", () => {
+    const difficulties = (["easy", "easy_moderate", "moderate", "easy_challenging", "challenging", "strenuous"] as const).map(
+      (difficulty) => toRegionCards([row("r", { difficulty })], BASE)[0].difficulty,
+    );
+    expect(difficulties).toEqual(["Easy", "Easy–moderate", "Moderate", "Easy–challenging", "Challenging", "Strenuous"]);
+  });
+
+  it("numbers west to east by the map pin, whatever order the database sends", () => {
+    const cards = toRegionCards([row("everest", { longitude: 86.85 }), row("annapurna", { longitude: 83.9 }), row("langtang", { longitude: 85.56 })], BASE);
+    expect(cards.map((card) => card.slug)).toEqual(["annapurna", "langtang", "everest"]);
+  });
+
+  it("leaves out a region still missing its map pin, difficulty, highest point or name", () => {
+    const rows = [
+      row("no-pin", { latitude: null, longitude: null }),
+      row("no-difficulty", { difficulty: null }),
+      row("no-altitude", { max_altitude_m: null }),
+      row("no-name", { name: " " }),
+      row("ok"),
+    ];
+    expect(toRegionCards(rows, BASE).map((card) => card.slug)).toEqual(["ok"]);
+  });
+
+  it("keeps blank facts blank (the page leaves them out) and never shows blank best-for tags", () => {
+    const [card] = toRegionCards(
+      [row("pikey-peak", { district: " ", trek_length: "", permits: "  ", getting_there: " Drive ", getting_there_details: " ", best_for: ["  ", "Everest views"], short_name: "" })],
+      BASE,
+    );
+    expect(card).toMatchObject({ district: "", trekLength: "", permits: "", shortName: undefined, bestFor: "Everest views", bestForTags: ["Everest views"] });
+    // Without details, the long way there is the short one.
+    expect(card.access).toEqual({ short: "Drive", long: "Drive", isFlight: false });
+  });
+
+  it("shows nothing for no rows", () => {
+    expect(toRegionCards([], BASE)).toEqual([]);
   });
 });

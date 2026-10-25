@@ -77,8 +77,11 @@ describe("toTrekSummaries", () => {
     expect(treks.map((trek) => trek.image)).toEqual([undefined, undefined]);
   });
 
-  it("sorts A–Z by name, then by address when two treks share a name", () => {
-    const treks = toTrekSummaries([row("z", { name: "Mardi Himal" }), row("b", { name: "Everest" }), row("a", { name: "Mardi Himal" })], BASE);
-    expect(treks.map((trek) => trek.slug)).toEqual(["b", "a", "z"]);
+  it("puts popular treks first, then A–Z, then by address when two treks share a name", () => {
+    const treks = toTrekSummaries(
+      [row("z", { name: "Mardi Himal" }), row("b", { name: "Everest", is_popular: false }), row("a", { name: "Mardi Himal" }), row("c", { name: "Annapurna", is_popular: false })],
+      BASE,
+    );
+    expect(treks.map((trek) => trek.slug)).toEqual(["a", "z", "c", "b"]);
   });
 });
