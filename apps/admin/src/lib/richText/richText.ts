@@ -1,4 +1,4 @@
-import { EMPTY_RICH_TEXT, isRichTextEmpty, richTextDocSchema, richTextToPlainText } from "@ttn/ui/lib/richText";
+import { EMPTY_RICH_TEXT, isRichTextEmpty, richTextDocSchema, richTextImages, richTextToPlainText } from "@ttn/ui/lib/richText";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 import { z } from "zod";
 
@@ -10,13 +10,17 @@ export type {
   RichTextBlock,
   RichTextDoc,
   RichTextHeading,
+  RichTextImage,
   RichTextInline,
   RichTextList,
   RichTextListItem,
   RichTextMark,
   RichTextParagraph,
 } from "@ttn/ui/lib/richText";
-export { EMPTY_RICH_TEXT, isRichTextEmpty, isSafeHref, richTextDocSchema, richTextToPlainText, toRichTextDoc } from "@ttn/ui/lib/richText";
+export { EMPTY_RICH_TEXT, isRichTextEmpty, isSafeHref, richTextDocSchema, richTextImages, richTextToPlainText, toRichTextDoc } from "@ttn/ui/lib/richText";
+
+/** Every photo in a text needs its description (shown to Google and read out by screen readers). */
+export const PHOTO_DESCRIPTION_MESSAGE = "Describe each photo in the text (what it shows), for Google and screen readers.";
 
 /** The longest JSON the server reads for one field (a few thousand words, with room for formatting). */
 const MAX_JSON_LENGTH = 100_000;
@@ -57,4 +61,5 @@ export const richTextField = (maxCharacters: number) =>
       });
       return z.NEVER;
     })
-    .refine((doc) => richTextToPlainText(doc).length <= maxCharacters, `Use ${maxCharacters} characters or fewer.`);
+    .refine((doc) => richTextToPlainText(doc).length <= maxCharacters, `Use ${maxCharacters} characters or fewer.`)
+    .refine((doc) => richTextImages(doc.content).every((image) => image.attrs.alt), PHOTO_DESCRIPTION_MESSAGE);

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { formatAltitude } from "@/features/treks/format";
 import { ROUTES } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { RegionListItem } from "../regionListItems";
 import { trekCountLabel } from "../regionListItems";
@@ -54,7 +55,7 @@ const RegionCard = ({ region }: { region: RegionListItem }) => {
         <div className="mt-auto flex gap-2 pt-1 text-body-sm">
           {region.isAskOnly ? (
             <a href={region.inquiryUrl} target="_blank" rel="noopener noreferrer" className={ASK_ACTION}>
-              <Icon name="chat" size={16} />
+              <WhatsAppLogo size={16} />
               Ask about this region
               <span className="sr-only">: {region.name}, on WhatsApp</span>
             </a>

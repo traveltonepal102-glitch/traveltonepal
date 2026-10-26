@@ -35,7 +35,7 @@ export const HomeHero = ({ top }: { top: SitePageTop }) => (
           href={getWhatsAppUrl()}
           variant="outlineOnDark"
           size="lg"
-          icon="chat"
+          icon="whatsapp"
           isExternal
           className="max-md:w-full"
         >

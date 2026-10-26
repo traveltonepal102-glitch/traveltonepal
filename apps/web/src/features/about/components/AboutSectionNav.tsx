@@ -1,9 +1,9 @@
 "use client";
 
 import { getWhatsAppUrl } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
 
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { AboutSectionLink } from "../sections";
 import { FOCUS, WRAP } from "./styles";
@@ -36,7 +36,7 @@ export const AboutSectionNav = ({ links }: { links: readonly AboutSectionLink[] 
           rel="noopener noreferrer"
           className={`ml-auto hidden flex-none items-center gap-1.5 rounded-full bg-whatsapp px-3.5 py-1.75 text-caption font-bold text-white hover:bg-whatsapp/90 sm:inline-flex ${FOCUS}`}
         >
-          <Icon name="chat" size={16} />
+          <WhatsAppLogo size={16} />
           Plan my trek
         </a>
       </div>

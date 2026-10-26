@@ -43,7 +43,7 @@ export const VisitSection = async () => {
           ))}
         </ul>
         <div className="flex flex-col gap-2.5 pt-1 sm:flex-row">
-          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to visit your office in Kathmandu.")} variant="whatsapp" icon="chat" shape="rounded" isExternal>
+          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to visit your office in Kathmandu.")} variant="whatsapp" icon="whatsapp" shape="rounded" isExternal>
             WhatsApp us
           </ButtonLink>
           <ButtonLink href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} variant="secondary" icon="mail" shape="rounded">

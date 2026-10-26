@@ -50,13 +50,13 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
       <JsonLd data={trekJsonLd(trek)} />
       <TrekTopBar breadcrumbs={trekBreadcrumbs(trek)} currentSeason={trek.currentSeason} />
       <TrekTitle trek={trek} />
-      <TrekSectionNav days={trek.days} hasReviews={reviews.length > 0} hasCredentials={shows("credentials")} />
+      <TrekSectionNav hasReviews={reviews.length > 0} />
 
       <BookingSelectionProvider defaultGroupIndex={defaultGroupIndex(trek.groupPrices)}>
         <div className="mx-auto grid max-w-content gap-8 px-4 pt-8 pb-12 md:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
           <div className="flex min-w-0 flex-col gap-6">
             <TrekGallery photos={trek.photos} badges={trek.photoBadges} title={trek.name} />
-            <TrekIntroduction paragraphs={trek.intro} />
+            <TrekIntroduction paragraphs={trek.intro} photos={trek.introPhotos} />
             <TrekOverview trek={trek} />
             {shows("founder") && <FounderStoryCard />}
             {shows("consultation") && <DirectConsultationCard trekName={trek.name} />}

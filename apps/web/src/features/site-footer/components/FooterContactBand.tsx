@@ -1,6 +1,8 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+
 /** "Planning a trek?" band at the top of the footer, with the WhatsApp button. */
 export const FooterContactBand = () => (
   <div className="border-b border-white/10">
@@ -20,7 +22,7 @@ export const FooterContactBand = () => (
         rel="noopener noreferrer"
         className="inline-flex min-h-12 flex-none items-center justify-center gap-2.5 rounded-full bg-whatsapp px-5.5 font-bold whitespace-nowrap text-white transition-colors hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:w-full"
       >
-        <Icon name="chat" />
+        <WhatsAppLogo />
         Plan my trek on WhatsApp
       </a>
     </div>

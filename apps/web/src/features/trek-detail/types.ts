@@ -1,3 +1,4 @@
+import type { RichTextImage } from "@ttn/ui/lib/richText";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
@@ -53,6 +54,8 @@ export type TrekPoint = {
 export type ItineraryDay = {
   /** Short place name for the elevation chart, e.g. "Lama Hotel". */
   place: string;
+  /** Photos added in the day's description, shown under its text. */
+  textPhotos?: readonly RichTextImage[];
   title: string;
   /** One line under the title, e.g. "River gorge · Bamboo and rhododendron forest". */
   subtitle: string;
@@ -141,7 +144,8 @@ export type FieldGuideTopic = {
 export type FaqGroup = {
   title: string;
   icon: IconName;
-  items: readonly { question: string; answer: string }[];
+  /** `photos`: added in the answer in the admin, shown under it. */
+  items: readonly { question: string; answer: string; photos: readonly RichTextImage[] }[];
 };
 
 export type Departure = {
@@ -176,6 +180,8 @@ export type TrekDetailContent = {
   optionalHighPoint?: { name: string; altitudeM: number };
   /** Introduction paragraphs; the first is shown until "Read more". */
   intro: readonly string[];
+  /** Photos added in the introduction, shown under it. */
+  introPhotos: readonly RichTextImage[];
   /** Gallery photos; the first is the main photo and the page's share image. */
   photos: readonly TrekPhoto[];
   photoBadges: readonly TrekPhotoBadge[];

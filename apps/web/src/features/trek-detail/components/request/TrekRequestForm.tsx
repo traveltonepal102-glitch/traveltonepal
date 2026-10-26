@@ -1,11 +1,11 @@
 "use client";
 
-import { Icon } from "@ttn/ui/icon";
-
 import { MAX_REQUESTS_LENGTH } from "../../requestMessage";
 import { EmailFallback, SelectField, StaticField, TextAreaField, TextField, WhatsAppSubmit } from "./RequestFields";
 import { useTrekRequest } from "./useTrekRequest";
 import type { TrekRequestOptions } from "./useTrekRequest";
+
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 /** In-page request form ("Book your … Trek"): trek, group size, name, timing and special requests. */
 export const TrekRequestForm = (options: TrekRequestOptions) => {
@@ -37,7 +37,7 @@ export const TrekRequestForm = (options: TrekRequestOptions) => {
         {...register("requests")}
       />
       <WhatsAppSubmit>
-        <Icon name="chat" size={18} />
+        <WhatsAppLogo size={18} />
         Send my request on WhatsApp
       </WhatsAppSubmit>
       <EmailFallback href={emailHref} />

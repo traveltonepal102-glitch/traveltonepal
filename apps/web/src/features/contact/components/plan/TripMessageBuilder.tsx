@@ -25,7 +25,7 @@ export const TripMessageBuilder = ({ trekOptions }: { trekOptions: readonly stri
       <div className={`${CARD} flex flex-col gap-3.5 shadow-card`}>
         <TripFields trip={trip} trekOptions={trekOptions} onChange={(patch) => setTrip((current) => ({ ...current, ...patch }))} />
         <div className="flex flex-col gap-2.5 pt-1 sm:flex-row">
-          <ButtonLink href={getWhatsAppUrl(message)} variant="whatsapp" icon="chat" shape="rounded" isExternal className="sm:flex-1">
+          <ButtonLink href={getWhatsAppUrl(message)} variant="whatsapp" icon="whatsapp" shape="rounded" isExternal className="sm:flex-1">
             Send on WhatsApp
           </ButtonLink>
           <ButtonLink href={getEmailUrl({ subject: tripEmailSubject(trip), body: message })} variant="secondary" icon="mail" shape="rounded">

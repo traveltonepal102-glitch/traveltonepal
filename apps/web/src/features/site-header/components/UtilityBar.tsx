@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { ROUTES } from "@/lib/routes";
 import { HAS_GERMAN_SITE } from "@/lib/site";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { HeaderVariant } from "./HeaderMenuProvider";
 
@@ -32,7 +33,7 @@ export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
             rel="noopener noreferrer"
             className={`${LINK} font-semibold text-whatsapp-on-dark`}
           >
-            <Icon name="chat" size={15} />
+            <WhatsAppLogo size={15} />
             {contact.phoneDisplay}
             <span className="sr-only"> on WhatsApp</span>
           </a>

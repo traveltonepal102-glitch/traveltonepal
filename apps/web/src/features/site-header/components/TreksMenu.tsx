@@ -1,8 +1,8 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 
 import { ROUTES } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { TrekColumn } from "../navigation";
 import { MenuColumnTitle, MenuItemLink, PanelCard, PanelFooter } from "./MenuParts";
@@ -21,7 +21,7 @@ const TrekAdviceCard = () => (
       Tell us your dates and fitness. A local expert suggests the right route.
     </span>
     <span className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-whatsapp px-3.5 py-2 text-caption font-bold">
-      <Icon name="chat" size={16} />
+      <WhatsAppLogo size={16} />
       Ask on WhatsApp
     </span>
   </a>

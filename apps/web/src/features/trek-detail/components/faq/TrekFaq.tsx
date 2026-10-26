@@ -1,5 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { RichTextPhoto } from "@/components/shared/RichTextPhoto";
+
 import { TREK_SECTION_IDS } from "../../sections";
 import type { TrekDetail } from "../../types";
 import { FaqGroupCard } from "./FaqGroupCard";
@@ -43,7 +45,13 @@ export const TrekFaq = ({ name, faqs }: TrekFaqProps) => {
 
           <div className="flex min-w-0 flex-col gap-6">
             {faqs.map((group, index) => (
-              <FaqGroupCard key={group.title} group={group} id={groupAnchor(group.title)} isFirstOpen={index === 0} />
+              <FaqGroupCard
+                key={group.title}
+                group={group}
+                id={groupAnchor(group.title)}
+                isFirstOpen={index === 0}
+                answerPhotos={group.items.map((item) => item.photos.map((photo) => <RichTextPhoto key={photo.attrs.photoId} image={photo} />))}
+              />
             ))}
           </div>
         </div>

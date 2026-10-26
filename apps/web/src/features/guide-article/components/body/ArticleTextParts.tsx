@@ -3,6 +3,7 @@ import { Icon } from "@ttn/ui/icon";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import { RichText } from "@/components/shared/RichText";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { FOCUS } from "../styles";
 
@@ -52,7 +53,7 @@ export const ArticleCta = ({ heading, buttonText, message }: { heading: string; 
       rel="noopener noreferrer"
       className={`inline-flex min-h-11 flex-none items-center gap-2 rounded-full bg-whatsapp px-5 text-body-sm font-bold text-white hover:bg-whatsapp/90 ${FOCUS}`}
     >
-      <Icon name="chat" size={18} />
+      <WhatsAppLogo size={18} />
       {buttonText}
     </a>
   </section>

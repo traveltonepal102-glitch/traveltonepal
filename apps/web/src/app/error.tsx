@@ -48,7 +48,7 @@ const ErrorPage = ({ error, retry }: ErrorPageProps) => {
             <Icon name="redo" size={18} />
             Try again
           </button>
-          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="chat" isExternal className="max-md:w-full">
+          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="max-md:w-full">
             Ask us on WhatsApp
           </ButtonLink>
         </div>

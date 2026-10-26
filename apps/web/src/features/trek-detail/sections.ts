@@ -13,6 +13,8 @@ export const TREK_SECTION_IDS = {
   pricing: "pricing",
   credentials: "credentials",
   reviews: "reviews",
+  /** Packing list and field guide. */
+  usefulInfo: "useful-info",
   faq: "faq",
   /** Inquiry form. */
   plan: "plan",
@@ -20,14 +22,13 @@ export const TREK_SECTION_IDS = {
   book: "book",
 } as const;
 
-/** Links in the sticky "On this page" bar, in page order. "Credentials" and "Reviews" only when the page shows them. */
-export const trekSectionLinks = (days: number, { hasReviews, hasCredentials }: { hasReviews: boolean; hasCredentials: boolean }) => [
-  { id: TREK_SECTION_IDS.highlights, label: "Highlights" },
-  { id: TREK_SECTION_IDS.itinerary, label: `${days}-day itinerary` },
+/** Links in the sticky "On this page" bar, in page order. "Reviews" only when the page shows them. */
+export const trekSectionLinks = ({ hasReviews }: { hasReviews: boolean }) => [
+  { id: TREK_SECTION_IDS.itinerary, label: "Itinerary" },
   { id: TREK_SECTION_IDS.inclusions, label: "Inclusions" },
-  { id: TREK_SECTION_IDS.elevation, label: "Elevation and route" },
-  { id: TREK_SECTION_IDS.pricing, label: "Cost and tiers" },
-  ...(hasCredentials ? [{ id: TREK_SECTION_IDS.credentials, label: "Credentials" }] : []),
+  { id: TREK_SECTION_IDS.routeMap, label: "Trip map" },
+  { id: TREK_SECTION_IDS.pricing, label: "Dates" },
+  { id: TREK_SECTION_IDS.usefulInfo, label: "Useful info" },
   ...(hasReviews ? [{ id: TREK_SECTION_IDS.reviews, label: "Reviews" }] : []),
   { id: TREK_SECTION_IDS.faq, label: "FAQ" },
 ];

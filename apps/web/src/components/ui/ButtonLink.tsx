@@ -3,6 +3,8 @@ import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { WhatsAppLogo } from "./WhatsAppLogo";
+
 type ButtonVariant = "primary" | "secondary" | "outline" | "whatsapp" | "accent" | "light" | "outlineOnDark";
 type ButtonSize = "md" | "lg";
 
@@ -37,8 +39,8 @@ type ButtonLinkProps = {
   children: ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** Icon before the text. */
-  icon?: IconName;
+  /** Icon before the text; "whatsapp" for WhatsApp's logo (every button that opens WhatsApp). */
+  icon?: IconName | "whatsapp";
   /** Icon after the text, e.g. an arrow. */
   trailingIcon?: IconName;
   /** Opens in a new tab (WhatsApp, other sites). */
@@ -65,7 +67,7 @@ export const ButtonLink = ({
   const classes = `inline-flex items-center justify-center ${shape === "pill" ? "rounded-full" : "rounded-md"} text-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${sizeClasses} ${look.button} ${className}`;
   const content = (
     <>
-      {icon && <Icon name={icon} size={iconSize} className={look.icon} />}
+      {icon === "whatsapp" ? <WhatsAppLogo size={iconSize} className={look.icon} /> : icon && <Icon name={icon} size={iconSize} className={look.icon} />}
       {children}
       {trailingIcon && <Icon name={trailingIcon} size={iconSize} className={look.icon} />}
     </>

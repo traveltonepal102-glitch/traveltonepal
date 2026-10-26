@@ -9,6 +9,7 @@ const fillInlines = (content: RichTextInline[] | undefined, values: Record<strin
   content?.map((inline) => (inline.type === "text" ? { ...inline, text: fillText(inline.text, values) } : inline));
 
 const fillBlock = <Block extends LegalBlock>(block: Block, values: Record<string, string>): Block => {
+  if (block.type === "image") return block;
   if (block.type === "paragraph" || block.type === "heading") return { ...block, content: fillInlines(block.content, values) };
   if (block.type === "table") return { ...block, content: block.content.map((row) => ({ ...row, content: row.content.map((cell) => ({ ...cell, content: cell.content.map((child) => fillBlock(child, values)) })) })) };
   return { ...block, content: block.content.map((item) => ({ ...item, content: item.content.map((child: RichTextBlock) => fillBlock(child, values)) })) };

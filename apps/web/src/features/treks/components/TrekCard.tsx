@@ -2,6 +2,7 @@ import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
 import { trekPath } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { formatAltitude, formatUsd } from "../format";
 import { trekInquiryUrl } from "../inquiry";
@@ -55,7 +56,7 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
           aria-label={`Ask about the ${trek.name} on WhatsApp`}
           className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full bg-whatsapp text-white transition-colors hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
-          <Icon name="chat" size={22} />
+          <WhatsAppLogo size={22} />
         </a>
       </div>
     </div>

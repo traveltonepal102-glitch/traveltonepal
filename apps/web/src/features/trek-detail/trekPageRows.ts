@@ -10,6 +10,7 @@ import { toTrekGuides } from "./trekGuideRows";
 import type { TrekDayRow, TrekDepartureRow } from "./trekPageJson";
 import {
   paragraphsOf,
+  photosOf,
   readDays,
   readDepartures,
   readFaqGroups,
@@ -68,6 +69,7 @@ const toDay = (day: TrekDayRow, photosBaseUrl: string): ItineraryDay => ({
   sleepAltitudeM: day.sleep_altitude_m ?? undefined,
   isHighPoint: day.is_high_point,
   text: paragraphsOf(day.description).join(" "),
+  textPhotos: photosOf(day.description),
   photo: day.photo ? coverImage(day.photo, photosBaseUrl, day.place || day.title) : undefined,
 });
 
@@ -118,6 +120,7 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks }: TrekPageS
     highPoint: firstText(page.high_point) ?? days.find((day) => day.isHighPoint)?.place ?? "",
     optionalHighPoint: sideTrip && page.optional_high_point_m ? { name: sideTrip, altitudeM: page.optional_high_point_m } : undefined,
     intro: paragraphsOf(page.introduction),
+    introPhotos: photosOf(page.introduction),
     photos: toPhotos(summary, photos, photosBaseUrl),
     photoBadges: readPhotoBadges(page.photo_badges),
     highlightsHeading: firstText(page.highlights_heading) ?? `${shortName} highlights`,

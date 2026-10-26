@@ -7,6 +7,7 @@ import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
 import { formatAltitude, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { RegionTrekPick } from "../types";
 import { CARD, PILL } from "./styles";
@@ -71,7 +72,7 @@ export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
                 hasPage ? "border border-whatsapp bg-surface text-whatsapp hover:bg-green-tint" : "bg-whatsapp text-white hover:bg-whatsapp/90"
               }`}
             >
-              <Icon name="chat" size={18} />
+              <WhatsAppLogo size={18} />
               {hasPage ? "Ask" : "Ask on WhatsApp"}
               <span className="sr-only">
                 about the {trek.name}

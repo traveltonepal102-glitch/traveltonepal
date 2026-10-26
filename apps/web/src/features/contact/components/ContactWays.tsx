@@ -60,7 +60,7 @@ export const ContactWays = async ({ replyTimes }: { replyTimes: ContactPageConte
               {replyTimes.whatsApp}
             </Note>
           )}
-          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="chat" shape="rounded" isExternal className="mt-auto">
+          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="whatsapp" shape="rounded" isExternal className="mt-auto">
             Chat on WhatsApp
           </ButtonLink>
         </WayCard>

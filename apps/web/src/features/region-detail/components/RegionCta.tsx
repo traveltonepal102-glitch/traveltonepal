@@ -1,6 +1,5 @@
-import { Icon } from "@ttn/ui/icon";
-
 import { regionInquiryUrl } from "@/features/regions/inquiry";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { PILL, WRAP } from "./styles";
 
@@ -20,7 +19,7 @@ export const RegionCta = ({ regionName }: { regionName: string }) => (
         rel="noopener noreferrer"
         className={`${PILL} bg-whatsapp text-white hover:bg-whatsapp/90 focus-visible:outline-white max-md:w-full`}
       >
-        <Icon name="chat" />
+        <WhatsAppLogo />
         Plan {regionName} on WhatsApp
       </a>
     </div>

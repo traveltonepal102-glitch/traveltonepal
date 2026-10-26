@@ -6,6 +6,7 @@ import Link from "next/link";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
 import { ROUTES } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { ABOUT_LINKS, GUIDE_LINKS, NAV_TABS, regionLinks, trekColumns, treksMenuNote } from "../navigation";
 import { HeaderMenuProvider } from "./HeaderMenuProvider";
@@ -79,7 +80,7 @@ export const SiteHeader = async ({ variant = "solid" }: SiteHeaderProps) => {
                   : "bg-brand text-on-brand shadow-card hover:bg-brand-hover focus-visible:outline-ring"
               }`}
             >
-              <Icon name="chat" className={isOverlay ? "text-whatsapp" : undefined} />
+              <WhatsAppLogo className={isOverlay ? "text-whatsapp" : undefined} />
               <span className="max-md:sr-only">Plan my trek</span>
               <span className="sr-only"> on WhatsApp</span>
             </a>

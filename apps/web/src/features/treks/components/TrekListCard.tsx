@@ -5,6 +5,7 @@ import { Fragment } from "react";
 
 import { formatCount } from "@/lib/format";
 import { trekPath } from "@/lib/routes";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { formatAltitude, formatUsd } from "../format";
 import { trekInquiryUrl } from "../inquiry";
@@ -97,7 +98,7 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
             className={`inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md text-body-sm font-bold ${hasPage ? "bg-brand text-on-brand" : "bg-whatsapp text-white"}`}
           >
             {hasPage ? "View trek" : "Ask about this trek"}
-            <Icon name={hasPage ? "arrow_forward" : "chat"} size={16} />
+            {hasPage ? <Icon name="arrow_forward" size={16} /> : <WhatsAppLogo size={16} />}
           </span>
           {hasPage && (
             <a
@@ -107,7 +108,7 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
               aria-label={`Ask about the ${trek.name} on WhatsApp`}
               className="relative z-10 inline-flex min-h-11 flex-none items-center gap-1.5 rounded-md border border-green-line bg-green-tint px-3.5 text-body-sm font-bold text-whatsapp transition-colors hover:bg-green-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              <Icon name="chat" size={18} />
+              <WhatsAppLogo size={18} />
               Ask
             </a>
           )}

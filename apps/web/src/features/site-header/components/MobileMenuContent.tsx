@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { ROUTES } from "@/lib/routes";
 import { HAS_GERMAN_SITE } from "@/lib/site";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { NAV_TABS } from "../navigation";
 
@@ -40,7 +41,7 @@ export const MobileMenuContent = () => (
       rel="noopener noreferrer"
       className={`flex min-h-13 items-center justify-center gap-2 rounded-md bg-whatsapp font-extrabold text-on-brand ${FOCUS_RING}`}
     >
-      <Icon name="chat" />
+      <WhatsAppLogo />
       Plan my trek on WhatsApp
     </a>
     <a

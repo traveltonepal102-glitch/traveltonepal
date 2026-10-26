@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { legalTextField } from "./legalText";
 import { EMPTY_RICH_TEXT, isSafeHref, normalizeHref, richTextField, richTextToPlainText } from "./richText";
 import type { RichTextDoc } from "./richText";
 
@@ -89,5 +90,38 @@ describe("richTextToPlainText", () => {
       ],
     } as RichTextDoc;
     expect(richTextToPlainText(value)).toBe("One\n\nA\nB");
+  });
+});
+
+describe("photos in a text", () => {
+  const photo = (attrs: Record<string, unknown>) => ({
+    type: "image",
+    attrs: { photoId: "0b8a2c4e-1f3d-4a5b-9c6d-7e8f9a0b1c2d", alt: "Kyanjin Gompa at dawn", width: 1600, height: 1067, variantWidths: [400, 800, 1600], ...attrs },
+  });
+  const doc = (...content: unknown[]) => JSON.stringify({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Before the photo." }] }, ...content] });
+
+  it("keeps a library photo with its description and sizes, and counts no words for it", () => {
+    const result = richTextField(100).safeParse(doc(photo({})));
+    expect(result.success).toBe(true);
+    expect(result.data?.content[1]).toEqual(photo({}));
+    expect(richTextToPlainText(result.data!)).toBe("Before the photo.");
+  });
+
+  it("needs a description for every photo", () => {
+    const result = richTextField(100).safeParse(doc(photo({ alt: "  " })));
+    expect(result.error?.issues[0]?.message).toMatch(/Describe each photo/);
+  });
+
+  it("refuses a photo that is not from the library (an address instead of an id), or without sizes", () => {
+    expect(richTextField(100).safeParse(doc(photo({ photoId: "https://evil.example/x.jpg" }))).success).toBe(false);
+    expect(richTextField(100).safeParse(doc(photo({ variantWidths: [] }))).success).toBe(false);
+    expect(richTextField(100).safeParse(doc({ type: "image", attrs: { src: "https://evil.example/x.jpg", alt: "x" } })).success).toBe(false);
+  });
+
+  it("checks photos in legal texts too, table cells included", () => {
+    const table = { type: "table", content: [{ type: "tableRow", content: [{ type: "tableCell", content: [photo({ alt: "" })] }] }] };
+    const result = legalTextField(1000).safeParse(doc(table));
+    expect(result.error?.issues[0]?.message).toMatch(/Describe each photo/);
+    expect(legalTextField(1000).safeParse(doc(photo({}))).success).toBe(true);
   });
 });

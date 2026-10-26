@@ -1,5 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
-import { richTextDocSchema, richTextToPlainText } from "@ttn/ui/lib/richText";
+import { richTextDocSchema, richTextImages, richTextToPlainText } from "@ttn/ui/lib/richText";
+import type { RichTextImage } from "@ttn/ui/lib/richText";
 import { z } from "zod";
 
 /** Icons each list may use (the admin's choices); anything else shows the list's first icon. */
@@ -47,6 +48,9 @@ const listOf = <T>(value: unknown, item: z.ZodType<T>): T[] =>
   Array.isArray(value) ? value.flatMap((entry) => item.safeParse(entry).data ?? []) : [];
 
 /** Rich text as plain paragraphs (one per paragraph, heading or list), blank ones left out. */
+/** The photos added in a text (they show under it). */
+export const photosOf = (value: unknown): RichTextImage[] => richTextImages(richTextDocSchema.safeParse(value).data?.content ?? []);
+
 export const paragraphsOf = (value: unknown): string[] => {
   const doc = richTextDocSchema.safeParse(value).data;
   if (!doc) return [];
@@ -135,7 +139,7 @@ export const readFaqGroups = (value: unknown) =>
   listOf(value, faqGroupSchema).flatMap((group) => {
     const items = listOf(group.items, faqItemSchema).flatMap((item) => {
       const answer = paragraphsOf(item.answer).join("\n\n");
-      return answer ? [{ question: item.question, answer }] : [];
+      return answer ? [{ question: item.question, answer, photos: photosOf(item.answer) }] : [];
     });
     return items.length ? [{ title: group.title, icon: group.icon, items }] : [];
   });

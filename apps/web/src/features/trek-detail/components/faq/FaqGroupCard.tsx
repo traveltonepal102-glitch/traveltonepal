@@ -2,6 +2,7 @@
 
 import { Icon } from "@ttn/ui/icon";
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import type { FaqGroup } from "../../types";
 
@@ -11,13 +12,15 @@ type FaqGroupCardProps = {
   id: string;
   /** Opens the first question when the page loads (the first group only). */
   isFirstOpen?: boolean;
+  /** Each answer's photos, drawn on the server (in the order of the questions). */
+  answerPhotos?: readonly ReactNode[];
 };
 
 /**
  * One FAQ topic. Each answer is a native <details>, so it works without JavaScript and every answer is
  * in the HTML for search engines; "Expand all" opens or closes the whole topic.
  */
-export const FaqGroupCard = ({ group, id, isFirstOpen = false }: FaqGroupCardProps) => {
+export const FaqGroupCard = ({ group, id, isFirstOpen = false, answerPhotos }: FaqGroupCardProps) => {
   const [openItems, setOpenItems] = useState<ReadonlySet<number>>(() => new Set(isFirstOpen ? [0] : []));
   const isAllOpen = openItems.size === group.items.length;
 
@@ -60,7 +63,10 @@ export const FaqGroupCard = ({ group, id, isFirstOpen = false }: FaqGroupCardPro
               <Icon name="keyboard_arrow_down" size={18} />
             </span>
           </summary>
-          <p className="border-t border-muted bg-[#fbfcfe] px-4.5 pt-1 pb-5 text-body-sm text-text md:px-6">{item.answer}</p>
+          <div className="flex flex-col gap-3 border-t border-muted bg-[#fbfcfe] px-4.5 pt-1 pb-5 text-body-sm text-text md:px-6">
+            <p>{item.answer}</p>
+            {answerPhotos?.[index]}
+          </div>
         </details>
       ))}
     </section>

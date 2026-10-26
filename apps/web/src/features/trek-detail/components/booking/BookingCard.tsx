@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { GOOGLE_RATING } from "@/features/reviews/reviews";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { departureOptions } from "../../pricing";
 import { TREK_SECTION_IDS } from "../../sections";
@@ -45,7 +46,7 @@ export const BookingCard = async ({ trek }: { trek: TrekDetail }) => {
             rel="noopener noreferrer"
             className={`${CTA} min-h-11.5 border border-green-line bg-green-tint text-xs text-whatsapp hover:bg-green-line/60`}
           >
-            <Icon name="chat" size={18} />
+            <WhatsAppLogo size={18} />
             WhatsApp direct ({contact.phoneDisplay})
           </a>
         </div>

@@ -5,6 +5,7 @@ import { useEditorState } from "@tiptap/react";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 
+import { InsertPhotoButton } from "./InsertPhotoButton";
 import { LinkButton } from "./LinkButton";
 import { toolbarButtonClass } from "./richTextStyles";
 
@@ -39,7 +40,7 @@ type RichTextToolbarProps = {
   editor: Editor;
 };
 
-/** Normal text or small heading, bold, italic, the two list types, link, undo and redo: everything the rich text allows. */
+/** Normal text or small heading, bold, italic, the two list types, link, photo, undo and redo: everything the rich text allows. */
 export const RichTextToolbar = ({ editor }: RichTextToolbarProps) => {
   const active = useEditorState({
     editor,
@@ -97,6 +98,7 @@ export const RichTextToolbar = ({ editor }: RichTextToolbarProps) => {
       />
       <Divider />
       <LinkButton editor={editor} />
+      <InsertPhotoButton editor={editor} />
       <span className="flex-1" />
       <button type="button" aria-label="Undo" title="Undo (Ctrl+Z / ⌘Z)" disabled={!active.canUndo} onClick={() => editor.chain().focus().undo().run()} className={toolbarButtonClass}>
         <Icon name="undo" />

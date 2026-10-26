@@ -50,7 +50,7 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
             <ButtonLink href={getEmailUrl({ subject: `Question about: ${doc.title}` })} variant="secondary" icon="mail" shape="rounded">
               Email
             </ButtonLink>
-            <ButtonLink href={getWhatsAppUrl(`Hello! I have a question about your ${doc.title.toLowerCase()}.`)} variant="whatsapp" icon="chat" shape="rounded" isExternal>
+            <ButtonLink href={getWhatsAppUrl(`Hello! I have a question about your ${doc.title.toLowerCase()}.`)} variant="whatsapp" icon="whatsapp" shape="rounded" isExternal>
               WhatsApp
             </ButtonLink>
           </div>

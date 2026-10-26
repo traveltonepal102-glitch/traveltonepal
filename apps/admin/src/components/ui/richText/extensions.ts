@@ -2,8 +2,11 @@ import { StarterKit } from "@tiptap/starter-kit";
 
 import { isSafeHref } from "@/lib/richText/richText";
 
+import { LibraryImage } from "./libraryImageNode";
+
 /**
- * The editor knows only what src/lib/richText allows: paragraphs, small headings, bold, italic, links and lists.
+ * The editor knows only what src/lib/richText allows: paragraphs, small headings, bold, italic, links, lists and
+ * photos from the photo library.
  * Anything else pasted in (other headings, colors, tables from Word or Google Docs) becomes plain paragraphs.
  */
 export const RICH_TEXT_EXTENSIONS = [
@@ -24,4 +27,5 @@ export const RICH_TEXT_EXTENSIONS = [
       HTMLAttributes: { target: null, rel: "noopener noreferrer nofollow" },
     },
   }),
+  LibraryImage,
 ];

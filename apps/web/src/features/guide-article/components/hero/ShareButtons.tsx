@@ -5,6 +5,7 @@ import type { IconName } from "@ttn/ui/icon";
 import { useEffect, useState } from "react";
 
 import { emailShareUrl, whatsAppShareUrl } from "@/lib/share";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 type ShareButtonsProps = {
   /** Full URL of the page. */
@@ -19,9 +20,9 @@ const STATUS_TEXT: Record<CopyStatus, string> = { idle: "", copied: "Link copied
 const ROUND =
   "inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-white/35 transition-colors hover:bg-white/12 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
-const ShareLink = ({ href, label, icon, className = "" }: { href: string; label: string; icon: IconName; className?: string }) => (
+const ShareLink = ({ href, label, icon, className = "" }: { href: string; label: string; icon: IconName | "whatsapp"; className?: string }) => (
   <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`${ROUND} ${className}`}>
-    <Icon name={icon} size={17} />
+    {icon === "whatsapp" ? <WhatsAppLogo size={17} /> : <Icon name={icon} size={17} />}
   </a>
 );
 
@@ -51,7 +52,7 @@ export const ShareButtons = ({ url, title }: ShareButtonsProps) => {
       <button type="button" onClick={copyLink} aria-label="Copy link" className={`${ROUND} text-white`}>
         <Icon name={status === "copied" ? "check" : "link"} size={17} />
       </button>
-      <ShareLink href={whatsAppShareUrl(`${title} ${url}`)} label="Share on WhatsApp" icon="chat" className="text-whatsapp-on-dark" />
+      <ShareLink href={whatsAppShareUrl(`${title} ${url}`)} label="Share on WhatsApp" icon="whatsapp" className="text-whatsapp-on-dark" />
       <ShareLink href={emailShareUrl({ subject: title, body: url })} label="Share by email" icon="mail" className="text-white" />
       <p
         aria-live="polite"

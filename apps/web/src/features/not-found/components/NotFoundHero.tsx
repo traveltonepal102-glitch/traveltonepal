@@ -26,7 +26,7 @@ export const NotFoundHero = () => (
           <ButtonLink href={ROUTES.treks} variant="secondary" icon="hiking" className="max-md:w-full">
             See all treks
           </ButtonLink>
-          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="chat" isExternal className="max-md:w-full">
+          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="max-md:w-full">
             Ask us on WhatsApp
           </ButtonLink>
         </div>

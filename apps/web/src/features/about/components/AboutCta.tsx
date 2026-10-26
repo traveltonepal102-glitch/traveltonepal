@@ -22,7 +22,7 @@ export const AboutCta = () => (
           <ButtonLink href={ROUTES.treks} variant="secondary" shape="rounded">
             Browse treks
           </ButtonLink>
-          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="chat" shape="rounded" isExternal>
+          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="whatsapp" shape="rounded" isExternal>
             Plan my trek
           </ButtonLink>
         </div>

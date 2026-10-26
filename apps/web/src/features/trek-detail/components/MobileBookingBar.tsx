@@ -1,7 +1,6 @@
-import { Icon } from "@ttn/ui/icon";
-
 import { formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { TrekDetail } from "../types";
 
@@ -22,7 +21,7 @@ export const MobileBookingBar = ({ trek }: { trek: TrekDetail }) => (
       rel="noopener noreferrer"
       className="inline-flex min-h-11.5 items-center gap-2 rounded-md bg-whatsapp px-4.5 text-caption font-extrabold tracking-wide text-white uppercase hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
-      <Icon name="chat" size={18} />
+      <WhatsAppLogo size={18} />
       Book on WhatsApp
     </a>
   </div>

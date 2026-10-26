@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { richTextBlockSchema, richTextBlockToPlainText, richTextInlineSchema } from "./richText";
-import type { RichTextBlock, RichTextInline } from "./richText";
+import { richTextBlockSchema, richTextBlockToPlainText, richTextImages, richTextInlineSchema } from "./richText";
+import type { RichTextBlock, RichTextImage, RichTextInline } from "./richText";
 
 /**
  * The legal pages' text (Terms, Privacy, Impressum, Cookie settings), as the admin saves it and the website shows it:
@@ -46,6 +46,13 @@ const blockText = (block: LegalBlock): string => {
 
 /** The words only (for lengths, word counts and checks). */
 export const legalTextToPlainText = (doc: LegalTextDoc) => doc.content.map(blockText).join("\n\n").trim();
+
+/** Every photo in a legal text, table cells included (e.g. to check each has a description). */
+export const legalTextImages = (doc: LegalTextDoc): RichTextImage[] =>
+  doc.content.flatMap((block) => {
+    if (block.type === "table") return block.content.flatMap((row) => row.content.flatMap((cell) => richTextImages(cell.content)));
+    return isSectionHeading(block) ? [] : richTextImages([block]);
+  });
 
 export type LegalSection = { heading: string; blocks: LegalBlock[] };
 

@@ -6,6 +6,7 @@ import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 
+import { InsertPhotoButton } from "@/components/ui/richText/InsertPhotoButton";
 import { LinkButton } from "@/components/ui/richText/LinkButton";
 import { toolbarButtonClass } from "@/components/ui/richText/richTextStyles";
 
@@ -65,6 +66,7 @@ export const LegalTextToolbar = ({ editor }: { editor: Editor }) => {
       <ToolbarButton icon="format_list_bulleted" label="Bulleted list" isActive={active.isBulletList} onClick={() => chain().toggleBulletList().run()} />
       <ToolbarButton icon="format_list_numbered" label="Numbered list" isActive={active.isOrderedList} onClick={() => chain().toggleOrderedList().run()} />
       <LinkButton editor={editor} />
+      <InsertPhotoButton editor={editor} />
       <Divider />
       <ToolbarButton icon="table" label="Insert a table (3 × 2, with a heading row)" isActive={active.isInTable} onClick={() => chain().insertTable({ rows: 3, cols: 2, withHeaderRow: true }).run()} />
       {active.isInTable && (

@@ -1,9 +1,9 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
 import { formatAltitude, formatUsd } from "@/features/treks/format";
 import type { TrekSummary } from "@/features/treks/types";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { FOCUS, KICKER } from "../styles";
 import { TrekPhoto } from "../TrekPhoto";
@@ -45,7 +45,7 @@ export const PlanTrekCard = ({ trek, guideTitle }: { trek: TrekSummary; guideTit
         rel="noopener noreferrer"
         className={`${ACTION} border border-green-line bg-green-tint text-[#0f5e2e] hover:border-whatsapp`}
       >
-        <Icon name="chat" size={18} className="text-whatsapp" />
+        <WhatsAppLogo size={18} className="text-whatsapp" />
         Ask about dates
       </a>
     </div>

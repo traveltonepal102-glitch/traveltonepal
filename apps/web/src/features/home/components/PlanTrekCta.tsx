@@ -34,7 +34,7 @@ export const PlanTrekCta = () => (
             href={getWhatsAppUrl()}
             variant="light"
             size="lg"
-            icon="chat"
+            icon="whatsapp"
             isExternal
             className="text-whatsapp max-md:w-full"
           >

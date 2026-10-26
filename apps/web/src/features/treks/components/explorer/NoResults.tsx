@@ -3,6 +3,8 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+
 /** Empty state when no trek matches; offers to clear filters or ask for a custom trek. */
 export const NoResults = ({ onClearAll }: { onClearAll: () => void }) => (
   <div className="flex flex-col items-center gap-2.5 rounded-lg border border-dashed border-line-strong bg-surface px-6 py-10 text-center">
@@ -27,7 +29,7 @@ export const NoResults = ({ onClearAll }: { onClearAll: () => void }) => (
         rel="noopener noreferrer"
         className="inline-flex min-h-10.5 items-center gap-1.5 rounded-md bg-whatsapp px-4 font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
-        <Icon name="chat" size={18} />
+        <WhatsAppLogo size={18} />
         Ask on WhatsApp
       </a>
     </div>

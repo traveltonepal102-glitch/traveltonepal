@@ -1,6 +1,8 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+
 /** "Not sure which trek?" card under the Treks page filters. */
 export const TrekHelpCard = () => (
   <a
@@ -16,7 +18,7 @@ export const TrekHelpCard = () => (
       <span className="font-display font-bold">Not sure which trek?</span>
       <span className="text-caption font-normal text-text">Tell us your dates and fitness. We suggest the right one.</span>
       <span className="mt-1 inline-flex items-center gap-1.5 text-caption font-bold text-whatsapp">
-        <Icon name="chat" size={16} />
+        <WhatsAppLogo size={16} />
         Ask on WhatsApp
       </span>
     </span>

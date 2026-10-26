@@ -14,7 +14,10 @@ import { UploadProgressList } from "./UploadProgressList";
 type LibraryPhotoDialogProps = {
   /** e.g. "Photo at the top of the About page". */
   title: string;
-  photos: Photo[];
+  /** null while they load (a text editor loads them when the window opens). */
+  photos: Photo[] | null;
+  /** The photos couldn't be loaded. */
+  loadError?: boolean;
   selectedId: string | null;
   onChoose: (photo: Photo) => void;
   onClose: () => void;
@@ -27,7 +30,7 @@ const TILE =
  * "Choose a photo" in a window: any photo from the library (newest first), or a new upload (it goes to the library,
  * location data removed, and is chosen when done). Only the choice goes back to the form.
  */
-export const LibraryPhotoDialog = ({ title, photos, selectedId, onChoose, onClose }: LibraryPhotoDialogProps) => {
+export const LibraryPhotoDialog = ({ title, photos, loadError = false, selectedId, onChoose, onClose }: LibraryPhotoDialogProps) => {
   const choose = (photo: Photo) => {
     onChoose(photo);
     onClose();
@@ -56,7 +59,11 @@ export const LibraryPhotoDialog = ({ title, photos, selectedId, onChoose, onClos
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto p-5">
-            {photos.length ? (
+            {loadError ? (
+              <p className="m-0 text-body-sm text-danger">The photo library couldn’t be loaded. Close this window and try again, or upload a new photo above.</p>
+            ) : !photos ? (
+              <p className="m-0 text-body-sm text-muted-foreground">Loading photos…</p>
+            ) : photos.length ? (
               <div className="grid grid-cols-4 gap-2.5 max-tablet:grid-cols-2">
                 {photos.map((photo) => (
                   <button key={photo.id} type="button" aria-pressed={photo.id === selectedId} onClick={() => choose(photo)} className={TILE}>

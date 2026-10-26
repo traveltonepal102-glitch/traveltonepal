@@ -19,7 +19,7 @@ export const HelpBand = () => (
             </p>
           </div>
         </div>
-        <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="chat" isExternal className="flex-none">
+        <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="flex-none">
           Ask on WhatsApp
         </ButtonLink>
       </div>

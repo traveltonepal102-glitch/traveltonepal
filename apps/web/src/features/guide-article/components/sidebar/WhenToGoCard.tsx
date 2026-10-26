@@ -1,5 +1,6 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
+
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 /** Navy "Not sure when to go?" box: a local expert on WhatsApp. */
 export const WhenToGoCard = () => (
@@ -16,7 +17,7 @@ export const WhenToGoCard = () => (
       rel="noopener noreferrer"
       className="mt-1 inline-flex min-h-10 items-center gap-1.5 self-start rounded-full bg-whatsapp px-3.5 text-caption font-bold text-white hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
     >
-      <Icon name="chat" size={16} />
+      <WhatsAppLogo size={16} />
       Ask a local expert
     </a>
   </section>

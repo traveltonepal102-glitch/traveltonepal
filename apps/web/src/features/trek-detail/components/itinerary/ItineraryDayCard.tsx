@@ -1,3 +1,4 @@
+import { RichTextPhoto } from "@/components/shared/RichTextPhoto";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitude } from "@/features/treks/format";
 
@@ -58,6 +59,13 @@ export const ItineraryDayCard = ({ day, dayNumber }: ItineraryDayCardProps) => {
           </div>
         )}
         <p className="min-w-0 flex-[1_1_260px] text-body-sm text-text">{day.text}</p>
+        {day.textPhotos?.length ? (
+          <div className="flex w-full flex-col gap-3">
+            {day.textPhotos.map((photo) => (
+              <RichTextPhoto key={photo.attrs.photoId} image={photo} />
+            ))}
+          </div>
+        ) : null}
       </div>
     </article>
   );

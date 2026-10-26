@@ -50,10 +50,8 @@ const PointList = ({ title, points, look }: PointListProps) => (
 export const TrekInclusions = ({ inclusions, meals, hiddenSections }: Pick<TrekDetail, "inclusions" | "meals" | "hiddenSections">) => (
   <section id={TREK_SECTION_IDS.inclusions} aria-labelledby="trek-inclusions-title" className="flex scroll-mt-16 flex-col gap-4 pt-3">
     <SectionHeading id="trek-inclusions-title" eyebrow="Full disclosure" title="What's covered · What's not included" />
-    <div className="grid gap-4 md:grid-cols-2">
-      <PointList title="Included in the price" points={inclusions.included} look={LOOKS.included} />
-      <PointList title="Not included" points={inclusions.excluded} look={LOOKS.excluded} />
-    </div>
+    <PointList title="Included in the price" points={inclusions.included} look={LOOKS.included} />
+    <PointList title="Not included" points={inclusions.excluded} look={LOOKS.excluded} />
     {!hiddenSections.includes("meals") && <MealsCard meals={meals} />}
   </section>
 );

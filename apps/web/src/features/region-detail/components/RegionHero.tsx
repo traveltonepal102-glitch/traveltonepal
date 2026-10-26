@@ -6,6 +6,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
 import { regionInquiryUrl } from "@/features/regions/inquiry";
 import { formatAltitude } from "@/features/treks/format";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { regionBreadcrumbs } from "../seo";
 import type { RegionDetail } from "../types";
@@ -68,7 +69,7 @@ export const RegionHero = ({ region }: { region: RegionDetail }) => {
             rel="noopener noreferrer"
             className={`${PILL} bg-whatsapp text-white hover:bg-whatsapp/90 focus-visible:outline-white`}
           >
-            <Icon name="chat" />
+            <WhatsAppLogo />
             Plan {region.name} on WhatsApp
           </a>
         </div>

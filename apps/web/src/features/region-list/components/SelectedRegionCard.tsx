@@ -3,6 +3,7 @@ import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
 
 import { formatAltitude } from "@/features/treks/format";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { RegionListItem } from "../regionListItems";
 import { RegionTrekLinks } from "./RegionTrekLinks";
@@ -59,7 +60,7 @@ export const SelectedRegionCard = ({ region }: { region: RegionListItem }) => {
         {region.isAskOnly ? (
           <div className="mt-auto flex pt-1">
             <a href={region.inquiryUrl} target="_blank" rel="noopener noreferrer" className={ASK_ACTION}>
-              <Icon name="chat" size={18} />
+              <WhatsAppLogo size={18} />
               Ask about {shortName}
               <span className="sr-only"> on WhatsApp</span>
             </a>
@@ -76,7 +77,7 @@ export const SelectedRegionCard = ({ region }: { region: RegionListItem }) => {
               rel="noopener noreferrer"
               className={`${SECONDARY_ACTION} border border-green-line bg-green-tint text-whatsapp hover:bg-green-line/60`}
             >
-              <Icon name="chat" size={18} />
+              <WhatsAppLogo size={18} />
               Ask
               <span className="sr-only">about {region.name} on WhatsApp</span>
             </a>

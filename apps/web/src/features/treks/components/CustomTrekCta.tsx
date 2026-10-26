@@ -19,7 +19,7 @@ export const CustomTrekCta = () => (
     <ButtonLink
       href={getWhatsAppUrl("Hello! I'd like to plan a custom trek.")}
       variant="whatsapp"
-      icon="chat"
+      icon="whatsapp"
       shape="rounded"
       isExternal
       className="flex-none"

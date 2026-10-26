@@ -57,7 +57,7 @@ export const HowBookingWorksSection = () => (
           href={getWhatsAppUrl()}
           variant="whatsapp"
           size="lg"
-          icon="chat"
+          icon="whatsapp"
           isExternal
           className="self-start max-md:w-full"
         >

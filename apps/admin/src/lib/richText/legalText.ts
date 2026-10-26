@@ -1,6 +1,8 @@
-import { legalTextDocSchema, legalTextToPlainText } from "@ttn/ui/lib/legalText";
+import { legalTextDocSchema, legalTextImages, legalTextToPlainText } from "@ttn/ui/lib/legalText";
 import type { LegalTextDoc } from "@ttn/ui/lib/legalText";
 import { z } from "zod";
+
+import { PHOTO_DESCRIPTION_MESSAGE } from "./richText";
 
 /** The legal pages' text as the admin saves it: the format and its check are shared with the website (@ttn/ui/lib/legalText). */
 export type { LegalBlock, LegalTable, LegalTextDoc } from "@ttn/ui/lib/legalText";
@@ -27,4 +29,5 @@ export const legalTextField = (maxCharacters: number) =>
       return z.NEVER;
     })
     .refine((doc) => legalTextToPlainText(doc).length <= maxCharacters, `Use ${maxCharacters} characters or fewer.`)
-    .refine((doc) => legalTextToPlainText(doc).length > 0, "Write the page's text.");
+    .refine((doc) => legalTextToPlainText(doc).length > 0, "Write the page's text.")
+    .refine((doc) => legalTextImages(doc).every((image) => image.attrs.alt), PHOTO_DESCRIPTION_MESSAGE);

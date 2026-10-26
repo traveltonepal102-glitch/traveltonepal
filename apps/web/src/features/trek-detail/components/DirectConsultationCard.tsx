@@ -3,6 +3,7 @@ import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 const BUTTON =
   "inline-flex min-h-11.5 flex-wrap items-center justify-center gap-x-2 rounded-xl px-5 py-2 text-center text-xs font-bold tracking-wider uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring max-sm:w-full";
@@ -42,7 +43,7 @@ export const DirectConsultationCard = async ({ trekName }: { trekName: string })
           rel="noopener noreferrer"
           className={`${BUTTON} bg-whatsapp text-white shadow-card hover:bg-whatsapp/90`}
         >
-          <Icon name="chat" size={18} />
+          <WhatsAppLogo size={18} />
           Chat on WhatsApp ({contact.phoneDisplay})
         </a>
         <a href={getEmailUrl()} className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}>

@@ -1,5 +1,6 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
+
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 type WhatsAppCtaProps = {
   /** Id of the title, for the surrounding section's aria-labelledby. */
@@ -26,7 +27,7 @@ export const WhatsAppCta = ({ titleId, title, text, message, buttonLabel }: What
       rel="noopener noreferrer"
       className="inline-flex min-h-12.5 flex-none items-center justify-center gap-2 rounded-xl bg-whatsapp px-5.5 text-caption font-bold tracking-wider text-white uppercase hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
-      <Icon name="chat" size={18} />
+      <WhatsAppLogo size={18} />
       {buttonLabel}
     </a>
   </div>

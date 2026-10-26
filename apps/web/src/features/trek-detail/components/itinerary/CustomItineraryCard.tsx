@@ -3,6 +3,7 @@ import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { trekCustomizeUrl } from "@/features/treks/inquiry";
+import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { TrekDetail } from "../../types";
 import { CARD_TITLE } from "../styles";
@@ -64,7 +65,7 @@ export const CustomItineraryCard = async ({ name, customization }: CustomItinera
             rel="noopener noreferrer"
             className={`${BUTTON} bg-whatsapp text-white shadow-[0_4px_10px_rgba(21,128,61,0.2)] hover:bg-whatsapp/90`}
           >
-            <Icon name="chat" size={18} />
+            <WhatsAppLogo size={18} />
             Customize on WhatsApp
           </a>
           <a href={getEmailUrl()} className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}>

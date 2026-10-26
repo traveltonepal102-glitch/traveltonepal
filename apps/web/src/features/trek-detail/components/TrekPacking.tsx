@@ -1,5 +1,6 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { TREK_SECTION_IDS } from "../sections";
 import type { TrekDetail } from "../types";
 import { SectionHeading } from "./SectionHeading";
 import { PANEL } from "./styles";
@@ -8,7 +9,7 @@ type TrekPackingProps = Pick<TrekDetail, "shortName" | "packing">;
 
 /** "Gear and essentials": what to pack, in four cards. */
 export const TrekPacking = ({ shortName, packing }: TrekPackingProps) => (
-  <section id="packing" aria-labelledby="trek-packing-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
+  <section id={TREK_SECTION_IDS.usefulInfo} aria-labelledby="trek-packing-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
     <SectionHeading id="trek-packing-title" eyebrow="Gear and essentials" title={`${shortName} packing list`} description={packing.intro} />
     <div className="grid gap-4 md:grid-cols-2">
       {packing.groups.map((group) => (
