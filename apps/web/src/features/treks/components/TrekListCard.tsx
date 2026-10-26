@@ -3,7 +3,6 @@ import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
 import { Fragment } from "react";
 
-import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { formatCount } from "@/lib/format";
 import { trekPath } from "@/lib/routes";
 
@@ -39,7 +38,7 @@ const Fact = ({ icon, label, value }: { icon: IconName; label: string; value: st
  * without its page yet is one WhatsApp link instead (like the region pages), never a 404.
  */
 export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
-  const hasPage = hasTrekPage(trek.slug);
+  const { hasPage } = trek;
 
   return (
     <article

@@ -31,11 +31,7 @@ const NEW_TOPIC: KnowTopic = { icon: "wb_twilight", title: "", points: [], note:
  */
 export const KnowSection = ({ values, photos, errors, onEdit }: KnowSectionProps) => {
   const list = useRowList<KnowTopic>(values.knowTopics, onEdit);
-  const mediaOptions = [
-    { value: "", label: "None" },
-    ...photos.map((photo, index) => ({ value: `photo:${photo.id}`, label: `Photo ${index + 1}${photo.place ? ` · ${photo.place}` : ""}` })),
-    ...values.videos.filter((video) => video.inGuide).map((video) => ({ value: `video:${video.youtubeId}`, label: `Video · ${video.title}` })),
-  ];
+  const guideVideos = values.videos.filter((video) => video.inGuide);
 
   return (
     <>
@@ -47,14 +43,15 @@ export const KnowSection = ({ values, photos, errors, onEdit }: KnowSectionProps
       />
       <FormSection
         title="Topics"
-        hint="Usually 4: best season, accommodation, food and water, and emergencies. Videos show here when “Trek guide topics” is ticked in Photo gallery and videos."
+        hint="Usually 4: best season, accommodation, food and water, and emergencies. Each topic can show a photo from this trek’s photos or a YouTube video: paste any link, or pick a video ticked for “Trek guide topics” in Photo gallery and videos."
       >
         {list.rows.map((topic, index) => (
           <KnowTopicCard
             key={topic.key}
             topic={topic}
             index={index}
-            mediaOptions={mediaOptions}
+            photos={photos}
+            videos={guideVideos}
             errors={errors}
             onMoveUp={index > 0 ? () => list.move(index, index - 1) : undefined}
             onRemove={() => list.remove(topic.key)}

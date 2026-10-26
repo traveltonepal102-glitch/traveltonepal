@@ -3,20 +3,31 @@ import { notFound } from "next/navigation";
 
 import { TrekDetailPage } from "@/features/trek-detail/components/TrekDetailPage";
 import { trekMetadata } from "@/features/trek-detail/seo";
-import { TREK_DETAIL_SLUGS, getTrekDetail } from "@/features/trek-detail/trekDetails";
+import { getTrekDetail, listTrekPageSlugs } from "@/features/trek-detail/services/trekPageRepository";
 
 type TrekPageProps = PageProps<"/treks/[slug]">;
 
-// Every trek with a page is prerendered at build time. Other slugs render on request and get a 404.
-export const generateStaticParams = () => TREK_DETAIL_SLUGS.map((slug) => ({ slug }));
+/** Cache Components needs at least one address to prerender; until a trek has a page, this one (a 404). */
+const NO_TREK_PAGE_YET = "no-trek-page-yet";
+
+// Every trek with a page is prerendered at build time; one that gets its page later renders on its first visit.
+export const generateStaticParams = async () => {
+  const slugs = await listTrekPageSlugs();
+  return (slugs.length > 0 ? slugs : [NO_TREK_PAGE_YET]).map((slug) => ({ slug }));
+};
+
+// The slug is read before anything streams, so an unknown trek answers with a real 404 status.
+// Reading it inside <Suspense> instead (Next's "instant navigation" advice) turns that into a
+// 200 + noindex "soft 404", which search engines handle worse. Treks are prerendered, so blocking is cheap.
+export const instant = false;
 
 export const generateMetadata = async ({ params }: TrekPageProps): Promise<Metadata> => {
-  const trek = getTrekDetail((await params).slug);
+  const trek = await getTrekDetail((await params).slug);
   return trek ? trekMetadata(trek) : {};
 };
 
 const TrekPage = async ({ params }: TrekPageProps) => {
-  const trek = getTrekDetail((await params).slug);
+  const trek = await getTrekDetail((await params).slug);
   if (!trek) notFound();
 
   return (

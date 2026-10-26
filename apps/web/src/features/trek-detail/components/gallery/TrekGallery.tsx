@@ -1,10 +1,10 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import { useState } from "react";
 
 import { PhotoViewer } from "@/components/shared/photo-viewer/PhotoViewer";
+import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitudeWithFeet } from "@/features/treks/format";
 
 import type { TrekPhoto, TrekPhotoBadge } from "../../types";
@@ -47,12 +47,10 @@ export const TrekGallery = ({ photos, badges, title }: TrekGalleryProps) => {
     <div className="flex flex-col gap-2.5">
       <figure className="relative aspect-4/3 overflow-hidden rounded-lg border border-line bg-line-strong shadow-[0_6px_16px_rgba(15,23,42,0.10)] md:aspect-16/10">
         {/* Clicking the photo is a mouse shortcut; "View full size" below is the accessible control. */}
-        <Image
+        <SiteImage
           key={photo.src}
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          preload={activeIndex === 0}
+          image={photo}
+          priority={activeIndex === 0}
           sizes="(min-width: 1240px) 790px, (min-width: 1024px) 64vw, 100vw"
           onClick={() => setViewerIndex(activeIndex)}
           className="cursor-zoom-in object-cover"
@@ -108,7 +106,7 @@ export const TrekGallery = ({ photos, badges, title }: TrekGalleryProps) => {
       )}
 
       <PhotoViewer
-        photos={photos.map((item) => ({ src: item.src, alt: item.alt, caption: photoCaption(item) }))}
+        photos={photos.map((item) => ({ ...item, caption: photoCaption(item) }))}
         title={title}
         index={viewerIndex}
         onIndexChange={setViewerIndex}

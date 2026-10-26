@@ -61,16 +61,18 @@ export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
       ))}
     </ul>
 
-    <p className="flex items-center gap-3 rounded-xl border border-saffron-line bg-saffron-tint p-3.5 text-xs text-ink">
-      <Icon name="lightbulb" className="flex-none text-saffron-deep" />
-      <span>
-        <strong>Average daily food budget:</strong> plan on about{" "}
-        <strong className="text-saffron-ink">
-          {formatUsd(meals.dailyBudgetUsd.min)}–{meals.dailyBudgetUsd.max} USD per day
-        </strong>{" "}
-        for hearty breakfasts, lunches, hot dinners and boiled drinking water or tea.
-      </span>
-    </p>
+    {meals.dailyBudgetUsd && (
+      <p className="flex items-center gap-3 rounded-xl border border-saffron-line bg-saffron-tint p-3.5 text-xs text-ink">
+        <Icon name="lightbulb" className="flex-none text-saffron-deep" />
+        <span>
+          <strong>Average daily food budget:</strong> plan on about{" "}
+          <strong className="text-saffron-ink">
+            {formatUsd(meals.dailyBudgetUsd.min)}–{meals.dailyBudgetUsd.max} USD per day
+          </strong>{" "}
+          for hearty breakfasts, lunches, hot dinners and boiled drinking water or tea.
+        </span>
+      </p>
+    )}
 
     <div className="mt-1 flex flex-col gap-3.5 rounded-xl border border-line bg-page p-4.5 md:p-5">
       <h4 className="inline-flex items-center gap-2 border-b border-line pb-2 text-[15px] font-extrabold tracking-wide uppercase">

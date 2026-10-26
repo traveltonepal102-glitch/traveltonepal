@@ -4,7 +4,6 @@ import Link from "next/link";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
 import { regionInquiryUrl } from "@/features/regions/inquiry";
-import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { formatAltitude } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
@@ -34,7 +33,7 @@ const NearbyTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick 
     </>
   );
 
-  return hasTrekPage(trek.slug) ? (
+  return trek.hasPage ? (
     <Link href={trekPath(trek.slug)} className={CARD_LINK}>
       {content}
     </Link>

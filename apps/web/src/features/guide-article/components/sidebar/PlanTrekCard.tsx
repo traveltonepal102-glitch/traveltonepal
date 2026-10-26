@@ -36,7 +36,7 @@ export const PlanTrekCard = ({ trek, guideTitle }: { trek: TrekSummary; guideTit
           <span className="text-xs text-muted-foreground">/ person</span>
         </p>
       )}
-      <Link href={trekHref(trek.slug)} className={`${ACTION} bg-brand text-on-brand hover:bg-brand-hover`}>
+      <Link href={trekHref(trek)} className={`${ACTION} bg-brand text-on-brand hover:bg-brand-hover`}>
         View trek details
       </Link>
       <a

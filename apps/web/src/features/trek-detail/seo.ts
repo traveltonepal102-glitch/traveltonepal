@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
+import { imageFileUrl } from "@/lib/images";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath, trekPath } from "@/lib/routes";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 import type { TrekDetail } from "./types";
+
+/** Share previews and Google read one file of the photo, about this wide. */
+const SHARE_IMAGE_WIDTH = 1200;
 
 /** Home / Nepal treks / Langtang region / Langtang Valley Trek: shown on the page and sent as JSON-LD. */
 export const trekBreadcrumbs = (trek: TrekDetail): BreadcrumbItem[] => [
@@ -29,7 +33,7 @@ export const trekMetadata = (trek: TrekDetail): Metadata => {
       url: path,
       title: trek.seo.title,
       description: trek.seo.description,
-      images: image ? [{ url: image.src, alt: image.alt }] : undefined,
+      images: image ? [{ url: imageFileUrl(image, SHARE_IMAGE_WIDTH), alt: image.alt }] : undefined,
     },
     twitter: { card: "summary_large_image" },
   };
@@ -86,7 +90,7 @@ export const trekJsonLd = (trek: TrekDetail): JsonLdData => ({
       name: trek.name,
       description: trek.seo.description,
       url: absoluteUrl(trekPath(trek.slug)),
-      image: trek.photos.map((photo) => absoluteUrl(photo.src)),
+      image: trek.photos.map((photo) => absoluteUrl(imageFileUrl(photo, SHARE_IMAGE_WIDTH))),
       touristType: "Trekkers",
       provider: { "@type": "TravelAgency", name: SITE_NAME, url: SITE_URL.toString() },
       offers: offersJsonLd(trek),

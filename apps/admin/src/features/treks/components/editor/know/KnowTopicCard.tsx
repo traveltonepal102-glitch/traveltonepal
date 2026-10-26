@@ -6,16 +6,19 @@ import { PointListEditor } from "@/components/editor/PointListEditor";
 import { ghostIconButton } from "@/components/ui/buttonStyles";
 import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
+import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { KNOW_ICONS, MAX_KNOW_POINTS, TREK_LIMITS as LIMIT } from "../../../constants";
-import type { KnowTopic } from "../../../types";
+import type { KnowTopic, TrekVideo } from "../../../types";
+import { TopicMediaField } from "./TopicMediaField";
 
 type KnowTopicCardProps = {
   topic: KnowTopic;
   index: number;
-  /** "photo:<id>" / "video:<youtube id>" choices: the trek's photos and videos. */
-  mediaOptions: { value: string; label: string }[];
+  /** The trek's photos (cover first) and videos, to show one with the topic. */
+  photos: Photo[];
+  videos: TrekVideo[];
   errors: FieldErrors;
   onMoveUp?: () => void;
   onRemove: () => void;
@@ -27,7 +30,7 @@ type KnowTopicCardProps = {
  * smaller note, and an optional photo or video. Sent as knowIcon / knowTitle / knowNote / knowMedia and
  * know<number>Title / Text for the points.
  */
-export const KnowTopicCard = ({ topic, index, mediaOptions, errors, onMoveUp, onRemove, onEdit }: KnowTopicCardProps) => {
+export const KnowTopicCard = ({ topic, index, photos, videos, errors, onMoveUp, onRemove, onEdit }: KnowTopicCardProps) => {
   const number = index + 1;
   const field = `knowTopics.${index}`;
   const media = topic.photoId ? `photo:${topic.photoId}` : topic.videoId ? `video:${topic.videoId}` : "";
@@ -67,7 +70,7 @@ export const KnowTopicCard = ({ topic, index, mediaOptions, errors, onMoveUp, on
         onEdit={onEdit}
         layout="rows"
       />
-      <div className="grid gap-3 tablet:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <div className="grid items-start gap-3 desktop:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <TextField
           name="knowNote"
           label="Smaller note after the points"
@@ -77,7 +80,15 @@ export const KnowTopicCard = ({ topic, index, mediaOptions, errors, onMoveUp, on
           maxLength={LIMIT.knowNote}
           error={errors[`${field}.note`]}
         />
-        <SelectField name="knowMedia" label="Photo or video (optional)" options={mediaOptions} defaultValue={media} error={errors[`${field}.media`]} />
+        <TopicMediaField
+          defaultValue={media}
+          topicLabel={`topic ${number}`}
+          photos={photos}
+          videos={videos}
+          errorId={`know-topic-${index}-media-error`}
+          error={errors[`${field}.media`]}
+          onEdit={onEdit}
+        />
       </div>
     </div>
   );

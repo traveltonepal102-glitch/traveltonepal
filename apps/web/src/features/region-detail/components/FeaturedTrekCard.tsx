@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
-import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { formatAltitude, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
@@ -18,7 +17,7 @@ import { CARD, PILL } from "./styles";
  */
 export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
   const { trek, label, note } = pick;
-  const hasPage = hasTrekPage(trek.slug);
+  const { hasPage } = trek;
   const meta: readonly { icon: IconName; text: string }[] = [
     { icon: "calendar_month", text: `${trek.days} days` },
     { icon: "speed", text: trek.difficulty },

@@ -1,7 +1,5 @@
 import { Icon } from "@ttn/ui/icon";
 
-import { getGuides } from "@/features/team/guides";
-
 import { TREK_SECTION_IDS } from "../../sections";
 import type { TrekDetail } from "../../types";
 import { CARD_TITLE, EYEBROW, PANEL } from "../styles";
@@ -9,7 +7,7 @@ import { GuideCard } from "./GuideCard";
 
 /** "Meet your trek guide": the guides who lead this trek, in a row that scrolls sideways. */
 export const TrekGuides = ({ guides }: Pick<TrekDetail, "guides">) => {
-  const team = getGuides(guides.guideIds);
+  const { team } = guides;
   if (team.length === 0) return null;
 
   return (

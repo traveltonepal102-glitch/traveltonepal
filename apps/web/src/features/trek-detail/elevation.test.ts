@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { buildElevationProfile } from "./elevation";
-import { getTrekDetail } from "./trekDetails";
+import { PHOTOS_BASE, langtangSource } from "./trekPage.testData";
+import { toTrekDetail } from "./trekPageRows";
 import type { ItineraryDay } from "./types";
 
 const day = (place: string, altitudeM: number, sleepAltitudeM?: number): ItineraryDay => ({
@@ -14,7 +15,7 @@ const day = (place: string, altitudeM: number, sleepAltitudeM?: number): Itinera
 });
 
 describe("buildElevationProfile", () => {
-  const langtang = buildElevationProfile(getTrekDetail("langtang-valley")?.itinerary.days ?? []);
+  const langtang = buildElevationProfile(toTrekDetail(langtangSource(), PHOTOS_BASE).itinerary.days);
 
   it("places the Langtang days where the design draws them", () => {
     expect(langtang?.points[0]).toMatchObject({ x: 60, y: 194, role: "start" });

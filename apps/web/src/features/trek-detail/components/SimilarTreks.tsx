@@ -3,11 +3,9 @@ import Link from "next/link";
 
 import { formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
-import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
 import { trekPath } from "@/lib/routes";
 
-import { hasTrekPage } from "../trekDetails";
 import { SectionHeading } from "./SectionHeading";
 
 /** Tag colors, used in turn (as in the design). */
@@ -22,7 +20,7 @@ const ACTION = "inline-flex items-center gap-0.5 rounded-sm text-xs font-bold te
 
 /** Links to the trek's page, or, while it has none yet, to a WhatsApp chat about it. */
 const TrekAction = ({ trek }: { trek: TrekSummary }) =>
-  hasTrekPage(trek.slug) ? (
+  trek.hasPage ? (
     <Link href={trekPath(trek.slug)} className={ACTION}>
       View route
       <span className="sr-only">: {trek.name}</span>
@@ -36,8 +34,8 @@ const TrekAction = ({ trek }: { trek: TrekSummary }) =>
     </a>
   );
 
-/** "Explore more of the Himalaya": four treks like this one. */
-export const SimilarTreks = ({ trek }: { trek: TrekSummary }) => (
+/** "Explore more of the Himalaya": the treks picked for this one (trekPageRows). */
+export const SimilarTreks = ({ treks }: { treks: readonly TrekSummary[] }) => (
   <section aria-labelledby="similar-treks-title" className="flex flex-col gap-4">
     <SectionHeading
       id="similar-treks-title"
@@ -46,7 +44,7 @@ export const SimilarTreks = ({ trek }: { trek: TrekSummary }) => (
       description="Treks planned with you and led by local guides."
     />
     <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {similarTreks(trek).map((other, index) => (
+      {treks.map((other, index) => (
         <li key={other.slug} className="flex flex-col justify-between gap-3 rounded-lg border border-line bg-page p-4 shadow-card">
           <div className="flex flex-col gap-2">
             <p className={`self-start rounded-xs px-2 py-0.5 text-[10px] font-bold uppercase ${TAG_TONES[index % TAG_TONES.length]}`}>

@@ -26,6 +26,6 @@ export const TrekItinerary = ({ trek }: { trek: TrekDetail }) => (
         </li>
       ))}
     </ol>
-    <CustomItineraryCard name={trek.name} customization={trek.customization} />
+    {!trek.hiddenSections.includes("customization") && <CustomItineraryCard name={trek.name} customization={trek.customization} />}
   </section>
 );

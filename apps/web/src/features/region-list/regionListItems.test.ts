@@ -34,7 +34,7 @@ const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary =
 describe("regionListItems", () => {
   const items = regionListItems(
     [card("annapurna"), card("langtang", { name: "Langtang", hasPage: true }), card("everest")],
-    [trek("langtang-valley", { regionSlug: "langtang" }), trek("everest-base-camp", { regionSlug: "everest", name: "Everest Base Camp" })],
+    [trek("langtang-valley", { regionSlug: "langtang" }), trek("everest-base-camp", { regionSlug: "everest", name: "Everest Base Camp", hasPage: false })],
   );
   const [annapurna, langtang, everest] = items;
 

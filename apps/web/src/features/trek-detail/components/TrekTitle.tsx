@@ -17,7 +17,7 @@ const maxAltitudeText = (trek: TrekDetail) => {
 /** Tags, the H1 and the key facts in one line (design: Trek.dc.html, title band). */
 export const TrekTitle = ({ trek }: { trek: TrekDetail }) => {
   const facts: readonly { icon: IconName; text: string; iconClassName: string }[] = [
-    { icon: "calendar_month", text: `${trek.days} days (${trek.daysNote})`, iconClassName: "text-brand" },
+    { icon: "calendar_month", text: trek.daysNote ? `${trek.days} days (${trek.daysNote})` : `${trek.days} days`, iconClassName: "text-brand" },
     { icon: "trending_up", text: `${trek.difficulty} (grade ${trek.grade} of ${MAX_GRADE})`, iconClassName: "text-brand" },
     { icon: "altitude", text: `Max altitude: ${maxAltitudeText(trek)}`, iconClassName: "text-brand" },
     { icon: "wb_sunny", text: `Best window: ${trek.seasonLabel}`, iconClassName: "text-whatsapp" },

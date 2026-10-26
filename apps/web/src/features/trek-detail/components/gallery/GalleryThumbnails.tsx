@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { TrekPhoto } from "../../types";
 
@@ -36,7 +36,7 @@ export const GalleryThumbnails = ({ photos, activeIndex, onSelect, onShowAll }: 
               aria-current={isActive || undefined}
               className={`${BUTTON} ${isActive ? "ring-2 ring-brand" : "border border-line opacity-85 hover:opacity-100"}`}
             >
-              <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 130px, 16vw" className="object-cover" />
+              <SiteImage image={{ ...photo, alt: "" }} sizes="(min-width: 1024px) 130px, 16vw" className="object-cover" />
               {isMore && (
                 <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center bg-navy/62 text-body-sm font-extrabold text-white">
                   +{photos.length - (MAX_THUMBNAILS - 1)}

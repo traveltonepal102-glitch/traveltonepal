@@ -20,14 +20,14 @@ export const TREK_SECTION_IDS = {
   book: "book",
 } as const;
 
-/** Links in the sticky "On this page" bar, in page order. "Reviews" only when the page shows reviews. */
-export const trekSectionLinks = (days: number, { hasReviews }: { hasReviews: boolean }) => [
+/** Links in the sticky "On this page" bar, in page order. "Credentials" and "Reviews" only when the page shows them. */
+export const trekSectionLinks = (days: number, { hasReviews, hasCredentials }: { hasReviews: boolean; hasCredentials: boolean }) => [
   { id: TREK_SECTION_IDS.highlights, label: "Highlights" },
   { id: TREK_SECTION_IDS.itinerary, label: `${days}-day itinerary` },
   { id: TREK_SECTION_IDS.inclusions, label: "Inclusions" },
   { id: TREK_SECTION_IDS.elevation, label: "Elevation and route" },
   { id: TREK_SECTION_IDS.pricing, label: "Cost and tiers" },
-  { id: TREK_SECTION_IDS.credentials, label: "Credentials" },
+  ...(hasCredentials ? [{ id: TREK_SECTION_IDS.credentials, label: "Credentials" }] : []),
   ...(hasReviews ? [{ id: TREK_SECTION_IDS.reviews, label: "Reviews" }] : []),
   { id: TREK_SECTION_IDS.faq, label: "FAQ" },
 ];

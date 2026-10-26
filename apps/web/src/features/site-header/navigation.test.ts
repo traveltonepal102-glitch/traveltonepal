@@ -22,7 +22,10 @@ const region = (slug: string, overrides: Partial<RegionSummary> = {}): RegionSum
 
 describe("trekColumns", () => {
   it("lists popular treks that have a page, with days and price", () => {
-    const [popular] = trekColumns([trek("langtang-valley", { isPopular: true, days: 10, priceFromUsd: 890 }), trek("everest-base-camp", { isPopular: true })]);
+    const [popular] = trekColumns([
+      trek("langtang-valley", { isPopular: true, days: 10, priceFromUsd: 890 }),
+      trek("everest-base-camp", { isPopular: true, hasPage: false }),
+    ]);
     expect(popular.title).toBe("Popular treks");
     expect(popular.links).toEqual([{ name: "Langtang Valley Trek", meta: "10 days · from $890", href: "/treks/langtang-valley", icon: "hiking" }]);
   });
@@ -35,7 +38,7 @@ describe("trekColumns", () => {
   it("leaves out the popular column while there is no popular trek with a page", () => {
     const titles = (treks: TrekSummary[]) => trekColumns(treks).map((column) => column.title);
     expect(titles([])).toEqual(["By length", "By style"]);
-    expect(titles([trek("langtang-valley", { isPopular: false }), trek("everest-base-camp", { isPopular: true })])).toEqual(["By length", "By style"]);
+    expect(titles([trek("langtang-valley", { isPopular: false }), trek("everest-base-camp", { isPopular: true, hasPage: false })])).toEqual(["By length", "By style"]);
   });
 
   it("lists at most four popular treks", () => {

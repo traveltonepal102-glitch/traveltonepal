@@ -18,7 +18,11 @@ const guide = (slug: string): GuideSummary => ({ slug, title: slug, excerpt: "",
 
 describe("popularTreksWithPage", () => {
   it("lists popular treks that have a page, not drafts of a page that doesn't exist yet", () => {
-    const treks = [trek("langtang-valley", { isPopular: true }), trek("everest-base-camp", { isPopular: true }), trek("tamang-heritage-trail", { isPopular: false })];
+    const treks = [
+      trek("langtang-valley", { isPopular: true }),
+      trek("everest-base-camp", { isPopular: true, hasPage: false }),
+      trek("tamang-heritage-trail", { isPopular: false }),
+    ];
     expect(popularTreksWithPage(treks).map((item) => item.slug)).toEqual(["langtang-valley"]);
   });
 

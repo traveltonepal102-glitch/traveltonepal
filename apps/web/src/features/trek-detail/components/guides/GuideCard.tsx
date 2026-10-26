@@ -1,6 +1,5 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
-
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { TrekGuide } from "@/features/team/types";
 
 const ON_PHOTO = "absolute inline-flex items-center gap-1 text-[10px] text-white";
@@ -10,7 +9,7 @@ export const GuideCard = ({ guide }: { guide: TrekGuide }) => (
   <article className="flex h-full flex-col overflow-hidden rounded-xl border border-line bg-page shadow-card">
     <div className="relative flex aspect-4/3 items-center justify-center bg-linear-160 from-[#d3e3f1] to-chart-3 text-navy/35">
       {guide.photo ? (
-        <Image src={guide.photo.src} alt={guide.photo.alt} fill sizes="300px" className="object-cover" />
+        <SiteImage image={guide.photo} sizes="300px" className="object-cover" />
       ) : (
         <Icon name="person" size={96} />
       )}
@@ -35,9 +34,9 @@ export const GuideCard = ({ guide }: { guide: TrekGuide }) => (
           <Icon name="location_on" size={14} />
           {guide.home}
         </p>
-        <blockquote className="mt-2.5 rounded-md border border-line bg-surface p-2.5 text-xs text-text italic">
-          “{guide.quote}”
-        </blockquote>
+        {guide.quote && (
+          <blockquote className="mt-2.5 rounded-md border border-line bg-surface p-2.5 text-xs text-text italic">“{guide.quote}”</blockquote>
+        )}
       </div>
 
       <dl className="mt-auto flex flex-col gap-0.75 border-t border-line pt-2 text-[11px] leading-snug text-text">

@@ -116,6 +116,99 @@ export type WebTrekRow = CoverColumns & {
   region_slug: string;
   region_name: string;
   updated_at: string;
+  /** True once it has a day-by-day plan: the trek has its own page (web_trek_pages). */
+  has_page: boolean;
+};
+
+/**
+ * The rest of a trek's page; only published treks that have one (web_treks.has_page). JSON columns are `unknown`:
+ * the website checks their shape when it reads them (trekPageRows).
+ */
+export type WebTrekPageRow = {
+  id: string;
+  slug: string;
+  locale: Locale;
+  headline: string;
+  short_name: string;
+  seo_title: string;
+  seo_description: string;
+  category: string;
+  protected_area: string;
+  current_season: string;
+  days_note: string;
+  grade: number;
+  high_point: string;
+  optional_high_point: string;
+  optional_high_point_m: number | null;
+  /** Rich text (@ttn/ui/lib/richText), as are itinerary_intro and each day's and answer's text. */
+  introduction: unknown;
+  /** Up to 3 of { label, icon, tone }. */
+  photo_badges: unknown;
+  highlights_heading: string;
+  /** Titled points { title, text }, as are suitability_points, included, excluded and the meal lists. */
+  highlights: unknown;
+  suitability_intro: string;
+  suitability_points: unknown;
+  itinerary_intro: unknown;
+  /** In order: [{ place, title, subtitle, duration, altitude_m, sleep_altitude_m, is_high_point, description, photo }]. */
+  days: unknown;
+  guides_intro: string;
+  included: unknown;
+  excluded: unknown;
+  meal_budget_min_usd: number | null;
+  meal_budget_max_usd: number | null;
+  meal_trail_tips: unknown;
+  meal_teahouse_notes: unknown;
+  start_finish: string;
+  distance_km: number | null;
+  daily_walking: string;
+  guide_ratio: string;
+  accommodation: string;
+  transport: string;
+  trek_start: string;
+  map_place: string;
+  my_maps_id: string | null;
+  packing_intro: string;
+  /** [{ title, icon, items: [{ title, text }] }]. */
+  packing_groups: unknown;
+  know_heading: string;
+  /** [{ icon, title, points: [{ title, text }], note }]. */
+  know_topics: unknown;
+  /** [{ title, icon, items: [{ question, answer }] }]. */
+  faqs: unknown;
+  /** In order: [{ label, short_label, price_usd, team, is_default }]. */
+  group_prices: unknown;
+  has_fixed_dates: boolean;
+  /** From today (Nepal time), by date: [{ start_date, status, note }]. */
+  departures: unknown;
+  /** Published ones only, in the admin's order. */
+  similar_slugs: string[];
+  hidden_shared_sections: string[];
+};
+
+/** A trek's gallery photo (the photo columns named as in the other views). */
+export type WebTrekPhotoRow = CoverColumns & { trek_slug: string; position: number };
+
+/** A guide shown on a trek's page, in the admin's order (agreed to be shown, leads treks). */
+export type WebTrekGuideRow = CoverColumns & {
+  trek_slug: string;
+  position: number;
+  locale: Locale;
+  id: string;
+  name: string;
+  role: string;
+  quote: string;
+  home_village: string;
+  home_district: string;
+  years_guiding: number | null;
+  languages: string[];
+  badge: WebRegionGuideRow["badge"];
+  is_licensed: boolean;
+  /** Valid today. */
+  has_wfr: boolean;
+  has_first_aid: boolean;
+  /** Of nathm, nma and language (no end date). */
+  other_certificates: string[];
 };
 
 export type WebTravelGuideRow = CoverColumns & {
@@ -145,6 +238,9 @@ export type Database = {
       web_region_photos: View<WebRegionPhotoRow>;
       web_region_guides: View<WebRegionGuideRow>;
       web_treks: View<WebTrekRow>;
+      web_trek_pages: View<WebTrekPageRow>;
+      web_trek_photos: View<WebTrekPhotoRow>;
+      web_trek_guides: View<WebTrekGuideRow>;
       web_travel_guides: View<WebTravelGuideRow>;
     };
     Functions: { [_ in never]: never };

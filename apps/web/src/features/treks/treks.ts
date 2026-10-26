@@ -23,6 +23,7 @@ export const TREKS: readonly TrekSummary[] = [
     badge: "Most popular",
     isPopular: true,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "gokyo-lakes",
@@ -38,6 +39,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "annapurna-circuit",
@@ -54,6 +56,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["classic"],
     isPopular: true,
     hasFixedDates: true,
+    hasPage: true,
   },
   {
     slug: "annapurna-base-camp",
@@ -69,6 +72,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["classic"],
     isPopular: true,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "poon-hill",
@@ -85,6 +89,7 @@ export const TREKS: readonly TrekSummary[] = [
     badge: "Short",
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "manaslu-circuit",
@@ -101,6 +106,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "langtang-valley",
@@ -118,6 +124,7 @@ export const TREKS: readonly TrekSummary[] = [
     badge: "Best value",
     isPopular: true,
     hasFixedDates: true,
+    hasPage: true,
     image: { src: "/images/kyanjin-gompa-chorten.jpg", alt: "Stone chorten above Kyanjin Gompa in the Langtang valley" },
   },
   {
@@ -134,6 +141,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
     image: { src: "/images/tamang-heritage-village.jpg", alt: "Terraced Tamang village on the hillside" },
   },
   {
@@ -151,6 +159,7 @@ export const TREKS: readonly TrekSummary[] = [
     badge: "Short",
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "kanchenjunga-base-camp",
@@ -166,6 +175,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "nar-phu-valley",
@@ -181,6 +191,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
   {
     slug: "pikey-peak",
@@ -196,6 +207,7 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     isPopular: false,
     hasFixedDates: false,
+    hasPage: true,
   },
 ];
 

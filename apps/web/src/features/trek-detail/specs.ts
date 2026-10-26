@@ -16,10 +16,11 @@ export type TrekSpec = {
   isHighlighted?: boolean;
 };
 
-/** The twelve "Trip overview and key specifications" tiles, in design order. */
-export const trekSpecs = (trek: TrekDetail): TrekSpec[] => [
+/** The "Trip overview and key specifications" tiles (twelve when all are known), in design order; blank ones are left out. */
+export const trekSpecs = (trek: TrekDetail): TrekSpec[] => {
+  const specs: TrekSpec[] = [
   { icon: "location_on", tone: "brand", label: "Start / finish", value: trek.startFinish },
-  { icon: "straighten", tone: "brand", label: "Total distance", value: formatDistance(trek.distanceKm) },
+  { icon: "straighten", tone: "brand", label: "Total distance", value: trek.distanceKm ? formatDistance(trek.distanceKm) : "" },
   { icon: "timer", tone: "brand", label: "Daily walking", value: trek.dailyWalking },
   { icon: "groups", tone: "green", label: "Guide to trekker", value: trek.guideRatio, isHighlighted: true },
   { icon: "public", tone: "navy", label: "Country", value: "Nepal" },
@@ -30,4 +31,6 @@ export const trekSpecs = (trek: TrekDetail): TrekSpec[] => [
   { icon: "hotel", tone: "navy", label: "Accommodation", value: trek.accommodation },
   { icon: "route", tone: "navy", label: "Transport", value: trek.transport },
   { icon: "pin_drop", tone: "navy", label: "Activity", value: "Trekking / hiking" },
-];
+  ];
+  return specs.filter((spec) => spec.value.trim());
+};

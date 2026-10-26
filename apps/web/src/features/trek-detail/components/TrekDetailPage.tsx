@@ -5,7 +5,7 @@ import { GOOGLE_RATING } from "@/features/reviews/reviews";
 import { defaultGroupIndex } from "../pricing";
 import { trekPageReviews } from "../reviews";
 import { trekBreadcrumbs, trekJsonLd } from "../seo";
-import type { TrekDetail } from "../types";
+import type { SharedSection, TrekDetail } from "../types";
 import { BookingCard } from "./booking/BookingCard";
 import { BookingSelectionProvider } from "./booking/BookingSelection";
 import { DirectConsultationCard } from "./DirectConsultationCard";
@@ -38,10 +38,11 @@ import { WhyBookWithUs } from "./WhyBookWithUs";
 
 /**
  * Trek page (design: Trek.dc.html). The provider shares the chosen group size and departure between
- * the booking card, the pricing section and both request forms.
+ * the booking card, the pricing section and both request forms. Shared sections the trek hides are left out.
  */
 export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
-  const reviews = trekPageReviews(trek.slug);
+  const shows = (section: SharedSection) => !trek.hiddenSections.includes(section);
+  const reviews = shows("reviews") ? trekPageReviews(trek.slug) : [];
   const requestProps = { name: trek.name, days: trek.days, groupPrices: trek.groupPrices, departures: trek.departures };
 
   return (
@@ -49,7 +50,7 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
       <JsonLd data={trekJsonLd(trek)} />
       <TrekTopBar breadcrumbs={trekBreadcrumbs(trek)} currentSeason={trek.currentSeason} />
       <TrekTitle trek={trek} />
-      <TrekSectionNav days={trek.days} hasReviews={reviews.length > 0} />
+      <TrekSectionNav days={trek.days} hasReviews={reviews.length > 0} hasCredentials={shows("credentials")} />
 
       <BookingSelectionProvider defaultGroupIndex={defaultGroupIndex(trek.groupPrices)}>
         <div className="mx-auto grid max-w-content gap-8 px-4 pt-8 pb-12 md:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
@@ -57,21 +58,21 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
             <TrekGallery photos={trek.photos} badges={trek.photoBadges} title={trek.name} />
             <TrekIntroduction paragraphs={trek.intro} />
             <TrekOverview trek={trek} />
-            <FounderStoryCard />
-            <DirectConsultationCard trekName={trek.name} />
+            {shows("founder") && <FounderStoryCard />}
+            {shows("consultation") && <DirectConsultationCard trekName={trek.name} />}
             <TrekHighlights heading={trek.highlightsHeading} highlights={trek.highlights} />
             <TrekSuitability trek={trek} />
             <TrekItinerary trek={trek} />
             <TrekGuides guides={trek.guides} />
-            <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} />
+            <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} hiddenSections={trek.hiddenSections} />
             <TrekElevation itinerary={trek.itinerary} trailhead={trek.trailhead} />
             <TrekRouteMap name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} />
-            <WhyBookWithUs region={trek.region} />
+            {shows("why_book") && <WhyBookWithUs region={trek.region} />}
             <TrekPricing groupPrices={trek.groupPrices} departures={trek.departures} currentSeason={trek.currentSeason} />
-            <TrekCredentials />
+            {shows("credentials") && <TrekCredentials />}
             {reviews.length > 0 && <TrekReviews reviews={reviews} rating={GOOGLE_RATING} />}
-            <TrekDifferentiators differentiators={trek.differentiators} />
-            <TrekRequestSection {...requestProps} />
+            {shows("differentiators") && <TrekDifferentiators differentiators={trek.differentiators} />}
+            {shows("booking_form") && <TrekRequestSection {...requestProps} />}
             <TrekPacking shortName={trek.shortName} packing={trek.packing} />
             <TrekFieldGuide fieldGuide={trek.fieldGuide} />
           </div>
@@ -79,13 +80,13 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
         </div>
 
         <TrekFaq name={trek.name} faqs={trek.faqs} />
-        <BookingCallout {...requestProps} shortName={trek.shortName} />
+        {shows("booking_cta") && <BookingCallout {...requestProps} shortName={trek.shortName} />}
       </BookingSelectionProvider>
 
       <div className="border-t border-line bg-surface py-12">
         <div className="mx-auto flex max-w-content flex-col gap-10 px-4 md:px-6">
-          <SimilarTreks trek={trek} />
-          <NewsletterBand badge={`Free ${trek.shortName} packing checklist`} />
+          <SimilarTreks treks={trek.similarTreks} />
+          {shows("newsletter") && <NewsletterBand badge={`Free ${trek.shortName} packing checklist`} />}
         </div>
       </div>
 

@@ -28,7 +28,7 @@ export const ArticleTrekCard = ({ trek }: { trek: TrekSummary }) => (
       </p>
     </div>
     <Link
-      href={trekHref(trek.slug)}
+      href={trekHref(trek)}
       className={`inline-flex min-h-11 flex-none items-center justify-center gap-1.5 rounded-md bg-brand px-4.5 font-bold text-on-brand hover:bg-brand-hover ${FOCUS}`}
     >
       View trek

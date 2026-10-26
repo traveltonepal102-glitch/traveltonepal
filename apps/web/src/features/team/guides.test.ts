@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { TREK_DETAIL_SLUGS, getTrekDetail } from "@/features/trek-detail/trekDetails";
-
 import { GUIDES, getGuides } from "./guides";
 
 describe("guides", () => {
@@ -15,12 +13,5 @@ describe("guides", () => {
       "safety-lead",
       "senior-trek-leader",
     ]);
-  });
-
-  it("finds every guide a trek page lists", () => {
-    for (const slug of TREK_DETAIL_SLUGS) {
-      const ids = getTrekDetail(slug)?.guides.guideIds ?? [];
-      expect(getGuides(ids), slug).toHaveLength(ids.length);
-    }
   });
 });

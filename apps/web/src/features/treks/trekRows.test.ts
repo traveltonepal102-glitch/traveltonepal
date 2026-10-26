@@ -22,6 +22,7 @@ const row = (slug: string, overrides: Partial<WebTrekRow> = {}): WebTrekRow => (
   tags: ["classic"],
   is_popular: true,
   has_fixed_dates: false,
+  has_page: true,
   price_from_usd: 890,
   region_slug: "langtang",
   region_name: "Langtang",
@@ -52,6 +53,7 @@ describe("toTrekSummaries", () => {
       badge: "Best value",
       isPopular: true,
       hasFixedDates: true,
+      hasPage: true,
       image: { src: `${BASE}/p1`, alt: "Kyanjin, Langtang Valley Trek", variantWidths: [400], placeholder: undefined },
     });
   });

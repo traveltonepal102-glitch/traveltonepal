@@ -2,7 +2,6 @@ import { regionHref } from "@/features/region-detail/regionDetails";
 import { regionInquiryUrl } from "@/features/regions/inquiry";
 import { regionMapEmbedUrl } from "@/features/regions/nepalMap";
 import type { RegionCard } from "@/features/regions/regionRows";
-import { hasTrekPage } from "@/features/trek-detail/trekDetails";
 import { treksFilterPath } from "@/features/treks/filters";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import type { TrekSummary } from "@/features/treks/types";
@@ -37,7 +36,7 @@ export type RegionListItem = RegionCard & {
 };
 
 const trekLinkFor = (trek: TrekSummary): RegionTrekLink => {
-  const isInquiry = !hasTrekPage(trek.slug);
+  const isInquiry = !trek.hasPage;
   return { slug: trek.slug, name: trek.name, days: trek.days, isInquiry, href: isInquiry ? trekInquiryUrl(trek) : trekPath(trek.slug) };
 };
 

@@ -30,5 +30,7 @@ export type TrekSummary = {
   badge?: string;
   isPopular: boolean;
   hasFixedDates: boolean;
+  /** It has its own page (a day-by-day plan); cards for the others offer a WhatsApp inquiry. */
+  hasPage: boolean;
   image?: SiteImageSource;
 };

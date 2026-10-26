@@ -1,15 +1,29 @@
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
+import type { TrekGuide } from "@/features/team/types";
 import type { TrekSummary } from "@/features/treks/types";
+import type { SiteImageSource } from "@/lib/images";
 
-export type TrekPhoto = {
-  src: string;
-  alt: string;
+export type TrekPhoto = SiteImageSource & {
   /** Shown on the photo with its altitude, e.g. "Kyanjin Gompa · 3,870 m / 12,697 ft". */
   place?: string;
   altitudeM?: number;
 };
+
+/** The page sections shared by every trek (the admin's "Sections shared by every trek"); a trek can hide any of them. */
+export type SharedSection =
+  | "founder"
+  | "consultation"
+  | "customization"
+  | "meals"
+  | "why_book"
+  | "credentials"
+  | "reviews"
+  | "differentiators"
+  | "booking_form"
+  | "booking_cta"
+  | "newsletter";
 
 /** Short selling point printed on the main photo, e.g. "No flights needed". */
 export type TrekPhotoBadge = { label: string; icon: IconName; tone: "brand" | "green" };
@@ -51,7 +65,7 @@ export type ItineraryDay = {
   /** The trek's high point: the day card is highlighted. */
   isHighPoint?: boolean;
   text: string;
-  photo?: { src: string; alt: string };
+  photo?: SiteImageSource;
 };
 
 /** Pin colors on the route sketch: start, overnight stop, high point, optional side trip. */
@@ -104,7 +118,8 @@ export type TrekRouteMap = {
 
 /** "Why don't we include meals": the food budget and the trek's practical tips. */
 export type TrekMeals = {
-  dailyBudgetUsd: { min: number; max: number };
+  /** Left out until the trek has one. */
+  dailyBudgetUsd?: { min: number; max: number };
   trailTips: readonly TrekPoint[];
   teahouseNotes: readonly TrekPoint[];
 };
@@ -119,6 +134,8 @@ export type FieldGuideTopic = {
   points: readonly TrekPoint[];
   /** Smaller italic line after the points, e.g. a word on winter and the monsoon. */
   note?: string;
+  /** Shown beside the points (the admin's photo for the topic). */
+  photo?: SiteImageSource;
 };
 
 export type FaqGroup = {
@@ -136,7 +153,7 @@ export type Departure = {
   note: string;
 };
 
-/** Everything the trek page shows beyond the summary the cards already use. Comes from Payload later. */
+/** Everything the trek page shows beyond the summary the cards already use (trekPageRows, from the database). */
 export type TrekDetailContent = {
   slug: string;
   /** The page's H1, written for search, e.g. "Langtang Valley Trek 10 Days (Itinerary, Cost, Complete Guide)". */
@@ -172,8 +189,8 @@ export type TrekDetailContent = {
   routeSketch?: RouteSketch;
   /** "Custom itinerary and private changes": the pitch and the typical changes people ask for. */
   customization: { pitch: string; options: readonly { label: string; icon: IconName }[] };
-  /** "Meet your trek guide": one line about the guides, and which team guides lead this trek. */
-  guides: { intro: string; guideIds: readonly string[] };
+  /** "Meet your trek guide": one line about the guides, and the guides who lead this trek. */
+  guides: { intro: string; team: readonly TrekGuide[] };
   /** "What's covered · What's not included": title is the bold lead-in, e.g. "Permits". */
   inclusions: { included: readonly TrekPoint[]; excluded: readonly TrekPoint[] };
   meals: TrekMeals;
@@ -188,7 +205,8 @@ export type TrekDetailContent = {
   fieldGuide: { heading: string; topics: readonly FieldGuideTopic[] };
   faqs: readonly FaqGroup[];
   startFinish: string;
-  distanceKm: number;
+  /** Left out of the overview until it is known. */
+  distanceKm?: number;
   dailyWalking: string;
   guideRatio: string;
   accommodation: string;
@@ -196,6 +214,10 @@ export type TrekDetailContent = {
   groupPrices: readonly GroupPrice[];
   /** Fixed departure dates in date order; empty when the trek only runs on the trekker's own dates. */
   departures: readonly Departure[];
+  /** "Explore more of the Himalaya": the admin's picks in order, else four treks like this one. */
+  similarTreks: readonly TrekSummary[];
+  /** Shared sections this trek leaves out. */
+  hiddenSections: readonly SharedSection[];
 };
 
 export type TrekDetail = TrekSummary & TrekDetailContent;

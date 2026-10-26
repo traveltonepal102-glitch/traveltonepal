@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { serializeJsonLd } from "@/lib/jsonLd";
 
 import { trekJsonLd, trekMetadata } from "./seo";
-import { getTrekDetail } from "./trekDetails";
-import type { TrekDetail } from "./types";
+import { PHOTOS_BASE, langtangSource } from "./trekPage.testData";
+import { toTrekDetail } from "./trekPageRows";
 
-const trek = getTrekDetail("langtang-valley") as TrekDetail;
+const trek = toTrekDetail(langtangSource(), PHOTOS_BASE);
 const graph = trekJsonLd(trek)["@graph"] as Record<string, unknown>[];
 const byType = (type: string) => graph.find((node) => node["@type"] === type);
 

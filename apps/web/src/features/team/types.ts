@@ -1,5 +1,7 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import type { SiteImageSource } from "@/lib/images";
+
 /** A trekking guide on the team. One guide can lead several treks. */
 export type TrekGuide = {
   id: string;
@@ -17,5 +19,5 @@ export type TrekGuide = {
   quote: string;
   certifications: string;
   languages: readonly string[];
-  photo?: { src: string; alt: string };
+  photo?: SiteImageSource;
 };

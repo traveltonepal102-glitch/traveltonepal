@@ -17,6 +17,7 @@ const trek = (slug: string, regionSlug: string, days: number, isPopular = false)
   tags: [],
   isPopular,
   hasFixedDates: false,
+  hasPage: true,
 });
 
 const current = trek("langtang", "langtang", 10);
