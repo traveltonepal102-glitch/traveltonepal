@@ -31,18 +31,19 @@ const markSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-const inlineSchema = z.discriminatedUnion("type", [
+/** One inline: text with its marks, or a line break (also used by the legal text format, legalText.ts). */
+export const richTextInlineSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("text"), text: z.string().min(1), marks: z.array(markSchema).max(3).optional() }),
   z.object({ type: z.literal("hardBreak") }),
 ]);
 
-const paragraphSchema = z.object({ type: z.literal("paragraph"), content: z.array(inlineSchema).optional() });
+const paragraphSchema = z.object({ type: z.literal("paragraph"), content: z.array(richTextInlineSchema).optional() });
 
-const headingSchema = z.object({ type: z.literal("heading"), attrs: z.object({ level: z.literal(3) }), content: z.array(inlineSchema).optional() });
+const headingSchema = z.object({ type: z.literal("heading"), attrs: z.object({ level: z.literal(3) }), content: z.array(richTextInlineSchema).optional() });
 
 const listItemSchema: z.ZodType<RichTextListItem> = z.object({
   type: z.literal("listItem"),
-  content: z.lazy(() => z.array(blockSchema).min(1)),
+  content: z.lazy(() => z.array(richTextBlockSchema).min(1)),
 });
 
 const listSchema: z.ZodType<RichTextList> = z.object({
@@ -50,12 +51,13 @@ const listSchema: z.ZodType<RichTextList> = z.object({
   content: z.array(listItemSchema).min(1),
 });
 
-const blockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, headingSchema, listSchema]);
+/** One block: a paragraph, a small heading or a list. */
+export const richTextBlockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, headingSchema, listSchema]);
 
 /** Exactly the format above: anything else (other nodes, unknown attributes, unsafe links) fails or is dropped. */
 export const richTextDocSchema: z.ZodType<RichTextDoc> = z.object({
   type: z.literal("doc"),
-  content: z.array(blockSchema),
+  content: z.array(richTextBlockSchema),
 });
 
 /** Any value (e.g. the editor's own JSON, or a database column) → a checked document; anything else becomes empty. */
@@ -66,12 +68,13 @@ export const toRichTextDoc = (value: unknown): RichTextDoc => {
 
 const inlineText = (inline: RichTextInline) => (inline.type === "text" ? inline.text : "\n");
 
-const blockText = (block: RichTextBlock): string =>
+/** A block's words; list items on their own lines. */
+export const richTextBlockToPlainText = (block: RichTextBlock): string =>
   block.type === "paragraph" || block.type === "heading"
     ? (block.content ?? []).map(inlineText).join("")
-    : block.content.map((item) => item.content.map(blockText).join("\n")).join("\n");
+    : block.content.map((item) => item.content.map(richTextBlockToPlainText).join("\n")).join("\n");
 
 /** The words only, paragraphs separated by an empty line (for lengths, checks and Google). */
-export const richTextToPlainText = (doc: RichTextDoc) => doc.content.map(blockText).join("\n\n").trim();
+export const richTextToPlainText = (doc: RichTextDoc) => doc.content.map(richTextBlockToPlainText).join("\n\n").trim();
 
 export const isRichTextEmpty = (doc: RichTextDoc) => richTextToPlainText(doc) === "";

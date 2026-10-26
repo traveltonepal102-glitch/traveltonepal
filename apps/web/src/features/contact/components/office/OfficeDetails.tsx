@@ -3,14 +3,13 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 
-import { OFFICE_DIRECTIONS } from "../../contactContent";
 import { CARD } from "../styles";
 
 /** "Office and hours": address, opening hours, phone and the languages we reply in (from Site settings). */
-export const OfficeDetails = async () => {
+export const OfficeDetails = async ({ directions }: { directions: string }) => {
   const { contact, replyLanguages } = await getSiteSettings();
   const rows: { icon: IconName; text: string; note: string }[] = [
-    { icon: "location_on", text: contact.officeAddress, note: OFFICE_DIRECTIONS },
+    { icon: "location_on", text: contact.officeAddress, note: directions },
     { icon: "schedule", text: contact.officeHours, note: "Closed days: WhatsApp is still answered." },
     { icon: "call", text: contact.phoneDisplay && `${contact.phoneDisplay} (WhatsApp)`, note: "WhatsApp is the fastest way to reach us" },
     { icon: "translate", text: replyLanguages.join(", "), note: "The languages we reply in" },

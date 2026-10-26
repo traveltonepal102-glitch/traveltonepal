@@ -5,6 +5,9 @@ import type { IconName } from "./icons/paths";
 
 export type { IconName };
 
+/** True for a name in the icon set (e.g. one read from the database). */
+export const isIconName = (value: unknown): value is IconName => typeof value === "string" && Object.hasOwn(ICON_PATHS, value);
+
 type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "name"> & {
   name: IconName;
   /** px; the design uses 20 or 24 next to text, smaller inside chips. */

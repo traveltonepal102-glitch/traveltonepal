@@ -5,7 +5,6 @@ import { TREKS } from "@/features/treks/treks";
 import type { TrekSummary } from "@/features/treks/types";
 
 import { regionListItems, trekCountLabel } from "./regionListItems";
-import { regionsDescription } from "./seo";
 
 const card = (slug: string, overrides: Partial<RegionCard> = {}): RegionCard => ({
   slug,
@@ -76,9 +75,3 @@ describe("regionListItems", () => {
   });
 });
 
-describe("regionsDescription", () => {
-  it("counts the regions, and leaves the count out for fewer than two", () => {
-    expect(regionsDescription(9)).toMatch(/^Compare Nepal's 9 trekking regions on one map:/);
-    expect(regionsDescription(1)).toMatch(/^Compare Nepal's trekking regions on one map:/);
-  });
-});

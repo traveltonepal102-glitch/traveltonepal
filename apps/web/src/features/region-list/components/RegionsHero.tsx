@@ -6,10 +6,12 @@ import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { formatAltitude } from "@/features/treks/format";
 import { formatCount } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
+import type { SitePageTop } from "@/features/site-pages/types";
 
 import { WRAP } from "./styles";
 
 type RegionsHeroProps = {
+  top: SitePageTop;
   regionCount: number;
   trekCount: number;
   /** Lowest and highest "highest point" of the regions, in metres; none without regions. */
@@ -17,7 +19,7 @@ type RegionsHeroProps = {
 };
 
 /** Regions page hero: breadcrumb, title, intro and four quick facts over a valley photo. */
-export const RegionsHero = ({ regionCount, trekCount, altitudeRange }: RegionsHeroProps) => {
+export const RegionsHero = ({ top, regionCount, trekCount, altitudeRange }: RegionsHeroProps) => {
   // A count of zero isn't a fact worth showing.
   const stats: readonly { icon: IconName; text: string }[] = [
     ...(regionCount > 0 ? [{ icon: "landscape" as const, text: formatCount(regionCount, "region") }] : []),
@@ -34,14 +36,11 @@ export const RegionsHero = ({ regionCount, trekCount, altitudeRange }: RegionsHe
 
       <div className={`${WRAP} relative flex flex-col gap-4 pt-5.5 pb-12`}>
         <Breadcrumbs tone="onDark" items={[{ label: "Home", href: ROUTES.home }, { label: "Regions" }]} />
-        <p className="text-eyebrow text-saffron uppercase">{regionCount > 1 ? `${regionCount} trekking regions` : "Trekking regions"}</p>
+        {top.eyebrow && <p className="text-eyebrow text-saffron uppercase">{top.eyebrow}</p>}
         <h1 id="regions-title" className="max-w-195 text-[30px] leading-[1.08] font-extrabold tracking-tight text-white md:text-[44px]">
-          Trekking regions of Nepal: find the valley that fits you
+          {top.heading}
         </h1>
-        <p className="max-w-160 text-base text-white/85">
-          From short walks near Kathmandu to remote circuits near the Tibet border. Compare altitude, length, access and the
-          best months, then pick your region.
-        </p>
+        {top.intro && <p className="max-w-160 text-base text-white/85">{top.intro}</p>}
         <ul className="flex flex-wrap gap-2 pt-1">
           {stats.map((stat) => (
             <li key={stat.text} className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/12 px-3 py-1.5 text-caption font-semibold">

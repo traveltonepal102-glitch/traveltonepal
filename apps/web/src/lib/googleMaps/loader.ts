@@ -8,9 +8,11 @@ export type LatLng = { lat: number; lng: number };
 export type GoogleMap = {
   panTo: (position: LatLng) => void;
   fitBounds: (bounds: LatLngBounds, padding?: number) => void;
+  /** Undefined until the map has a size and position. */
+  getBounds: () => LatLngBounds | undefined;
 };
 
-type LatLngBounds = { extend: (position: LatLng) => void };
+type LatLngBounds = { extend: (position: LatLng) => void; contains: (position: LatLng) => boolean };
 
 export type AdvancedMarker = {
   content: HTMLElement;

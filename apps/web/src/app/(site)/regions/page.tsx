@@ -2,23 +2,30 @@ import type { Metadata } from "next";
 
 import { RegionsPage } from "@/features/region-list/components/RegionsPage";
 import { regionListItems } from "@/features/region-list/regionListItems";
-import { regionsMetadata } from "@/features/region-list/seo";
 import { listRegionCards } from "@/features/regions/services/regionsRepository";
+import { sitePageMetadata } from "@/features/site-pages/seo";
+import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
+import { ROUTES } from "@/lib/routes";
 
-// TRD: list-page intros and their SEO are static in code; the region count in them follows the data.
-export const generateMetadata = async (): Promise<Metadata> => regionsMetadata((await listRegionCards()).length);
+/** The top of the page and its Google result (Pages › List pages › Regions), with the current counts. */
+const regionsTop = async () => {
+  const [regions, treks] = await Promise.all([listRegionCards(), listTreks()]);
+  return getListPageTop("regions", { regions: regions.length, treks: treks.length });
+};
+
+export const generateMetadata = async (): Promise<Metadata> => sitePageMetadata(await regionsTop(), ROUTES.regions);
 
 /**
  * The Regions page: regions and published treks come from the database (cached; a save in the admin refreshes
  * them, see lib/cacheTags). When the database can't be read, app/error.tsx shows instead.
  */
 const Regions = async () => {
-  const [regions, treks] = await Promise.all([listRegionCards(), listTreks()]);
+  const [regions, treks, top] = await Promise.all([listRegionCards(), listTreks(), regionsTop()]);
 
   return (
     <main className="flex-1 bg-page">
-      <RegionsPage regions={regionListItems(regions, treks)} trekCount={treks.length} />
+      <RegionsPage top={top} regions={regionListItems(regions, treks)} trekCount={treks.length} />
     </main>
   );
 };

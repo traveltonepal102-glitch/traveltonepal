@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -8,6 +9,7 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { AUTHORS_PATH, authorPath } from "../constants";
 import { authorSchema, readAuthorForm } from "../schemas/authorSchema";
@@ -46,6 +48,8 @@ export const saveAuthor = async (authorId: string | null, _previous: EditorSaveS
     return failure(FAILURE_MESSAGES[result.reason]);
   }
 
+  // Authors show in travel guide bylines, and on the About page (team, founder) and trek pages (founder).
+  refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides, WEBSITE_CACHE_TAGS.pages]);
   revalidatePath(AUTHORS_PATH);
   if (authorId === null) redirect(`${authorPath(result.authorId)}&added=1`);
   return { status: "saved" };

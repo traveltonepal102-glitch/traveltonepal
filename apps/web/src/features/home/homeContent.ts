@@ -11,12 +11,6 @@ const HOME_GUIDE_COUNT = 3;
  */
 export const homeGuides = (guides: readonly GuideSummary[]) => guides.slice(0, HOME_GUIDE_COUNT);
 
-const INTRO = "guides born in the valleys they lead, and a real person to plan it with you on WhatsApp.";
-
-/** The hero's line and the page description: "Nine trekking regions, guides born in…" (no count without regions). */
-export const homeIntro = (regionCount: number) =>
-  regionCount > 0 ? `${capitalize(formatCountWord(regionCount))} trekking ${regionCount === 1 ? "region" : "regions"}, ${INTRO}` : capitalize(INTRO);
-
 /** "Nine regions. Each one a different Nepal." */
 export const regionsHeading = (regionCount: number) =>
   `${capitalize(formatCountWord(regionCount))} ${regionCount === 1 ? "region" : "regions"}. Each one a different Nepal.`;

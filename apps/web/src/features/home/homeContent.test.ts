@@ -5,7 +5,7 @@ import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { TREKS } from "@/features/treks/treks";
 import type { TrekSummary } from "@/features/treks/types";
 
-import { allRegionsLabel, homeGuides, homeIntro, homeTrekFilters, regionsHeading } from "./homeContent";
+import { allRegionsLabel, homeGuides, homeTrekFilters, regionsHeading } from "./homeContent";
 
 const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary => {
   const summary = TREKS.find((item) => item.slug === slug);
@@ -44,15 +44,8 @@ describe("homeGuides", () => {
 
 describe("home copy", () => {
   it("counts the regions in words", () => {
-    expect(homeIntro(9)).toBe("Nine trekking regions, guides born in the valleys they lead, and a real person to plan it with you on WhatsApp.");
-    expect(homeIntro(1)).toMatch(/^One trekking region, guides/);
-    expect(homeIntro(12)).toMatch(/^12 trekking regions, guides/);
     expect(regionsHeading(9)).toBe("Nine regions. Each one a different Nepal.");
     expect(regionsHeading(1)).toBe("One region. Each one a different Nepal.");
-  });
-
-  it("leaves the count out without regions", () => {
-    expect(homeIntro(0)).toBe("Guides born in the valleys they lead, and a real person to plan it with you on WhatsApp.");
   });
 
   it("labels the finder's any-region choice", () => {

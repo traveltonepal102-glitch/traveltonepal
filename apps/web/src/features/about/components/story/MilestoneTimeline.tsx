@@ -2,7 +2,7 @@ import { Icon } from "@ttn/ui/icon";
 
 import { ICON_TONES } from "@/components/shared/iconTones";
 
-import type { Milestone } from "../../aboutContent";
+import type { Milestone } from "../../types";
 
 /** Year-by-year milestones in a row (two columns on tablets, one on phones), joined by a line. */
 export const MilestoneTimeline = ({ milestones }: { milestones: readonly Milestone[] }) => (
@@ -15,7 +15,7 @@ export const MilestoneTimeline = ({ milestones }: { milestones: readonly Milesto
           </span>
           <span aria-hidden="true" className="h-0.5 flex-1 bg-line" />
         </span>
-        <span className="font-display text-xl font-extrabold text-brand">{milestone.year}</span>
+        {milestone.year && <span className="font-display text-xl font-extrabold text-brand">{milestone.year}</span>}
         <span className="font-bold text-ink">{milestone.title}</span>
         <span className="text-caption font-normal text-text">{milestone.text}</span>
       </li>

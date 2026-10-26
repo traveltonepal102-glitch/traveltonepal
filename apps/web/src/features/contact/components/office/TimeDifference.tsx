@@ -2,8 +2,8 @@ import { Icon } from "@ttn/ui/icon";
 
 import type { TimeZoneRow } from "../../officeHours";
 
-/** Navy card: Nepal's UTC offset and the office hours in Berlin, London and New York (summer and winter time). */
-export const TimeDifference = ({ rows }: { rows: readonly TimeZoneRow[] }) => (
+/** Navy card: Nepal's UTC offset and the office hours in the places picked in Pages › Contact (summer and winter time). */
+export const TimeDifference = ({ rows, note }: { rows: readonly TimeZoneRow[]; note: string }) => (
   <div className="flex flex-col gap-3 rounded-2xl bg-navy p-4.5 text-white md:p-5.5">
     <h3 className="inline-flex items-center gap-2 text-lg font-bold text-white">
       <Icon name="public" size={20} className="text-saffron" />
@@ -21,6 +21,6 @@ export const TimeDifference = ({ rows }: { rows: readonly TimeZoneRow[] }) => (
         </div>
       ))}
     </dl>
-    <p className="text-xs text-navy-text">Outside these hours? Leave a WhatsApp message. We reply first thing in the morning.</p>
+    <p className="text-xs text-navy-text">{note || "Outside these hours? Leave a WhatsApp message. We reply first thing in the morning."}</p>
   </div>
 );

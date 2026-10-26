@@ -1,31 +1,24 @@
+import { richTextToPlainText } from "@ttn/ui/lib/richText";
 import type { Metadata } from "next";
 
 import { ORGANIZATION_ID } from "@/features/seo/organization";
+import { sitePageMetadata } from "@/features/site-pages/seo";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES } from "@/lib/routes";
-import { SITE_NAME, absoluteUrl } from "@/lib/site";
+import { absoluteUrl } from "@/lib/site";
 
-import { CONTACT_FAQS } from "./contactContent";
+import type { ContactPageContent } from "./types";
 
-const TITLE = "Contact us: talk to a local trekking expert";
-const DESCRIPTION =
-  "Ask our Kathmandu team anything about trekking in Nepal on WhatsApp or by email. A real person replies, usually within a few hours. Free, with no obligation to book.";
-
-export const contactMetadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: ROUTES.contact },
-  openGraph: { type: "website", siteName: SITE_NAME, url: ROUTES.contact, title: TITLE, description: DESCRIPTION },
-};
+export const contactMetadata = (page: ContactPageContent): Metadata => sitePageMetadata(page.top, ROUTES.contact);
 
 /** ContactPage about the company (its contact points are on every page, by its id), the breadcrumb and the FAQ. */
-export const contactJsonLd = (): JsonLdData => ({
+export const contactJsonLd = ({ top, faqs }: ContactPageContent): JsonLdData => ({
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "ContactPage",
       url: absoluteUrl(ROUTES.contact),
-      name: TITLE,
+      name: top.seo.title || top.heading,
       mainEntity: { "@id": ORGANIZATION_ID },
     },
     {
@@ -35,13 +28,17 @@ export const contactJsonLd = (): JsonLdData => ({
         { "@type": "ListItem", position: 2, name: "Contact", item: absoluteUrl(ROUTES.contact) },
       ],
     },
-    {
-      "@type": "FAQPage",
-      mainEntity: CONTACT_FAQS.map((faq) => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: { "@type": "Answer", text: faq.answer },
-      })),
-    },
+    ...(faqs.length
+      ? [
+          {
+            "@type": "FAQPage",
+            mainEntity: faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: { "@type": "Answer", text: richTextToPlainText(faq.answer) },
+            })),
+          },
+        ]
+      : []),
   ],
 });

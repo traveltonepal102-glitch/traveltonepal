@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 
-import type { TeamGroup } from "../../team";
+import type { TeamGroup } from "../../types";
 import { FOCUS } from "../styles";
 
 type TeamFilter = "all" | TeamGroup;

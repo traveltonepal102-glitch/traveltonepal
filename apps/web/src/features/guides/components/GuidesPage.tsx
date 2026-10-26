@@ -2,6 +2,7 @@ import { JsonLd } from "@/components/shared/JsonLd";
 import { WhatsAppCta } from "@/components/shared/WhatsAppCta";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
 import { REGIONS } from "@/features/regions/regions";
+import type { SitePageTop } from "@/features/site-pages/types";
 
 import { pickGuideHighlights, regionsWithGuides } from "../guideLists";
 import { startHereGuides } from "../guideRows";
@@ -19,14 +20,14 @@ import { WRAP } from "./styles";
  * Travel guides page: header with search, featured guides, topics, "Start here", every guide,
  * guides by region, a WhatsApp question box and the newsletter. `guides`: the published ones (guidesRepository).
  */
-export const GuidesPage = ({ guides }: { guides: readonly TravelGuide[] }) => {
+export const GuidesPage = ({ top, guides }: { top: SitePageTop; guides: readonly TravelGuide[] }) => {
   const highlights = pickGuideHighlights(guides);
   const regions = regionsWithGuides(guides, REGIONS);
 
   return (
     <>
       <JsonLd data={guidesJsonLd(guides)} />
-      <GuidesHero />
+      <GuidesHero top={top} />
       {highlights && <GuideHighlightsSection {...highlights} />}
       <GuideTopicsSection guides={guides} />
       <StartHereSection guides={startHereGuides(guides)} />

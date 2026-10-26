@@ -5,16 +5,19 @@ import Image from "next/image";
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { formatCount } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
+import type { SitePageTop } from "@/features/site-pages/types";
 
 import { TrekSearchForm } from "./TrekSearchForm";
 
 type TreksHeroProps = {
+  /** From Pages › List pages › Treks. */
+  top: SitePageTop;
   trekCount: number;
   regionCount: number;
 };
 
 /** Treks page hero (design: Treks.dc.html): breadcrumb, title, intro, quick facts and trek search. */
-export const TreksHero = ({ trekCount, regionCount }: TreksHeroProps) => {
+export const TreksHero = ({ top, trekCount, regionCount }: TreksHeroProps) => {
   // A count of zero isn't a fact worth showing.
   const facts: readonly { icon: IconName; text: string }[] = [
     ...(trekCount > 0 ? [{ icon: "hiking" as const, text: formatCount(trekCount, "trek") }] : []),
@@ -42,14 +45,11 @@ export const TreksHero = ({ trekCount, regionCount }: TreksHeroProps) => {
 
       <div className="relative mx-auto flex max-w-content flex-col gap-4 px-4 pt-5.5 pb-11 md:px-6">
         <Breadcrumbs tone="onDark" items={[{ label: "Home", href: ROUTES.home }, { label: "Treks" }]} />
-        <p className="text-eyebrow text-saffron uppercase">All treks and packages</p>
+        {top.eyebrow && <p className="text-eyebrow text-saffron uppercase">{top.eyebrow}</p>}
         <h1 id="treks-title" className="max-w-190 text-h1-sm tracking-tight text-white md:text-h1">
-          Nepal treks, from short valley walks to high passes
+          {top.heading}
         </h1>
-        <p className="max-w-160 text-body-lg text-white/85">
-          Every trek is private, led by a local guide and planned with you on WhatsApp. Filter by region, length and
-          difficulty, or ask us to suggest one.
-        </p>
+        {top.intro && <p className="max-w-160 text-body-lg text-white/85">{top.intro}</p>}
         <ul className="flex flex-wrap gap-2 pt-1">
           {facts.map((fact) => (
             <li

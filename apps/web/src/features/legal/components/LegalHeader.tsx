@@ -22,12 +22,14 @@ export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
           <h1 id="legal-title" className="text-[30px] leading-tight font-extrabold tracking-tight md:text-[40px]">
             {doc.title}
           </h1>
-          <p className="text-base text-text">{doc.intro}</p>
+          {doc.intro && <p className="text-base text-text">{doc.intro}</p>}
         </div>
-        <p className="inline-flex flex-none items-center gap-1.5 text-caption font-normal text-muted-foreground">
-          <Icon name="schedule" size={16} />
-          Last updated: {doc.updated}
-        </p>
+        {doc.updated && (
+          <p className="inline-flex flex-none items-center gap-1.5 text-caption font-normal text-muted-foreground">
+            <Icon name="schedule" size={16} />
+            Last updated: {doc.updated}
+          </p>
+        )}
       </div>
 
       <nav aria-label="Legal pages" className="-mx-4 overflow-x-auto px-4 pt-1.5 scrollbar-none lg:hidden [&::-webkit-scrollbar]:hidden">

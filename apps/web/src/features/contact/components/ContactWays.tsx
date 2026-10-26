@@ -9,8 +9,8 @@ import type { IconTone } from "@/components/shared/iconTones";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SITE_NAME } from "@/lib/site";
 
-import { REPLY_TIMES } from "../contactContent";
 import { CONTACT_SECTION_IDS } from "../sections";
+import type { ContactPageContent } from "../types";
 import { WRAP } from "./styles";
 
 type WayCardProps = {
@@ -48,16 +48,18 @@ const Note = ({ icon, className, children }: { icon: IconName; className: string
 );
 
 /** WhatsApp (recommended), email, and visiting or calling the office; overlaps the bottom of the hero. */
-export const ContactWays = async () => {
+export const ContactWays = async ({ replyTimes }: { replyTimes: ContactPageContent["replyTimes"] }) => {
   const { contact } = await getSiteSettings();
   return (
     <section aria-label="Ways to reach us" className="relative -mt-16 pb-10">
       <ul className={`${WRAP} grid gap-4.5 lg:grid-cols-[1.25fr_1fr_1fr]`}>
         <WayCard icon="chat" tone="green" title="WhatsApp" text="Chat, send voice notes or share your dates. Most people plan their whole trek here." isRecommended>
           <p className="font-display text-[22px] font-extrabold text-[#0f5e2e]">{contact.phoneDisplay}</p>
-          <Note icon="schedule" className="text-whatsapp">
-            {REPLY_TIMES.whatsApp}
-          </Note>
+          {replyTimes.whatsApp && (
+            <Note icon="schedule" className="text-whatsapp">
+              {replyTimes.whatsApp}
+            </Note>
+          )}
           <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="chat" shape="rounded" isExternal className="mt-auto">
             Chat on WhatsApp
           </ButtonLink>
@@ -65,9 +67,11 @@ export const ContactWays = async () => {
 
         <WayCard icon="mail" tone="brand" title="Email" text="Best for longer questions, group trips or documents.">
           <p className="font-display text-[17px] font-bold break-all text-brand">{contact.email}</p>
-          <Note icon="schedule" className="text-brand">
-            {REPLY_TIMES.email}
-          </Note>
+          {replyTimes.email && (
+            <Note icon="schedule" className="text-brand">
+              {replyTimes.email}
+            </Note>
+          )}
           <ButtonLink href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} variant="secondary" icon="mail" shape="rounded" className="mt-auto">
             Write an email
           </ButtonLink>

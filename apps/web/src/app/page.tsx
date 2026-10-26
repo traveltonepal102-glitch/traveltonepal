@@ -10,20 +10,29 @@ import { ReviewsSection } from "@/features/home/components/ReviewsSection";
 import { TrekFinder } from "@/features/home/components/TrekFinder";
 import { TreksSection } from "@/features/home/components/TreksSection";
 import { WhyUsSection } from "@/features/home/components/WhyUsSection";
-import { homeGuides, homeIntro } from "@/features/home/homeContent";
+import { homeGuides } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
+import { sitePageMetadata } from "@/features/site-pages/seo";
+import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { listTreks } from "@/features/treks/services/treksRepository";
+import { ROUTES } from "@/lib/routes";
 
-export const generateMetadata = async (): Promise<Metadata> => ({ description: homeIntro((await listRegions()).length) });
+/** The top of the page and its Google result (Pages › List pages › Home), with the current counts. */
+const homeTop = async () => {
+  const [regions, treks] = await Promise.all([listRegions(), listTreks()]);
+  return getListPageTop("home", { regions: regions.length, treks: treks.length });
+};
+
+export const generateMetadata = async (): Promise<Metadata> => sitePageMetadata(await homeTop(), ROUTES.home);
 
 /**
  * The home page; regions, popular treks and travel guides come from the database (cached, see lib/cacheTags).
  * When the database can't be read, app/error.tsx shows instead (a failed refresh keeps the last good page).
  */
 const HomePage = async () => {
-  const [regions, treks, guides] = await Promise.all([listRegions(), listTreks(), listGuideCards()]);
+  const [regions, treks, guides, top] = await Promise.all([listRegions(), listTreks(), listGuideCards(), homeTop()]);
 
   return (
     <>
@@ -32,7 +41,7 @@ const HomePage = async () => {
         <SiteHeader variant="overlay" />
       </div>
       <main className="flex-1 bg-surface">
-        <HomeHero intro={homeIntro(regions.length)} />
+        <HomeHero top={top} />
         <TrekFinder regions={regions} />
         <RegionsSection regions={regions} />
         <TreksSection treks={popularTreksWithPage(treks)} />

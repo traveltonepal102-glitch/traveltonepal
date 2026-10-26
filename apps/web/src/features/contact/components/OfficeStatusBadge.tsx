@@ -20,15 +20,18 @@ const STATES = {
   unknown: { dot: "bg-whatsapp-on-dark", text: "Local team in Kathmandu" },
 } as const;
 
-/** "Our team is online" only while the office is really open (by Nepal time), else when we will reply. */
-export const OfficeStatusBadge = ({ schedule }: { schedule: OfficeSchedule }) => {
+/**
+ * "Our team is online" (or the green line typed in Pages › Contact) only while the office is really open (by Nepal
+ * time), else when we will reply.
+ */
+export const OfficeStatusBadge = ({ schedule, openText }: { schedule: OfficeSchedule; openText: string }) => {
   const isOpen = useSyncExternalStore(subscribe, () => isOfficeOpen(schedule, new Date()), () => null);
   const state = STATES[isOpen === null ? "unknown" : isOpen ? "open" : "closed"];
 
   return (
     <p className="inline-flex items-center gap-2 self-start rounded-full border border-whatsapp-on-dark/50 bg-whatsapp/25 px-3 py-1.25 text-caption font-bold text-[#bbf7d0]">
       <span aria-hidden="true" className={`size-2 rounded-full ${state.dot}`} />
-      {state.text}
+      {isOpen && openText ? openText : state.text}
     </p>
   );
 };

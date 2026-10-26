@@ -1,13 +1,12 @@
 import { LegalPage } from "@/features/legal/components/LegalPage";
-import { termsDoc } from "@/features/legal/content/terms";
 import { legalMetadata } from "@/features/legal/seo";
-import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
+import { getLegalDoc } from "@/features/legal/services/legalRepository";
 
-export const generateMetadata = async () => legalMetadata(termsDoc(await getSiteSettings()));
+export const generateMetadata = async () => legalMetadata(await getLegalDoc("terms"));
 
 const Terms = async () => (
   <main className="flex-1 bg-page">
-    <LegalPage doc={termsDoc(await getSiteSettings())} />
+    <LegalPage doc={await getLegalDoc("terms")} />
   </main>
 );
 

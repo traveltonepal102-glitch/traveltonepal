@@ -311,6 +311,41 @@ export type WebSiteSettingsRow = {
 /** An old address that answers with a permanent redirect to today's (only to a page that exists). */
 export type WebRedirectRow = { kind: "trek" | "region" | "guide"; from_slug: string; to_slug: string };
 
+export type SitePageSlug = "about" | "contact" | "home" | "treks" | "regions" | "travel-guides" | "terms" | "privacy" | "impressum" | "cookies";
+
+/** A fixed page from the admin's Pages: its top, Google result and `content` (what only that page has, read with zod). */
+export type WebSitePageRow = CoverColumns & {
+  slug: SitePageSlug;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  seo_title: string;
+  seo_description: string;
+  seo_keyword: string;
+  content: unknown;
+  updated_at: string;
+  /** About: the founder (an office author); the photo only with their consent. */
+  founder_name: string | null;
+  founder_role: string | null;
+  founder_photo_id: string | null;
+  founder_photo_variant_widths: number[] | null;
+  founder_photo_placeholder: string | null;
+  /** About › Our story: up to three photos, in order ({ id, width, height, variant_widths, placeholder, place }). */
+  story_photos: unknown;
+};
+
+/** About › "Our guides and team": office authors, then trekking guides. */
+export type WebAboutTeamRow = CoverColumns & {
+  team_group: "office" | "guides";
+  id: string;
+  name: string;
+  role: string;
+  place: string;
+  languages: string[];
+  sort_group: number;
+  years_guiding: number;
+};
+
 type View<Row> = { Row: Row; Relationships: [] };
 
 export type Database = {
@@ -329,6 +364,8 @@ export type Database = {
       web_travel_guide_pages: View<WebTravelGuidePageRow>;
       web_redirects: View<WebRedirectRow>;
       web_site_settings: View<WebSiteSettingsRow>;
+      web_site_pages: View<WebSitePageRow>;
+      web_about_team: View<WebAboutTeamRow>;
     };
     Functions: { [_ in never]: never };
     Enums: { [_ in never]: never };

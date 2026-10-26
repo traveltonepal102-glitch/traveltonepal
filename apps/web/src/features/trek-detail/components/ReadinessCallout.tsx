@@ -1,10 +1,12 @@
 import { Icon } from "@ttn/ui/icon";
 
-import { FOUNDER } from "@/features/about/founder";
+import { getAboutPage } from "@/features/about/services/aboutRepository";
 import { trekReadinessCheckUrl } from "@/features/treks/inquiry";
 
 /** "Unsure about your fitness or readiness?": a free preparation check with the founder on WhatsApp. */
-export const ReadinessCallout = ({ trekName }: { trekName: string }) => (
+export const ReadinessCallout = async ({ trekName }: { trekName: string }) => {
+  const { founder } = await getAboutPage();
+  return (
   <div className="flex flex-col gap-3 rounded-xl border border-saffron-line bg-saffron-tint p-4 text-xs text-text sm:flex-row sm:items-center sm:justify-between">
     <div className="flex items-center gap-2.5">
       <span aria-hidden="true" className="inline-flex size-8.5 flex-none items-center justify-center rounded-md bg-saffron text-ink">
@@ -16,12 +18,13 @@ export const ReadinessCallout = ({ trekName }: { trekName: string }) => (
       </p>
     </div>
     <a
-      href={trekReadinessCheckUrl({ name: trekName }, FOUNDER.shortName)}
+      href={trekReadinessCheckUrl({ name: trekName }, founder?.shortName ?? "Travel To Nepal team")}
       target="_blank"
       rel="noopener noreferrer"
       className="flex-none rounded-md border border-saffron-line bg-surface px-4 py-2.25 text-center font-bold text-saffron-ink hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
-      Ask {FOUNDER.shortName} on WhatsApp
+      {founder ? `Ask ${founder.shortName} on WhatsApp` : "Ask us on WhatsApp"}
     </a>
   </div>
 );
+};

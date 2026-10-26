@@ -2,7 +2,7 @@ import { getEmailUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { FOUNDER } from "@/features/about/founder";
+import { getAboutPage } from "@/features/about/services/aboutRepository";
 
 const SIDE_AVATAR = "inline-flex size-10 items-center justify-center rounded-full border-2 border-white bg-[#d3e3f1] text-[#5e86ad]";
 
@@ -23,7 +23,7 @@ const TeamAvatars = () => (
 
 /** "Speak to an expert": who answers, a phone link and the office email. */
 export const ExpertContact = async () => {
-  const { contact } = await getSiteSettings();
+  const [{ contact }, { founder }] = await Promise.all([getSiteSettings(), getAboutPage()]);
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-page p-4">
       <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Speak to an expert</p>
@@ -31,7 +31,7 @@ export const ExpertContact = async () => {
         <TeamAvatars />
         <div className="flex min-w-0 flex-col">
           <p className="flex flex-wrap items-baseline gap-x-1.5">
-            <span className="font-display text-body-sm font-bold text-ink">{FOUNDER.shortName}</span>
+            <span className="font-display text-body-sm font-bold text-ink">{founder?.shortName ?? "Our team"}</span>
             <span className="text-xs text-muted-foreground">{contact.officeAddress}</span>
           </p>
           <a

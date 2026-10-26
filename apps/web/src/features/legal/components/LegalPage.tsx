@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 import type { LegalDoc } from "../types";
+import { LegalBlocks } from "./LegalBlocks";
 import { LegalHeader } from "./LegalHeader";
 import { LegalSectionBlock } from "./LegalSectionBlock";
 import { LegalSidebar } from "./LegalSidebar";
@@ -18,7 +19,7 @@ type LegalPageProps = {
   children?: ReactNode;
 };
 
-/** A legal page (design: Legal.dc.html): title band, side menu and the numbered document. */
+/** A legal page (design: Legal.dc.html): title band, side menu and the numbered document (from Pages › Legal pages). */
 export const LegalPage = ({ doc, children }: LegalPageProps) => (
   <>
     <LegalHeader doc={doc} />
@@ -35,6 +36,7 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
           </p>
         )}
         {children}
+        {doc.lead.length > 0 && <LegalBlocks blocks={doc.lead} />}
         {doc.sections.map((section, index) => (
           <LegalSectionBlock key={section.id} section={section} number={index + 1} />
         ))}

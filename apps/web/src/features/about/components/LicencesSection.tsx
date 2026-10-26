@@ -10,6 +10,7 @@ import { ABOUT_SECTION_IDS } from "@/lib/navigation";
 import { ROUTES } from "@/lib/routes";
 
 import { credentialsFor, licencesFor } from "../credentials";
+import type { SectionHeading } from "../types";
 import { FOCUS, SECTION, WRAP } from "./styles";
 
 const CARD = "rounded-2xl border border-line bg-surface p-4.5 md:p-5.5";
@@ -20,8 +21,8 @@ const LEGAL_LINKS = [
   { label: "Privacy policy", href: ROUTES.privacy },
 ] as const;
 
-/** "Licences and legal": every registration number, the licence certificate and the legal pages. */
-export const LicencesSection = async () => {
+/** "Licences and legal": every registration number, the licence certificate and the legal pages (numbers from Site settings). */
+export const LicencesSection = async ({ heading }: { heading: SectionHeading }) => {
   const settings = await getSiteSettings();
   const { certificate } = credentialsFor(settings);
   const licences = licencesFor(settings);
@@ -34,8 +35,8 @@ export const LicencesSection = async () => {
           id="about-licences-title"
           tone="green"
           eyebrow="Licences and legal"
-          title="Registered, licensed and insured"
-          text="You can check every number below with the Nepal Department of Tourism and TAAN."
+          title={heading.title || "Registered, licensed and insured"}
+          text={heading.text || "You can check every number below with the Nepal Department of Tourism and TAAN."}
         />
         <div className="grid gap-6 lg:grid-cols-2">
           <dl className={`${CARD} grid content-start gap-2.5 sm:grid-cols-2`}>

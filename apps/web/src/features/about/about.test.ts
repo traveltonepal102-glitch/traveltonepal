@@ -5,21 +5,16 @@ import { REVIEWS } from "@/features/reviews/reviews";
 
 import { aboutPageRating, aboutPageReviews } from "./reviews";
 import { aboutSectionLinks } from "./sections";
-import { aboutTeam } from "./team";
+
+const ALL_SHOWN = { hasReviews: true, hasPromises: true, hasTeam: true };
 
 describe("aboutSectionLinks", () => {
-  it("lists Reviews only when the page shows them", () => {
-    expect(aboutSectionLinks({ hasReviews: true }).map((link) => link.id)).toContain("reviews");
-    expect(aboutSectionLinks({ hasReviews: false }).map((link) => link.id)).not.toContain("reviews");
-  });
-});
-
-describe("aboutTeam", () => {
-  it("puts the office team first, then the guides, with unique ids", () => {
-    const team = aboutTeam();
-    const groups = team.map((member) => member.group);
-    expect(groups.indexOf("guides")).toBeGreaterThan(groups.lastIndexOf("office"));
-    expect(new Set(team.map((member) => member.id)).size).toBe(team.length);
+  it("links only to the sections the page shows", () => {
+    expect(aboutSectionLinks(ALL_SHOWN).map((link) => link.id)).toEqual(expect.arrayContaining(["reviews", "why-us", "team"]));
+    const ids = aboutSectionLinks({ hasReviews: false, hasPromises: false, hasTeam: false }).map((link) => link.id);
+    expect(ids).not.toContain("reviews");
+    expect(ids).not.toContain("team");
+    expect(ids).toContain("our-story");
   });
 });
 

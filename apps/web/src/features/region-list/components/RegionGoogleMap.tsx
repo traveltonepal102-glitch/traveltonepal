@@ -26,8 +26,8 @@ const BOUNDS_PADDING = 48;
 const positionOf = (region: RegionListItem): LatLng => ({ lat: region.location.lat, lng: region.location.lon });
 
 /**
- * Google terrain map with a numbered pin per region. Clicking a pin selects the region; selecting one
- * in the list highlights its pin and moves the map to it.
+ * Google terrain map, zoomed out to every region's numbered pin. Clicking a pin selects the region; selecting
+ * one in the list highlights its pin, and moves the map only when that pin is out of view (all pins stay visible).
  */
 export const RegionGoogleMap = ({ config, regions, selectedIndex, onSelect, fallback }: RegionGoogleMapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -91,7 +91,10 @@ export const RegionGoogleMap = ({ config, regions, selectedIndex, onSelect, fall
       marker.zIndex = isSelected ? 10 : 1;
     });
     const selected = regions[selectedIndex];
-    if (selected) mapRef.current?.panTo(positionOf(selected));
+    const map = mapRef.current;
+    if (!selected || !map) return;
+    const position = positionOf(selected);
+    if (!map.getBounds()?.contains(position)) map.panTo(position);
   }, [status, selectedIndex, regions]);
 
   if (status === "failed") {

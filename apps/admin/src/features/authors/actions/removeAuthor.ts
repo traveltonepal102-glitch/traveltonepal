@@ -1,11 +1,13 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import type { RemoveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { AUTHORS_PATH } from "../constants";
 import { removeAuthor as removeAuthorFromDatabase } from "../services/authorsRepository";
@@ -28,6 +30,8 @@ export const removeAuthor = async (authorId: string): Promise<RemoveState> => {
     return { error: "The author couldn't be removed. Try again in a moment." };
   }
 
+  // Authors show in travel guide bylines, and on the About page (team, founder) and trek pages (founder).
+  refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides, WEBSITE_CACHE_TAGS.pages]);
   revalidatePath(AUTHORS_PATH);
   redirect(AUTHORS_PATH);
 };

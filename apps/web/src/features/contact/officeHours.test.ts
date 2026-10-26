@@ -44,7 +44,13 @@ describe("isOfficeOpen", () => {
 
 describe("office hours abroad", () => {
   it("shows the hours in the visitor's summer and winter time", () => {
-    expect(officeHoursAbroad(SCHEDULE)).toEqual([
+    expect(
+      officeHoursAbroad(SCHEDULE, [
+        { place: "Germany (Berlin)", timeZone: "Europe/Berlin" },
+        { place: "United Kingdom (London)", timeZone: "Europe/London" },
+        { place: "USA (New York)", timeZone: "America/New_York" },
+      ]),
+    ).toEqual([
       { place: "Germany (Berlin)", summer: "05:15 – 14:15", winter: "04:15 – 13:15" },
       { place: "United Kingdom (London)", summer: "04:15 – 13:15", winter: "03:15 – 12:15" },
       { place: "USA (New York)", summer: "23:15 – 08:15", winter: "22:15 – 07:15" },

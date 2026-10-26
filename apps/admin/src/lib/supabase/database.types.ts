@@ -228,6 +228,26 @@ export type SiteSettingsRow = {
   updated_by: string | null;
 };
 
+export type SitePageSlug = "about" | "contact" | "home" | "treks" | "regions" | "travel-guides" | "terms" | "privacy" | "impressum" | "cookies";
+
+/** One fixed page of the website (supabase/migrations/20261026150000_site_pages.sql); `content` is checked by zod. */
+export type SitePageRow = {
+  slug: SitePageSlug;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  seo_title: string;
+  seo_description: string;
+  seo_keyword: string;
+  photo_id: string | null;
+  founder_author_id: string | null;
+  content: Json;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+type SitePagePhotoRow = { page_slug: SitePageSlug; position: number; photo_id: string };
+
 type AuthorRow = {
   id: string;
   kind: AuthorKindValue;
@@ -603,6 +623,18 @@ export type Database = {
         Update: Partial<SiteSettingsRow>;
         Relationships: [Fk<"site_settings_certificate_photo_id_fkey", "certificate_photo_id", "photos">, Fk<"site_settings_share_photo_id_fkey", "share_photo_id", "photos">];
       };
+      site_pages: {
+        Row: SitePageRow;
+        Insert: never;
+        Update: Partial<SitePageRow>;
+        Relationships: [Fk<"site_pages_photo_id_fkey", "photo_id", "photos">, Fk<"site_pages_founder_author_id_fkey", "founder_author_id", "authors">];
+      };
+      site_page_photos: {
+        Row: SitePagePhotoRow;
+        Insert: SitePagePhotoRow;
+        Update: never;
+        Relationships: [Fk<"site_page_photos_page_slug_fkey", "page_slug", "site_pages">, Fk<"site_page_photos_photo_id_fkey", "photo_id", "photos">];
+      };
       authors: {
         Row: AuthorRow;
         Insert: Partial<AuthorRow> & Pick<AuthorRow, "kind">;
@@ -772,6 +804,14 @@ export type Database = {
       };
       save_site_settings: {
         Args: { p_settings: Json };
+        Returns: undefined;
+      };
+      save_site_page: {
+        Args: { p_slug: SitePageSlug; p_page: Json; p_photo_ids: Json };
+        Returns: undefined;
+      };
+      save_site_pages: {
+        Args: { p_pages: Json };
         Returns: undefined;
       };
       save_author: {

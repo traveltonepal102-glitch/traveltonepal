@@ -1,5 +1,6 @@
 import { JsonLd } from "@/components/shared/JsonLd";
 import { GOOGLE_MAPS_CONFIG } from "@/lib/googleMaps/config";
+import type { SitePageTop } from "@/features/site-pages/types";
 
 import type { RegionListItem } from "../regionListItems";
 import { regionsJsonLd } from "../seo";
@@ -17,6 +18,8 @@ import { WRAP } from "./styles";
 const INITIAL_REGION = "langtang";
 
 type RegionsPageProps = {
+  /** From Pages › List pages › Regions. */
+  top: SitePageTop;
   /** The regions, west to east (regionListItems). */
   regions: readonly RegionListItem[];
   /** How many treks are published, in every region. */
@@ -24,10 +27,11 @@ type RegionsPageProps = {
 };
 
 /** Regions page (design: Regions.dc.html). Without a region to show: the hero and the way to ask us. */
-export const RegionsPage = ({ regions, trekCount }: RegionsPageProps) => {
+export const RegionsPage = ({ top, regions, trekCount }: RegionsPageProps) => {
   const altitudes = regions.map((region) => region.maxAltitudeM);
   const hero = (
     <RegionsHero
+      top={top}
       regionCount={regions.length}
       trekCount={trekCount}
       altitudeRange={regions.length > 0 ? { min: Math.min(...altitudes), max: Math.max(...altitudes) } : undefined}
