@@ -5,9 +5,7 @@ import type { LegalDoc } from "../types";
 /** Cookie settings page text: only what this website really uses (keep in step with ConsentOptions). */
 export const COOKIES: LegalDoc = {
   slug: "cookies",
-  label: "Cookie settings",
   title: "Cookie settings",
-  icon: "tune",
   updated: "[DATE]",
   intro: "Choose what this website may load. Necessary functions are always on; everything else stays off until you allow it.",
   sections: [

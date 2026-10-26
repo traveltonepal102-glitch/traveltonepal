@@ -50,13 +50,13 @@ describe("regionListItems", () => {
   it("lists only the published treks given, each to its page or to WhatsApp while it has none", () => {
     expect(langtang.treks).toEqual([expect.objectContaining({ name: "Langtang Valley Trek", days: 10, isInquiry: false, href: "/treks/langtang-valley" })]);
     expect(everest.treks).toEqual([expect.objectContaining({ name: "Everest Base Camp", isInquiry: true })]);
-    expect(everest.treks[0].href).toMatch(/^https:\/\/wa\.me\//);
+    expect(everest.treks[0].href).toMatch(/^\/whatsapp\?text=/);
     expect(annapurna.treks).toEqual([]);
   });
 
   it("asks on WhatsApp for a region with no page and no published trek (its treks list would be empty)", () => {
     expect(items.map((item) => [item.slug, item.isAskOnly])).toEqual([["annapurna", true], ["langtang", false], ["everest", false]]);
-    expect(annapurna.inquiryUrl).toMatch(/^https:\/\/wa\.me\//);
+    expect(annapurna.inquiryUrl).toMatch(/^\/whatsapp\?text=/);
   });
 
   it("embeds a keyless Google terrain map centred on the region", () => {

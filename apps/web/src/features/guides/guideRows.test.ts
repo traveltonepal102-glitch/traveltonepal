@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { WebTravelGuideRow } from "@/lib/supabase/database.types";
 
-import { toMainSiteGuideCards } from "./guideRows";
+import { startHereGuides, toMainSiteGuideCards, toTravelGuides } from "./guideRows";
 
 const BASE = "https://photos.example.com";
 
@@ -26,6 +26,9 @@ const row = (slug: string, overrides: Partial<WebTravelGuideRow> = {}): WebTrave
   cover_variant_widths: [400, 800],
   cover_placeholder: null,
   cover_place: "Langtang",
+  author_name: "Anita Shrestha",
+  region_slugs: ["langtang"],
+  read_minutes: 6,
   ...overrides,
 });
 
@@ -73,3 +76,16 @@ describe("toMainSiteGuideCards", () => {
     expect(toMainSiteGuideCards([], BASE)).toEqual([]);
   });
 });
+
+describe("toTravelGuides", () => {
+  it("maps a guide for the Travel guides page, with its author, regions and reading time", () => {
+    const [guide] = toTravelGuides([row("best-time", { start_here_position: 2, author_name: " Nima Lama " })], BASE);
+    expect(guide).toMatchObject({ slug: "best-time", author: "Nima Lama", regionSlugs: ["langtang"], readMinutes: 6, startHerePosition: 2, publishedOn: "2026-10-01" });
+  });
+
+  it("orders “Start here” by its numbers and leaves out unnumbered guides", () => {
+    const guides = toTravelGuides([row("a", { start_here_position: 3 }), row("b"), row("c", { start_here_position: 1 })], BASE);
+    expect(startHereGuides(guides).map((guide) => guide.slug)).toEqual(["c", "a"]);
+  });
+});
+

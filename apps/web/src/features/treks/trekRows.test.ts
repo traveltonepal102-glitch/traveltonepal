@@ -54,6 +54,7 @@ describe("toTrekSummaries", () => {
       isPopular: true,
       hasFixedDates: true,
       hasPage: true,
+      updatedAt: "2026-10-24T00:00:00Z",
       image: { src: `${BASE}/p1`, alt: "Kyanjin, Langtang Valley Trek", variantWidths: [400], placeholder: undefined },
     });
   });

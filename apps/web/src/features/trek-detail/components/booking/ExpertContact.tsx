@@ -1,6 +1,7 @@
-import { CONTACT, getEmailUrl } from "@ttn/config/contact";
+import { getEmailUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { FOUNDER } from "@/features/about/founder";
 
 const SIDE_AVATAR = "inline-flex size-10 items-center justify-center rounded-full border-2 border-white bg-[#d3e3f1] text-[#5e86ad]";
@@ -21,31 +22,34 @@ const TeamAvatars = () => (
 );
 
 /** "Speak to an expert": who answers, a phone link and the office email. */
-export const ExpertContact = () => (
-  <div className="flex flex-col gap-3 rounded-xl border border-line bg-page p-4">
-    <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Speak to an expert</p>
-    <div className="flex items-center gap-3.5">
-      <TeamAvatars />
-      <div className="flex min-w-0 flex-col">
-        <p className="flex flex-wrap items-baseline gap-x-1.5">
-          <span className="font-display text-body-sm font-bold text-ink">{FOUNDER.shortName}</span>
-          <span className="text-xs text-muted-foreground">{CONTACT.officeAddress}</span>
-        </p>
-        <a
-          href={`tel:+${CONTACT.phoneDigits}`}
-          className="inline-flex items-center gap-1 self-start rounded-sm text-xs font-semibold text-whatsapp hover:underline focus-visible:outline-2 focus-visible:outline-ring"
-        >
-          <Icon name="call" size={13} />
-          {CONTACT.phoneDisplay}
-        </a>
+export const ExpertContact = async () => {
+  const { contact } = await getSiteSettings();
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-line bg-page p-4">
+      <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Speak to an expert</p>
+      <div className="flex items-center gap-3.5">
+        <TeamAvatars />
+        <div className="flex min-w-0 flex-col">
+          <p className="flex flex-wrap items-baseline gap-x-1.5">
+            <span className="font-display text-body-sm font-bold text-ink">{FOUNDER.shortName}</span>
+            <span className="text-xs text-muted-foreground">{contact.officeAddress}</span>
+          </p>
+          <a
+            href={`tel:+${contact.phoneDigits}`}
+            className="inline-flex items-center gap-1 self-start rounded-sm text-xs font-semibold text-whatsapp hover:underline focus-visible:outline-2 focus-visible:outline-ring"
+          >
+            <Icon name="call" size={13} />
+            {contact.phoneDisplay}
+          </a>
+        </div>
       </div>
+      <a
+        href={getEmailUrl()}
+        className="flex items-center justify-center gap-1.5 rounded-md border border-line bg-muted px-3 py-2.5 text-xs font-bold break-all text-ink hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        <Icon name="mail" size={17} className="flex-none text-brand" />
+        Email: {contact.email}
+      </a>
     </div>
-    <a
-      href={getEmailUrl()}
-      className="flex items-center justify-center gap-1.5 rounded-md border border-line bg-muted px-3 py-2.5 text-xs font-bold break-all text-ink hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-    >
-      <Icon name="mail" size={17} className="flex-none text-brand" />
-      Email: {CONTACT.email}
-    </a>
-  </div>
-);
+  );
+};

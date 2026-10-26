@@ -20,13 +20,15 @@ type PersonPhotoFieldProps = {
   onEdit: () => void;
   /** The photo the guide uses now, for the card preview. */
   onChange?: (photo: Photo | null) => void;
+  /** The form field it is sent as (default photoId). */
+  fieldName?: string;
 };
 
 /**
  * A person's photo (a trekking guide, an author). Uploads go to the photo library right away (location data
  * removed); which photo the person uses is sent with Save as photoId.
  */
-export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange }: PersonPhotoFieldProps) => {
+export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldName = "photoId" }: PersonPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const choose = (next: Photo | null) => {
     setPhoto(next);
@@ -59,7 +61,7 @@ export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange }: Pers
         </div>
       </div>
       <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} />
-      <input type="hidden" name="photoId" value={photo?.id ?? ""} />
+      <input type="hidden" name={fieldName} value={photo?.id ?? ""} />
     </div>
   );
 };

@@ -50,7 +50,7 @@ export const ADMIN_SECTIONS = {
     label: "Site settings",
     href: "/settings",
     icon: "settings",
-    summary: "Site name, domain, languages and contact details.",
+    summary: "Contact details, company details and licences, and social links, used on every page."
   },
 } satisfies Record<string, AdminSection>;
 

@@ -193,6 +193,41 @@ type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role
 
 export type AuthorKindValue = "office" | "guide" | "guest";
 
+/** The one row of Site settings (supabase/migrations/20261026120000_site_settings.sql). */
+export type SiteSettingsRow = {
+  id: boolean;
+  phone_country_code: string;
+  phone_number: string;
+  email: string;
+  office_address: string;
+  office_days: number[];
+  /** "HH:MM:SS". */
+  office_opens: string;
+  office_closes: string;
+  reply_languages: string[];
+  legal_name: string;
+  legal_form: string;
+  founded_year: number | null;
+  tourism_registration: string;
+  tourism_licence: string;
+  company_registration: string;
+  pan_number: string;
+  taan_number: string;
+  memberships: string[];
+  staff_insurer: string;
+  payments_note: string;
+  certificate_photo_id: string | null;
+  facebook_url: string;
+  instagram_url: string;
+  youtube_url: string;
+  tripadvisor_url: string;
+  google_business_url: string;
+  linkedin_url: string;
+  share_photo_id: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 type AuthorRow = {
   id: string;
   kind: AuthorKindValue;
@@ -562,6 +597,12 @@ export type Database = {
         Update: Partial<TrekkingGuideTranslationRow>;
         Relationships: [Fk<"trekking_guide_translations_guide_id_fkey", "guide_id", "trekking_guides">];
       };
+      site_settings: {
+        Row: SiteSettingsRow;
+        Insert: Partial<SiteSettingsRow>;
+        Update: Partial<SiteSettingsRow>;
+        Relationships: [Fk<"site_settings_certificate_photo_id_fkey", "certificate_photo_id", "photos">, Fk<"site_settings_share_photo_id_fkey", "share_photo_id", "photos">];
+      };
       authors: {
         Row: AuthorRow;
         Insert: Partial<AuthorRow> & Pick<AuthorRow, "kind">;
@@ -728,6 +769,10 @@ export type Database = {
       save_article: {
         Args: { p_article_id: string | null; p_locale: string; p_article: Json; p_text: Json; p_region_ids: Json; p_related_ids: Json; p_sections: Json };
         Returns: string;
+      };
+      save_site_settings: {
+        Args: { p_settings: Json };
+        Returns: undefined;
       };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };

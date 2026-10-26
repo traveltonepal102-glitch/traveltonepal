@@ -2,7 +2,6 @@ import { IS_GUIDE_FEEDBACK_OPEN } from "../../feedback/service";
 import type { TocLink } from "../../guideArticles";
 import type { GuideArticle } from "../../types";
 import { MobileToc } from "../toc/MobileToc";
-import { PROSE, SECTION_TITLE } from "../styles";
 import { ArticleBlock } from "./ArticleBlock";
 import { ArticleFaq } from "./ArticleFaq";
 import { AuthorBox } from "./AuthorBox";
@@ -15,32 +14,21 @@ type ArticleBodyProps = {
 };
 
 /**
- * The article: quick answer, intro, each section's blocks, FAQ, author and "Was this guide helpful?".
- * Sections carry the contents list's ids.
+ * The article: quick answer, then the body's blocks in order (headed sections carry the contents list's ids), the
+ * questions, the author and "Was this guide helpful?".
  */
-export const ArticleBody = ({ article, toc }: ArticleBodyProps) => (
+export const ArticleBody = ({ article, toc }: ArticleBodyProps) => {
+  const quick = article.blocks.find((block) => block.type === "quick");
+  return (
   <article className="flex min-w-0 flex-col gap-5">
     <MobileToc links={toc} />
-    <QuickAnswer text={article.quickAnswer} />
-    {article.intro.map((paragraph) => (
-      <p key={paragraph} className={PROSE}>
-        {paragraph}
-      </p>
+    {quick && <QuickAnswer body={quick.body} />}
+    {article.blocks.map((block, index) => (
+      <ArticleBlock key={`${block.type}-${index}`} block={block} article={article} />
     ))}
-
-    {article.sections.map((section) => (
-      <section key={section.id} id={section.id} aria-labelledby={`${section.id}-title`} className="flex scroll-mt-5 flex-col gap-5 pt-3">
-        <h2 id={`${section.id}-title`} className={SECTION_TITLE}>
-          {section.title}
-        </h2>
-        {section.blocks.map((block, index) => (
-          <ArticleBlock key={`${block.type}-${index}`} block={block} article={article} />
-        ))}
-      </section>
-    ))}
-
     <ArticleFaq faqs={article.faqs} />
-    <AuthorBox name={article.author} bio={article.authorBio} />
+    <AuthorBox author={article.author} checker={article.checker} />
     {IS_GUIDE_FEEDBACK_OPEN && <GuideFeedback slug={article.slug} />}
   </article>
-);
+  );
+};

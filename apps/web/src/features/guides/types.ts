@@ -4,7 +4,7 @@ import type { SiteImageSource } from "@/lib/images";
 
 import type { GuideTopicId } from "./topics";
 
-/** What a guide card needs; full travel guides come from Payload later. */
+/** What a guide card needs (guideRows, from the database). */
 export type GuideSummary = {
   slug: string;
   title: string;
@@ -28,4 +28,6 @@ export type TravelGuide = Omit<GuideSummary, "tag" | "tagIcon"> & {
   author: string;
   /** Shown as the big featured story; without one the newest guide is featured. */
   isFeatured?: boolean;
+  /** 1–6 in "Start here" (a first trek's reading order), or none. */
+  startHerePosition?: number;
 };

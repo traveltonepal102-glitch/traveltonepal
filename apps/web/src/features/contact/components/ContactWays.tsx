@@ -1,8 +1,9 @@
-import { CONTACT, getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import type { ReactNode } from "react";
 
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { ICON_TONES } from "@/components/shared/iconTones";
 import type { IconTone } from "@/components/shared/iconTones";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -47,40 +48,43 @@ const Note = ({ icon, className, children }: { icon: IconName; className: string
 );
 
 /** WhatsApp (recommended), email, and visiting or calling the office; overlaps the bottom of the hero. */
-export const ContactWays = () => (
-  <section aria-label="Ways to reach us" className="relative -mt-16 pb-10">
-    <ul className={`${WRAP} grid gap-4.5 lg:grid-cols-[1.25fr_1fr_1fr]`}>
-      <WayCard icon="chat" tone="green" title="WhatsApp" text="Chat, send voice notes or share your dates. Most people plan their whole trek here." isRecommended>
-        <p className="font-display text-[22px] font-extrabold text-[#0f5e2e]">{CONTACT.phoneDisplay}</p>
-        <Note icon="schedule" className="text-whatsapp">
-          {REPLY_TIMES.whatsApp}
-        </Note>
-        <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="chat" shape="rounded" isExternal className="mt-auto">
-          Chat on WhatsApp
-        </ButtonLink>
-      </WayCard>
+export const ContactWays = async () => {
+  const { contact } = await getSiteSettings();
+  return (
+    <section aria-label="Ways to reach us" className="relative -mt-16 pb-10">
+      <ul className={`${WRAP} grid gap-4.5 lg:grid-cols-[1.25fr_1fr_1fr]`}>
+        <WayCard icon="chat" tone="green" title="WhatsApp" text="Chat, send voice notes or share your dates. Most people plan their whole trek here." isRecommended>
+          <p className="font-display text-[22px] font-extrabold text-[#0f5e2e]">{contact.phoneDisplay}</p>
+          <Note icon="schedule" className="text-whatsapp">
+            {REPLY_TIMES.whatsApp}
+          </Note>
+          <ButtonLink href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")} variant="whatsapp" icon="chat" shape="rounded" isExternal className="mt-auto">
+            Chat on WhatsApp
+          </ButtonLink>
+        </WayCard>
 
-      <WayCard icon="mail" tone="brand" title="Email" text="Best for longer questions, group trips or documents.">
-        <p className="font-display text-[17px] font-bold break-all text-brand">{CONTACT.email}</p>
-        <Note icon="schedule" className="text-brand">
-          {REPLY_TIMES.email}
-        </Note>
-        <ButtonLink href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} variant="secondary" icon="mail" shape="rounded" className="mt-auto">
-          Write an email
-        </ButtonLink>
-      </WayCard>
+        <WayCard icon="mail" tone="brand" title="Email" text="Best for longer questions, group trips or documents.">
+          <p className="font-display text-[17px] font-bold break-all text-brand">{contact.email}</p>
+          <Note icon="schedule" className="text-brand">
+            {REPLY_TIMES.email}
+          </Note>
+          <ButtonLink href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} variant="secondary" icon="mail" shape="rounded" className="mt-auto">
+            Write an email
+          </ButtonLink>
+        </WayCard>
 
-      <WayCard icon="location_on" tone="saffron" title="Visit or call" text="Already in Kathmandu? Drop in for a chat and a trek briefing.">
-        <p className="text-[15px] font-semibold text-ink">{CONTACT.officeAddress}</p>
-        <Note icon="call" className="text-saffron-deep">
-          <a href={`tel:+${CONTACT.phoneDigits}`} className="rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-ring">
-            {CONTACT.phoneDisplay}
-          </a>
-        </Note>
-        <ButtonLink href={`#${CONTACT_SECTION_IDS.office}`} variant="secondary" icon="map" shape="rounded" className="mt-auto">
-          See map and hours
-        </ButtonLink>
-      </WayCard>
-    </ul>
-  </section>
-);
+        <WayCard icon="location_on" tone="saffron" title="Visit or call" text="Already in Kathmandu? Drop in for a chat and a trek briefing.">
+          <p className="text-[15px] font-semibold text-ink">{contact.officeAddress}</p>
+          <Note icon="call" className="text-saffron-deep">
+            <a href={`tel:+${contact.phoneDigits}`} className="rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-ring">
+              {contact.phoneDisplay}
+            </a>
+          </Note>
+          <ButtonLink href={`#${CONTACT_SECTION_IDS.office}`} variant="secondary" icon="map" shape="rounded" className="mt-auto">
+            See map and hours
+          </ButtonLink>
+        </WayCard>
+      </ul>
+    </section>
+  );
+};

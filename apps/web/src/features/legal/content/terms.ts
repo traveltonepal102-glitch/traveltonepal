@@ -1,13 +1,12 @@
-import { CONTACT } from "@ttn/config/contact";
+import type { SiteSettings } from "@/features/site-settings/types";
 
+import { companyLegalName } from "../legalCompany";
 import type { LegalDoc } from "../types";
 
 /** Template from the website design (Legal.dc.html); every [BRACKETED] value waits for the owner and their lawyer. */
-export const TERMS: LegalDoc = {
+export const termsDoc = (settings: SiteSettings): LegalDoc => ({
   slug: "terms",
-  label: "Terms and booking",
   title: "Terms and booking conditions",
-  icon: "description",
   updated: "[DATE]",
   intro: "The conditions that apply when you book a trek with Travel To Nepal. Please read them before you pay a deposit.",
   ownerNote:
@@ -17,7 +16,9 @@ export const TERMS: LegalDoc = {
       id: "who-we-are",
       heading: "Who we are",
       paragraphs: [
-        `These conditions apply to treks organised by [COMPANY LEGAL NAME], ${CONTACT.officeAddress}, registered with the Department of Tourism under no. ${CONTACT.registrationNumber} ("we", "us").`,
+        `These conditions apply to treks organised by ${companyLegalName(settings)}, ${settings.contact.officeAddress}${
+          settings.company.tourismRegistration ? `, registered with the Department of Tourism under no. ${settings.company.tourismRegistration}` : ""
+        } ("we", "us").`,
       ],
     },
     {
@@ -96,4 +97,4 @@ export const TERMS: LegalDoc = {
       ],
     },
   ],
-};
+});

@@ -19,7 +19,8 @@ type EditorHeaderProps = {
   children?: ReactNode;
 };
 
-const DOT_CLASSES: Record<SaveStatusTone, string> = {
+/** The dot before the save status (also on screens with their own heading, e.g. Site settings). */
+export const SAVE_STATUS_DOT: Record<SaveStatusTone, string> = {
   saved: "bg-whatsapp",
   unsaved: "bg-saffron",
   neutral: "bg-subtle",
@@ -38,7 +39,7 @@ export const EditorHeader = ({ back, title, status, statusTone, saveLabel, isSav
     <div className="min-w-0 flex-1">
       <h1 className="m-0 truncate font-display text-h4 text-ink">{title}</h1>
       <p role="status" className="m-0 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <span aria-hidden="true" className={cn("size-2 flex-none rounded-full", DOT_CLASSES[statusTone])} />
+        <span aria-hidden="true" className={cn("size-2 flex-none rounded-full", SAVE_STATUS_DOT[statusTone])} />
         {status}
       </p>
     </div>

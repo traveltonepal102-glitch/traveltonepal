@@ -1,13 +1,11 @@
 import { z } from "zod";
 
-import { GUIDE_ARTICLE_SLUGS } from "../guideArticles";
-
 export const GUIDE_VOTES = ["yes", "no"] as const;
 export type GuideVote = (typeof GUIDE_VOTES)[number];
 
-/** "Was this guide helpful?" as the server accepts it: a guide that has a page, and yes or no. */
+/** "Was this guide helpful?" as the server accepts it: a guide's address (letters, digits and dashes), and yes or no. */
 export const guideFeedbackSchema = z.object({
-  slug: z.string().refine((slug) => GUIDE_ARTICLE_SLUGS.includes(slug), { error: "Unknown guide." }),
+  slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: "Unknown guide." }).max(100),
   vote: z.enum(GUIDE_VOTES),
 });
 

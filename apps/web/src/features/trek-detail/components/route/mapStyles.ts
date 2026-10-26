@@ -21,6 +21,9 @@ export const PIN_STYLES: Record<RoutePinKind, { fill: string; stroke: string }> 
   option: { fill: "fill-footer-muted", stroke: "stroke-[#5f6b76]" },
 };
 
+/** Map-pin shape in a 24×24 box, its tip at (12, 22). */
+export const PIN_PATH = "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z";
+
 /** Area names on the route map, styled like a printed map. */
 export const MAP_LABEL_STYLES: Record<MapLabel["kind"], string> = {
   park: "fill-[#4e7a3a] italic",

@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SiteImage } from "@/components/ui/SiteImage";
-import { guideHref } from "@/features/guide-article/guideArticles";
+import { guidePath } from "@/lib/routes";
 
 import type { GuideSummary } from "../types";
 import { CARD_FOCUS, STRETCHED_LINK } from "./styles";
@@ -39,7 +39,7 @@ export const GuideCard = ({ guide, footer = READ_THE_GUIDE }: GuideCardProps) =>
     </div>
     <div className="flex flex-1 flex-col gap-1.5 px-4.5 pt-4 pb-4.5">
       <h3 className="text-h3">
-        <Link href={guideHref(guide.slug)} className={STRETCHED_LINK}>
+        <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
           {guide.title}
         </Link>
       </h3>
@@ -73,7 +73,7 @@ export const FeaturedGuideCard = ({ guide, sizes = "(min-width: 1024px) 520px, 1
       {guide.tag}
     </span>
     <h3 className="relative max-w-135 text-h2-sm text-white md:text-h1-sm">
-      <Link href={guideHref(guide.slug)} className={STRETCHED_LINK}>
+      <Link href={guidePath(guide.slug)} className={STRETCHED_LINK}>
         {guide.title}
       </Link>
     </h3>

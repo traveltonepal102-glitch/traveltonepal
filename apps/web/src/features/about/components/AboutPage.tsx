@@ -1,8 +1,8 @@
 import { JsonLd } from "@/components/shared/JsonLd";
 import { REGIONS } from "@/features/regions/regions";
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 
 import { TREKKERS_GUIDED } from "../aboutContent";
-import { CREDENTIALS } from "../credentials";
 import { aboutPageRating, aboutPageReviews } from "../reviews";
 import { aboutSectionLinks } from "../sections";
 import { aboutJsonLd } from "../seo";
@@ -19,11 +19,12 @@ import { TeamSection } from "./team/TeamSection";
 import { VisitSection } from "./VisitSection";
 
 /** About us page (design: About.dc.html). Reviews and the rating stat only appear once there are real ones (placeholders in `pnpm dev`). */
-export const AboutPage = () => {
+export const AboutPage = async () => {
+  const { company } = await getSiteSettings();
   const reviews = aboutPageReviews();
   const rating = aboutPageRating();
   const stats: AboutStat[] = [
-    { value: CREDENTIALS.foundedYear, label: "Founded in Kathmandu" },
+    ...(company.foundedYear ? [{ value: String(company.foundedYear), label: "Founded in Kathmandu" }] : []),
     { value: String(REGIONS.length), label: "Trekking regions" },
     { value: TREKKERS_GUIDED, label: "Trekkers guided" },
     ...(rating ? [{ value: `${rating.ratingLabel} ★`, label: "Average review score" }] : []),

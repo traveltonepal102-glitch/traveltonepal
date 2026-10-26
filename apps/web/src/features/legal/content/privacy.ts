@@ -1,7 +1,8 @@
-import { CONTACT } from "@ttn/config/contact";
-
 import { CONSENT_MAX_AGE_LABEL, CONSENT_STORAGE_KEY } from "@/features/consent/consent";
 
+import type { SiteSettings } from "@/features/site-settings/types";
+
+import { companyLegalName } from "../legalCompany";
 import type { LegalDoc } from "../types";
 
 /**
@@ -9,11 +10,9 @@ import type { LegalDoc } from "../types";
  * analytics, no click counting and no video embeds (add them here, and in the cookie settings,
  * before adding them to the site). [BRACKETED] values wait for the owner and a data protection specialist.
  */
-export const PRIVACY: LegalDoc = {
+export const privacyDoc = (settings: SiteSettings): LegalDoc => ({
   slug: "privacy",
-  label: "Privacy",
   title: "Privacy policy",
-  icon: "lock",
   updated: "[DATE]",
   intro: "How we handle your personal data when you visit this website or contact us. In short: we collect as little as possible.",
   ownerNote: "Template text. Have this policy checked by a data protection specialist before going live.",
@@ -22,7 +21,7 @@ export const PRIVACY: LegalDoc = {
       id: "controller",
       heading: "Who is responsible",
       paragraphs: [
-        `[COMPANY LEGAL NAME], ${CONTACT.officeAddress}. Email: ${CONTACT.email}. [EU representative under Art. 27 GDPR, if required: NAME, ADDRESS].`,
+        `${companyLegalName(settings)}, ${settings.contact.officeAddress}. Email: ${settings.contact.email}. [EU representative under Art. 27 GDPR, if required: NAME, ADDRESS].`,
       ],
     },
     {
@@ -72,4 +71,4 @@ export const PRIVACY: LegalDoc = {
       ],
     },
   ],
-};
+});

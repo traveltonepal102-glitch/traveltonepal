@@ -1,4 +1,4 @@
-import { getEmailUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl, mailtoUrl, whatsAppChatUrl } from "@ttn/config/contact";
 import { describe, expect, it } from "vitest";
 
 import { MAX_REQUESTS_LENGTH, buildTrekRequestMessage, trekRequestSchema } from "./requestMessage";
@@ -58,14 +58,24 @@ describe("buildTrekRequestMessage", () => {
   });
 });
 
-describe("getEmailUrl", () => {
-  it("encodes a subject and body with %20 spaces and line breaks", () => {
-    const url = getEmailUrl({ subject: "Booking request", body: "Line 1\nLine 2 & more" });
-    expect(url).toMatch(/^mailto:[^?]+\?subject=Booking%20request&body=Line%201%0ALine%202%20%26%20more$/);
+describe("contact links", () => {
+  it("send email and WhatsApp through the site's own addresses, which read the saved contact details", () => {
+    expect(getEmailUrl()).toBe("/email");
+    expect(getWhatsAppUrl()).toBe("/whatsapp");
+    expect(new URL(getEmailUrl({ subject: "Booking request", body: "Line 1\nLine 2 & more" }), "https://x.test").searchParams.get("body")).toBe("Line 1\nLine 2 & more");
+    expect(new URL(getWhatsAppUrl("Hi & hello"), "https://x.test").searchParams.get("text")).toBe("Hi & hello");
   });
 
-  it("is a plain mailto link without a draft", () => {
-    expect(getEmailUrl()).toMatch(/^mailto:[^?]+$/);
+  it("encode a mail draft with %20 spaces and line breaks (mail apps do not read + as a space)", () => {
+    expect(mailtoUrl("hello@example.com", { subject: "Booking request", body: "Line 1\nLine 2 & more" })).toBe(
+      "mailto:hello@example.com?subject=Booking%20request&body=Line%201%0ALine%202%20%26%20more",
+    );
+    expect(mailtoUrl("hello@example.com")).toBe("mailto:hello@example.com");
+  });
+
+  it("open a WhatsApp chat with the saved number", () => {
+    expect(whatsAppChatUrl("9779843197197")).toBe("https://wa.me/9779843197197");
+    expect(whatsAppChatUrl("9779843197197", "Hi there")).toBe("https://wa.me/9779843197197?text=Hi%20there");
   });
 });
 

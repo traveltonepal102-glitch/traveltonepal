@@ -42,6 +42,7 @@ export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: stri
           isPopular: row.is_popular,
           hasFixedDates: row.has_fixed_dates,
           hasPage: row.has_page,
+          updatedAt: row.updated_at,
           image: coverImage(row, photosBaseUrl, name),
         },
       ];

@@ -66,7 +66,7 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
             <TrekGuides guides={trek.guides} />
             <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} hiddenSections={trek.hiddenSections} />
             <TrekElevation itinerary={trek.itinerary} trailhead={trek.trailhead} />
-            <TrekRouteMap name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} />
+            <TrekRouteMap name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} itinerary={trek.itinerary} />
             {shows("why_book") && <WhyBookWithUs region={trek.region} />}
             <TrekPricing groupPrices={trek.groupPrices} departures={trek.departures} currentSeason={trek.currentSeason} />
             {shows("credentials") && <TrekCredentials />}

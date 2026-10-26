@@ -1,6 +1,6 @@
-import { CONTACT } from "@ttn/config/contact";
 import type { Metadata } from "next";
 
+import { ORGANIZATION_ID } from "@/features/seo/organization";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES } from "@/lib/routes";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
@@ -18,7 +18,7 @@ export const contactMetadata: Metadata = {
   openGraph: { type: "website", siteName: SITE_NAME, url: ROUTES.contact, title: TITLE, description: DESCRIPTION },
 };
 
-/** ContactPage with the company's contact points, the breadcrumb and the FAQ. */
+/** ContactPage about the company (its contact points are on every page, by its id), the breadcrumb and the FAQ. */
 export const contactJsonLd = (): JsonLdData => ({
   "@context": "https://schema.org",
   "@graph": [
@@ -26,21 +26,7 @@ export const contactJsonLd = (): JsonLdData => ({
       "@type": "ContactPage",
       url: absoluteUrl(ROUTES.contact),
       name: TITLE,
-      mainEntity: {
-        "@type": "TravelAgency",
-        name: SITE_NAME,
-        url: absoluteUrl(ROUTES.home),
-        email: CONTACT.email,
-        telephone: CONTACT.phoneDisplay,
-        address: { "@type": "PostalAddress", addressLocality: "Kathmandu", addressCountry: "NP" },
-        contactPoint: {
-          "@type": "ContactPoint",
-          contactType: "customer service",
-          telephone: CONTACT.phoneDisplay,
-          email: CONTACT.email,
-          availableLanguage: ["English", "German"],
-        },
-      },
+      mainEntity: { "@id": ORGANIZATION_ID },
     },
     {
       "@type": "BreadcrumbList",

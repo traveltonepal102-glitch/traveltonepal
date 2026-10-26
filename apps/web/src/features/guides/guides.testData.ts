@@ -8,8 +8,8 @@ const AUTHOR = "[Author name]";
 const EVERY_REGION = REGIONS.map((region) => region.slug);
 
 /**
- * Guides on the Travel guides page. Demo values from the website design until travel guides come
- * from Payload (CMS phase); the [BRACKETED] author waits for the writer's name.
+ * Test data: guides like the Travel guides page shows (the design's demo list), for the list, filter and
+ * related-guide tests. The website itself reads the published guides from the database (guidesRepository).
  */
 export const TRAVEL_GUIDES: readonly TravelGuide[] = [
   {

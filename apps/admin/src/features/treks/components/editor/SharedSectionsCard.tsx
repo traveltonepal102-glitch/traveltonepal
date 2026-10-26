@@ -1,12 +1,10 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import Link from "next/link";
 import { useState } from "react";
 
 import { FormSection } from "@/components/ui/FormSection";
 import { Switch } from "@/components/ui/Switch";
-import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
 import { SHARED_SECTIONS } from "../../constants";
 import type { SharedSectionKey } from "../../types";
@@ -44,11 +42,7 @@ export const SharedSectionsCard = ({ hiddenSharedSections }: SharedSectionsCardP
         <Icon name="info" size={20} className="flex-none text-brand" />
         <span>
           These sections are written <strong>once</strong> and appear on every trek page, so they stay the same everywhere. Here you only
-          choose whether they show on this trek. To change the words, open{" "}
-          <Link href={ADMIN_SECTIONS.settings.href} className="font-bold text-brand">
-            Site settings
-          </Link>
-          .
+          choose whether they show on this trek. Their words are not edited in the admin yet: ask your developer to change them.
         </span>
       </p>
 

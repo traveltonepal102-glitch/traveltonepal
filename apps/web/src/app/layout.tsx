@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
 import { CookieBanner } from "@/features/consent/components/CookieBanner";
+import { OrganizationJsonLd } from "@/features/seo/OrganizationJsonLd";
 import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
 import { SITE_URL } from "@/lib/site";
 
@@ -25,6 +26,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     {/* Browser extensions (e.g. Grammarly) add attributes to <body> before React loads. This only
         ignores attribute differences on <body> itself, not on anything inside it. */}
     <body className="flex min-h-full flex-col" suppressHydrationWarning>
+      <OrganizationJsonLd />
       {children}
       <SiteFooter />
       <CookieBanner />

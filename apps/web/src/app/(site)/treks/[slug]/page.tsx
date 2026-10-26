@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { TrekDetailPage } from "@/features/trek-detail/components/TrekDetailPage";
 import { trekMetadata } from "@/features/trek-detail/seo";
+import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
 import { getTrekDetail, listTrekPageSlugs } from "@/features/trek-detail/services/trekPageRepository";
 
 type TrekPageProps = PageProps<"/treks/[slug]">;
@@ -27,8 +28,13 @@ export const generateMetadata = async ({ params }: TrekPageProps): Promise<Metad
 };
 
 const TrekPage = async ({ params }: TrekPageProps) => {
-  const trek = await getTrekDetail((await params).slug);
-  if (!trek) notFound();
+  const { slug } = await params;
+  const trek = await getTrekDetail(slug);
+  if (!trek) {
+    // An old address (the trek was renamed) moves on to today's; anything else is a 404.
+    await redirectIfMoved("trek", slug);
+    notFound();
+  }
 
   return (
     <main className="flex-1 bg-page">

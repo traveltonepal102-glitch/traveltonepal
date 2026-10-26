@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
+import { SiteImage } from "@/components/ui/SiteImage";
 import { guidePath } from "@/lib/routes";
 
 import { formatGuideMonth, formatReadTime } from "../format";
@@ -15,11 +15,9 @@ export const GuideFeatureCard = ({ guide }: { guide: TravelGuide }) => (
     className={`group relative flex h-full min-h-105 flex-col justify-end gap-3.5 overflow-hidden rounded-xl bg-navy p-5.5 text-white md:min-h-120 md:p-8 ${CARD_FOCUS}`}
   >
     {/* Usually in view when the page opens on desktop, so it loads first. */}
-    <Image
-      src={guide.image.src}
-      alt={guide.image.alt}
-      fill
-      preload
+    <SiteImage
+      image={guide.image}
+      priority
       sizes="(min-width: 1240px) 800px, (min-width: 1024px) 62vw, 100vw"
       className="object-cover object-[50%_30%] transition-transform duration-500 group-hover:scale-105"
     />

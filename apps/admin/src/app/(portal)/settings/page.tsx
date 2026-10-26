@@ -1,17 +1,27 @@
 import type { Metadata } from "next";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { SectionPlaceholder } from "@/features/shell/components/SectionPlaceholder";
+import { saveSettings } from "@/features/settings/actions/saveSettings";
+import { SettingsEditor } from "@/features/settings/components/SettingsEditor";
+import { getSiteSettings } from "@/features/settings/services/settingsRepository";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
+import { formatDateTime } from "@/utils/formatDateTime";
 
-const SECTION = ADMIN_SECTIONS.settings;
+export const metadata: Metadata = { title: ADMIN_SECTIONS.settings.label };
 
-export const metadata: Metadata = { title: SECTION.label };
-
-/** Placeholder until the screen is built. */
+/** Site settings: contact details, company and licences, social links (any admin sees them, a Super admin edits). */
 const SettingsPage = async () => {
-  await requireAdmin();
-  return <SectionPlaceholder section={SECTION} />;
+  const admin = await requireAdmin();
+  const settings = await getSiteSettings();
+
+  return (
+    <SettingsEditor
+      action={saveSettings}
+      settings={settings}
+      canEdit={admin.role === "super_admin"}
+      lastSaved={`Saved ${formatDateTime(settings.updatedAt)} Nepal time`}
+    />
+  );
 };
 
 export default SettingsPage;

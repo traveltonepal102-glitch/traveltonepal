@@ -1,13 +1,16 @@
 import { ROUTES } from "@/lib/routes";
 
-import { COOKIES } from "./content/cookies";
-import { IMPRESSUM } from "./content/impressum";
-import { PRIVACY } from "./content/privacy";
-import { TERMS } from "./content/terms";
-import type { LegalDoc, LegalSlug } from "./types";
+import type { IconName } from "@ttn/ui/icon";
 
-/** The legal pages, in menu order. */
-export const LEGAL_DOCS: readonly LegalDoc[] = [TERMS, PRIVACY, IMPRESSUM, COOKIES];
+import type { LegalSlug } from "./types";
+
+/** The legal pages, in menu order, with their short name and icon. */
+export const LEGAL_MENU: readonly { slug: LegalSlug; label: string; icon: IconName }[] = [
+  { slug: "terms", label: "Terms and booking", icon: "description" },
+  { slug: "privacy", label: "Privacy", icon: "lock" },
+  { slug: "impressum", label: "Impressum", icon: "verified" },
+  { slug: "cookies", label: "Cookie settings", icon: "tune" },
+];
 
 export const LEGAL_PATHS: Record<LegalSlug, string> = {
   terms: ROUTES.terms,

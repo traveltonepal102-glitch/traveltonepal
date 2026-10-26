@@ -7,6 +7,8 @@ export const WEBSITE_CACHE_TAGS = {
   treks: "treks",
   travelGuides: "travel-guides",
   trekkingGuides: "trekking-guides",
+  /** Site settings: contact details, company and licences, social links (shown on every page). */
+  settings: "settings",
 } as const;
 
 export type WebsiteCacheTag = (typeof WEBSITE_CACHE_TAGS)[keyof typeof WEBSITE_CACHE_TAGS];

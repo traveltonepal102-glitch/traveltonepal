@@ -3,9 +3,10 @@ import { WhatsAppCta } from "@/components/shared/WhatsAppCta";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
 import { REGIONS } from "@/features/regions/regions";
 
-import { pickGuideHighlights, pickGuidesBySlug, regionsWithGuides } from "../guideLists";
+import { pickGuideHighlights, regionsWithGuides } from "../guideLists";
+import { startHereGuides } from "../guideRows";
 import { guidesJsonLd } from "../seo";
-import { START_HERE_SLUGS, TRAVEL_GUIDES } from "../travelGuides";
+import type { TravelGuide } from "../types";
 import { AllGuidesSection } from "./AllGuidesSection";
 import { GuideHighlightsSection } from "./GuideHighlightsSection";
 import { GuideRegionLinks } from "./GuideRegionLinks";
@@ -16,20 +17,20 @@ import { WRAP } from "./styles";
 
 /**
  * Travel guides page: header with search, featured guides, topics, "Start here", every guide,
- * guides by region, a WhatsApp question box and the newsletter.
+ * guides by region, a WhatsApp question box and the newsletter. `guides`: the published ones (guidesRepository).
  */
-export const GuidesPage = () => {
-  const highlights = pickGuideHighlights(TRAVEL_GUIDES);
-  const regions = regionsWithGuides(TRAVEL_GUIDES, REGIONS);
+export const GuidesPage = ({ guides }: { guides: readonly TravelGuide[] }) => {
+  const highlights = pickGuideHighlights(guides);
+  const regions = regionsWithGuides(guides, REGIONS);
 
   return (
     <>
-      <JsonLd data={guidesJsonLd(TRAVEL_GUIDES)} />
+      <JsonLd data={guidesJsonLd(guides)} />
       <GuidesHero />
       {highlights && <GuideHighlightsSection {...highlights} />}
-      <GuideTopicsSection guides={TRAVEL_GUIDES} />
-      <StartHereSection guides={pickGuidesBySlug(TRAVEL_GUIDES, START_HERE_SLUGS)} />
-      <AllGuidesSection guides={TRAVEL_GUIDES} regions={regions} />
+      <GuideTopicsSection guides={guides} />
+      <StartHereSection guides={startHereGuides(guides)} />
+      <AllGuidesSection guides={guides} regions={regions} />
 
       <div className={`${WRAP} flex flex-col gap-5 pb-12 md:pb-16`}>
         {regions.length > 0 && <GuideRegionLinks regions={regions} />}

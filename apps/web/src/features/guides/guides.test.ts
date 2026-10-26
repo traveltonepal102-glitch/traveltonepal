@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { formatGuideCount, formatGuideMonth, formatReadTime, formatTotalReadTime } from "./format";
 import { countGuidesByTopic, pickGuideHighlights, pickGuidesBySlug, regionsWithGuides } from "./guideLists";
 import type { GuideTopicId } from "./topics";
-import { START_HERE_SLUGS, TRAVEL_GUIDES } from "./travelGuides";
+import { START_HERE_SLUGS, TRAVEL_GUIDES } from "./guides.testData";
 import type { TravelGuide } from "./types";
 
 const guide = (slug: string, publishedOn: string, isFeatured?: boolean, topic: GuideTopicId = "planning"): TravelGuide => ({

@@ -8,9 +8,6 @@ export const REPLY_TIMES = {
   email: "Reply within 24 hours",
 } as const;
 
-/** Languages the office replies in. */
-export const REPLY_LANGUAGES = { text: "English and German", note: "[Confirm languages your team replies in]" } as const;
-
 /** Short directions to the office, under the address. */
 export const OFFICE_DIRECTIONS = "[Short directions, e.g. near ...]";
 

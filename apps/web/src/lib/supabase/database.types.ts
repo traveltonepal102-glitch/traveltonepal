@@ -225,7 +225,91 @@ export type WebTravelGuideRow = CoverColumns & {
   published_on: string;
   updated_on: string | null;
   cover_alt: string;
+  /** The author's name (a trekking guide author's comes from the guide). */
+  author_name: string;
+  /** Regions the guide is about, A–Z. */
+  region_slugs: string[];
+  /** About 200 words a minute, at least 1. */
+  read_minutes: number;
 };
+
+/**
+ * The rest of a published travel guide's page (web_travel_guide_pages). JSON columns are `unknown`: the website
+ * checks their shape when it reads them (guidePageRows).
+ */
+export type WebTravelGuidePageRow = CoverColumns & {
+  id: string;
+  slug: string;
+  locale: Locale;
+  title: string;
+  intro: string;
+  highlight_tag: string;
+  updated_line: string;
+  /** Up to 4 of { icon, label, value }. */
+  facts: unknown;
+  seo_title: string;
+  seo_description: string;
+  published_on: string;
+  updated_on: string | null;
+  topic: WebTravelGuideRow["topic"];
+  month_ratings: ("best" | "possible" | "avoid")[] | null;
+  /** Jan–Dec: [{ onTheTrail, crowds }]. */
+  month_notes: unknown;
+  cover_alt: string;
+  /** Published treks only. */
+  main_trek_slug: string | null;
+  photo_trek_slug: string | null;
+  /** { kind, name, job_title, bio, photo }. */
+  author: unknown;
+  /** { name, role, photo }, or null without a checker who agreed to be shown. */
+  checker: unknown;
+  /** Published ones only, in order. */
+  related_slugs: string[];
+  region_slugs: string[];
+  read_minutes: number;
+  /** In order: [{ type, settings, content, trek_slug, trek_slugs, guides, photos, days }]. */
+  sections: unknown;
+};
+
+/** Site settings, as the website shows them (one row: contact details, company and licences, social links). */
+export type WebSiteSettingsRow = {
+  phone_country_code: string;
+  phone_number: string;
+  email: string;
+  office_address: string;
+  office_days: number[];
+  /** "HH:MM", Nepal time. */
+  office_opens: string;
+  office_closes: string;
+  reply_languages: string[];
+  legal_name: string;
+  legal_form: string;
+  founded_year: number | null;
+  tourism_registration: string;
+  tourism_licence: string;
+  company_registration: string;
+  pan_number: string;
+  taan_number: string;
+  memberships: string[];
+  staff_insurer: string;
+  payments_note: string;
+  facebook_url: string;
+  instagram_url: string;
+  youtube_url: string;
+  tripadvisor_url: string;
+  google_business_url: string;
+  certificate_id: string | null;
+  certificate_width: number | null;
+  certificate_height: number | null;
+  certificate_variant_widths: number[] | null;
+  share_id: string | null;
+  share_variant_widths: number[] | null;
+  updated_at: string;
+  linkedin_url: string;
+};
+
+/** An old address that answers with a permanent redirect to today's (only to a page that exists). */
+export type WebRedirectRow = { kind: "trek" | "region" | "guide"; from_slug: string; to_slug: string };
 
 type View<Row> = { Row: Row; Relationships: [] };
 
@@ -242,6 +326,9 @@ export type Database = {
       web_trek_photos: View<WebTrekPhotoRow>;
       web_trek_guides: View<WebTrekGuideRow>;
       web_travel_guides: View<WebTravelGuideRow>;
+      web_travel_guide_pages: View<WebTravelGuidePageRow>;
+      web_redirects: View<WebRedirectRow>;
+      web_site_settings: View<WebSiteSettingsRow>;
     };
     Functions: { [_ in never]: never };
     Enums: { [_ in never]: never };

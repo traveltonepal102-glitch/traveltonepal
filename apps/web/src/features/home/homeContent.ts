@@ -6,8 +6,8 @@ import { capitalize, formatCount, formatCountWord } from "@/lib/format";
 const HOME_GUIDE_COUNT = 3;
 
 /**
- * "Nepal trekking guides": up to three published guides, in the order given (featured first). A guide without
- * its page yet opens the travel guides list (GuideCard → guideHref).
+ * "Nepal trekking guides": up to three published guides, in the order given (featured first). Each card opens
+ * the guide's page (GuideCard → guidePath).
  */
 export const homeGuides = (guides: readonly GuideSummary[]) => guides.slice(0, HOME_GUIDE_COUNT);
 

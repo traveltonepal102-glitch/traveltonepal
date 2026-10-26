@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { filterGuides, guideListHref, parseGuideFilters, serializeGuideFilters } from "./guideFiltering";
-import { TRAVEL_GUIDES } from "./travelGuides";
+import { TRAVEL_GUIDES } from "./guides.testData";
 
 const REGION_SLUGS = ["langtang", "everest"];
 const parse = (query: string) => parseGuideFilters(new URLSearchParams(query), REGION_SLUGS);

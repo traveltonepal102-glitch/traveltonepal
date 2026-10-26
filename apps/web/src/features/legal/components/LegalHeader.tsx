@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { ROUTES } from "@/lib/routes";
 
-import { LEGAL_DOCS, LEGAL_PATHS } from "../legalDocs";
+import { LEGAL_MENU, LEGAL_PATHS } from "../legalDocs";
 import type { LegalDoc } from "../types";
 import { WRAP } from "./styles";
 
@@ -16,7 +16,7 @@ export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex max-w-190 flex-col gap-2">
           <p className="inline-flex items-center gap-2 text-eyebrow text-brand uppercase">
-            <Icon name={doc.icon} size={18} />
+            <Icon name={LEGAL_MENU.find((item) => item.slug === doc.slug)?.icon ?? "description"} size={18} />
             Legal information
           </p>
           <h1 id="legal-title" className="text-[30px] leading-tight font-extrabold tracking-tight md:text-[40px]">
@@ -32,7 +32,7 @@ export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
 
       <nav aria-label="Legal pages" className="-mx-4 overflow-x-auto px-4 pt-1.5 scrollbar-none lg:hidden [&::-webkit-scrollbar]:hidden">
         <ul className="flex gap-1.5">
-          {LEGAL_DOCS.map((item) => {
+          {LEGAL_MENU.map((item) => {
             const isCurrent = item.slug === doc.slug;
             return (
               <li key={item.slug} className="flex-none">

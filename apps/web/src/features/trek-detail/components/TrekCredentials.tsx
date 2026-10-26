@@ -1,8 +1,10 @@
-import { CONTACT } from "@ttn/config/contact";
-import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 
-import { CREDENTIALS } from "@/features/about/credentials";
+import { Icon } from "@ttn/ui/icon";
+
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
+import { imageFileUrl } from "@/lib/images";
+import { SiteImage } from "@/components/ui/SiteImage";
+import { credentialsFor } from "@/features/about/credentials";
 import type { CredentialTone } from "@/features/about/credentials";
 
 import { TREK_SECTION_IDS } from "../sections";
@@ -12,8 +14,10 @@ const VALUE_TONES: Record<CredentialTone, string> = { green: "text-whatsapp", br
 const BOX = "rounded-md border border-line bg-page";
 
 /** "Official verification": registration, licences and memberships, with the registration certificate. */
-export const TrekCredentials = () => {
-  const { foundedYear, facts, certificate } = CREDENTIALS;
+export const TrekCredentials = async () => {
+  const settings = await getSiteSettings();
+  const { foundedYear, facts, certificate } = credentialsFor(settings);
+  const registration = settings.company.tourismRegistration;
 
   return (
     <section
@@ -28,23 +32,25 @@ export const TrekCredentials = () => {
             Credentials and government licences
           </h2>
         </div>
-        <p className="flex-none text-[11px] font-semibold text-muted-foreground uppercase">Est. {foundedYear} · Kathmandu</p>
+        <p className="flex-none text-[11px] font-semibold text-muted-foreground uppercase">{foundedYear ? `Est. ${foundedYear} · Kathmandu` : "Kathmandu"}</p>
       </div>
 
-      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {facts.map((fact) => (
-          <div key={fact.label} className={`${BOX} p-3`}>
-            <dt className="text-[10px] font-bold text-muted-foreground uppercase">{fact.label}</dt>
-            <dd className={`mt-0.5 font-display text-body-sm font-bold break-words ${VALUE_TONES[fact.tone]}`}>{fact.value}</dd>
-          </div>
-        ))}
-      </dl>
+      {facts.length > 0 && (
+        <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {facts.map((fact) => (
+            <div key={fact.label} className={`${BOX} p-3`}>
+              <dt className="text-[10px] font-bold text-muted-foreground uppercase">{fact.label}</dt>
+              <dd className={`mt-0.5 font-display text-body-sm font-bold break-words ${VALUE_TONES[fact.tone]}`}>{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
       <div className={`${BOX} mt-1 flex flex-col gap-3.5 rounded-xl p-3.5 sm:flex-row sm:items-center sm:justify-between`}>
         <div className="flex items-center gap-3.5">
           <span className="relative inline-flex h-16 w-20 flex-none items-center justify-center overflow-hidden rounded-md border border-line-strong bg-surface text-subtle">
             {certificate.image ? (
-              <Image src={certificate.image.src} alt="" fill sizes="80px" className="object-cover" />
+              <SiteImage image={{ ...certificate.image, alt: "" }} sizes="80px" className="object-cover" />
             ) : (
               <Icon name="description" size={22} />
             )}
@@ -55,13 +61,13 @@ export const TrekCredentials = () => {
               {certificate.title}
             </strong>
             <span className="text-[11px] text-muted-foreground">
-              Registration {CONTACT.registrationNumber} · licensed trekking agency
+              {registration ? `Registration ${registration} · licensed trekking agency` : "Licensed trekking agency"}
             </span>
           </p>
         </div>
         {certificate.image && (
           <a
-            href={certificate.image.src}
+            href={imageFileUrl(certificate.image, 2000)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex flex-none items-center justify-center gap-1.5 rounded-md border border-brand/15 bg-surface px-3.5 py-2.25 text-xs font-bold text-brand hover:bg-brand-tint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

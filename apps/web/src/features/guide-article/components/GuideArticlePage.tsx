@@ -1,5 +1,5 @@
 import { JsonLd } from "@/components/shared/JsonLd";
-import { TRAVEL_GUIDES } from "@/features/guides/travelGuides";
+import type { TravelGuide } from "@/features/guides/types";
 
 import { articleToc } from "../guideArticles";
 import { pickRelatedGuides } from "../related";
@@ -16,10 +16,10 @@ import { ArticleToc } from "./toc/ArticleToc";
 
 /**
  * Guide article (design: Guide-article.dc.html): photo hero, key facts, then contents list / article /
- * sidebar, then related guides. Three columns from 1280px, article and sidebar from 1024px (contents
+ * sidebar, then related guides (`guides`: the published ones, to pick them from). Three columns from 1280px, article and sidebar from 1024px (contents
  * folded into the article), one column below.
  */
-export const GuideArticlePage = ({ article }: { article: GuideArticle }) => {
+export const GuideArticlePage = ({ article, guides }: { article: GuideArticle; guides: readonly TravelGuide[] }) => {
   const toc = articleToc(article);
 
   return (
@@ -42,7 +42,7 @@ export const GuideArticlePage = ({ article }: { article: GuideArticle }) => {
         </div>
       </div>
 
-      <RelatedGuides guides={pickRelatedGuides(article, TRAVEL_GUIDES)} />
+      <RelatedGuides guides={pickRelatedGuides(article, guides)} />
     </>
   );
 };

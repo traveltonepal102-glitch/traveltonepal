@@ -1,5 +1,6 @@
 "use client";
 
+import type { OfficeSchedule } from "@ttn/config/contact";
 import { useSyncExternalStore } from "react";
 
 import { isOfficeOpen } from "../officeHours";
@@ -20,8 +21,8 @@ const STATES = {
 } as const;
 
 /** "Our team is online" only while the office is really open (by Nepal time), else when we will reply. */
-export const OfficeStatusBadge = () => {
-  const isOpen = useSyncExternalStore(subscribe, () => isOfficeOpen(new Date()), () => null);
+export const OfficeStatusBadge = ({ schedule }: { schedule: OfficeSchedule }) => {
+  const isOpen = useSyncExternalStore(subscribe, () => isOfficeOpen(schedule, new Date()), () => null);
   const state = STATES[isOpen === null ? "unknown" : isOpen ? "open" : "closed"];
 
   return (

@@ -1,4 +1,5 @@
 import { FaqAccordion } from "@/components/shared/FaqAccordion";
+import { RichText } from "@/components/shared/RichText";
 
 import { FAQ_ID } from "../../guideArticles";
 import type { GuideFaq } from "../../types";
@@ -13,7 +14,7 @@ export const ArticleFaq = ({ faqs }: { faqs: readonly GuideFaq[] }) => {
       <h2 id="faq-title" className={SECTION_TITLE}>
         Frequently asked questions
       </h2>
-      <FaqAccordion items={faqs} />
+      <FaqAccordion items={faqs.map((faq) => ({ question: faq.question, answer: <RichText doc={faq.answer} headingLevel="h4" className="flex flex-col gap-2.5" /> }))} />
     </section>
   );
 };

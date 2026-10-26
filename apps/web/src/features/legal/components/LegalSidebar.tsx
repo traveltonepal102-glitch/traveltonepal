@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
-import { LEGAL_DOCS, LEGAL_PATHS } from "../legalDocs";
+import { LEGAL_MENU, LEGAL_PATHS } from "../legalDocs";
 import type { LegalDoc } from "../types";
 import { PrintButton } from "./PrintButton";
 import { FOCUS, PANEL } from "./styles";
@@ -11,7 +11,7 @@ export const LegalSidebar = ({ doc }: { doc: LegalDoc }) => (
   <aside className="sticky top-5 hidden flex-col gap-3.5 lg:flex print:hidden">
     <nav aria-label="Legal pages" className={`${PANEL} p-2.5`}>
       <ul className="flex flex-col gap-1">
-        {LEGAL_DOCS.map((item) => {
+        {LEGAL_MENU.map((item) => {
           const isCurrent = item.slug === doc.slug;
           return (
             <li key={item.slug}>

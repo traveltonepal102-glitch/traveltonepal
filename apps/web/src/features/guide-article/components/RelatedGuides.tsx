@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
-import Image from "next/image";
 import Link from "next/link";
 
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { IconTone } from "@/components/shared/iconTones";
 import { formatReadTime } from "@/features/guides/format";
 import { getGuideTopic } from "@/features/guides/topics";
@@ -28,10 +28,8 @@ const RelatedCard = ({ guide }: { guide: TravelGuide }) => {
       className={`group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface text-ink shadow-card transition-shadow hover:shadow-raised ${FOCUS}`}
     >
       <span className="relative block aspect-video overflow-hidden bg-brand-tint">
-        <Image
-          src={guide.image.src}
-          alt={guide.image.alt}
-          fill
+        <SiteImage
+          image={guide.image}
           sizes="(min-width: 1240px) 390px, (min-width: 768px) 33vw, 100vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />

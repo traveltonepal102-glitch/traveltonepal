@@ -1,7 +1,7 @@
 import { formatAltitude } from "@/features/treks/format";
 
 import type { RoutePin, RouteSketch } from "../../types";
-import { MAP_COLORS, MAP_LABEL_STYLES, PIN_STYLES } from "./mapStyles";
+import { MAP_COLORS, MAP_LABEL_STYLES, PIN_PATH, PIN_STYLES } from "./mapStyles";
 
 /** Generic terrain texture (bands and contour lines) behind every route map. */
 const TERRAIN = {
@@ -12,8 +12,6 @@ const TERRAIN = {
   lowContours: "M0 520 C 160 490, 320 520, 480 470 S 780 400, 1000 420 M0 380 C 150 360, 300 390, 440 350 S 700 290, 1000 300",
 } as const;
 
-/** Map-pin shape in a 24×24 box; its tip (12, 22) is scaled ×1.4 onto the place. */
-const PIN_PATH = "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z";
 const LABEL_HALO = "[paint-order:stroke] stroke-white stroke-5 [stroke-linejoin:round]";
 
 const Pin = ({ pin }: { pin: RoutePin }) => {
@@ -23,6 +21,7 @@ const Pin = ({ pin }: { pin: RoutePin }) => {
 
   return (
     <g>
+      {/* The pin's tip (12, 22), scaled ×1.4, sits on the place. */}
       <g transform={`translate(${pin.x - 16.8} ${pin.y - 30.8}) scale(1.4)`}>
         <path d={PIN_PATH} strokeWidth={0.8} className={`${PIN_STYLES[pin.kind].fill} ${PIN_STYLES[pin.kind].stroke}`} />
         <circle cx={12} cy={9} r={2.6} fill="#fff" fillOpacity={0.85} />

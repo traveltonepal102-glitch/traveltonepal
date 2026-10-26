@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { RegionDetailPage } from "@/features/region-detail/components/RegionDetailPage";
 import { regionMetadata } from "@/features/region-detail/seo";
 import { getRegionDetail, listRegionPageSlugs } from "@/features/region-detail/services/regionPageRepository";
+import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
 
 type RegionPageProps = PageProps<"/regions/[slug]">;
 
@@ -27,8 +28,13 @@ export const generateMetadata = async ({ params }: RegionPageProps): Promise<Met
 };
 
 const RegionPage = async ({ params }: RegionPageProps) => {
-  const region = await getRegionDetail((await params).slug);
-  if (!region) notFound();
+  const { slug } = await params;
+  const region = await getRegionDetail(slug);
+  if (!region) {
+    // An old address (the region was renamed) moves on to today's; anything else is a 404.
+    await redirectIfMoved("region", slug);
+    notFound();
+  }
 
   return (
     <main className="flex-1 bg-page">

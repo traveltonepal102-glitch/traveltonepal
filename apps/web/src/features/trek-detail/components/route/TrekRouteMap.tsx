@@ -4,18 +4,21 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 
 import { googleMapLinks } from "../../routeMap";
+import { routeStops } from "../../routeStops";
 import { TREK_SECTION_IDS } from "../../sections";
 import type { TrekDetail } from "../../types";
 import { SectionHeading } from "../SectionHeading";
 import { PANEL } from "../styles";
 import { GoogleMapEmbed } from "./GoogleMapEmbed";
 import { RouteMapPreview } from "./RouteMapPreview";
+import { RouteStopList } from "./RouteStopList";
 
-type TrekRouteMapProps = Pick<TrekDetail, "name" | "routeMap" | "routeSketch">;
+type TrekRouteMapProps = Pick<TrekDetail, "name" | "routeMap" | "routeSketch" | "itinerary">;
 
-/** "Route and GPS waypoints": the Google map (click to load) with the drawn route map before it. */
-export const TrekRouteMap = ({ name, routeMap, routeSketch }: TrekRouteMapProps) => {
+/** "Route and GPS waypoints": the Google map (click to load) with the drawn route map before it, and the stops. */
+export const TrekRouteMap = ({ name, routeMap, routeSketch, itinerary }: TrekRouteMapProps) => {
   const links = googleMapLinks(routeMap);
+  const stops = routeStops(itinerary.days);
 
   return (
     <section id={TREK_SECTION_IDS.routeMap} aria-labelledby="trek-route-map-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
@@ -48,6 +51,8 @@ export const TrekRouteMap = ({ name, routeMap, routeSketch }: TrekRouteMapProps)
           title={`Google map of the ${name}`}
           preview={routeSketch && <RouteMapPreview sketch={routeSketch} />}
         />
+
+        {stops.length > 0 && <RouteStopList stops={stops} />}
 
         <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <Icon name="lock" size={14} className="flex-none" />

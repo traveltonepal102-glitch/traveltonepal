@@ -1,10 +1,12 @@
 import { Icon } from "@ttn/ui/icon";
+import type { RichTextDoc } from "@ttn/ui/lib/richText";
+
+import { RichText } from "@/components/shared/RichText";
 
 import { QUICK_ANSWER_ID } from "../../guideArticles";
-import type { RichText } from "../../types";
 
 /** Blue "Quick answer" box at the top of the article (the contents list's first stop). */
-export const QuickAnswer = ({ text }: { text: RichText }) => (
+export const QuickAnswer = ({ body }: { body: RichTextDoc }) => (
   <section
     id={QUICK_ANSWER_ID}
     aria-labelledby="quick-answer-title"
@@ -14,10 +16,6 @@ export const QuickAnswer = ({ text }: { text: RichText }) => (
       <Icon name="lightbulb" size={18} />
       Quick answer
     </h2>
-    <p className="text-body-lg text-ink">
-      {text.map((part, index) =>
-        typeof part === "string" ? part : <strong key={index}>{part.strong}</strong>,
-      )}
-    </p>
+    <RichText doc={body} headingLevel="h4" className="flex flex-col gap-2 text-body-lg text-ink" />
   </section>
 );

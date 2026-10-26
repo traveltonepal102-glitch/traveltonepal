@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { guideHref } from "@/features/guide-article/guideArticles";
 import type { GuideSummary } from "@/features/guides/types";
 import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { TREKS } from "@/features/treks/treks";
@@ -40,13 +39,6 @@ describe("homeGuides", () => {
 
   it("shows none without guides (the section is then left out)", () => {
     expect(homeGuides([])).toEqual([]);
-  });
-});
-
-describe("guideHref", () => {
-  it("opens the guide's page, or the travel guides list while it has none (never a 404)", () => {
-    expect(guideHref("best-time-to-trek-langtang")).toBe("/travel-guides/best-time-to-trek-langtang");
-    expect(guideHref("best-time-to-trek-langtang-a-month-by-month-guide")).toBe("/travel-guides");
   });
 });
 

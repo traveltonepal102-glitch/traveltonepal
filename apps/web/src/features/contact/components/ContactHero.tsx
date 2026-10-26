@@ -1,13 +1,16 @@
 import Image from "next/image";
 
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { ROUTES } from "@/lib/routes";
 
 import { OfficeStatusBadge } from "./OfficeStatusBadge";
 import { WRAP } from "./styles";
 
 /** Photo hero: breadcrumb, office status, title and intro. Extra space at the bottom for the contact cards to overlap. */
-export const ContactHero = () => (
+export const ContactHero = async () => {
+  const { schedule } = await getSiteSettings();
+  return (
   <section aria-labelledby="contact-title" className="relative overflow-hidden bg-navy text-white">
     {/* Decorative: the title says what the page is. */}
     <Image src="/images/langtang-khola-river.jpg" alt="" fill preload sizes="100vw" className="object-cover" />
@@ -15,7 +18,7 @@ export const ContactHero = () => (
 
     <div className={`${WRAP} relative flex flex-col gap-4 pt-5.5 pb-24`}>
       <Breadcrumbs tone="onDark" items={[{ label: "Home", href: ROUTES.home }, { label: "Contact" }]} />
-      <OfficeStatusBadge />
+      <OfficeStatusBadge schedule={schedule} />
       <h1 id="contact-title" className="max-w-190 text-h1-sm tracking-tight text-white md:text-h1">
         Talk to a local trekking expert
       </h1>
@@ -26,3 +29,4 @@ export const ContactHero = () => (
     </div>
   </section>
 );
+};

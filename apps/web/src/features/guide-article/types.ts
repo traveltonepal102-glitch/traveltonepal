@@ -1,72 +1,87 @@
 import type { IconName } from "@ttn/ui/icon";
+import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import type { IconTone } from "@/components/shared/iconTones";
-import type { TravelGuide } from "@/features/guides/types";
+import type { GuideTopicId } from "@/features/guides/topics";
 import type { MonthRating } from "@/features/regions/overviews";
+import type { ItineraryDay } from "@/features/trek-detail/types";
 import type { TrekSummary } from "@/features/treks/types";
+import type { SiteImageSource } from "@/lib/images";
 
-/** Text with optional bold parts: ["October", { strong: "and November" }]. */
-export type RichText = readonly (string | { strong: string })[];
-
-/** One row of the month-by-month table (the month's rating comes from the region). */
+/** One row of the month-by-month table (the month's rating is in the article's months). */
 export type MonthNote = { onTheTrail: string; crowds: string };
 
-/** A piece of an article section, in reading order. */
-export type GuideBlock =
-  | { type: "paragraph"; text: string }
-  | { type: "figure"; image: { src: string; alt: string }; caption: string }
-  /** The month strip, from the article's region. */
-  | { type: "season-strip" }
-  /** Jan–Dec, exactly 12 notes; the verdict is the region's rating for the month. */
-  | { type: "month-table"; months: readonly MonthNote[] }
-  /** Card for the article's trek. */
-  | { type: "trek-card" }
-  | { type: "tip"; title: string; text: string };
+/** A trekking guide shown in the article (a tip, their own words, or "Meet the guides"). */
+export type GuidePerson = { name: string; role: string; quote?: string; photo?: SiteImageSource };
 
-export type GuideSection = {
-  /** Anchor for the contents list, e.g. "autumn". */
-  id: string;
-  /** Short name in the contents list, e.g. "Autumn". */
-  tocLabel: string;
-  title: string;
-  blocks: readonly GuideBlock[];
-};
+/** A day of a trek's plan shown in the article, with its number in the trek. */
+export type ArticleDay = ItineraryDay & { dayNumber: number };
+
+/** A piece of the article body, top to bottom (the admin's section kinds). */
+export type ArticleBlock =
+  | { type: "quick"; body: RichTextDoc }
+  | { type: "paragraph"; body: RichTextDoc }
+  /** A section with its heading: a stop in the contents list. */
+  | { type: "text"; id: string; heading: string; tocLabel: string; body: RichTextDoc }
+  | { type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
+  | { type: "check"; heading: string; items: readonly string[] }
+  /** The article's months, as a colour strip or a table with notes. */
+  | { type: "months"; heading: string; view: "strip" | "table" }
+  | { type: "cta"; heading: string; buttonText: string; message: string }
+  | { type: "trek"; trek: TrekSummary }
+  | { type: "quote"; text: string }
+  | { type: "days"; trek: TrekSummary; days: readonly ArticleDay[] }
+  | { type: "cost"; heading: string; rows: readonly { item: string; price: string }[]; totalLabel: string; total: string }
+  | { type: "compare"; treks: readonly TrekSummary[] }
+  | { type: "tip"; guide: GuidePerson; text: string }
+  | { type: "gquote"; guide: GuidePerson; text: string }
+  | { type: "meet"; heading: string; guides: readonly GuidePerson[] }
+  | { type: "image"; image: SiteImageSource; caption: string }
+  | { type: "gallery"; images: readonly SiteImageSource[] }
+  | { type: "map"; title: string; place: string };
 
 export type GuideFact = { icon: IconName; tone: IconTone; label: string; value: string };
 
-export type GuideFaq = { question: string; answer: string };
+export type GuideFaq = { question: string; answer: RichTextDoc };
 
-/** An article's page content. Moves to Payload in the CMS phase. */
-export type GuideArticleContent = {
-  /** Same slug as the guide in TRAVEL_GUIDES. */
-  slug: string;
-  /** Hero intro under the title (longer than the card excerpt). */
-  standfirst: string;
-  /** Trek the article is about (TREKS slug): hero chip, trek cards. */
-  trekSlug?: string;
-  /** Region the article is about (REGION_OVERVIEWS slug): month ratings. */
-  regionSlug?: string;
-  /** Green hero chip, e.g. "Oct–Nov & Mar–May". */
-  bestMonths?: string;
-  authorRole: string;
-  authorBio: string;
-  /** "Updated for the 2026 season". */
-  updatedForSeason: number;
-  facts: readonly GuideFact[];
-  quickAnswer: RichText;
-  /** Paragraphs between the quick answer and the first section. */
-  intro: readonly string[];
-  sections: readonly GuideSection[];
-  faqs: readonly GuideFaq[];
-  /** "Related guides", in this order (TRAVEL_GUIDES slugs); the rest are picked automatically. */
-  relatedSlugs?: readonly string[];
-  seo: { title: string; description: string };
+export type ArticleAuthor = {
+  name: string;
+  /** Job title under the name, e.g. "Senior trek leader, Langtang". */
+  role: string;
+  bio: string;
+  photo?: SiteImageSource;
+  /** Office team and trekking guides get the blue tick; guest writers don't. */
+  isVerified: boolean;
 };
 
-/** The guide (list fields) and its page content joined, with the trek and month ratings it refers to. */
-export type GuideArticle = TravelGuide &
-  GuideArticleContent & {
-    trek?: TrekSummary;
-    /** Jan–Dec ratings of the article's region. */
-    months?: readonly MonthRating[];
-  };
+/** A travel guide's page (guidePageRows, from the database). */
+export type GuideArticle = {
+  slug: string;
+  title: string;
+  /** Under the title, longer than the card text. */
+  intro: string;
+  image: SiteImageSource;
+  topic: GuideTopicId;
+  /** Green tag on the photo, e.g. "Best: Oct–Nov & Mar–May". */
+  highlightTag?: string;
+  /** Next to the reading time, e.g. "Updated for the 2026/2027 season". */
+  updatedLine?: string;
+  facts: readonly GuideFact[];
+  /** ISO dates. */
+  publishedOn: string;
+  updatedOn?: string;
+  readMinutes: number;
+  author: ArticleAuthor;
+  /** "Fact-checked by", when a guide checked it. */
+  checker?: GuidePerson;
+  /** The trek the guide is about: the plan-your-trek card and the photo's trek tag. */
+  trek?: TrekSummary;
+  months?: { ratings: readonly MonthRating[]; notes: readonly MonthNote[] };
+  blocks: readonly ArticleBlock[];
+  /** "Questions and answers" (shown after the body, and as FAQ data for Google). */
+  faqs: readonly GuideFaq[];
+  /** "Keep reading", in order (published guides only). */
+  relatedSlugs: readonly string[];
+  regionSlugs: readonly string[];
+  seo: { title: string; description: string };
+};
