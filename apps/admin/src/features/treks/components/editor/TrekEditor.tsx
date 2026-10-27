@@ -2,6 +2,7 @@
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
+import { EditorSectionLinks } from "@/components/editor/EditorSectionLinks";
 import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
@@ -81,20 +82,22 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
         <div className="flex min-w-0 flex-col gap-4">
           <EditorSectionHeading section={active} name={values.name} />
 
-          <TrekSectionPanels
-            activeKey={activeKey}
-            values={values}
-            photos={photos}
-            errors={errors}
-            onEdit={markDirty}
-            regions={regions}
-            similarOptions={similarOptions}
-            guideOptions={guideOptions}
-            regionId={regionId}
-            isNew={isNew}
-            today={today}
-            pdfMapUrl={pdfMapUrl}
-          />
+          <EditorSectionLinks sections={TREK_SECTIONS} onShow={form.setActiveKey}>
+            <TrekSectionPanels
+              activeKey={activeKey}
+              values={values}
+              photos={photos}
+              errors={errors}
+              onEdit={markDirty}
+              regions={regions}
+              similarOptions={similarOptions}
+              guideOptions={guideOptions}
+              regionId={regionId}
+              isNew={isNew}
+              today={today}
+              pdfMapUrl={pdfMapUrl}
+            />
+          </EditorSectionLinks>
         </div>
       </div>
     </form>

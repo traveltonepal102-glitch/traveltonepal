@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useId, useState } from "react";
 import type { ChangeEvent } from "react";
 
+import { SourceNote } from "@/components/editor/SourceNote";
 import { ghostIconButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
@@ -53,13 +54,8 @@ export const TrekGuidesSection = ({ guideIds, options, regionId, regionName, err
 
   return (
     <FormSection title="Guides on this trek">
-      <p className="m-0 -mt-2 text-xs text-muted-foreground">
-        The order here is the order on the trek page. To change a photo or bio, edit it once in{" "}
-        <Link href={TREKKING_GUIDES_PATH} className="font-bold text-brand">
-          Trekking guides
-        </Link>
-        .
-      </p>
+      <p className="m-0 -mt-2 text-xs text-muted-foreground">The order here is the order on the trek page.</p>
+      <SourceNote shownIn="“Meet your trek guide” (each guide's name, photo, languages and bio)" from={{ href: TREKKING_GUIDES_PATH, label: "Trekking guides" }} />
       {pickedGuides.length > 0 && (
         <ul className="m-0 grid list-none gap-3 p-0 tablet:grid-cols-2 desktop:grid-cols-3">
           {pickedGuides.map((guide, index) => (

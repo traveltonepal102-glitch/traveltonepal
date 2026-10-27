@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import { iconButton, secondaryButton } from "@/components/ui/buttonStyles";
 
 import { SIDEBAR_ID } from "../constants";
+import type { NewItem } from "../newItems";
 import { NewMenu } from "./NewMenu";
 import { NotificationsButton } from "./NotificationsButton";
 import { SearchField } from "./SearchField";
@@ -16,10 +17,11 @@ type TopbarProps = {
   onOpenMenu: () => void;
   menuButtonRef: RefObject<HTMLButtonElement | null>;
   websiteUrl?: string;
+  newItems: readonly NewItem[];
 };
 
 /** Sticky bar above every screen: menu button (narrow screens), search, website link, notifications, "New". */
-export const Topbar = ({ isMenuOpen, onOpenMenu, menuButtonRef, websiteUrl }: TopbarProps) => (
+export const Topbar = ({ isMenuOpen, onOpenMenu, menuButtonRef, websiteUrl, newItems }: TopbarProps) => (
   <header className="sticky top-0 z-40 flex items-center gap-3 border-b border-solid border-border bg-surface px-8 py-3 max-tablet:gap-2 max-tablet:px-3 max-tablet:py-2.5">
     <button
       ref={menuButtonRef}
@@ -44,6 +46,6 @@ export const Topbar = ({ isMenuOpen, onOpenMenu, menuButtonRef, websiteUrl }: To
       </a>
     )}
     <NotificationsButton />
-    <NewMenu />
+    <NewMenu items={newItems} />
   </header>
 );

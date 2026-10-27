@@ -7,6 +7,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { AdminShell } from "@/features/shell/components/AdminShell";
 import { SidebarUser } from "@/features/shell/components/SidebarUser";
 import { RAIL_COOKIE } from "@/features/shell/constants";
+import { newItemsFor } from "@/features/shell/newItems";
 import { photosPublicBaseUrl } from "@/lib/storage/photoOrigins";
 
 /**
@@ -22,6 +23,7 @@ const PortalLayout = async ({ children }: LayoutProps<"/">) => {
     <AdminShell
       isRailInitially={isRail}
       websiteUrl={env.WEBSITE_URL}
+      newItems={newItemsFor(admin.role)}
       user={<SidebarUser name={admin.full_name || admin.email} roleLabel={ROLE_LABELS[admin.role]} />}
     >
       {/* The text editors show the photos added in a text from here. */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
@@ -53,6 +54,8 @@ type RegionEditorProps = {
   /** e.g. "Saved 23 Oct, 11:32" (formatted on the server, so it matches the admin's time zone setting). */
   lastSaved?: string;
   isJustAdded?: boolean;
+  /** Extra controls before Save, e.g. "Delete" (a saved region, Super admins). */
+  headerActions?: ReactNode;
 };
 
 /**
@@ -74,6 +77,7 @@ export const RegionEditor = ({
   today,
   lastSaved,
   isJustAdded = false,
+  headerActions,
 }: RegionEditorProps) => {
   const form = useEditorForm<RegionSectionKey>({
     action,
@@ -98,7 +102,9 @@ export const RegionEditor = ({
         statusTone={statusTone}
         saveLabel={isNew ? "Add region" : "Save changes"}
         isSaving={form.isSaving}
-      />
+      >
+        {headerActions}
+      </EditorHeader>
       {form.state.status === "error" && <FormAlert message={form.state.message} />}
 
       <div className="grid items-start gap-6 desktop:grid-cols-[260px_minmax(0,1fr)]">

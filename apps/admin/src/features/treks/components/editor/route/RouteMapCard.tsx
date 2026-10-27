@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
+import { SourceNote } from "@/components/editor/SourceNote";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
@@ -107,9 +108,9 @@ export const RouteMapCard = ({ values, pdfMapUrl, errors, onEdit }: RouteMapCard
               ))}
             </ul>
           ) : (
-            <p className="m-0 text-caption text-muted-foreground">No stops yet. They come from the places in Day by day.</p>
+            <p className="m-0 text-caption text-muted-foreground">No stops yet.</p>
           )}
-          {stops.length > 0 && <p className="m-0 text-xs text-muted-foreground">From the places in Day by day (as last saved).</p>}
+          <SourceNote shownIn="the stops beside the route map (each day's “Sleep at”, as last saved)" from={{ section: "itinerary" }} />
         </div>
         <PdfMapField path={values.pdfMapPath} url={pdfMapUrl} error={errors.pdfMapPath} onEdit={onEdit} />
       </FormSection>

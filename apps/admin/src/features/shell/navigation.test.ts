@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { ADMIN_SECTIONS, isActivePath } from "./navigation";
-import { NEW_ITEMS } from "./newItems";
+import { NEW_ITEMS, newItemsFor } from "./newItems";
 
 const PORTAL = path.resolve(import.meta.dirname, "../../app/(portal)");
 /** The page a link opens ("?guide=new" only changes what that page shows). */
@@ -16,6 +16,19 @@ describe("admin menu", () => {
 
   it.each(NEW_ITEMS)("New → $label ($href) has a page", ({ href }) => {
     expect(existsSync(pageFileFor(href))).toBe(true);
+  });
+});
+
+describe("newItemsFor", () => {
+  it("gives a Super admin every item, with Region", () => {
+    expect(newItemsFor("super_admin")).toEqual(NEW_ITEMS);
+    expect(newItemsFor("super_admin").map((item) => item.label)).toContain("Region");
+  });
+
+  it("leaves out what only a Super admin can add for an editor", () => {
+    const labels = newItemsFor("editor").map((item) => item.label);
+    expect(labels).not.toContain("Region");
+    expect(labels).toContain("Trek");
   });
 });
 

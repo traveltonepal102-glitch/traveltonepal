@@ -3,10 +3,12 @@
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 
+import { SourceNote } from "@/components/editor/SourceNote";
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
+import { pagePath } from "@/features/pages/constants";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
@@ -90,9 +92,11 @@ export const GroupPricesCard = ({ prices, errors, onEdit }: GroupPricesCardProps
       <p className="m-0 flex items-start gap-2 rounded-md border border-solid border-border bg-page px-3 py-2.5 text-caption">
         <Icon name="info" size={18} className="flex-none text-brand" />
         <span>
-          Deposit to confirm: <strong>{BOOKING_DEPOSIT_PERCENT}%</strong>. Cancellation fees come from the Terms and booking page, the same for every trek.
+          Deposit to confirm: <strong>{BOOKING_DEPOSIT_PERCENT}%</strong>. The deposit and the cancellation fees are the same for every trek.
         </span>
       </p>
+      <SourceNote shownIn="the booking card" from={{ note: "The deposit is set by your developer." }} />
+      <SourceNote shownIn="the Terms page (cancellation fees)" from={{ href: pagePath("legal"), label: "Pages › Legal pages" }} />
     </FormSection>
   );
 };

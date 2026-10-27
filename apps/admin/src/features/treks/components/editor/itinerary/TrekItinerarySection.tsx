@@ -13,13 +13,16 @@ import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../../../constants";
-import { dayPeak, useItineraryDays } from "../../../hooks/useItineraryDays";
+import { dayPeak } from "../../../hooks/useItineraryDays";
+import type { ItineraryPlan } from "../../../hooks/useItineraryDays";
 import type { TrekValues } from "../../../types";
 import { PageHeadingFields } from "../PageHeadingFields";
 import { ItineraryDayCard } from "./ItineraryDayCard";
 
 type TrekItinerarySectionProps = {
   values: TrekValues;
+  /** The days as edited (shared with the altitude chart, which opens a day here). */
+  plan: ItineraryPlan;
   errors: FieldErrors;
   /** The trek's saved photos, to pick a photo for a day. */
   photoChoices: Photo[];
@@ -33,8 +36,7 @@ const dayErrors = (errors: FieldErrors, index: number): FieldErrors => {
 };
 
 /** "Day-by-day itinerary": the heading, the text and route line above the days, and the days. */
-export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
-  const plan = useItineraryDays(values.itinerary, onEdit);
+export const TrekItinerarySection = ({ values, plan, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
   const altitudes = plan.days.map(dayPeak);
   const known = altitudes.filter((altitude) => altitude !== null);
   const highest = known.length ? Math.max(...known) : null;
@@ -45,6 +47,7 @@ export const TrekItinerarySection = ({ values, errors, photoChoices, onEdit }: T
         eyebrow="Step-by-step route"
         level="H2"
         headingPrefix={`${plan.days.length}-day`}
+        headingPrefixNote={`“${plan.days.length}-day” is counted by itself from the days below.`}
         heading={{ name: "itineraryHeading", defaultValue: values.itineraryHeading, placeholder: "day-by-day itinerary", error: errors.itineraryHeading }}
       />
 

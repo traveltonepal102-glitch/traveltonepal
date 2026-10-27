@@ -1,10 +1,14 @@
 "use client";
 
+import { flushSync } from "react-dom";
+
+import { useEditorSectionLinks } from "@/components/editor/EditorSectionLinks";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
 import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { TREK_LIMITS as LIMIT } from "../../constants";
+import { dayAltitudesId, toDayAltitude, useItineraryDays } from "../../hooks/useItineraryDays";
 import type { RegionOption, SimilarTrekOption, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
 import { TrekFaqSection } from "./faq/TrekFaqSection";
 import { TrekGuidesSection } from "./guides/TrekGuidesSection";
@@ -55,6 +59,15 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
   const photosError = Object.entries(errors).find(([field]) => field.startsWith("photos"))?.[1];
   const trekPhotos = [...(photos.cover ? [photos.cover] : []), ...photos.gallery];
   const panel = (key: TrekSectionKey) => ({ hidden: activeKey !== key, className: "flex flex-col gap-4" });
+  // The days live here, so the altitude chart (Route) follows them as they are typed and can open one.
+  const plan = useItineraryDays(values.itinerary, onEdit);
+  const links = useEditorSectionLinks();
+  const openDay = (index: number) => {
+    const day = plan.days[index];
+    if (!day) return;
+    flushSync(() => plan.open(day.key));
+    links?.show("itinerary", dayAltitudesId(day.key));
+  };
 
   return (
     <>
@@ -83,7 +96,7 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
         <FitSection values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("itinerary")}>
-        <TrekItinerarySection values={values} errors={errors} photoChoices={trekPhotos} onEdit={onEdit} />
+        <TrekItinerarySection values={values} plan={plan} errors={errors} photoChoices={trekPhotos} onEdit={onEdit} />
       </div>
       <div {...panel("inclusions")}>
         <PageHeadingFields
@@ -116,7 +129,13 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
         />
       </div>
       <div {...panel("route")}>
-        <ElevationCard values={values} errors={errors} />
+        <ElevationCard
+          values={values}
+          days={plan.days.map(toDayAltitude)}
+          errors={errors}
+          onSelectDay={openDay}
+          onEditDays={() => links?.show("itinerary")}
+        />
         <RouteMapCard values={values} pdfMapUrl={pdfMapUrl} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("pricing")}>

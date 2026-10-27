@@ -2,7 +2,21 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
-import type { DepartureStatus, FaqIcon, KnowIcon, Meal, PackingGroup, PackingIcon, SharedSectionKey, TrekDifficulty, TrekPhotos, TrekSeason, TrekStatus, TrekTag, TrekValues } from "./types";
+import type {
+  DepartureStatus,
+  FaqIcon,
+  KnowIcon,
+  Meal,
+  PackingGroup,
+  PackingIcon,
+  SharedSectionKey,
+  TrekDifficulty,
+  TrekPhotos,
+  TrekSeason,
+  TrekStatus,
+  TrekTag,
+  TrekValues,
+} from "./types";
 
 export const TREKS_PATH = "/treks";
 export const NEW_TREK_PATH = "/treks/new";
@@ -32,7 +46,7 @@ export const TREK_LIMITS = {
   dayTitle: 160,
   daySubtitle: 160,
   dayDuration: 40,
-  dayDescription: 1500,
+  dayDescription: 3000,
   mapPlace: 120,
   packingIntro: 200,
   packingGroupTitle: 60,
@@ -116,17 +130,31 @@ export const MAX_INCLUDED_ITEMS = 20;
 export const MAX_MEAL_TIPS = 10;
 export const MAX_GROUP_PRICES = 10;
 export const MAX_DEPARTURES = 100;
-export const PRICE_LIMITS = { label: 40, shortLabel: 12, team: 80, note: 60 } as const;
+export const PRICE_LIMITS = {
+  label: 40,
+  shortLabel: 12,
+  team: 80,
+  note: 60,
+} as const;
 
 /** A date's status, in the order the design shows them, with its colors (the status buttons). */
-export const DEPARTURE_STATUSES: { value: DepartureStatus; label: string; on: string }[] = [
+export const DEPARTURE_STATUSES: {
+  value: DepartureStatus;
+  label: string;
+  on: string;
+}[] = [
   { value: "guaranteed", label: "Guaranteed", on: "bg-whatsapp text-white" },
   { value: "open", label: "Open", on: "bg-brand text-on-brand" },
   { value: "almost_full", label: "Almost full", on: "bg-saffron text-ink" },
   { value: "full", label: "Full", on: "bg-text text-white" },
 ];
 
-export const DEPARTURE_STATUS_VALUES = ["guaranteed", "open", "almost_full", "full"] as const satisfies readonly DepartureStatus[];
+export const DEPARTURE_STATUS_VALUES = [
+  "guaranteed",
+  "open",
+  "almost_full",
+  "full",
+] as const satisfies readonly DepartureStatus[];
 
 /**
  * Deposit to confirm a booking, the same for every trek (design: Prices and dates). Shown as information;
@@ -140,21 +168,51 @@ export const RECOMMENDED_HIGHLIGHTS = 4;
 export const MAX_SUITABILITY_POINTS = 10;
 export const MAX_PHOTO_BADGES = 3;
 
-export const STATUS_OPTIONS: { value: TrekStatus; label: string; hint: string }[] = [
+export const STATUS_OPTIONS: {
+  value: TrekStatus;
+  label: string;
+  hint: string;
+}[] = [
   { value: "draft", label: "Draft", hint: "Not on the website yet" },
   { value: "published", label: "Published", hint: "On the website" },
   { value: "hidden", label: "Hidden", hint: "Taken off the website" },
 ];
 
 /** Difficulty and the grades that go with it (the website shows "grade 3 of 5"). Colors as on the website. */
-export const DIFFICULTIES: { value: TrekDifficulty; label: string; grades: number[]; chip: string }[] = [
-  { value: "easy", label: "Easy", grades: [1, 2], chip: "bg-green-tint text-whatsapp" },
-  { value: "moderate", label: "Moderate", grades: [3], chip: "bg-brand-tint text-brand" },
-  { value: "challenging", label: "Challenging", grades: [4], chip: "bg-saffron-tint text-saffron-ink" },
-  { value: "strenuous", label: "Strenuous", grades: [5], chip: "bg-danger-tint text-danger" },
+export const DIFFICULTIES: {
+  value: TrekDifficulty;
+  label: string;
+  grades: number[];
+  chip: string;
+}[] = [
+  {
+    value: "easy",
+    label: "Easy",
+    grades: [1, 2],
+    chip: "bg-green-tint text-whatsapp",
+  },
+  {
+    value: "moderate",
+    label: "Moderate",
+    grades: [3],
+    chip: "bg-brand-tint text-brand",
+  },
+  {
+    value: "challenging",
+    label: "Challenging",
+    grades: [4],
+    chip: "bg-saffron-tint text-saffron-ink",
+  },
+  {
+    value: "strenuous",
+    label: "Strenuous",
+    grades: [5],
+    chip: "bg-danger-tint text-danger",
+  },
 ];
 
-export const difficultyOf = (value: TrekDifficulty) => DIFFICULTIES.find((level) => level.value === value) ?? DIFFICULTIES[1];
+export const difficultyOf = (value: TrekDifficulty) =>
+  DIFFICULTIES.find((level) => level.value === value) ?? DIFFICULTIES[1];
 
 /** "Meals included" on a day, in the order of the day. */
 export const MEALS: { value: Meal; label: string }[] = [
@@ -163,7 +221,11 @@ export const MEALS: { value: Meal; label: string }[] = [
   { value: "dinner", label: "Dinner" },
 ];
 
-export const MEAL_VALUES = ["breakfast", "lunch", "dinner"] as const satisfies readonly Meal[];
+export const MEAL_VALUES = [
+  "breakfast",
+  "lunch",
+  "dinner",
+] as const satisfies readonly Meal[];
 
 export const SEASON_OPTIONS: { value: TrekSeason; label: string }[] = [
   { value: "spring", label: "Spring (Mar–May)" },
@@ -178,9 +240,19 @@ export const TAG_OPTIONS: { value: TrekTag; label: string }[] = [
 ];
 
 /** Icons a photo badge can use (as on the website's trek photos). */
-export const BADGE_ICON_VALUES = ["route", "nordic_walking", "health_and_safety", "landscape", "groups", "star"] as const satisfies readonly IconName[];
+export const BADGE_ICON_VALUES = [
+  "route",
+  "nordic_walking",
+  "health_and_safety",
+  "landscape",
+  "groups",
+  "star",
+] as const satisfies readonly IconName[];
 
-export const BADGE_ICONS: { value: (typeof BADGE_ICON_VALUES)[number]; label: string }[] = [
+export const BADGE_ICONS: {
+  value: (typeof BADGE_ICON_VALUES)[number];
+  label: string;
+}[] = [
   { value: "route", label: "Route" },
   { value: "nordic_walking", label: "Walker" },
   { value: "health_and_safety", label: "Safety" },
@@ -202,7 +274,14 @@ export const PACKING_ICONS: { value: PackingIcon; label: string }[] = [
   { value: "description", label: "Documents" },
 ];
 
-export const PACKING_ICON_VALUES = ["apparel", "footprint", "backpack", "medical_services", "water_drop", "description"] as const satisfies readonly PackingIcon[];
+export const PACKING_ICON_VALUES = [
+  "apparel",
+  "footprint",
+  "backpack",
+  "medical_services",
+  "water_drop",
+  "description",
+] as const satisfies readonly PackingIcon[];
 
 /** The usual four cards (as on the Langtang page), to start a new packing list with. */
 export const STARTER_PACKING_GROUPS: PackingGroup[] = [
@@ -214,18 +293,91 @@ export const STARTER_PACKING_GROUPS: PackingGroup[] = [
 
 /** The shared sections of the trek page, in page order (the database checks the same keys). */
 /** The shared sections of the trek page, in page order (design: "Sections shared by every trek"; the database checks the keys). */
-export const SHARED_SECTIONS: { key: SharedSectionKey; label: string; description: string; where: string; icon: IconName }[] = [
-  { key: "founder", label: "Founder’s story", description: "A short note from our founder on planning every trek.", where: "After the trip overview", icon: "format_quote" },
-  { key: "consultation", label: "Ask us personally", description: "Invites people to message on WhatsApp or email before they book.", where: "After the founder’s story", icon: "chat" },
-  { key: "customization", label: "Custom itinerary and private changes", description: "The box with the 4 option chips under the days.", where: "After the day-by-day itinerary", icon: "tune" },
-  { key: "meals", label: "Why we don’t include meals", description: "The 4 reasons. The food budget is set per trek.", where: "In What’s covered", icon: "restaurant" },
-  { key: "why_book", label: "Why book your trek with us", description: "The 6 promises from the About page.", where: "After the route map", icon: "workspace_premium" },
-  { key: "credentials", label: "Credentials and government licences", description: "Government registration, TAAN and the certificate.", where: "After the group rates", icon: "verified" },
-  { key: "reviews", label: "Trekker reviews", description: "Reviews of this trek. Shows only when the trek has some.", where: "After the credentials", icon: "star" },
-  { key: "differentiators", label: "What makes this trip different", description: "How a local team compares with big agencies.", where: "After the reviews", icon: "compare_arrows" },
-  { key: "booking_form", label: "Booking form", description: "Builds a ready-made WhatsApp message. Nothing is stored.", where: "Before the packing list", icon: "send" },
-  { key: "booking_cta", label: "Booking box at the end", description: "“Book the [trek] with us” with the same WhatsApp form.", where: "After the questions", icon: "campaign" },
-  { key: "newsletter", label: "Newsletter sign-up", description: "Email sign-up next to the similar treks.", where: "Next to similar treks", icon: "mail" },
+export const SHARED_SECTIONS: {
+  key: SharedSectionKey;
+  label: string;
+  description: string;
+  where: string;
+  icon: IconName;
+}[] = [
+  {
+    key: "founder",
+    label: "Founder’s story",
+    description: "A short note from our founder on planning every trek.",
+    where: "After the trip overview",
+    icon: "format_quote",
+  },
+  {
+    key: "consultation",
+    label: "Ask us personally",
+    description:
+      "Invites people to message on WhatsApp or email before they book.",
+    where: "After the founder’s story",
+    icon: "chat",
+  },
+  {
+    key: "customization",
+    label: "Custom itinerary and private changes",
+    description: "The box with the 4 option chips under the days.",
+    where: "After the day-by-day itinerary",
+    icon: "tune",
+  },
+  {
+    key: "meals",
+    label: "Why we don’t include meals",
+    description: "The 4 reasons. The food budget is set per trek.",
+    where: "In What’s covered",
+    icon: "restaurant",
+  },
+  {
+    key: "why_book",
+    label: "Why book your trek with us",
+    description: "The 6 promises from the About page.",
+    where: "After the route map",
+    icon: "workspace_premium",
+  },
+  {
+    key: "credentials",
+    label: "Credentials and government licences",
+    description: "Government registration, TAAN and the certificate.",
+    where: "After the group rates",
+    icon: "verified",
+  },
+  {
+    key: "reviews",
+    label: "Trekker reviews",
+    description: "Reviews of this trek. Shows only when the trek has some.",
+    where: "After the credentials",
+    icon: "star",
+  },
+  {
+    key: "differentiators",
+    label: "What makes this trip different",
+    description: "How a local team compares with big agencies.",
+    where: "After the reviews",
+    icon: "compare_arrows",
+  },
+  {
+    key: "booking_form",
+    label: "Booking form",
+    description: "Builds a ready-made WhatsApp message. Nothing is stored.",
+    where: "Before the packing list",
+    icon: "send",
+  },
+  {
+    key: "booking_cta",
+    label: "Booking box at the end",
+    description: "“Book the [trek] with us” with the same WhatsApp form.",
+    where: "After the questions",
+    icon: "campaign",
+  },
+  {
+    key: "newsletter",
+    label: "Newsletter sign-up",
+    description: "Email sign-up next to the similar treks.",
+    where: "Next to similar treks",
+    icon: "mail",
+  },
 ];
 
 export const SHARED_SECTION_KEYS = [
@@ -362,7 +514,8 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   trekStart: "",
   trekEnd: "",
   pricingHeading: "Group rates by team size",
-  pricingIntro: "Book directly with our Kathmandu team, with no middlemen. Every trek is private, so you choose your own start date.",
+  pricingIntro:
+    "Book directly with our Kathmandu team, with no middlemen. Every trek is private, so you choose your own start date.",
   packingHeading: "",
   knowHeading: "",
   knowIntro: "Essential insights from our local trek leaders.",

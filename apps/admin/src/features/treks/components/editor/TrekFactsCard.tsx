@@ -2,7 +2,9 @@ import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId } from "react";
+import type { ReactNode } from "react";
 
+import { SourceNote } from "@/components/editor/SourceNote";
 import { FormSection } from "@/components/ui/FormSection";
 import { inputClass, tileLabelClass } from "@/components/ui/formStyles";
 import { FieldError } from "@/components/ui/FieldError";
@@ -23,15 +25,15 @@ type BoxProps = {
   name?: string;
   value: string;
   placeholder?: string;
-  /** Where a filled-in box comes from, e.g. "From Day by day". */
-  from?: string;
+  /** Under the value: how it shows, or (a filled-in box) where it shows and where it is changed. */
+  note?: ReactNode;
   inputMode?: "numeric";
   maxLength?: number;
   error?: string;
 };
 
 /** One box as the page shows it: icon, small label, value. */
-const Box = ({ icon, label, name, value, placeholder, from, inputMode, maxLength, error }: BoxProps) => {
+const Box = ({ icon, label, name, value, placeholder, note, inputMode, maxLength, error }: BoxProps) => {
   const id = useId();
   return (
     <div className={cn("flex items-center gap-2.5 rounded-xl border border-solid p-2.5", name ? "border-border bg-page" : "border-dashed border-line-strong")}>
@@ -59,7 +61,7 @@ const Box = ({ icon, label, name, value, placeholder, from, inputMode, maxLength
             {value}
           </output>
         )}
-        {from && <span className="text-[11px] text-muted-foreground">{from}</span>}
+        {typeof note === "string" ? <span className="text-[11px] text-muted-foreground">{note}</span> : note}
         <FieldError id={`${id}-error`} message={error} />
       </span>
     </div>
@@ -85,22 +87,38 @@ export const TrekFactsCard = ({ values, errors }: TrekFactsCardProps) => {
   return (
     <FormSection
       title="Trip overview and key specifications"
-      hint={`The 12 boxes under the introduction. Next to the heading: “Verified route ${values.currentSeason || "…"}” (the season, in Top of the page).`}
+      hint="The 12 boxes under the introduction. A box with a lock is filled in by itself: the note under it says where to change it."
     >
+      <SourceNote shownIn={`“Verified route ${values.currentSeason || "…"}” next to the heading`} from={{ section: "top" }} className="-mt-2" />
       <div className="grid gap-2.5 tablet:grid-cols-2 desktop:grid-cols-3">
         <Box icon="location_on" label="Start / finish" placeholder="Kathmandu / Syabrubesi" {...text("startFinish")} />
-        <Box icon="straighten" label="Total distance (km)" name="distanceKm" inputMode="numeric" placeholder="75" value={numberText(values.distanceKm)} from="Shown as “~75 km / 47 miles”" error={errors.distanceKm} />
+        <Box icon="straighten" label="Total distance (km)" name="distanceKm" inputMode="numeric" placeholder="75" value={numberText(values.distanceKm)} note="Shown as “~75 km / 47 miles”" error={errors.distanceKm} />
         <Box icon="timer" label="Daily walking" placeholder="5 to 7 hours a day" {...text("dailyWalking")} />
         <Box icon="groups" label="Guide to trekker" placeholder="1 : 4 + porters" {...text("guideRatio")} />
-        <Box icon="public" label="Country" value="Nepal" from="The same on every trek" />
+        <Box icon="public" label="Country" value="Nepal" note={<SourceNote from={{ note: "The same on every trek." }} />} />
         {hasPlan ? (
-          <Box icon="calendar_month" label="Duration" value={`${values.itinerary.length} days`} from="From Day-by-day itinerary" />
+          <Box
+            icon="calendar_month"
+            label="Duration"
+            value={`${values.itinerary.length} days`}
+            note={<SourceNote shownIn="the overview, under the heading and on trek cards" from={{ section: "itinerary" }} />}
+          />
         ) : (
           <Box icon="calendar_month" label="Duration (days)" name="days" inputMode="numeric" placeholder="10" value={numberText(values.days)} error={errors.days} />
         )}
-        <Box icon="speed" label="Difficulty" value={difficultyOf(values.difficulty).label} from="From Top of the page" />
+        <Box
+          icon="speed"
+          label="Difficulty"
+          value={difficultyOf(values.difficulty).label}
+          note={<SourceNote shownIn="the overview, under the heading and on trek cards" from={{ section: "top" }} />}
+        />
         {hasPlan ? (
-          <Box icon="altitude" label="Max. altitude" value={values.maxAltitudeM === null ? "—" : `${values.maxAltitudeM.toLocaleString("en")} m`} from="From Day-by-day itinerary" />
+          <Box
+            icon="altitude"
+            label="Max. altitude"
+            value={values.maxAltitudeM === null ? "—" : `${values.maxAltitudeM.toLocaleString("en")} m`}
+            note={<SourceNote shownIn="the overview and under the heading" from={{ section: "itinerary" }} />}
+          />
         ) : (
           <Box icon="altitude" label="Max. altitude (m)" name="maxAltitudeM" inputMode="numeric" placeholder="4,773" value={numberText(values.maxAltitudeM)} error={errors.maxAltitudeM} />
         )}

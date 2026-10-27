@@ -15,6 +15,7 @@ import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { TREK_LIMITS as LIMIT } from "../../../constants";
+import { dayAltitudesId } from "../../../hooks/useItineraryDays";
 import type { DayRow } from "../../../hooks/useItineraryDays";
 import { parseAltitude } from "../../../lib/altitudeProfile";
 import { DayMealsField } from "./DayMealsField";
@@ -80,7 +81,7 @@ export const ItineraryDayCard = ({ day, index, isOpen, errors, photoChoices, han
         <input type="hidden" name="dayHighPoint" value={String(day.isHighPoint)} />
         <TextField name="dayTitle" label="Day title · H3" value={day.title} onValueChange={(title) => onChange({ title })} error={errors.title} maxLength={LIMIT.dayTitle} placeholder="e.g. Syabrubesi to Lama Hotel (2,470 m)" inputClassName="font-bold" />
         <TextField name="daySubtitle" label="Small line under the title" value={day.subtitle} onValueChange={(subtitle) => onChange({ subtitle })} error={errors.subtitle} maxLength={LIMIT.daySubtitle} placeholder="e.g. River gorge · Bamboo and rhododendron forest" />
-        <div className="grid gap-3 tablet:grid-cols-2 desktop:grid-cols-4">
+        <div id={dayAltitudesId(day.key)} className="grid scroll-mt-40 gap-3 tablet:grid-cols-2 desktop:grid-cols-4">
           <TextField name="dayDuration" label="Walking or drive time" value={day.duration} onValueChange={(duration) => onChange({ duration })} error={errors.duration} maxLength={LIMIT.dayDuration} placeholder="6–7 hrs" />
           <TextField name="dayTopAltitude" label="Highest point today (m)" inputMode="numeric" value={day.topAltitude} onValueChange={(topAltitude) => onChange({ topAltitude })} error={errors.topAltitude} placeholder="Only if higher than tonight" />
           <TextField name="daySleepAltitude" label="Sleep altitude (m)" inputMode="numeric" value={day.sleepAltitude} onValueChange={(sleepAltitude) => onChange({ sleepAltitude })} error={errors.sleepAltitude} placeholder="2,470" />

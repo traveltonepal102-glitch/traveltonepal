@@ -4,6 +4,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import type { ReactNode } from "react";
 
 import { useMobileMenu } from "../hooks/useMobileMenu";
+import type { NewItem } from "../newItems";
 import { useSidebarRail } from "../hooks/useSidebarRail";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
@@ -13,6 +14,8 @@ type AdminShellProps = {
   /** The signed-in admin's box at the bottom of the sidebar (rendered on the server). */
   user: ReactNode;
   websiteUrl?: string;
+  /** The top bar's "New" menu, for this admin's role. */
+  newItems: readonly NewItem[];
   children: ReactNode;
 };
 
@@ -20,7 +23,7 @@ type AdminShellProps = {
  * Frame of every signed-in screen (design: Admin-dashboard.dc.html): navy sidebar, white top bar, page
  * content. Below 1101px the sidebar is a drawer opened from the top bar.
  */
-export const AdminShell = ({ isRailInitially, user, websiteUrl, children }: AdminShellProps) => {
+export const AdminShell = ({ isRailInitially, user, websiteUrl, newItems, children }: AdminShellProps) => {
   const menu = useMobileMenu();
   const { isRail, toggleRail } = useSidebarRail(isRailInitially);
 
@@ -55,6 +58,7 @@ export const AdminShell = ({ isRailInitially, user, websiteUrl, children }: Admi
           onOpenMenu={menu.open}
           menuButtonRef={menu.menuButtonRef}
           websiteUrl={websiteUrl}
+          newItems={newItems}
         />
         <main id="main" tabIndex={-1} className="flex flex-1 flex-col gap-5 px-8 pt-7 pb-10 outline-none max-tablet:p-4">
           {children}

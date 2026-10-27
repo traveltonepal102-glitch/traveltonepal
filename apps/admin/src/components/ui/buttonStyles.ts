@@ -11,6 +11,12 @@ export const primaryButton = `${BUTTON} border border-solid border-brand bg-bran
 
 export const secondaryButton = `${BUTTON} border border-solid border-line-strong bg-surface text-ink hover:border-brand hover:text-brand`;
 
+/** Opens a remove or delete step (always with an icon or word, like every red). */
+export const dangerButton = `${BUTTON} border border-solid border-[#fecaca] bg-surface text-danger hover:border-danger`;
+
+/** The final "Yes, delete" in a confirm window. */
+export const dangerSolidButton = `${BUTTON} border border-solid border-danger bg-danger text-white hover:bg-[#912018] disabled:cursor-wait disabled:opacity-70`;
+
 /** A small borderless icon button for row and card actions (move, remove…). */
 export const ghostIconButton = `${BASE} size-8 flex-none rounded-sm border border-solid border-transparent bg-transparent text-text hover:border-line-strong hover:bg-surface hover:text-brand disabled:cursor-not-allowed disabled:opacity-40`;
 

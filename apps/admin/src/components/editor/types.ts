@@ -31,3 +31,12 @@ export type EditorSaveAction = (state: EditorSaveState, formData: FormData) => P
 
 /** What a remove action returns (Server Action state): an error to show, or nothing (it redirects when done). */
 export type RemoveState = { error: string | null };
+
+/** Things that still use an item, so it can't be removed yet: what to do, and a link to each one to fix it. */
+export type RemoveBlockerGroup = {
+  /** e.g. "Treks in this region" */
+  label: string;
+  /** e.g. "Move each trek to another region." */
+  fix: string;
+  items: { id: string; name: string; href: string }[];
+};

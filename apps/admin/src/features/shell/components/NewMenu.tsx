@@ -7,8 +7,7 @@ import Link from "next/link";
 
 import { primaryButton } from "@/components/ui/buttonStyles";
 
-import type { NewItemTone } from "../newItems";
-import { NEW_ITEMS } from "../newItems";
+import type { NewItem, NewItemTone } from "../newItems";
 
 const TONE_CLASSES: Record<NewItemTone, string> = {
   brand: "bg-brand-tint text-brand",
@@ -16,8 +15,8 @@ const TONE_CLASSES: Record<NewItemTone, string> = {
   green: "bg-green-tint text-whatsapp",
 };
 
-/** "New" in the top bar: shortcuts to add a trek, date, guide, person or photos. */
-export const NewMenu = () => (
+/** "New" in the top bar: shortcuts to add a trek, region, date, guide, person or photos (what this admin may add). */
+export const NewMenu = ({ items }: { items: readonly NewItem[] }) => (
   <Menu.Root>
     <Menu.Trigger className={primaryButton}>
       <Icon name="add" />
@@ -26,7 +25,7 @@ export const NewMenu = () => (
     <Menu.Portal>
       <Menu.Positioner side="bottom" align="end" sideOffset={8} collisionPadding={12} className="z-100 outline-none">
         <Menu.Popup className="w-70 max-w-[calc(100vw-24px)] rounded-lg border border-solid border-border bg-surface p-2 shadow-popover outline-none">
-          {NEW_ITEMS.map((item) => (
+          {items.map((item) => (
             <Menu.LinkItem
               key={item.label}
               closeOnClick

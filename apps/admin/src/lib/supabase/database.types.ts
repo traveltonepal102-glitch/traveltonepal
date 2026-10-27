@@ -7,6 +7,9 @@ export type AdminRole = "super_admin" | "editor";
 
 export type MonthRating = "best" | "possible" | "avoid";
 
+/** What region_usage lists as still using a region. */
+export type RegionUsageKind = "trek" | "travel_guide" | "trekking_guide" | "region";
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type RegionRow = {
@@ -825,6 +828,14 @@ export type Database = {
       save_region: {
         Args: { p_region_id: string | null; p_locale: string; p_region: Json; p_text: Json; p_photos: Json };
         Returns: string;
+      };
+      region_usage: {
+        Args: { p_region_id: string; p_locale?: string };
+        Returns: { kind: RegionUsageKind; id: string; name: string }[];
+      };
+      delete_region: {
+        Args: { p_region_id: string };
+        Returns: undefined;
       };
       login_clear_failures: { Args: { p_email: string }; Returns: undefined };
       login_locked_until: { Args: { p_email: string }; Returns: string | null };

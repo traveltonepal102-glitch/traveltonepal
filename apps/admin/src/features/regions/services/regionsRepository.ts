@@ -8,13 +8,13 @@ import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { REGION_LOCALE, WHY_POINT_ICON_VALUES } from "../constants";
-import type { Region, RegionFormValues } from "../types";
+import type { Region, RegionFormValues, RegionUsageItem } from "../types";
 
 type RegionRow = Database["public"]["Tables"]["regions"]["Row"];
 type TextRow = Database["public"]["Tables"]["region_translations"]["Row"];
 type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 
-/** Postgres error codes save_region can raise. */
+/** Postgres error codes save_region and delete_region can raise. */
 const FOREIGN_KEY_VIOLATION = "23503";
 const UNIQUE_VIOLATION = "23505";
 const CHECK_VIOLATION = "23514";
@@ -226,4 +226,26 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
 
   console.error(`save_region failed: ${error.code} ${error.message}`);
   return { ok: false, reason: "failed" };
+};
+
+/** What still uses a region (treks, travel guides, trekking guides, regions comparing with it), by kind and name. */
+export const getRegionUsage = async (regionId: string): Promise<RegionUsageItem[]> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc("region_usage", { p_region_id: regionId, p_locale: REGION_LOCALE });
+  if (error) throw new Error(`Could not check what uses region ${regionId}: ${error.message}`);
+  return data;
+};
+
+/**
+ * Deletes a region once nothing uses it (delete_region, one transaction). "in_use": something still does;
+ * "not_found": no such region; "forbidden": not a Super admin (RLS).
+ */
+export const deleteRegion = async (regionId: string): Promise<"deleted" | "in_use" | "not_found" | "forbidden"> => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("delete_region", { p_region_id: regionId });
+  if (!error) return "deleted";
+  if (error.code === FOREIGN_KEY_VIOLATION) return "in_use";
+  if (error.code === NOT_FOUND) return "not_found";
+  if (error.code === RLS_VIOLATION) return "forbidden";
+  throw new Error(`Could not delete region ${regionId}: ${error.code} ${error.message}`);
 };

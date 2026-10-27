@@ -5,6 +5,7 @@ import { useState } from "react";
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
 import { parseAltitude } from "../lib/altitudeProfile";
+import type { DayAltitude } from "../lib/elevationSummary";
 import type { ItineraryDay } from "../types";
 
 /**
@@ -29,6 +30,17 @@ const toRow = (day: ItineraryDay, index: number): DayRow => ({
 
 /** The day's highest point as typed: the hike's top, else where you sleep. */
 export const dayPeak = (day: Pick<DayRow, "topAltitude" | "sleepAltitude">) => parseAltitude(day.topAltitude) ?? parseAltitude(day.sleepAltitude);
+
+/** A day's altitudes as typed, for the altitude chart and its boxes. */
+export const toDayAltitude = (day: DayRow): DayAltitude => ({
+  place: day.place,
+  duration: day.duration,
+  altitudeM: dayPeak(day),
+  sleepAltitudeM: parseAltitude(day.sleepAltitude),
+});
+
+/** The id of a day's altitude fields, so the chart can open the day there. */
+export const dayAltitudesId = (key: string) => `day-${key}-altitudes`;
 
 const emptyRow = (): DayRow => ({
   key: crypto.randomUUID(),
@@ -93,5 +105,7 @@ export const useItineraryDays = (initial: ItineraryDay[], onEdit: () => void) =>
 
   const toggleOpen = (key: string) => setOpenKey((current) => (current === key ? null : key));
 
-  return { days, openKey, add, duplicate, remove, move, toggleHighPoint, update, toggleOpen };
+  return { days, openKey, add, duplicate, remove, move, toggleHighPoint, update, toggleOpen, open: setOpenKey };
 };
+
+export type ItineraryPlan = ReturnType<typeof useItineraryDays>;

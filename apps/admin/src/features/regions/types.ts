@@ -2,7 +2,7 @@ import type { Photo, PhotoDetails } from "@/features/photos/types";
 import type { RichTextDoc } from "@/lib/richText/richText";
 import type { IconName } from "@ttn/ui/icon";
 
-import type { MonthRating, RegionDifficultyValue } from "@/lib/supabase/database.types";
+import type { MonthRating, RegionDifficultyValue, RegionUsageKind } from "@/lib/supabase/database.types";
 
 export type SeasonKey = "spring" | "monsoon" | "autumn" | "winter";
 
@@ -102,6 +102,9 @@ export type Region = RegionValues & {
   updatedAt: string;
   photos: RegionPhotos;
 };
+
+/** Something that still uses a region, so it can't be deleted yet (region_usage). */
+export type RegionUsageItem = { kind: RegionUsageKind; id: string; name: string };
 
 /** The editor's sections (design: Admin-region-editor). */
 export type RegionSectionKey =

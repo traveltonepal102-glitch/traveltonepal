@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { deleteRegion } from "@/features/regions/actions/deleteRegion";
 import { saveRegion } from "@/features/regions/actions/saveRegion";
 import { RegionEditor } from "@/features/regions/components/editor/RegionEditor";
-import { getRegion } from "@/features/regions/services/regionsRepository";
+import { toRegionBlockers } from "@/features/regions/lib/regionBlockers";
+import { getRegion, getRegionUsage } from "@/features/regions/services/regionsRepository";
 import { listRegionArticles } from "@/features/travel-guides/services/articleOptions";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
@@ -29,9 +32,13 @@ export const generateMetadata = async ({ params }: RegionPageProps): Promise<Met
   return { title: `${region.name} region` };
 };
 
-/** Edit a region (design: Admin-region-editor.dc.html). "?added=1" right after it was added. */
+/**
+ * Edit a region (design: Admin-region-editor.dc.html). "?added=1" right after it was added. A Super admin also gets
+ * "Delete", which lists what still uses the region instead while anything does.
+ */
 const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const canDelete = admin.role === "super_admin";
   const [region, treks, guides, regions, { added }] = await Promise.all([
     loadRegion(params),
     listSimilarTrekOptions(null),
@@ -39,7 +46,7 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
     listRegionOptions(),
     searchParams,
   ]);
-  const articles = await listRegionArticles(region.id);
+  const [articles, usage] = await Promise.all([listRegionArticles(region.id), canDelete ? getRegionUsage(region.id) : []]);
   const today = todayInNepal();
 
   return (
@@ -58,6 +65,17 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
       today={today}
       lastSaved={`Saved ${formatDateTime(region.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
+      headerActions={
+        canDelete && (
+          <ConfirmRemoveButton
+            verb="delete"
+            name={`${region.name} region`}
+            consequence="Its page leaves the website, with its text, best months, questions and gallery. Library photos stay."
+            action={deleteRegion.bind(null, region.id)}
+            blockers={toRegionBlockers(usage)}
+          />
+        )
+      }
     />
   );
 };
