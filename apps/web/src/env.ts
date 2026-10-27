@@ -1,4 +1,5 @@
 import "server-only";
+import { APP_ENVIRONMENTS } from "@ttn/config/appEnvironment";
 import { REVALIDATE_SECRET_MIN_LENGTH } from "@ttn/config/websiteCache";
 import { z } from "zod";
 
@@ -20,6 +21,8 @@ const envSchema = z.object({
   // The admin's password for app/api/revalidate (the same value as in apps/admin). Not set: the route is off and
   // saved changes show within the hour.
   REVALIDATE_SECRET: optional(z.string().min(REVALIDATE_SECRET_MIN_LENGTH, `REVALIDATE_SECRET must be at least ${REVALIDATE_SECRET_MIN_LENGTH} characters.`)),
+  // "production" turns on production-only features (read with appEnvironment()); not set: development.
+  NEXT_PUBLIC_APP_ENV: optional(z.enum(APP_ENVIRONMENTS, "NEXT_PUBLIC_APP_ENV must be production or development.")),
 });
 
 const parsed = envSchema.safeParse(process.env);

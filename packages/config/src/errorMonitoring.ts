@@ -1,13 +1,14 @@
+import { appEnvironment } from "./appEnvironment";
+
 /**
  * Error monitoring (Sentry) settings shared by the website and the admin: errors only, no performance tracing,
- * no session replay and no personal data (no IP address, cookies or request bodies). On only in Vercel's
- * production deployment with NEXT_PUBLIC_SENTRY_DSN set, so pnpm dev and preview builds never report; the DSN is
- * not a secret (every visitor's browser gets it).
+ * no session replay and no personal data (no IP address, cookies or request bodies). On only where
+ * NEXT_PUBLIC_APP_ENV is "production" and NEXT_PUBLIC_SENTRY_DSN is set; the DSN is not a secret (every visitor's
+ * browser gets it).
  */
 export const errorMonitoringOptions = () => {
   const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-  // Vercel sets production / preview; anything else (pnpm dev, next start) is development.
-  const environment = process.env.NEXT_PUBLIC_VERCEL_ENV || "development";
+  const environment = appEnvironment();
   return {
     dsn,
     enabled: Boolean(dsn) && environment === "production",

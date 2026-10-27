@@ -16,7 +16,7 @@ const S3_NAMES = Object.keys(S3);
 
 /** env.ts read with these settings (it reads process.env once, when first imported). */
 const loadEnv = async (settings: Record<string, string>) => {
-  for (const name of [...Object.keys(BASE), ...S3_NAMES, "WEBSITE_URL", "REVALIDATE_SECRET"]) vi.stubEnv(name, "");
+  for (const name of [...Object.keys(BASE), ...S3_NAMES, "WEBSITE_URL", "REVALIDATE_SECRET", "NEXT_PUBLIC_APP_ENV"]) vi.stubEnv(name, "");
   for (const [name, value] of Object.entries({ ...BASE, ...settings })) vi.stubEnv(name, value);
   vi.resetModules();
   return (await import("./env")).env;
@@ -56,5 +56,17 @@ describe("storage settings", () => {
 
   it("refuses a secret key pasted as the access key ID", async () => {
     await expect(loadEnv({ ...S3, S3_ACCESS_KEY_ID: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" })).rejects.toThrow(/S3_ACCESS_KEY_ID/);
+  });
+});
+
+describe("app environment", () => {
+  it("accepts production and development, and leaving it out", async () => {
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production" })).resolves.toBeDefined();
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "development" })).resolves.toBeDefined();
+    await expect(loadEnv({})).resolves.toBeDefined();
+  });
+
+  it("stops on a typo instead of quietly meaning development", async () => {
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "prod" })).rejects.toThrow(/NEXT_PUBLIC_APP_ENV/);
   });
 });

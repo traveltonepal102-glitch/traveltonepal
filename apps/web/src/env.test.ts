@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const SETTINGS = { SUPABASE_URL: "https://abc.supabase.co", SUPABASE_PUBLISHABLE_KEY: "sb_publishable_0123456789abcdef", PHOTOS_PUBLIC_URL: "", REVALIDATE_SECRET: "" };
+const SETTINGS = { SUPABASE_URL: "https://abc.supabase.co", SUPABASE_PUBLISHABLE_KEY: "sb_publishable_0123456789abcdef", PHOTOS_PUBLIC_URL: "", REVALIDATE_SECRET: "", NEXT_PUBLIC_APP_ENV: "" };
 
 /** env.ts read with these settings (it reads process.env once, when first imported). */
 const loadEnv = async (overrides: Partial<typeof SETTINGS> = {}) => {
@@ -37,5 +37,10 @@ describe("website settings", () => {
     await expect(loadEnv({ SUPABASE_PUBLISHABLE_KEY: "short" })).rejects.toThrow(/SUPABASE_PUBLISHABLE_KEY/);
     await expect(loadEnv({ PHOTOS_PUBLIC_URL: "not a url" })).rejects.toThrow(/PHOTOS_PUBLIC_URL/);
     await expect(loadEnv({ REVALIDATE_SECRET: "too-short" })).rejects.toThrow(/REVALIDATE_SECRET/);
+  });
+
+  it("accepts production or development as the app environment, and stops on a typo", async () => {
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production" })).resolves.toBeDefined();
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "prod" })).rejects.toThrow(/NEXT_PUBLIC_APP_ENV must be production or development/);
   });
 });

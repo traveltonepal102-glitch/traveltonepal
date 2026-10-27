@@ -28,9 +28,9 @@ describe("isReportedByServer", () => {
 describe("errorMonitoringOptions", () => {
   const DSN = "https://abc123@o4510.ingest.de.sentry.io/4510";
 
-  const optionsWith = (dsn: string, vercelEnv: string) => {
+  const optionsWith = (dsn: string, appEnv: string) => {
     vi.stubEnv("NEXT_PUBLIC_SENTRY_DSN", dsn);
-    vi.stubEnv("NEXT_PUBLIC_VERCEL_ENV", vercelEnv);
+    vi.stubEnv("NEXT_PUBLIC_APP_ENV", appEnv);
     return errorMonitoringOptions();
   };
 
@@ -38,13 +38,13 @@ describe("errorMonitoringOptions", () => {
     vi.unstubAllEnvs();
   });
 
-  it("reports from Vercel's production deployment", () => {
+  it("reports where NEXT_PUBLIC_APP_ENV is production", () => {
     expect(optionsWith(DSN, "production")).toMatchObject({ enabled: true, environment: "production", sendDefaultPii: false });
   });
 
-  it("never reports from pnpm dev or a preview, even with a DSN", () => {
+  it("never reports in development, even with a DSN", () => {
+    expect(optionsWith(DSN, "development")).toMatchObject({ enabled: false, environment: "development" });
     expect(optionsWith(DSN, "").enabled).toBe(false);
-    expect(optionsWith(DSN, "preview").enabled).toBe(false);
   });
 
   it("is off in production without a DSN", () => {
