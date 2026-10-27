@@ -1,6 +1,8 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { getWhatsAppUrl } from "@ttn/config/contact";
+import { isReportedByServer } from "@ttn/config/errorMonitoring";
 import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +25,7 @@ type ErrorPageProps = {
 const ErrorPage = ({ error, retry }: ErrorPageProps) => {
   useEffect(() => {
     console.error(error);
+    if (!isReportedByServer(error)) Sentry.captureException(error);
   }, [error]);
 
   return (

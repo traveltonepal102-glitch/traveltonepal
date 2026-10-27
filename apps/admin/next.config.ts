@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 
 import { VARIANT_WIDTHS } from "./src/features/photos/constants";
@@ -28,4 +29,14 @@ const nextConfig: NextConfig = {
   headers: async () => [{ source: "/:path*", headers: SECURITY_HEADERS }],
 };
 
-export default nextConfig;
+// Error monitoring (src/instrumentation*.ts). With SENTRY_AUTH_TOKEN (Vercel only), a build uploads its source maps
+// so reports show the real code, then deletes them; without it, nothing is uploaded.
+export default withSentryConfig(nextConfig, {
+  org: "travel-to-nepal",
+  project: "traveltonepal-admin",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  telemetry: false,
+  // Only needed for performance tracing, which is off.
+  suppressOnRouterTransitionStartWarning: true,
+});

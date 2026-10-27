@@ -5,16 +5,17 @@
  *
  * Styles allow 'unsafe-inline': next/image sets inline style attributes, which a nonce can't cover.
  * Development needs 'unsafe-eval' (React's debugging) and plain http (localhost).
- * `origins` adds the photo storage: where photos are shown from, and where the browser uploads them.
+ * `origins` adds other sites: where photos are shown from (images), and what the browser may send requests to
+ * (connections: photo uploads, error reports).
  */
-export type ExtraOrigins = { images: string[]; uploads: string[] };
+export type ExtraOrigins = { images: string[]; connections: string[] };
 
 const withOrigins = (base: string, origins: string[]) => [base, ...origins].join(" ");
 
 export const buildContentSecurityPolicy = (
   nonce: string,
   isDevelopment: boolean,
-  origins: ExtraOrigins = { images: [], uploads: [] },
+  origins: ExtraOrigins = { images: [], connections: [] },
 ) =>
   [
     "default-src 'self'",
@@ -22,7 +23,7 @@ export const buildContentSecurityPolicy = (
     "style-src 'self' 'unsafe-inline'",
     withOrigins("img-src 'self' blob: data:", origins.images),
     "font-src 'self'",
-    withOrigins("connect-src 'self'", origins.uploads),
+    withOrigins("connect-src 'self'", origins.connections),
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -1,3 +1,4 @@
+import { errorMonitoringOrigin } from "@ttn/config/errorMonitoring";
 import type { NextRequest } from "next/server";
 
 import { buildContentSecurityPolicy, createNonce } from "@/lib/security/contentSecurityPolicy";
@@ -8,7 +9,12 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 /** YouTube's video pictures, shown in the trek editor's video list (only pictures: the videos never play here). */
 const YOUTUBE_PICTURES = "https://i.ytimg.com";
-const ORIGINS = { images: [...PHOTO_ORIGINS.images, YOUTUBE_PICTURES], uploads: PHOTO_ORIGINS.uploads };
+/** Where the browser sends error reports (Sentry), when error monitoring is on. */
+const ERROR_REPORTS = errorMonitoringOrigin(process.env.NEXT_PUBLIC_SENTRY_DSN);
+const ORIGINS = {
+  images: [...PHOTO_ORIGINS.images, YOUTUBE_PICTURES],
+  connections: [...PHOTO_ORIGINS.uploads, ...(ERROR_REPORTS ? [ERROR_REPORTS] : [])],
+};
 
 /**
  * Before every admin request: a fresh Content-Security-Policy nonce, the Supabase session refresh, and a

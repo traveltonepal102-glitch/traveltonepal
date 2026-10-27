@@ -22,7 +22,7 @@ describe("buildContentSecurityPolicy", () => {
   it("allows photo storage only for images and uploads, nothing else", () => {
     const policy = buildContentSecurityPolicy("abc123", false, {
       images: ["https://images.example.com"],
-      uploads: ["https://storage.example.com"],
+      connections: ["https://storage.example.com"],
     });
     expect(directive(policy, "img-src")).toBe("img-src 'self' blob: data: https://images.example.com");
     expect(directive(policy, "connect-src")).toBe("connect-src 'self' https://storage.example.com");
