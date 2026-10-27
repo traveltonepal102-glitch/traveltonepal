@@ -70,14 +70,10 @@ const included = (trek: TrekValues): SectionReadiness => {
   return { status: "done", note: `${trek.included.length} included · ${trek.excluded.length} not` };
 };
 
-/** Needs group prices; a trek on fixed dates with none still to come gets a reminder. */
-const prices = (trek: TrekValues, today: string): SectionReadiness => {
+/** Needs group prices (trekkers pick their own start date, so there are no dates to add). */
+const prices = (trek: TrekValues): SectionReadiness => {
   if (!trek.groupPrices.length) return { status: "todo", note: "Add the group prices" };
-  const groups = plural(trek.groupPrices.length, "group price");
-  if (!trek.hasFixedDates) return { status: "done", note: `${groups} · your dates` };
-  const upcoming = trek.departures.filter((departure) => departure.startDate >= today).length;
-  if (!upcoming) return { status: "warn", note: "No upcoming dates" };
-  return { status: "done", note: `${groups} · ${plural(upcoming, "date")}` };
+  return { status: "done", note: `${plural(trek.groupPrices.length, "group price")} · any start date` };
 };
 
 /** Needs something for the map to show; the printable PDF map is a reminder (its button stays hidden without one). */
@@ -135,8 +131,8 @@ const shared = (trek: TrekValues): SectionReadiness => ({
   note: `${SHARED_SECTIONS.length - trek.hiddenSharedSections.length} of ${SHARED_SECTIONS.length} shown`,
 });
 
-/** How complete each section is, from the saved values (the editor's checklist). `today`: "YYYY-MM-DD" in Nepal. */
-export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos, today: string): Record<ReadyTrekSectionKey, SectionReadiness> => ({
+/** How complete each section is, from the saved values (the editor's checklist). */
+export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos): Record<ReadyTrekSectionKey, SectionReadiness> => ({
   top: top(trek),
   photos: photos(trekPhotos),
   intro: intro(trek),
@@ -147,7 +143,7 @@ export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos, today
   inclusions: included(trek),
   guides: guides(trek),
   route: route(trek),
-  pricing: prices(trek, today),
+  pricing: prices(trek),
   packing: packing(trek),
   know: know(trek),
   faq: faq(trek),

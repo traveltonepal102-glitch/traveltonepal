@@ -21,8 +21,8 @@ import { PageHeadingFields } from "./PageHeadingFields";
 import { VideosCard } from "./photos/VideosCard";
 import { PhotoBadgesCard } from "./PhotoBadgesCard";
 import { PackingListCard } from "./practical/PackingListCard";
-import { DeparturesCard } from "./prices/DeparturesCard";
 import { GroupPricesCard } from "./prices/GroupPricesCard";
+import { StartDateCard } from "./prices/StartDateCard";
 import { ElevationCard } from "./route/ElevationCard";
 import { RouteMapCard } from "./route/RouteMapCard";
 import { GoogleSearchCard } from "./seo/GoogleSearchCard";
@@ -47,7 +47,6 @@ type TrekSectionPanelsProps = {
   guideOptions: GuideOption[];
   regionId: string | null;
   isNew: boolean;
-  today: string;
   pdfMapUrl: string | null;
 };
 
@@ -55,7 +54,7 @@ type TrekSectionPanelsProps = {
  * Every section of the trek editor, in the page's order. All stay in the form (the closed ones hidden), so Save
  * sends every field whichever section is open.
  */
-export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, regions, similarOptions, guideOptions, regionId, isNew, today, pdfMapUrl }: TrekSectionPanelsProps) => {
+export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl }: TrekSectionPanelsProps) => {
   const photosError = Object.entries(errors).find(([field]) => field.startsWith("photos"))?.[1];
   const trekPhotos = [...(photos.cover ? [photos.cover] : []), ...photos.gallery];
   const panel = (key: TrekSectionKey) => ({ hidden: activeKey !== key, className: "flex flex-col gap-4" });
@@ -146,7 +145,7 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
           line={{ name: "pricingIntro", defaultValue: values.pricingIntro, placeholder: "Book directly with our Kathmandu team, with no middlemen.", maxLength: LIMIT.pricingIntro, error: errors.pricingIntro }}
         />
         <GroupPricesCard prices={values.groupPrices} errors={errors} onEdit={onEdit} />
-        <DeparturesCard hasFixedDates={values.hasFixedDates} departures={values.departures} today={today} errors={errors} onEdit={onEdit} />
+        <StartDateCard region={regions.find((region) => region.id === values.regionId)} />
       </div>
       <div {...panel("packing")}>
         <PageHeadingFields

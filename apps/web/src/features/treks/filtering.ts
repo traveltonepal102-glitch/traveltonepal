@@ -10,7 +10,6 @@ export type TrekFilters = {
   lengths: readonly TrekLength[];
   difficulties: readonly string[];
   seasons: readonly string[];
-  fixedDatesOnly: boolean;
   shortcut: TrekShortcut | null;
   sort: TrekSort;
 };
@@ -21,7 +20,6 @@ export const EMPTY_TREK_FILTERS: TrekFilters = {
   lengths: [],
   difficulties: [],
   seasons: [],
-  fixedDatesOnly: false,
   shortcut: null,
   sort: "recommended",
 };
@@ -49,7 +47,6 @@ export const parseTrekFilters = (params: URLSearchParams, regionSlugs: readonly 
     lengths: readList(params, "length").filter((value) => isOneOf(LENGTH_VALUES, value)),
     difficulties: readList(params, "difficulty").filter((value) => DIFFICULTY_VALUES.includes(value)),
     seasons: readList(params, "season").filter((value) => TREK_SEASONS.some((season) => season.value === value)),
-    fixedDatesOnly: params.get("fixed") === "1",
     shortcut: isOneOf(TREK_SHORTCUTS.map((item) => item.value), shortcut) ? shortcut : null,
     sort: isOneOf(TREK_SORTS.map((item) => item.value), sort) ? sort : "recommended",
   };
@@ -63,7 +60,6 @@ export const serializeTrekFilters = (filters: TrekFilters): string => {
   if (filters.lengths.length) params.set("length", filters.lengths.join(","));
   if (filters.difficulties.length) params.set("difficulty", filters.difficulties.join(","));
   if (filters.seasons.length) params.set("season", filters.seasons.join(","));
-  if (filters.fixedDatesOnly) params.set("fixed", "1");
   if (filters.shortcut) params.set("show", filters.shortcut);
   if (filters.sort !== "recommended") params.set("sort", filters.sort);
   return params.toString();
@@ -104,7 +100,6 @@ export const matchesTrek = (trek: TrekSummary, filters: TrekFilters, ignore?: Co
   if (ignore !== "difficulties" && filters.difficulties.length && !filters.difficulties.includes(difficultyValue(trek)))
     return false;
   if (filters.seasons.length && !filters.seasons.some((season) => trek.seasons.some((s) => s === season))) return false;
-  if (filters.fixedDatesOnly && !trek.hasFixedDates) return false;
   if (filters.shortcut && !matchesShortcut(trek, filters.shortcut)) return false;
   return true;
 };
@@ -146,7 +141,6 @@ export const activeFilterCount = (filters: TrekFilters): number =>
   filters.lengths.length +
   filters.difficulties.length +
   filters.seasons.length +
-  Number(filters.fixedDatesOnly) +
   Number(Boolean(filters.q));
 
 export const toggleValue = <T extends string>(values: readonly T[], value: T): T[] =>

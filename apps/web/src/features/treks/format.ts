@@ -15,8 +15,8 @@ export const formatDistance = (km: number) => `~${NUMBER.format(km)} km / ${NUMB
 /** 1000 → "$1,000" */
 export const formatUsd = (amount: number) => `$${NUMBER.format(amount)}`;
 
-// UTC: departure dates are calendar days, the same for every visitor.
-const DEPARTURE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" });
+// UTC: trek dates are calendar days in Nepal, the same for every visitor.
+const TRIP_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" });
 
 /** "2026-11-02" → "Nov 02, 2026" */
-export const formatDepartureDate = (isoDate: string) => DEPARTURE_DATE.format(new Date(isoDate));
+export const formatTripDate = (isoDate: string) => TRIP_DATE.format(new Date(isoDate));

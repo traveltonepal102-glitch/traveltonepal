@@ -16,7 +16,6 @@ const trek = (slug: string, regionSlug: string, days: number, isPopular = false)
   seasons: [],
   tags: [],
   isPopular,
-  hasFixedDates: false,
   hasPage: true,
 });
 

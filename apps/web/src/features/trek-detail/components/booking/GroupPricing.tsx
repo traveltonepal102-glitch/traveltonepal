@@ -3,25 +3,21 @@
 import { Icon } from "@ttn/ui/icon";
 import { useId } from "react";
 
-import { formatUsd } from "@/features/treks/format";
+import { formatTripDate, formatUsd } from "@/features/treks/format";
 
-import type { DepartureOption } from "../../pricing";
 import { TREK_SECTION_IDS } from "../../sections";
 import type { GroupPrice } from "../../types";
 import { useBookingSelection } from "./BookingSelection";
 
 type GroupPricingProps = {
   groupPrices: readonly GroupPrice[];
-  /** Fixed departures; empty when the trek runs on the trekker's own dates only. */
-  departures: readonly DepartureOption[];
 };
 
-/** Price per person for the chosen group size, the chosen departure and the group-size picker. */
-export const GroupPricing = ({ groupPrices, departures }: GroupPricingProps) => {
-  const { groupIndex: selectedIndex, selectGroup: setSelectedIndex, departureIndex } = useBookingSelection();
+/** Price per person for the chosen group size, the chosen start day and the group-size picker. */
+export const GroupPricing = ({ groupPrices }: GroupPricingProps) => {
+  const { groupIndex: selectedIndex, selectGroup: setSelectedIndex, startDate } = useBookingSelection();
   const radioName = useId();
   const selected = groupPrices[selectedIndex];
-  const departure = departures[departureIndex];
   if (!selected) return null;
 
   return (
@@ -41,7 +37,7 @@ export const GroupPricing = ({ groupPrices, departures }: GroupPricingProps) => 
         </a>
       </div>
 
-      {departure && (
+      {startDate && (
         <a
           href={`#${TREK_SECTION_IDS.pricing}`}
           className="flex items-center justify-between gap-2.5 rounded-md border border-brand/15 bg-brand-tint px-3 py-2.5 text-caption text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -49,7 +45,7 @@ export const GroupPricing = ({ groupPrices, departures }: GroupPricingProps) => 
           <span className="inline-flex items-center gap-2">
             <Icon name="calendar_month" size={18} className="text-brand" />
             <span>
-              Departure: <strong>{departure.label}</strong>
+              Start: <strong>{formatTripDate(startDate)}</strong> · your choice
             </span>
           </span>
           <span className="text-xs font-bold text-brand">Change</span>

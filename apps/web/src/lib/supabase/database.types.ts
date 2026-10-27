@@ -111,6 +111,7 @@ export type WebTrekRow = CoverColumns & {
   seasons: ("spring" | "autumn" | "winter" | "monsoon")[];
   tags: ("classic" | "off-the-beaten-path")[];
   is_popular: boolean;
+  /** No longer shown: trekkers pick their own start date (kept in the view, unused). */
   has_fixed_dates: boolean;
   price_from_usd: number | null;
   region_slug: string;
@@ -178,12 +179,15 @@ export type WebTrekPageRow = {
   faqs: unknown;
   /** In order: [{ label, short_label, price_usd, team, is_default }]. */
   group_prices: unknown;
+  /** No longer shown: trekkers pick their own start date (kept in the view, unused). */
   has_fixed_dates: boolean;
-  /** From today (Nepal time), by date: [{ start_date, status, note }]. */
+  /** No longer shown (see has_fixed_dates). */
   departures: unknown;
   /** Published ones only, in the admin's order. */
   similar_slugs: string[];
   hidden_shared_sections: string[];
+  /** The region's best months, Jan–Dec ("best" | "possible" | "avoid"); null without a region. */
+  region_month_ratings: string[] | null;
 };
 
 /** A trek's gallery photo (the photo columns named as in the other views). */

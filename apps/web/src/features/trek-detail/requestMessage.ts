@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** Seasons offered when the visitor has no fixed departure in mind (no years: they never go stale). */
+/** Seasons offered instead of the chosen start day (no years: they never go stale). */
 export const SEASON_OPTIONS = [
   "Spring (March – May)",
   "Autumn (October – November)",
@@ -26,9 +26,13 @@ export type TrekRequest = TrekRequestFields & {
   days: number;
   /** e.g. "3–5 people ($890 per person)". */
   groupSize: string;
-  /** e.g. "Departure Nov 02, 2026" or "Spring (March – May)". */
+  /** e.g. "Start Nov 02, 2026" or "Spring (March – May)". */
   timing: string;
 };
+
+/** "Check this date on WhatsApp": the trek, the chosen start day and group size, before any form is filled in. */
+export const buildDateCheckMessage = ({ trekName, days, groupSize, startDate }: Pick<TrekRequest, "trekName" | "days" | "groupSize"> & { startDate: string }) =>
+  [`Hello! Can I start the ${trekName} (${days} days) on ${startDate}?`, "", `Group size: ${groupSize}`].join("\n");
 
 /** The booking request as the message the visitor sends us on WhatsApp or by email. */
 export const buildTrekRequestMessage = ({ trekName, days, name, country, groupSize, timing, requests }: TrekRequest): string => {

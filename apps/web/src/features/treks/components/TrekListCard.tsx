@@ -84,12 +84,6 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
           ) : (
             <p className="font-display text-h4 text-brand">Price on request</p>
           )}
-          {trek.hasFixedDates && (
-            <span className="inline-flex items-center gap-1 rounded-sm bg-green-tint px-2 py-0.5 text-xs font-bold text-whatsapp">
-              <Icon name="calendar_month" size={13} />
-              Fixed dates
-            </span>
-          )}
         </div>
 
         <div className="flex gap-2">

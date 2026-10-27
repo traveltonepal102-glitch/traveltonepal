@@ -4,7 +4,7 @@ import { ROUTES } from "@/lib/routes";
  * Trek filters, shared by the home trek finder, the header Treks menu and the Treks page, so a
  * link like /treks?length=short means the same thing everywhere. Values are the URL values.
  */
-export type TrekFilterParam = "q" | "region" | "length" | "difficulty" | "season" | "fixed" | "show" | "sort";
+export type TrekFilterParam = "q" | "region" | "length" | "difficulty" | "season" | "show" | "sort";
 
 export const TREK_LENGTHS = [
   { value: "short", label: "Up to 9 days", maxDays: 9 },

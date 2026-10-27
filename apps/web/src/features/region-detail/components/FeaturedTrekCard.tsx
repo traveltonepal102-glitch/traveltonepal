@@ -32,7 +32,6 @@ export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
         {trek.image ? <SiteImage image={trek.image} sizes="(min-width: 1024px) 640px, 100vw" className="object-cover" /> : <RegionTileArt />}
         <p className="absolute top-4 left-4 flex flex-wrap gap-1.5 text-xs font-extrabold">
           {trek.badge && <span className="rounded-full bg-saffron px-3 py-1.25 text-navy">{trek.badge}</span>}
-          {trek.hasFixedDates && <span className="rounded-full bg-white/94 px-3 py-1.25 text-brand">Fixed dates</span>}
         </p>
       </div>
 

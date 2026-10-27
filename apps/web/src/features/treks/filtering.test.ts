@@ -19,14 +19,13 @@ const names = (filters: Partial<TrekFilters>) =>
   filterAndSortTreks(TREKS, { ...EMPTY_TREK_FILTERS, ...filters }).map((trek) => trek.slug);
 
 describe("parseTrekFilters", () => {
-  it("reads lists, flags and the sort", () => {
-    expect(parse("region=everest,langtang&length=short&difficulty=easy&fixed=1&show=quiet&sort=price&q= poon ")).toEqual({
+  it("reads lists, the shortcut and the sort", () => {
+    expect(parse("region=everest,langtang&length=short&difficulty=easy&show=quiet&sort=price&q= poon ")).toEqual({
       q: "poon",
       regions: ["everest", "langtang"],
       lengths: ["short"],
       difficulties: ["easy"],
       seasons: [],
-      fixedDatesOnly: true,
       shortcut: "quiet",
       sort: "price",
     });
@@ -48,7 +47,7 @@ describe("parseTrekFilters", () => {
 
 describe("serializeTrekFilters", () => {
   it("round-trips through the URL", () => {
-    const query = "q=everest&region=everest&length=classic&difficulty=challenging&fixed=1&show=high&sort=altitude";
+    const query = "q=everest&region=everest&length=classic&difficulty=challenging&show=high&sort=altitude";
     expect(serializeTrekFilters(parse(query))).toBe(query);
   });
 
@@ -93,10 +92,6 @@ describe("filterAndSortTreks", () => {
     expect(names({ q: "khumbu" })).toEqual(["everest-base-camp"]);
   });
 
-  it("keeps fixed-date treks only when asked", () => {
-    expect(names({ fixedDatesOnly: true })).toEqual(["annapurna-circuit", "langtang-valley"]);
-  });
-
   it("sorts by price with unpriced treks last", () => {
     const sorted = filterAndSortTreks(TREKS, { ...EMPTY_TREK_FILTERS, sort: "price" });
     const prices = sorted.map((trek) => trek.priceFromUsd);
@@ -120,7 +115,7 @@ describe("countForOption", () => {
 
 describe("helpers", () => {
   it("counts active filters and toggles values", () => {
-    expect(activeFilterCount({ ...EMPTY_TREK_FILTERS, regions: ["a", "b"], fixedDatesOnly: true, q: "x" })).toBe(4);
+    expect(activeFilterCount({ ...EMPTY_TREK_FILTERS, regions: ["a", "b"], q: "x" })).toBe(3);
     expect(toggleValue(["a"], "b")).toEqual(["a", "b"]);
     expect(toggleValue(["a", "b"], "a")).toEqual(["b"]);
   });

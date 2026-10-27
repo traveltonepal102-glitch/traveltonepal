@@ -1,13 +1,12 @@
-import { departureOptions } from "../../pricing";
 import { TREK_SECTION_IDS } from "../../sections";
 import type { TrekDetail } from "../../types";
 import { EYEBROW, PANEL } from "../styles";
 import { TrekRequestForm } from "./TrekRequestForm";
 
-type TrekRequestSectionProps = Pick<TrekDetail, "name" | "days" | "groupPrices" | "departures">;
+type TrekRequestSectionProps = Pick<TrekDetail, "name" | "days" | "groupPrices">;
 
 /** "Book your … trek": the inquiry form that "Book this trek / Inquire now" jumps to. */
-export const TrekRequestSection = ({ name, days, groupPrices, departures }: TrekRequestSectionProps) => (
+export const TrekRequestSection = ({ name, days, groupPrices }: TrekRequestSectionProps) => (
   <section
     id={TREK_SECTION_IDS.plan}
     aria-labelledby="trek-plan-title"
@@ -22,6 +21,6 @@ export const TrekRequestSection = ({ name, days, groupPrices, departures }: Trek
         Direct local pricing, no middlemen. Fill this in and we open WhatsApp with your request already written.
       </p>
     </div>
-    <TrekRequestForm trekName={name} days={days} groupPrices={groupPrices} departures={departureOptions(departures)} />
+    <TrekRequestForm trekName={name} days={days} groupPrices={groupPrices} />
   </section>
 );

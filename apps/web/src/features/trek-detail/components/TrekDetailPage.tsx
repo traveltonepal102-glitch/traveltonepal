@@ -37,13 +37,13 @@ import { TrekTopBar } from "./TrekTopBar";
 import { WhyBookWithUs } from "./WhyBookWithUs";
 
 /**
- * Trek page (design: Trek.dc.html). The provider shares the chosen group size and departure between
+ * Trek page (design: Trek.dc.html). The provider shares the chosen group size and start day between
  * the booking card, the pricing section and both request forms. Shared sections the trek hides are left out.
  */
 export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
   const shows = (section: SharedSection) => !trek.hiddenSections.includes(section);
   const reviews = shows("reviews") ? trekPageReviews(trek.slug) : [];
-  const requestProps = { name: trek.name, days: trek.days, groupPrices: trek.groupPrices, departures: trek.departures };
+  const requestProps = { name: trek.name, days: trek.days, groupPrices: trek.groupPrices };
 
   return (
     <>
@@ -52,7 +52,7 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
       <TrekTitle trek={trek} />
       <TrekSectionNav hasReviews={reviews.length > 0} />
 
-      <BookingSelectionProvider defaultGroupIndex={defaultGroupIndex(trek.groupPrices)}>
+      <BookingSelectionProvider defaultGroupIndex={defaultGroupIndex(trek.groupPrices)} monthRatings={trek.monthRatings}>
         <div className="mx-auto grid max-w-content gap-8 px-4 pt-8 pb-12 md:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
           <div className="flex min-w-0 flex-col gap-6">
             <TrekGallery photos={trek.photos} badges={trek.photoBadges} title={trek.name} />
@@ -68,7 +68,7 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
             <TrekElevation itinerary={trek.itinerary} trailhead={trek.trailhead} />
             <TrekRouteMap name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} itinerary={trek.itinerary} />
             {shows("why_book") && <WhyBookWithUs />}
-            <TrekPricing groupPrices={trek.groupPrices} departures={trek.departures} currentSeason={trek.currentSeason} />
+            <TrekPricing name={trek.name} days={trek.days} region={trek.region} groupPrices={trek.groupPrices} />
             {shows("credentials") && <TrekCredentials />}
             {reviews.length > 0 && <TrekReviews reviews={reviews} rating={GOOGLE_RATING} />}
             {shows("differentiators") && <TrekDifferentiators differentiators={trek.differentiators} />}

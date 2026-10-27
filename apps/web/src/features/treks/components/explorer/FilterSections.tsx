@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { PillCheckboxGroup } from "@/components/ui/PillCheckboxGroup";
-import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 
 import { DIFFICULTIES } from "../../difficulty";
 import { TREK_LENGTHS } from "../../filters";
@@ -58,15 +57,6 @@ export const FilterSections = ({ filters, treks, regions, update }: FilterSectio
         selected={filters.difficulties}
         onToggle={(value) => update({ difficulties: toggleValue(filters.difficulties, value) })}
       />
-    </Section>
-    <Section>
-      <p className="mb-2.5 text-label tracking-wider text-muted-foreground uppercase">Dates</p>
-      <ToggleSwitch
-        label="Has fixed departure dates"
-        isOn={filters.fixedDatesOnly}
-        onChange={(isOn) => update({ fixedDatesOnly: isOn })}
-      />
-      <p className="mt-2.5 text-xs text-muted-foreground">Every trek can also start on your own dates.</p>
     </Section>
   </>
 );

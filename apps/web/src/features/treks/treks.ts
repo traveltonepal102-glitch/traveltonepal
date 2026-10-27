@@ -22,7 +22,6 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["classic"],
     badge: "Most popular",
     isPopular: true,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -38,7 +37,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: SPRING_AUTUMN,
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -55,7 +53,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: SPRING_AUTUMN,
     tags: ["classic"],
     isPopular: true,
-    hasFixedDates: true,
     hasPage: true,
   },
   {
@@ -71,7 +68,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: SPRING_AUTUMN,
     tags: ["classic"],
     isPopular: true,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -88,7 +84,6 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["classic"],
     badge: "Short",
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -105,7 +100,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: SPRING_AUTUMN,
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -123,7 +117,6 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["classic"],
     badge: "Best value",
     isPopular: true,
-    hasFixedDates: true,
     hasPage: true,
     image: { src: "/images/kyanjin-gompa-chorten.jpg", alt: "Stone chorten above Kyanjin Gompa in the Langtang valley" },
   },
@@ -140,7 +133,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: ["spring", "autumn", "winter"],
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
     image: { src: "/images/tamang-heritage-village.jpg", alt: "Terraced Tamang village on the hillside" },
   },
@@ -158,7 +150,6 @@ export const TREKS: readonly TrekSummary[] = [
     tags: ["off-the-beaten-path"],
     badge: "Short",
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -174,7 +165,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: SPRING_AUTUMN,
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -190,7 +180,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: ["spring", "monsoon", "autumn"],
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
   {
@@ -206,7 +195,6 @@ export const TREKS: readonly TrekSummary[] = [
     seasons: ["spring", "autumn", "winter"],
     tags: ["off-the-beaten-path"],
     isPopular: false,
-    hasFixedDates: false,
     hasPage: true,
   },
 ];

@@ -90,12 +90,6 @@ const groupPriceSchema = z.object({
   is_default: z.boolean().catch(false),
 });
 
-const departureSchema = z.object({
-  start_date: z.iso.date(),
-  status: z.enum(["guaranteed", "open", "almost_full", "full"]),
-  note: optionalText,
-});
-
 const packingGroupSchema = z.object({ title: text.min(1), icon: iconOf(PACKING_ICONS), items: z.array(z.unknown()).catch([]) });
 
 const knowTopicSchema = z.object({
@@ -111,13 +105,11 @@ const faqGroupSchema = z.object({ title: text.min(1), icon: iconOf(FAQ_ICONS), i
 const faqItemSchema = z.object({ question: text.min(1), answer: z.unknown() });
 
 export type TrekDayRow = z.infer<typeof daySchema>;
-export type TrekDepartureRow = z.infer<typeof departureSchema>;
 
 export const readPoints = (value: unknown) => listOf(value, pointSchema);
 export const readPhotoBadges = (value: unknown) => listOf(value, photoBadgeSchema);
 export const readDays = (value: unknown) => listOf(value, daySchema);
 export const readGroupPrices = (value: unknown) => listOf(value, groupPriceSchema);
-export const readDepartures = (value: unknown) => listOf(value, departureSchema);
 
 export const readPackingGroups = (value: unknown) =>
   listOf(value, packingGroupSchema).flatMap((group) => {

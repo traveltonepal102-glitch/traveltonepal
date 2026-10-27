@@ -29,8 +29,6 @@ type TrekEditorProps = {
   /** The region's id, to tag new uploads (null when the trek has none yet). */
   regionId: string | null;
   isNew: boolean;
-  /** "YYYY-MM-DD" in Nepal (from the server), to tell past departure dates. */
-  today: string;
   /** Where the saved PDF map downloads from (null without one). */
   pdfMapUrl: string | null;
   lastSaved?: string;
@@ -41,7 +39,7 @@ type TrekEditorProps = {
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, regions, similarOptions, guideOptions, regionId, isNew, today, pdfMapUrl, lastSaved, isJustAdded = false }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
@@ -75,7 +73,7 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
           sections={TREK_SECTIONS}
           activeKey={activeKey}
           onSelect={form.setActiveKey}
-          readiness={getTrekReadiness(values, photos, today)}
+          readiness={getTrekReadiness(values, photos)}
           errorKeys={sectionsWithErrors(Object.keys(errors))}
         />
 
@@ -94,7 +92,6 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
               guideOptions={guideOptions}
               regionId={regionId}
               isNew={isNew}
-              today={today}
               pdfMapUrl={pdfMapUrl}
             />
           </EditorSectionLinks>

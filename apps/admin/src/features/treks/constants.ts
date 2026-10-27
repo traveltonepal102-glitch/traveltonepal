@@ -3,7 +3,6 @@ import type { IconName } from "@ttn/ui/icon";
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
 import type {
-  DepartureStatus,
   FaqIcon,
   KnowIcon,
   Meal,
@@ -129,32 +128,12 @@ export const MAX_DAYS = 60;
 export const MAX_INCLUDED_ITEMS = 20;
 export const MAX_MEAL_TIPS = 10;
 export const MAX_GROUP_PRICES = 10;
-export const MAX_DEPARTURES = 100;
 export const PRICE_LIMITS = {
   label: 40,
   shortLabel: 12,
   team: 80,
   note: 60,
 } as const;
-
-/** A date's status, in the order the design shows them, with its colors (the status buttons). */
-export const DEPARTURE_STATUSES: {
-  value: DepartureStatus;
-  label: string;
-  on: string;
-}[] = [
-  { value: "guaranteed", label: "Guaranteed", on: "bg-whatsapp text-white" },
-  { value: "open", label: "Open", on: "bg-brand text-on-brand" },
-  { value: "almost_full", label: "Almost full", on: "bg-saffron text-ink" },
-  { value: "full", label: "Full", on: "bg-text text-white" },
-];
-
-export const DEPARTURE_STATUS_VALUES = [
-  "guaranteed",
-  "open",
-  "almost_full",
-  "full",
-] as const satisfies readonly DepartureStatus[];
 
 /**
  * Deposit to confirm a booking, the same for every trek (design: Prices and dates). Shown as information;
@@ -479,8 +458,6 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   mealTrailTips: [],
   mealTeahouseNotes: [],
   groupPrices: [],
-  hasFixedDates: false,
-  departures: [],
   mapPlace: "",
   myMapsId: null,
   packingIntro: "",

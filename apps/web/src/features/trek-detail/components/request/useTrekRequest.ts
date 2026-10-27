@@ -5,9 +5,8 @@ import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { formatUsd } from "@/features/treks/format";
+import { formatTripDate, formatUsd } from "@/features/treks/format";
 
-import type { DepartureOption } from "../../pricing";
 import { SEASON_OPTIONS, buildTrekRequestMessage, trekRequestSchema } from "../../requestMessage";
 import type { TrekRequestFields } from "../../requestMessage";
 import type { GroupPrice } from "../../types";
@@ -17,12 +16,12 @@ export type TrekRequestOptions = {
   trekName: string;
   days: number;
   groupPrices: readonly GroupPrice[];
-  departures: readonly DepartureOption[];
 };
 
 export type SelectOption = { value: string; label: string };
 
-const DEPARTURE_PREFIX = "departure:";
+/** The timing option for the start day chosen above. */
+const CHOSEN_START = "start";
 const NO_TIMING = "Not sure yet";
 
 /** Opens WhatsApp in a new tab, or in this one when the browser blocks new tabs. */
@@ -36,13 +35,13 @@ const openWhatsApp = (url: string) => {
 };
 
 /**
- * A booking request form: the typed fields (React Hook Form + zod), group size and departure shared
+ * A booking request form: the typed fields (React Hook Form + zod), group size and start day shared
  * with the booking card, and the WhatsApp message or email they become. Nothing is sent to this site.
  */
-export const useTrekRequest = ({ trekName, days, groupPrices, departures }: TrekRequestOptions) => {
-  const { groupIndex, selectGroup, departureIndex, selectDeparture } = useBookingSelection();
-  /** A season, or null while one of the fixed departures is the choice. */
-  const [season, setSeason] = useState<string | null>(departures.length > 0 ? null : NO_TIMING);
+export const useTrekRequest = ({ trekName, days, groupPrices }: TrekRequestOptions) => {
+  const { groupIndex, selectGroup, startDate } = useBookingSelection();
+  /** A season, or null while the start day chosen above is the choice. */
+  const [season, setSeason] = useState<string | null>(null);
   const form = useForm<TrekRequestFields>({
     resolver: zodResolver(trekRequestSchema),
     defaultValues: { name: "", country: "", requests: "" },
@@ -51,38 +50,31 @@ export const useTrekRequest = ({ trekName, days, groupPrices, departures }: Trek
   const typed = useWatch({ control: form.control });
 
   const tier = groupPrices[groupIndex];
-  const departure = departures[departureIndex];
+  const start = startDate ? `Start ${formatTripDate(startDate)}` : null;
   const messageFor = (fields: TrekRequestFields) =>
     buildTrekRequestMessage({
       ...fields,
       trekName,
       days,
       groupSize: tier ? `${tier.label} (${formatUsd(tier.priceUsd)} per person)` : "",
-      timing: season ?? (departure ? `Departure ${departure.label}` : NO_TIMING),
+      timing: season ?? start ?? NO_TIMING,
     });
 
-  const changeTiming = (value: string) => {
-    if (!value.startsWith(DEPARTURE_PREFIX)) return setSeason(value);
-    selectDeparture(Number(value.slice(DEPARTURE_PREFIX.length)));
-    setSeason(null);
-  };
+  const changeTiming = (value: string) => setSeason(value === CHOSEN_START ? null : value);
 
   const groupOptions: SelectOption[] = groupPrices.map((option, index) => ({
     value: String(index),
     label: `${option.label} – ${formatUsd(option.priceUsd)}${index > 0 ? " pp" : ""}`,
   }));
   const timingOptions: SelectOption[] = [
-    ...departures.map((option, index) => ({
-      value: `${DEPARTURE_PREFIX}${index}`,
-      label: `Departure ${option.label}${option.isGuaranteed ? " (guaranteed)" : ""}`,
-    })),
+    ...(start ? [{ value: CHOSEN_START, label: `${start} (chosen above)` }] : []),
     ...SEASON_OPTIONS.map((option) => ({ value: option, label: option })),
   ];
 
   return {
     form,
     group: { value: String(groupIndex), options: groupOptions, onChange: (value: string) => selectGroup(Number(value)) },
-    timing: { value: season ?? `${DEPARTURE_PREFIX}${departureIndex}`, options: timingOptions, onChange: changeTiming },
+    timing: { value: season ?? (start ? CHOSEN_START : NO_TIMING), options: timingOptions, onChange: changeTiming },
     onSubmit: form.handleSubmit((fields) => openWhatsApp(getWhatsAppUrl(messageFor(fields)))),
     emailHref: getEmailUrl({
       subject: `Booking request: ${trekName}`,

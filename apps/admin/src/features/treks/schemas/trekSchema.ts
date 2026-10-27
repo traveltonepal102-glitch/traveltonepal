@@ -24,7 +24,7 @@ import { readVideos, videosSchema } from "./videosSchema";
 import { itinerarySchema, readItinerary } from "./itinerarySchema";
 import { pointsSchema, readPoints } from "./pointsSchema";
 import { myMapsIdSchema, packingGroupsSchema, readPackingGroups } from "./practicalSchema";
-import { departuresSchema, groupPricesSchema, readDepartures, readGroupPrices } from "./pricesSchema";
+import { groupPricesSchema, readGroupPrices } from "./pricesSchema";
 
 const unique = <T>(items: T[]) => [...new Set(items)];
 
@@ -72,8 +72,6 @@ export const trekSchema = z
     mealTrailTips: pointsSchema(MAX_MEAL_TIPS),
     mealTeahouseNotes: pointsSchema(MAX_MEAL_TIPS),
     groupPrices: groupPricesSchema,
-    hasFixedDates: z.string().transform((value) => value === "on"),
-    departures: departuresSchema,
     mapPlace: text(LIMIT.mapPlace),
     myMapsId: myMapsIdSchema,
     packingIntro: text(LIMIT.packingIntro),
@@ -203,8 +201,6 @@ export const readTrekForm = (formData: FormData) => {
     mealTrailTips: readPoints(formData, "mealTip"),
     mealTeahouseNotes: readPoints(formData, "teahouseNote"),
     groupPrices: readGroupPrices(formData),
-    hasFixedDates: readText(formData, "hasFixedDates"),
-    departures: readDepartures(formData),
     mapPlace: readText(formData, "mapPlace"),
     myMapsId: readText(formData, "myMapsLink"),
     packingIntro: readText(formData, "packingIntro"),

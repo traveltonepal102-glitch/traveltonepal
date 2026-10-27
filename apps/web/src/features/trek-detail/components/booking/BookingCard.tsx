@@ -6,7 +6,6 @@ import { GOOGLE_RATING } from "@/features/reviews/reviews";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
-import { departureOptions } from "../../pricing";
 import { TREK_SECTION_IDS } from "../../sections";
 import type { TrekDetail } from "../../types";
 import { BookingRating } from "./BookingRating";
@@ -30,7 +29,7 @@ export const BookingCard = async ({ trek }: { trek: TrekDetail }) => {
       <div className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
         {GOOGLE_RATING && <BookingRating rating={GOOGLE_RATING} />}
 
-        <GroupPricing groupPrices={trek.groupPrices} departures={departureOptions(trek.departures)} />
+        <GroupPricing groupPrices={trek.groupPrices} />
 
         <div className="flex flex-col gap-2.5 pt-1">
           <a

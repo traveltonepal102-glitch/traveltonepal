@@ -29,7 +29,6 @@ export type TrekSummary = {
   /** Short highlight on the card photo, e.g. "Best value". */
   badge?: string;
   isPopular: boolean;
-  hasFixedDates: boolean;
   /** It has its own page (a day-by-day plan); cards for the others offer a WhatsApp inquiry. */
   hasPage: boolean;
   /** When the trek was last saved (ISO), for the sitemap; demo treks have none. */

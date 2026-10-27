@@ -35,7 +35,6 @@ const buildChips = (filters: TrekFilters, regions: readonly RegionOption[]): Chi
     label: labelOf(TREK_SEASONS, value),
     remove: { seasons: filters.seasons.filter((existing) => existing !== value) },
   })),
-  ...(filters.fixedDatesOnly ? [{ key: "fixed", label: "Fixed departure dates", remove: { fixedDatesOnly: false } }] : []),
 ];
 
 type ActiveFilterChipsProps = FilterActions & { filters: TrekFilters; regions: readonly RegionOption[] };

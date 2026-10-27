@@ -17,12 +17,6 @@ export const ADMIN_SECTIONS = {
     summary: "An overview of your sites: visits, enquiries and what changed lately.",
   },
   treks: { label: "Treks", href: "/treks", icon: "hiking", summary: "Add and edit treks: itinerary, prices, photos and SEO." },
-  departures: {
-    label: "Departure dates",
-    href: "/departures",
-    icon: "event",
-    summary: "The fixed departure dates shown on each trek.",
-  },
   regions: { label: "Regions", href: "/regions", icon: "map", summary: "Region pages: facts, best months, photos and FAQs." },
   travelGuides: { label: "Travel guides", href: "/travel-guides", icon: "article", summary: "Write and publish travel guides." },
   pages: { label: "Pages", href: "/pages", icon: "description", summary: "Fixed pages such as About us, Contact and Privacy." },
@@ -66,7 +60,6 @@ export const NAV_GROUPS: NavGroup[] = [
     title: "Content",
     items: [
       ADMIN_SECTIONS.treks,
-      ADMIN_SECTIONS.departures,
       ADMIN_SECTIONS.regions,
       ADMIN_SECTIONS.travelGuides,
       ADMIN_SECTIONS.pages,

@@ -24,7 +24,7 @@ export const AuthPhotoPanel = () => (
     <div className="relative flex max-w-140 flex-col gap-5.5">
       <p className="m-0 font-display text-[44px] leading-[1.1] font-extrabold tracking-tight">One place to run all ten websites.</p>
       <p className="m-0 text-body-lg text-[#d6e2ee]">
-        Add treks, departure dates and travel guides, and see how every site is doing on Google.
+        Add treks, regions and travel guides, and see how every site is doing on Google.
       </p>
       <ul className="m-0 flex list-none flex-col gap-3 p-0">
         {FEATURES.map((feature) => (

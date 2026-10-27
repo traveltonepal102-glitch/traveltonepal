@@ -2,6 +2,7 @@ import type { RichTextImage } from "@ttn/ui/lib/richText";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
+import type { MonthRating } from "@/features/regions/overviews";
 import type { TrekGuide } from "@/features/team/types";
 import type { TrekSummary } from "@/features/treks/types";
 import type { SiteImageSource } from "@/lib/images";
@@ -148,15 +149,6 @@ export type FaqGroup = {
   items: readonly { question: string; answer: string; photos: readonly RichTextImage[] }[];
 };
 
-export type Departure = {
-  /** ISO date, e.g. "2026-11-02". */
-  date: string;
-  /** Runs whatever the group size (shown in green). */
-  isGuaranteed: boolean;
-  /** e.g. "4 slots left" or "Peak season · Open". */
-  note: string;
-};
-
 /** Everything the trek page shows beyond the summary the cards already use (trekPageRows, from the database). */
 export type TrekDetailContent = {
   slug: string;
@@ -218,8 +210,8 @@ export type TrekDetailContent = {
   accommodation: string;
   transport: string;
   groupPrices: readonly GroupPrice[];
-  /** Fixed departure dates in date order; empty when the trek only runs on the trekker's own dates. */
-  departures: readonly Departure[];
+  /** The region's best months, Jan–Dec: they colour the start months (null when unknown). */
+  monthRatings: readonly MonthRating[] | null;
   /** "Explore more of the Himalaya": the admin's picks in order, else four treks like this one. */
   similarTreks: readonly TrekSummary[];
   /** Shared sections this trek leaves out. */

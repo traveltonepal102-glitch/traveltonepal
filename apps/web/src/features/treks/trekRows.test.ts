@@ -34,7 +34,7 @@ const row = (slug: string, overrides: Partial<WebTrekRow> = {}): WebTrekRow => (
 describe("toTrekSummaries", () => {
   it("maps a published trek to its card", () => {
     const [trek] = toTrekSummaries(
-      [row("langtang-valley", { name: "Langtang Valley Trek", card_badge: " Best value ", has_fixed_dates: true, cover_id: "p1", cover_variant_widths: [400], cover_place: "Kyanjin" })],
+      [row("langtang-valley", { name: "Langtang Valley Trek", card_badge: " Best value ", cover_id: "p1", cover_variant_widths: [400], cover_place: "Kyanjin" })],
       BASE,
     );
     expect(trek).toEqual({
@@ -52,7 +52,6 @@ describe("toTrekSummaries", () => {
       tags: ["classic"],
       badge: "Best value",
       isPopular: true,
-      hasFixedDates: true,
       hasPage: true,
       updatedAt: "2026-10-24T00:00:00Z",
       image: { src: `${BASE}/p1`, alt: "Kyanjin, Langtang Valley Trek", variantWidths: [400], placeholder: undefined },

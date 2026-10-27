@@ -8,7 +8,6 @@ import { getTrekReadiness } from "./readiness";
 import type { TrekListItem } from "./trekListItem";
 import { filterTreks } from "./trekListItem";
 
-const TODAY = "2026-10-23";
 
 const item = (name: string, overrides: Partial<TrekListItem> = {}): TrekListItem => ({
   id: name,
@@ -56,7 +55,7 @@ describe("filterTreks", () => {
 });
 
 const doc = (text: string): RichTextDoc => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
-const readiness = (values: Partial<TrekValues> = {}) => getTrekReadiness({ ...EMPTY_TREK_VALUES, ...values }, NO_TREK_PHOTOS, TODAY);
+const readiness = (values: Partial<TrekValues> = {}) => getTrekReadiness({ ...EMPTY_TREK_VALUES, ...values }, NO_TREK_PHOTOS);
 
 describe("getTrekReadiness", () => {
   it("lists what a new trek still needs", () => {
@@ -136,14 +135,10 @@ describe("getTrekReadiness", () => {
     expect(readiness({ ...mapped, pdfMapPath, myMapsId: "1AbCdEfGhIjK" }).route.note).toBe("GPS trail map · PDF map");
   });
 
-  it("asks for group prices, and for upcoming dates on a fixed-date trek", () => {
+  it("asks for group prices (trekkers pick their own start date)", () => {
     const price = { id: "p1", label: "2 people", shortLabel: "2 Pax", priceUsd: 965, team: "", isDefault: true };
     expect(readiness().pricing).toEqual({ status: "todo", note: "Add the group prices" });
-    expect(readiness({ groupPrices: [price] }).pricing).toEqual({ status: "done", note: "1 group price · your dates" });
-    const past = { id: "d1", startDate: "2026-01-10", status: "open" as const, note: "" };
-    const fixed = { groupPrices: [price], hasFixedDates: true, departures: [past] };
-    expect(readiness(fixed).pricing).toEqual({ status: "warn", note: "No upcoming dates" });
-    expect(readiness({ ...fixed, departures: [past, { ...past, id: "d2", startDate: TODAY }] }).pricing.note).toBe("1 group price · 1 date");
+    expect(readiness({ groupPrices: [price] }).pricing).toEqual({ status: "done", note: "1 group price · any start date" });
   });
 
   it("asks for a packing list", () => {

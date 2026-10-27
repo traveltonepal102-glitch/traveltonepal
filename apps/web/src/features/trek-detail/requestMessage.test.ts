@@ -1,7 +1,7 @@
 import { getEmailUrl, getWhatsAppUrl, mailtoUrl, whatsAppChatUrl } from "@ttn/config/contact";
 import { describe, expect, it } from "vitest";
 
-import { MAX_REQUESTS_LENGTH, buildTrekRequestMessage, trekRequestSchema } from "./requestMessage";
+import { MAX_REQUESTS_LENGTH, buildDateCheckMessage, buildTrekRequestMessage, trekRequestSchema } from "./requestMessage";
 import { trekPageReviews } from "./reviews";
 
 const request = {
@@ -10,7 +10,7 @@ const request = {
   name: "  Anna Weber ",
   country: "",
   groupSize: "3–5 people ($890 per person)",
-  timing: "Departure Nov 02, 2026",
+  timing: "Start Nov 02, 2026",
   requests: "",
 };
 
@@ -33,6 +33,14 @@ describe("trekRequestSchema", () => {
   });
 });
 
+describe("buildDateCheckMessage", () => {
+  it("asks about the chosen start day for the chosen group", () => {
+    expect(buildDateCheckMessage({ trekName: "Langtang Valley Trek", days: 10, groupSize: "2 people ($965 per person)", startDate: "Nov 02, 2026" })).toBe(
+      ["Hello! Can I start the Langtang Valley Trek (10 days) on Nov 02, 2026?", "", "Group size: 2 people ($965 per person)"].join("\n"),
+    );
+  });
+});
+
 describe("buildTrekRequestMessage", () => {
   it("writes every field on its own line and trims the name", () => {
     expect(buildTrekRequestMessage(request)).toBe(
@@ -41,7 +49,7 @@ describe("buildTrekRequestMessage", () => {
         "",
         "Name: Anna Weber",
         "Group size: 3–5 people ($890 per person)",
-        "Preferred time: Departure Nov 02, 2026",
+        "Preferred time: Start Nov 02, 2026",
       ].join("\n"),
     );
   });

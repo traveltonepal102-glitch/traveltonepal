@@ -24,7 +24,6 @@ export const LANGTANG_SUMMARY: TrekSummary = {
   tags: ["classic"],
   badge: "Best value",
   isPopular: true,
-  hasFixedDates: true,
   hasPage: true,
   image: { src: `${PHOTOS_BASE}/cover`, alt: "Langtang Valley Trek", variantWidths: [400, 800] },
 };
@@ -886,6 +885,7 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
       "is_default": false
     }
   ],
+  "region_month_ratings": ["possible", "possible", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"],
   "has_fixed_dates": true,
   "departures": [
     {

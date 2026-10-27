@@ -34,7 +34,6 @@ const trek = (slug: string): TrekSummary => ({
   seasons: ["spring", "autumn"],
   tags: ["classic"],
   isPopular: true,
-  hasFixedDates: false,
   hasPage: true,
 });
 

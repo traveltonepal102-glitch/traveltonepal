@@ -62,7 +62,7 @@ export const TREK_SECTIONS: EditorSection<TrekSectionKey>[] = [
     key: "pricing",
     label: "Group rates by team size",
     icon: "payments",
-    description: "Price per person by group size, and the optional departure dates.",
+    description: "Price per person by group size. Trekkers pick their own start date.",
   },
   { key: "packing", label: "Packing list", icon: "backpack", description: "The packing list cards for this trek." },
   {
@@ -148,8 +148,6 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   pricingHeading: "pricing",
   pricingIntro: "pricing",
   groupPrices: "pricing",
-  hasFixedDates: "pricing",
-  departures: "pricing",
   packingHeading: "packing",
   packingIntro: "packing",
   packingGroups: "packing",

@@ -1,18 +1,18 @@
 import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage } from "@/lib/images";
+import type { MonthRating } from "@/features/regions/overviews";
 import { firstText } from "@/lib/rowText";
 import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow } from "@/lib/supabase/database.types";
 
 import { ROUTE_SKETCHES } from "./content/routeSketches";
 import { customizationFor, differentiatorsFor } from "./content/sharedContent";
 import { toTrekGuides } from "./trekGuideRows";
-import type { TrekDayRow, TrekDepartureRow } from "./trekPageJson";
+import type { TrekDayRow } from "./trekPageJson";
 import {
   paragraphsOf,
   photosOf,
   readDays,
-  readDepartures,
   readFaqGroups,
   readGroupPrices,
   readKnowTopics,
@@ -20,7 +20,7 @@ import {
   readPhotoBadges,
   readPoints,
 } from "./trekPageJson";
-import type { Departure, ItineraryDay, SharedSection, TrekDetail, TrekPhoto } from "./types";
+import type { ItineraryDay, SharedSection, TrekDetail, TrekPhoto } from "./types";
 
 /** Everything the trek page is made from, as read from the database (trekPageRepository). */
 export type TrekPageSource = {
@@ -73,13 +73,13 @@ const toDay = (day: TrekDayRow, photosBaseUrl: string): ItineraryDay => ({
   photo: day.photo ? coverImage(day.photo, photosBaseUrl, day.place || day.title) : undefined,
 });
 
-/** A full date can't be booked, so it is left out; "Almost full" shows when no note is written. */
-const toDepartures = (rows: readonly TrekDepartureRow[]): Departure[] =>
-  rows.flatMap((row) =>
-    row.status === "full"
-      ? []
-      : [{ date: row.start_date, isGuaranteed: row.status === "guaranteed", note: row.note || (row.status === "almost_full" ? "Almost full" : "") }],
-  );
+const MONTH_RATINGS: readonly MonthRating[] = ["best", "possible", "avoid"];
+
+/** The region's 12 month ratings, or null when they aren't all readable. */
+const toMonthRatings = (ratings: readonly string[] | null): MonthRating[] | null => {
+  const known = (ratings ?? []).filter((rating): rating is MonthRating => (MONTH_RATINGS as readonly string[]).includes(rating));
+  return known.length === 12 ? known : null;
+};
 
 /**
  * Where trekking starts, for the elevation summary: the place named first in "Trek start" (e.g. "Syabrubesi,
@@ -164,7 +164,7 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks }: TrekPageS
       team: price.team,
       isDefault: price.is_default,
     })),
-    departures: page.has_fixed_dates ? toDepartures(readDepartures(page.departures)) : [],
+    monthRatings: toMonthRatings(page.region_month_ratings),
     similarTreks: toSimilarTreks(summary, page.similar_slugs, treks),
     hiddenSections: SHARED_SECTIONS.filter((section) => page.hidden_shared_sections.includes(section)),
   };

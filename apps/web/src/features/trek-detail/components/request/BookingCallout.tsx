@@ -1,14 +1,13 @@
 import { Icon } from "@ttn/ui/icon";
 
-import { departureOptions } from "../../pricing";
 import type { TrekDetail } from "../../types";
 import { EYEBROW } from "../styles";
 import { CalloutRequestForm } from "./CalloutRequestForm";
 
-type BookingCalloutProps = Pick<TrekDetail, "name" | "shortName" | "days" | "groupPrices" | "departures">;
+type BookingCalloutProps = Pick<TrekDetail, "name" | "shortName" | "days" | "groupPrices">;
 
 /** "Ready for the Himalaya?": the last call to book, with a short request form. */
-export const BookingCallout = ({ name, shortName, days, groupPrices, departures }: BookingCalloutProps) => (
+export const BookingCallout = ({ name, shortName, days, groupPrices }: BookingCalloutProps) => (
   <section aria-labelledby="booking-callout-title" className="border-t border-line bg-surface py-12">
     <div className="mx-auto max-w-content px-4 md:px-6">
       <div className="mx-auto flex max-w-190 flex-col gap-6 rounded-xl border-2 border-saffron bg-linear-45 from-white via-saffron-tint via-55% to-page p-5 shadow-[0_6px_16px_rgba(15,23,42,0.08)] md:p-10">
@@ -25,7 +24,7 @@ export const BookingCallout = ({ name, shortName, days, groupPrices, departures 
             Get a personal itinerary, packing advice and a confirmed price for your group, straight from our Kathmandu team.
           </p>
         </div>
-        <CalloutRequestForm trekName={name} days={days} groupPrices={groupPrices} departures={departureOptions(departures)} />
+        <CalloutRequestForm trekName={name} days={days} groupPrices={groupPrices} />
       </div>
     </div>
   </section>

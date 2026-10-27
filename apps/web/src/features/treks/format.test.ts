@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatAltitude, formatAltitudeWithFeet, formatDepartureDate, formatDistance, formatUsd } from "./format";
+import { formatAltitude, formatAltitudeWithFeet, formatDistance, formatTripDate, formatUsd } from "./format";
 
 describe("trek formatting", () => {
   it("formats altitude in meters, with feet when asked", () => {
@@ -17,8 +17,8 @@ describe("trek formatting", () => {
     expect(formatUsd(1110)).toBe("$1,110");
   });
 
-  it("formats a departure date as the same calendar day everywhere", () => {
-    expect(formatDepartureDate("2026-11-02")).toBe("Nov 02, 2026");
-    expect(formatDepartureDate("2027-01-01")).toBe("Jan 01, 2027");
+  it("formats a trek date as the same calendar day everywhere", () => {
+    expect(formatTripDate("2026-11-02")).toBe("Nov 02, 2026");
+    expect(formatTripDate("2027-01-01")).toBe("Jan 01, 2027");
   });
 });

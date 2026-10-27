@@ -38,17 +38,11 @@ describe("toTrekDetail", () => {
     expect(photos[1].place).toBe("Kyanjin Gompa");
   });
 
-  it("leaves full dates out, and every date out when the trek runs on the trekker's own dates", () => {
-    const departures = [
-      { start_date: "2027-03-18", status: "guaranteed", note: "" },
-      { start_date: "2027-04-01", status: "full", note: "" },
-      { start_date: "2027-04-12", status: "almost_full", note: "" },
-    ];
-    expect(detail({ departures }).departures).toEqual([
-      { date: "2027-03-18", isGuaranteed: true, note: "" },
-      { date: "2027-04-12", isGuaranteed: false, note: "Almost full" },
-    ]);
-    expect(detail({ departures, has_fixed_dates: false }).departures).toEqual([]);
+  it("takes the region's 12 month ratings for the start months, or none", () => {
+    expect(detail().monthRatings).toHaveLength(12);
+    expect(detail().monthRatings?.[9]).toBe("best");
+    expect(detail({ region_month_ratings: null }).monthRatings).toBeNull();
+    expect(detail({ region_month_ratings: ["best", "sometimes"] }).monthRatings).toBeNull();
   });
 
   it("uses the admin's similar treks, else the treks most like this one", () => {

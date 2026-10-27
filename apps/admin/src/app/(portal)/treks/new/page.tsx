@@ -27,7 +27,6 @@ const NewTrekPage = async () => {
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={null}
       isNew
-      today={today}
       pdfMapUrl={null}
     />
   );

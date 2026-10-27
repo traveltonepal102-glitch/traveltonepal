@@ -8,7 +8,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, MEAL_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
-import type { Departure, GroupPrice, ItineraryDay, Meal, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
+import type { GroupPrice, ItineraryDay, Meal, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
 type TextRow = Database["public"]["Tables"]["trek_translations"]["Row"];
@@ -16,8 +16,6 @@ type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 type DayRow = Database["public"]["Tables"]["trek_days"]["Row"];
 type PriceRow = Database["public"]["Tables"]["trek_group_prices"]["Row"];
 type PriceTextRow = Database["public"]["Tables"]["trek_group_price_translations"]["Row"];
-type DepartureRow = Database["public"]["Tables"]["trek_departures"]["Row"];
-type DepartureTextRow = Database["public"]["Tables"]["trek_departure_translations"]["Row"];
 type DayTextRow = Database["public"]["Tables"]["trek_day_translations"]["Row"];
 type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
@@ -33,7 +31,6 @@ const TREK_COLUMNS = `*,
   trek_photos(position, photo:photos(${PHOTO_COLUMNS})),
   trek_days(*, photo:photos(${PHOTO_COLUMNS}), trek_day_translations!inner(*)),
   trek_group_prices(*, trek_group_price_translations!inner(*)),
-  trek_departures(*, trek_departure_translations!inner(*)),
   trek_similar!trek_similar_trek_id_fkey(position, similar_trek_id),
   trek_guides(position, guide_id)` as const;
 
@@ -45,7 +42,6 @@ type TrekQueryRow = TrekRow & {
   trek_photos: { position: number; photo: PhotoFields }[];
   trek_days: DayQueryRow[];
   trek_group_prices: (PriceRow & { trek_group_price_translations: PriceTextRow[] })[];
-  trek_departures: (DepartureRow & { trek_departure_translations: DepartureTextRow[] })[];
   trek_similar: { position: number; similar_trek_id: string }[];
   trek_guides: { position: number; guide_id: string }[];
 };
@@ -58,16 +54,6 @@ const toGroupPrices = (rows: TrekQueryRow["trek_group_prices"]): GroupPrice[] =>
       if (!text) return [];
       return [{ id: row.id, label: text.label, shortLabel: text.short_label, priceUsd: row.price_usd, team: text.team, isDefault: row.is_default }];
     });
-
-const toDepartures = (rows: TrekQueryRow["trek_departures"]): Departure[] =>
-  [...rows]
-    .sort((a, b) => a.start_date.localeCompare(b.start_date))
-    .map((row) => ({
-      id: row.id,
-      startDate: row.start_date,
-      status: row.status,
-      note: row.trek_departure_translations[0]?.note ?? "",
-    }));
 
 /** Days in order, with their English text (a day without it is skipped). */
 const toItinerary = (days: DayQueryRow[]): ItineraryDay[] =>
@@ -167,8 +153,6 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     mealTrailTips: pointsSchema.parse(text.meal_trail_tips),
     mealTeahouseNotes: pointsSchema.parse(text.meal_teahouse_notes),
     groupPrices: toGroupPrices(row.trek_group_prices),
-    hasFixedDates: row.has_fixed_dates,
-    departures: toDepartures(row.trek_departures),
     mapPlace: row.map_place,
     myMapsId: row.my_maps_id,
     packingIntro: text.packing_intro,
@@ -215,17 +199,17 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
   };
 };
 
-/** The regions a trek can belong to, A–Z (English names). Once per request. */
+/** The regions a trek can belong to, A–Z (English names), with their best months. Once per request. */
 export const listRegionOptions = cache(async (): Promise<RegionOption[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("regions")
-    .select("id, region_translations!inner(name)")
+    .select("id, month_ratings, region_translations!inner(name)")
     .eq("region_translations.locale", TREK_LOCALE);
   if (error) throw new Error(`Could not load regions: ${error.message}`);
 
   return data
-    .map((region) => ({ id: region.id, name: region.region_translations[0]?.name ?? "" }))
+    .map((region) => ({ id: region.id, name: region.region_translations[0]?.name ?? "", monthRatings: region.month_ratings }))
     .sort((a, b) => a.name.localeCompare(b.name));
 });
 
@@ -267,7 +251,6 @@ export const listTreks = async (): Promise<Trek[]> => {
       .eq("trek_translations.locale", TREK_LOCALE)
       .eq("trek_days.trek_day_translations.locale", TREK_LOCALE)
       .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
-      .eq("trek_departures.trek_departure_translations.locale", TREK_LOCALE)
       .order("updated_at", { ascending: false }),
     regionNameMap(),
   ]);
@@ -286,7 +269,6 @@ export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
       .eq("trek_translations.locale", TREK_LOCALE)
       .eq("trek_days.trek_day_translations.locale", TREK_LOCALE)
       .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
-      .eq("trek_departures.trek_departure_translations.locale", TREK_LOCALE)
       .maybeSingle(),
     regionNameMap(),
   ]);
@@ -327,7 +309,6 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       cover_photo_id: values.photos.coverPhotoId,
       meal_budget_min_usd: values.mealBudgetMinUsd,
       meal_budget_max_usd: values.mealBudgetMaxUsd,
-      has_fixed_dates: values.hasFixedDates,
       map_place: values.mapPlace,
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
@@ -416,12 +397,8 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       short_label: price.shortLabel,
       team: price.team,
     })),
-    p_departures: values.departures.map((departure) => ({
-      id: departure.id ?? "",
-      start_date: departure.startDate,
-      status: departure.status,
-      note: departure.note,
-    })),
+    // No fixed departure dates any more: null leaves the dates saved before as they are (unused).
+    p_departures: null,
   });
 
   if (!error) return { ok: true, trekId: data };
