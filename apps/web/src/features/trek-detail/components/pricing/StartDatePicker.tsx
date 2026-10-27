@@ -2,7 +2,7 @@
 
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
-import { useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 import { MONTH_NAMES, RATING_LOOK, RATINGS } from "@/features/guide-article/components/body/monthRatings";
 import type { MonthRating } from "@/features/regions/overviews";
@@ -36,6 +36,16 @@ export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
   const rating = months[chosenIndex]?.rating;
   const lastMonth = months.at(-1);
   const latest = lastMonth && lastDayOf(lastMonth);
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  // On phones the months are one swipeable row: keep the chosen one in view (e.g. after a date is typed). Only the
+  // row scrolls, never the page.
+  useEffect(() => {
+    const strip = stripRef.current;
+    const chosen = strip?.children[chosenIndex];
+    if (!strip || !(chosen instanceof HTMLElement) || strip.scrollWidth <= strip.clientWidth) return;
+    strip.scrollTo({ left: chosen.offsetLeft - (strip.clientWidth - chosen.offsetWidth) / 2, behavior: "smooth" });
+  }, [chosenIndex]);
 
   return (
     <div className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4.5 shadow-card md:p-5">
@@ -54,7 +64,13 @@ export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
         {regionName && ` The colours show how good each month is for the ${regionName} region.`}
       </p>
 
-      <div role="group" aria-label="Start month" aria-busy={!today} className="grid min-h-17 grid-cols-6 gap-1.5 lg:grid-cols-12">
+      <div
+        ref={stripRef}
+        role="group"
+        aria-label="Start month"
+        aria-busy={!today}
+        className="relative -mx-4.5 flex min-h-17 snap-x snap-proximity scroll-px-4.5 gap-1.5 overflow-x-auto px-4.5 py-1 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-6 md:overflow-visible md:px-0 md:py-0 lg:grid-cols-12 [&::-webkit-scrollbar]:hidden"
+      >
         {months.map((month, index) => (
           <button
             key={`${month.year}-${month.month}`}
@@ -62,7 +78,7 @@ export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
             aria-pressed={index === chosenIndex}
             title={`${MONTH_NAMES[month.month]} ${month.year}${month.rating ? `: ${RATING_LOOK[month.rating].label}` : ""}`}
             onClick={() => startDate && today && selectStartDate(dateInMonth(startDate, month, today))}
-            className="cursor-pointer rounded-md border border-line bg-surface px-1.5 pt-2 pb-2.5 text-center aria-pressed:border-2 aria-pressed:border-brand aria-pressed:bg-[#f4f8fc] aria-pressed:shadow-[0_2px_8px_rgba(0,91,159,0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="w-15 flex-none cursor-pointer snap-start rounded-md border border-line bg-surface px-1.5 pt-2 pb-2.5 text-center aria-pressed:border-2 aria-pressed:border-brand aria-pressed:bg-[#f4f8fc] aria-pressed:shadow-[0_2px_8px_rgba(0,91,159,0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:w-auto"
           >
             <span aria-hidden="true" className={cn("block h-1.5 rounded-full", month.rating ? RATING_LOOK[month.rating].bar : "bg-line")} />
             <span className="mt-2 block font-display text-sm font-bold text-ink">{MONTH_NAMES[month.month].slice(0, 3)}</span>

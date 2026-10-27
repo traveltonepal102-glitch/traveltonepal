@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createSupabasePhotoStorage } from "@/lib/storage/supabasePhotoStorage";
+import { createPhotoStorage } from "@/lib/storage/createPhotoStorage";
 
 import type { Photo } from "../types";
 import { insertPhoto } from "./photosRepository";
@@ -20,7 +20,7 @@ type ImportPhotoInput = {
  * deleted; if saving fails halfway, the files already written are removed again.
  */
 export const importPhoto = async ({ uploadKey, regionId, originalName, createdBy }: ImportPhotoInput): Promise<Photo> => {
-  const storage = await createSupabasePhotoStorage();
+  const storage = await createPhotoStorage();
 
   try {
     const upload = await storage.download("private", uploadKey);

@@ -18,7 +18,7 @@ export const startPdfMapUpload = async (byteSize: number): Promise<PdfUploadStar
 
   const path = `pdf-maps/${crypto.randomUUID()}.pdf`;
   try {
-    return { ok: true, path, uploadUrl: await (await createTrekFileStorage()).createUploadUrl(path) };
+    return { ok: true, path, uploadUrl: await (await createTrekFileStorage()).createUploadUrl(path, byteSize) };
   } catch (error) {
     console.error("startPdfMapUpload failed:", error);
     return { ok: false, message: "Uploads aren't working right now. Try again in a moment." };

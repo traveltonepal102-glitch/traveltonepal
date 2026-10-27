@@ -7,9 +7,12 @@
  */
 export type StorageArea = "private" | "public";
 
+/** The file the browser is about to upload, as already checked by the server. */
+export type UploadFile = { contentType: string; byteSize: number };
+
 export type PhotoStorage = {
-  /** A one-time link the browser PUTs one file to, in the private area. Never exposes keys. */
-  createUploadUrl: (key: string) => Promise<string>;
+  /** A one-time link the browser PUTs this one file to, in the private area. Never exposes keys. */
+  createUploadUrl: (key: string, file: UploadFile) => Promise<string>;
   download: (area: StorageArea, key: string) => Promise<Buffer>;
   upload: (area: StorageArea, key: string, body: Buffer, contentType: string) => Promise<void>;
   remove: (area: StorageArea, keys: string[]) => Promise<void>;

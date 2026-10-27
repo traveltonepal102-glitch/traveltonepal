@@ -3,7 +3,7 @@
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { createSupabasePhotoStorage } from "@/lib/storage/supabasePhotoStorage";
+import { createPhotoStorage } from "@/lib/storage/createPhotoStorage";
 
 import { ACCEPTED_PHOTO_TYPES, MAX_PHOTO_BYTES } from "../constants";
 
@@ -22,14 +22,16 @@ export type StartPhotoUploadResult = { ok: true; uploadKey: string; uploadUrl: s
  */
 export const startPhotoUpload = async (input: StartPhotoUploadInput): Promise<StartPhotoUploadResult> => {
   await requireAdmin();
-  if (!inputSchema.safeParse(input).success) {
+  const parsed = inputSchema.safeParse(input);
+  if (!parsed.success) {
     return { ok: false, message: "Use a JPEG, PNG or WebP photo of up to 20 MB." };
   }
 
   const uploadKey = `uploads/${crypto.randomUUID()}`;
   try {
-    const storage = await createSupabasePhotoStorage();
-    return { ok: true, uploadKey, uploadUrl: await storage.createUploadUrl(uploadKey) };
+    const storage = await createPhotoStorage();
+    // With S3 the link takes only this type and size, so the checks above hold for what arrives.
+    return { ok: true, uploadKey, uploadUrl: await storage.createUploadUrl(uploadKey, parsed.data) };
   } catch (error) {
     console.error("startPhotoUpload failed:", error);
     return { ok: false, message: "Photo uploads aren't working right now. Try again in a moment." };
