@@ -13,6 +13,8 @@ export const ROUTES = {
   cookies: "/cookies",
   /** Redirects to the Google review link from Site settings: the link sent to trekkers after their trek. */
   review: "/review",
+  /** Where Brevo sends a new subscriber after they confirm by email (not in the sitemap). */
+  newsletterConfirmed: "/newsletter/confirmed",
 } as const;
 
 export const trekPath = (slug: string) => `${ROUTES.treks}/${slug}`;

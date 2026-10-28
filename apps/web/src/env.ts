@@ -23,6 +23,11 @@ const envSchema = z.object({
   REVALIDATE_SECRET: optional(z.string().min(REVALIDATE_SECRET_MIN_LENGTH, `REVALIDATE_SECRET must be at least ${REVALIDATE_SECRET_MIN_LENGTH} characters.`)),
   // "production" turns on production-only features (read with appEnvironment()); not set: development.
   NEXT_PUBLIC_APP_ENV: optional(z.enum(APP_ENVIRONMENTS, "NEXT_PUBLIC_APP_ENV must be production or development.")),
+  // Newsletter (Brevo), all three or none: the API key (Brevo › SMTP & API), the list subscribers join and the
+  // "please confirm" email template (double opt-in). Not set: the sign-up form is hidden in production.
+  BREVO_API_KEY: optional(z.string().startsWith("xkeysib-", "BREVO_API_KEY must be a Brevo API key (xkeysib-…).")),
+  BREVO_NEWSLETTER_LIST_ID: optional(z.coerce.number().int().positive("BREVO_NEWSLETTER_LIST_ID must be the list's number, e.g. 3.")),
+  BREVO_CONFIRM_TEMPLATE_ID: optional(z.coerce.number().int().positive("BREVO_CONFIRM_TEMPLATE_ID must be the template's number, e.g. 1.")),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -31,5 +36,13 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+/** Brevo for the newsletter, or null until all three settings are filled in. */
+export const newsletterSettings =
+  env.BREVO_API_KEY && env.BREVO_NEWSLETTER_LIST_ID && env.BREVO_CONFIRM_TEMPLATE_ID
+    ? { apiKey: env.BREVO_API_KEY, listId: env.BREVO_NEWSLETTER_LIST_ID, templateId: env.BREVO_CONFIRM_TEMPLATE_ID }
+    : null;
+
+export type NewsletterSettings = NonNullable<typeof newsletterSettings>;
 
 export const photosPublicBaseUrl = env.PHOTOS_PUBLIC_URL ?? `${env.SUPABASE_URL}/storage/v1/object/public/photos`;
