@@ -13,7 +13,7 @@ export const EDITABLE_PAGES = [
     label: "About us",
     websitePath: "/about",
     icon: "groups",
-    summary: "Top of the page, story and founder, promises, team, reviews, licences, Google",
+    summary: "Top of the page, four beliefs, safety, story and founder, team, licences, trek page promises, Google",
   },
   {
     slug: "contact",
@@ -139,9 +139,22 @@ export const PAGE_LIMITS = {
   storyTeaser: 400,
   storyText: 2400,
   quote: 240,
-  milestoneYear: 12,
-  milestoneTitle: 60,
-  milestoneText: 160,
+  statValue: 12,
+  statLabel: 40,
+  safetyLine: 80,
+  beliefEyebrow: 60,
+  beliefHeading: 120,
+  beliefBody: 1600,
+  beliefQuote: 120,
+  quoteNote: 160,
+  cardTitle: 50,
+  cardText: 180,
+  cardLink: 40,
+  itemTitle: 70,
+  itemText: 300,
+  itemLabel: 40,
+  note: 400,
+  founderOrigin: 80,
   promiseTitle: 60,
   promiseText: 200,
   replyTime: 60,
@@ -160,9 +173,25 @@ export const PAGE_LIMITS = {
 export const SEO_TITLE_RECOMMENDED = 60;
 export const SEO_DESCRIPTION_RECOMMENDED = 160;
 
-export const MAX_STORY_PHOTOS = 3;
-export const MAX_MILESTONES = 4;
 export const PROMISE_ROWS = 6;
+
+/** About's photos, each in a fixed place on the page: its index in `photoIds` (site_page_photos.position − 1). */
+export const ABOUT_PHOTO_SLOTS = { founder: 0, flexible: 1, places: [2, 3, 4] } as const;
+export const ABOUT_PHOTO_SLOT_COUNT = 5;
+
+/** How many of each repeated part the About page has (the design's numbers). */
+export const ABOUT_ROWS = {
+  listenSteps: 3,
+  questions: 4,
+  understand: 4,
+  advice: 4,
+  honestPoints: 4,
+  stages: 4,
+  places: 3,
+  invites: 3,
+  safetyFacts: 3,
+  goals: 3,
+} as const;
 export const NEXT_STEP_ROWS = 3;
 export const MAX_CONTACT_FAQS = 10;
 export const RECOMMENDED_CONTACT_FAQS = 4;

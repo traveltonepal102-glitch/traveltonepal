@@ -39,6 +39,10 @@ export const SITE_SETTINGS_ROW: WebSiteSettingsRow = {
   updated_at: "2026-10-26T08:00:00Z",
   linkedin_url: "https://www.linkedin.com/company/traveltonepal",
   google_review_url: "https://g.page/r/traveltonepal/review",
+  pan_certificate_id: null,
+  pan_certificate_width: null,
+  pan_certificate_height: null,
+  pan_certificate_variant_widths: null,
 };
 
 export const SITE_SETTINGS = toSiteSettings(SITE_SETTINGS_ROW, PHOTOS_BASE_URL);

@@ -42,6 +42,7 @@ describe("settingsSchema", () => {
       tourismRegistration: "",
       foundedYear: null,
       certificatePhotoId: null,
+      panCertificatePhotoId: null,
     });
   });
 

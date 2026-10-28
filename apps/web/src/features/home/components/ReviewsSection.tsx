@@ -6,6 +6,7 @@ import { ReviewCarousel } from "@/features/reviews/components/ReviewCarousel";
 import { PREVIEW_COMPANY_REVIEWS, PREVIEW_RATING } from "@/features/reviews/previewReviews";
 import { ratingBadgeFor } from "@/features/reviews/ratingBadge";
 import { getPublishedReviews } from "@/features/reviews/services/reviewsRepository";
+import { HOME_SECTION_IDS } from "@/lib/navigation";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -27,7 +28,7 @@ export const ReviewsSection = async () => {
   if (reviews.length === 0) return null;
 
   return (
-    <section aria-labelledby="reviews-title" className="bg-brand-tint py-16 md:py-24">
+    <section id={HOME_SECTION_IDS.reviews} aria-labelledby="reviews-title" className="bg-brand-tint py-16 md:py-24">
       <div className="mx-auto flex max-w-content flex-col gap-8 px-4 md:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4.5">
           <div className="flex flex-col gap-2.5">

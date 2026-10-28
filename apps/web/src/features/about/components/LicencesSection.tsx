@@ -1,19 +1,19 @@
-
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
+import { PageSectionHeading } from "@/components/shared/PageSectionHeading";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
+import type { SiteImageSource } from "@/lib/images";
 import { imageFileUrl } from "@/lib/images";
-import { PageSectionHeading } from "@/components/shared/PageSectionHeading";
 import { ABOUT_SECTION_IDS } from "@/lib/navigation";
 import { ROUTES } from "@/lib/routes";
 
-import { credentialsFor, licencesFor } from "../credentials";
+import { licencesFor } from "../credentials";
 import type { SectionHeading } from "../types";
 import { FOCUS, SECTION, WRAP } from "./styles";
 
-const CARD = "rounded-2xl border border-line bg-surface p-4.5 md:p-5.5";
+const CARD = "rounded-2xl border border-line bg-surface p-4.5 md:p-6";
 
 const LEGAL_LINKS = [
   { label: "Impressum", href: ROUTES.impressum },
@@ -21,16 +21,54 @@ const LEGAL_LINKS = [
   { label: "Privacy policy", href: ROUTES.privacy },
 ] as const;
 
-/** "Licences and legal": every registration number, the licence certificate and the legal pages (numbers from Site settings). */
+type CertificateProps = { image: SiteImageSource; title: string; detail: string };
+
+/** A certificate scan that opens full size (in a new tab), with its name under it. */
+const Certificate = ({ image, title, detail }: CertificateProps) => (
+  <figure className="flex flex-col gap-2">
+    <a
+      href={imageFileUrl(image, 2000)}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Enlarge the ${title.toLowerCase()} (opens in a new tab)`}
+      className={`relative block h-65 cursor-zoom-in rounded-xl border border-line bg-muted ${FOCUS}`}
+    >
+      <span className="absolute inset-2.5">
+        <SiteImage image={image} sizes="(min-width: 1024px) 280px, 50vw" className="object-contain" />
+      </span>
+      <span aria-hidden="true" className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-navy/85 px-2 py-1 text-[11px] font-bold text-white">
+        <Icon name="zoom_in" size={12} />
+        Enlarge
+      </span>
+    </a>
+    <figcaption className="flex flex-col gap-0.5">
+      <span className="font-display text-[15px] leading-5 font-bold text-ink">{title}</span>
+      {detail && <span className="text-xs leading-[18px] text-muted-foreground">{detail}</span>}
+    </figcaption>
+  </figure>
+);
+
+/** "Licences and legal" (design: About.dc.html): every registration number, the two certificates and the legal pages (all from Site settings). */
 export const LicencesSection = async ({ heading }: { heading: SectionHeading }) => {
   const settings = await getSiteSettings();
-  const { certificate } = credentialsFor(settings);
+  const { company } = settings;
   const licences = licencesFor(settings);
-  const registration = settings.company.tourismRegistration;
+  const certificates: CertificateProps[] = [
+    ...(company.certificate
+      ? [
+          {
+            image: company.certificate,
+            title: "Trekking agency licence",
+            detail: [company.tourismLicence && `No. ${company.tourismLicence}`, "Nepal Department of Tourism"].filter(Boolean).join(" · "),
+          },
+        ]
+      : []),
+    ...(company.panCertificate ? [{ image: company.panCertificate, title: "PAN registration certificate", detail: "Inland Revenue Department, Nepal" }] : []),
+  ];
 
   return (
     <section id={ABOUT_SECTION_IDS.licences} aria-labelledby="about-licences-title" className={SECTION}>
-      <div className={`${WRAP} flex flex-col gap-5.5`}>
+      <div className={`${WRAP} flex flex-col gap-7`}>
         <PageSectionHeading
           id="about-licences-title"
           tone="green"
@@ -38,47 +76,32 @@ export const LicencesSection = async ({ heading }: { heading: SectionHeading }) 
           title={heading.title || "Registered, licensed and insured"}
           text={heading.text || "You can check every number below with the Nepal Department of Tourism and TAAN."}
         />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <dl className={`${CARD} grid content-start gap-2.5 sm:grid-cols-2`}>
+        <div className="flex flex-wrap gap-6">
+          <dl className={`${CARD} grid min-w-0 flex-[1_1_480px] content-start gap-3 sm:grid-cols-2`}>
             {licences.map((licence) => (
-              <div key={licence.label} className="flex items-center gap-2.5 rounded-xl border border-muted bg-page p-3">
-                <span aria-hidden="true" className="inline-flex size-9 flex-none items-center justify-center rounded-md bg-green-tint text-whatsapp">
-                  <Icon name={licence.icon} size={20} />
-                </span>
-                <div className="flex flex-col leading-snug">
-                  <dt className="text-[11px] font-bold tracking-[0.05em] text-muted-foreground uppercase">{licence.label}</dt>
-                  <dd className="font-display text-[15px] font-bold text-ink">{licence.value}</dd>
+              <div key={licence.label} className="flex items-center gap-3 rounded-lg bg-muted px-4 py-3.5">
+                <Icon name={licence.icon} size={20} className="flex-none text-whatsapp" />
+                <div className="flex flex-col-reverse leading-snug">
+                  <dt className="text-[11px] font-bold tracking-[0.08em] text-muted-foreground uppercase">{licence.label}</dt>
+                  <dd className="font-display text-base font-bold text-ink">{licence.value}</dd>
                 </div>
               </div>
             ))}
           </dl>
 
-          <div className={`${CARD} flex flex-col gap-3.5`}>
-            <div className="relative flex min-h-50 flex-1 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-xl border border-dashed border-line-strong bg-page text-caption font-normal text-subtle">
-              {certificate.image ? (
-                <SiteImage image={certificate.image} sizes="(min-width: 1024px) 560px, 100vw" className="object-contain" />
-              ) : (
+          <div className={`${CARD} flex min-w-0 flex-[1_1_420px] flex-col gap-3.5`}>
+            {certificates.length > 0 ? (
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                {certificates.map((certificate) => (
+                  <Certificate key={certificate.title} {...certificate} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-50 items-center justify-center rounded-xl border border-dashed border-line-strong bg-page">
                 <Icon name="verified" size={40} className="text-whatsapp" />
-              )}
-            </div>
-            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-              <p className="flex flex-col leading-snug">
-                <span className="font-bold text-ink">Trekking agency licence</span>
-                <span className="text-xs text-muted-foreground">{registration ? `Nepal Department of Tourism · Reg. ${registration}` : "Nepal Department of Tourism"}</span>
-              </p>
-              {certificate.image && (
-                <a
-                  href={imageFileUrl(certificate.image, 2000)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex min-h-10 flex-none items-center justify-center gap-1.5 rounded-md border border-[#d3e3f1] bg-surface px-3.5 font-bold text-brand hover:bg-brand-tint ${FOCUS}`}
-                >
-                  <Icon name="description" size={16} />
-                  View full size
-                </a>
-              )}
-            </div>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2 border-t border-muted pt-3 text-caption font-semibold">
+              </div>
+            )}
+            <ul className="flex flex-wrap gap-x-5 gap-y-1.5 border-t border-line pt-3 text-[13px] font-semibold">
               {LEGAL_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className={`rounded-sm text-brand hover:underline ${FOCUS}`}>

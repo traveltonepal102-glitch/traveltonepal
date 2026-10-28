@@ -16,4 +16,5 @@ export const aboutFactsFrom = (settings: SiteSettings, regionCount: number): Abo
     { label: "Other memberships", value: settings.memberships.filter((name) => name.toUpperCase() !== "TAAN").join(", ") },
   ].filter((licence) => licence.value.trim()),
   hasCertificate: settings.certificatePhoto !== null,
+  hasPanCertificate: settings.panCertificatePhoto !== null,
 });

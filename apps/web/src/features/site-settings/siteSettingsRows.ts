@@ -76,6 +76,19 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
         "Department of Tourism registration certificate",
         `${SITE_NAME}'s Department of Tourism registration certificate`,
       ),
+      panCertificate: coverImage(
+        {
+          cover_id: row.pan_certificate_id,
+          cover_width: row.pan_certificate_width,
+          cover_height: row.pan_certificate_height,
+          cover_variant_widths: row.pan_certificate_variant_widths,
+          cover_placeholder: null,
+          cover_place: null,
+        },
+        photosBaseUrl,
+        "PAN registration certificate",
+        `${SITE_NAME}'s PAN registration certificate from the Inland Revenue Department, Nepal`,
+      ),
     },
     social: SOCIAL.flatMap(({ key, network, label }) => {
       const url = secureUrl(String(row[key] ?? ""));

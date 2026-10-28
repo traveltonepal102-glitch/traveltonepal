@@ -1,6 +1,7 @@
 import "server-only";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
+import type { Photo } from "@/features/photos/types";
 import type { Json, SitePageSlug } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -15,7 +16,7 @@ export const listPageUpdates = async (): Promise<Partial<Record<SitePageSlug, st
   return Object.fromEntries(data.map((row) => [row.slug, row.updated_at]));
 };
 
-/** One page with its photos, or null when it has no row. Throws when the database can't be read. */
+/** One page with its photos (by place), or null when it has no row. Throws when the database can't be read. */
 export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> => {
   const supabase = await createSupabaseServerClient();
   const [page, photos] = await Promise.all([
@@ -40,7 +41,10 @@ export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> 
     },
     photo: row.photo ? toPhoto(row.photo) : null,
     founderAuthorId: row.founder_author_id,
-    storyPhotos: photos.data.flatMap((item) => (item.photo ? [toPhoto(item.photo)] : [])),
+    photoSlots: photos.data.reduce<(Photo | null)[]>((slots, item) => {
+      slots[item.position - 1] = item.photo ? toPhoto(item.photo) : null;
+      return slots;
+    }, []),
     content: row.content,
     updatedAt: row.updated_at,
   };
@@ -56,7 +60,7 @@ export const getSitePages = async (slugs: readonly SitePageSlug[]): Promise<Site
     top: { eyebrow: row.eyebrow, heading: row.heading, intro: row.intro, seoTitle: row.seo_title, seoDescription: row.seo_description, seoKeyword: row.seo_keyword, photoId: row.photo_id },
     photo: null,
     founderAuthorId: row.founder_author_id,
-    storyPhotos: [],
+    photoSlots: [],
     content: row.content,
     updatedAt: row.updated_at,
   }));
@@ -68,7 +72,8 @@ const RLS_VIOLATION = "42501";
 const FOREIGN_KEY_VIOLATION = "23503";
 const INVALID_VALUE = "22023";
 
-type SavePageInput = PageTopValues & { founderAuthorId?: string | null; storyPhotoIds?: string[]; content: Json };
+/** `photoIds`: the page's photos by place, null for an empty place. */
+type SavePageInput = PageTopValues & { founderAuthorId?: string | null; photoIds?: (string | null)[]; content: Json };
 
 /** A page as save_site_page takes it. */
 const toPagePayload = (page: SavePageInput) => ({
@@ -92,10 +97,10 @@ const toSaveResult = (functionName: string, error: { code: string; message: stri
   return { ok: false, reason: "failed" };
 };
 
-/** Saves a page in one transaction (save_site_page): its top, Google result, own parts and story photos. */
+/** Saves a page in one transaction (save_site_page): its top, Google result, own parts and photos. */
 export const saveSitePage = async (slug: SitePageSlug, page: SavePageInput): Promise<SavePageResult> => {
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.rpc("save_site_page", { p_slug: slug, p_page: toPagePayload(page), p_photo_ids: page.storyPhotoIds ?? [] });
+  const { error } = await supabase.rpc("save_site_page", { p_slug: slug, p_page: toPagePayload(page), p_photo_ids: (page.photoIds ?? []).map((id) => id ?? "") });
   return toSaveResult("save_site_page", error);
 };
 

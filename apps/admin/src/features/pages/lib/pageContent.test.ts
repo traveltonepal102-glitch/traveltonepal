@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { RichTextDoc } from "@/lib/richText/richText";
 
 import type { SitePage } from "../types";
-import { aboutContentOf, contactContentOf, toAboutValues, toContactValues } from "./pageContent";
+import { aboutContentOf, toAboutValues } from "./aboutContent";
+import { contactContentOf, toContactValues } from "./pageContent";
 
 const doc = (...paragraphs: string[]): RichTextDoc => ({ type: "doc", content: paragraphs.map((text) => ({ type: "paragraph", content: [{ type: "text", text }] })) });
 
@@ -12,23 +13,33 @@ const page = (content: unknown): SitePage => ({
   top: { eyebrow: "", heading: "Heading", intro: "", seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null },
   photo: null,
   founderAuthorId: null,
-  storyPhotos: [],
+  photoSlots: [],
   content,
   updatedAt: "2026-10-26T08:00:00Z",
 });
 
 describe("page content", () => {
   it("reads back what the About form saves", () => {
+    const empty = toAboutValues(page({}));
     const saved = {
-      ...toAboutValues(page({})),
+      ...empty,
+      statValue: "All",
       storyHeading: "Our story",
       storyText: doc("One.", "Two."),
-      milestones: [{ year: "2015", title: "Founded", text: "" }],
-      promisesHeading: "What you can expect",
+      listen: { ...empty.listen, heading: "We listen first", questions: ["Why Nepal?", "", "", ""] },
+      goals: [{ title: "Fair pay", text: "For the trail team." }, ...empty.goals.slice(1)],
       promises: [{ icon: "chat", title: "Real people", text: "On WhatsApp." }],
       teamIntro: "Local guides.",
     };
     expect(toAboutValues(page(aboutContentOf(saved)))).toEqual(saved);
+  });
+
+  it("gives every fixed list its full number of rows", () => {
+    const values = toAboutValues(page({ listen: { steps: [{ title: "Listen", text: "" }] }, goals: "nope" }));
+    expect(values.listen.steps).toEqual([{ title: "Listen", text: "" }, { title: "", text: "" }, { title: "", text: "" }]);
+    expect(values.listen.questions).toEqual(["", "", "", ""]);
+    expect(values.goals).toHaveLength(3);
+    expect(values.photoIds).toEqual([null, null, null, null, null]);
   });
 
   it("reads back what the Contact form saves", () => {
@@ -37,13 +48,15 @@ describe("page content", () => {
   });
 
   it("turns text saved before rich text into paragraphs", () => {
-    expect(toAboutValues(page({ story: ["First.", " ", "Second."] })).storyText).toEqual(doc("First.", "Second."));
+    expect(toAboutValues(page({ storyText: "First.\n\nSecond." })).storyText).toEqual(doc("First.", "Second."));
     expect(toContactValues(page({ faqs: [{ question: "Free?", answer: "Yes." }] })).faqs).toEqual([{ question: "Free?", answer: doc("Yes.") }]);
   });
 
   it("opens a broken row as empty parts, keeping the good items", () => {
-    const values = toAboutValues(page({ story: "not a list", milestones: [{ title: "Kept" }, 42], promises: null }));
-    expect(values).toMatchObject({ promises: [], milestones: [{ year: "", title: "Kept", text: "" }] });
+    const values = toAboutValues(page({ honest: "not an object", promises: [{ title: "Kept" }, 42] }));
+    expect(values.honest.heading).toBe("");
+    expect(values.honest.advice).toHaveLength(4);
+    expect(values.promises).toEqual([{ icon: "", title: "Kept", text: "" }]);
     expect(toContactValues(page("nonsense"))).toMatchObject({ faqs: [], nextSteps: [], timeZones: [], replyWhatsApp: "" });
   });
 });

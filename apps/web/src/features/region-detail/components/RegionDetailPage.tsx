@@ -1,4 +1,6 @@
 import { JsonLd } from "@/components/shared/JsonLd";
+import { PageSectionNav } from "@/components/shared/PageSectionNav";
+import type { PageSectionLink } from "@/components/shared/PageSectionNav";
 
 import { regionJsonLd } from "../seo";
 import type { RegionDetail } from "../types";
@@ -11,13 +13,11 @@ import { RegionGuides } from "./RegionGuides";
 import { RegionHero } from "./RegionHero";
 import { RegionOverview } from "./RegionOverview";
 import { RegionPhotos } from "./RegionPhotos";
-import { RegionSectionNav } from "./RegionSectionNav";
-import type { RegionSectionLink } from "./RegionSectionNav";
 import { RegionTravelGuides } from "./RegionTravelGuides";
 import { RegionTreks } from "./RegionTreks";
 
 /** "On this page" links; sections without content are left out (they do not render either). */
-const sectionLinks = (region: RegionDetail): RegionSectionLink[] => [
+const sectionLinks = (region: RegionDetail): PageSectionLink[] => [
   { id: "overview", label: "Overview" },
   { id: "treks", label: "Treks" },
   { id: "best-time", label: "Best time" },
@@ -33,7 +33,7 @@ export const RegionDetailPage = ({ region }: { region: RegionDetail }) => (
     <JsonLd data={regionJsonLd(region)} />
     <RegionHero region={region} />
     <RegionFacts region={region} />
-    <RegionSectionNav links={sectionLinks(region)} />
+    <PageSectionNav links={sectionLinks(region)} className="mt-7" />
     <RegionOverview region={region} />
     <RegionTreks region={region} />
     <RegionBestTime region={region} />

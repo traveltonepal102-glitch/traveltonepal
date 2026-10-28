@@ -8,13 +8,13 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { MAX_MEMBERSHIPS, MEMBERSHIP_SUGGESTIONS, SETTINGS_LIMITS as LIMIT } from "../constants";
 import type { SiteSettingsValues } from "../types";
 
-type CompanySettingsCardProps = { values: SiteSettingsValues; certificate: Photo | null; errors: FieldErrors; onEdit: () => void };
+type CompanySettingsCardProps = { values: SiteSettingsValues; certificate: Photo | null; panCertificate: Photo | null; errors: FieldErrors; onEdit: () => void };
 
 /**
  * "Company and licences": the numbers visitors can check with the Department of Tourism and TAAN, used by the About
  * page, every trek page ("Credentials and government licences") and the Impressum. A blank one isn't shown.
  */
-export const CompanySettingsCard = ({ values, certificate, errors, onEdit }: CompanySettingsCardProps) => (
+export const CompanySettingsCard = ({ values, certificate, panCertificate, errors, onEdit }: CompanySettingsCardProps) => (
   <FormSection title="Company and licences" hint="Type the real numbers from your documents. A field left empty is left out of the website, never shown as a placeholder.">
     <div className="grid gap-3 tablet:grid-cols-2">
       <TextField name="legalName" label="Company's legal name" defaultValue={values.legalName} placeholder="Travel To Nepal Pvt. Ltd." maxLength={LIMIT.legalName} error={errors.legalName} />
@@ -39,15 +39,27 @@ export const CompanySettingsCard = ({ values, certificate, errors, onEdit }: Com
       error={errors.memberships}
       onEdit={onEdit}
     />
-    <div className="flex flex-col gap-1.5">
-      <span className="text-caption font-semibold text-ink">Registration certificate scan</span>
-      <PersonPhotoField
-        initial={certificate}
-        name="Department of Tourism registration certificate"
-        hint="A clear photo or scan. Visitors can open it full size, so cover any private numbers first."
-        fieldName="certificatePhotoId"
-        onEdit={onEdit}
-      />
+    <div className="grid gap-3 tablet:grid-cols-2">
+      <div className="flex flex-col gap-1.5">
+        <span className="text-caption font-semibold text-ink">Trekking agency licence scan</span>
+        <PersonPhotoField
+          initial={certificate}
+          name="Trekking agency licence"
+          hint="A clear photo or scan. Visitors can open it full size, so cover any private numbers first."
+          fieldName="certificatePhotoId"
+          onEdit={onEdit}
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-caption font-semibold text-ink">PAN registration certificate scan</span>
+        <PersonPhotoField
+          initial={panCertificate}
+          name="PAN registration certificate"
+          hint="Shown beside the licence on the About page."
+          fieldName="panCertificatePhotoId"
+          onEdit={onEdit}
+        />
+      </div>
     </div>
   </FormSection>
 );

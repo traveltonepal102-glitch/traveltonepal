@@ -9,24 +9,47 @@ const BASE = "https://photos.example/photos";
 const ROW: WebSitePageRow = {
   slug: "about",
   eyebrow: " About Travel To Nepal ",
-  heading: "A Nepali team",
+  heading: "Private treks in Nepal",
   intro: "We are a licensed trekking company.",
   seo_title: "About us",
   seo_description: "Meet the team.",
   seo_keyword: "Nepali trekking company",
   content: {
-    trekkersGuided: "1,200+",
-    storyHeading: "Born in the mountains",
+    trekkersGuided: "50+",
+    statValue: "All",
+    statLabel: "Guides from their own valleys",
+    safetyLead: "All four rest on one rule:",
+    safetyText: "your safety comes first.",
+    listen: {
+      eyebrow: "01 · We listen first",
+      heading: "We understand you first.",
+      body: "First paragraph.\n\n  \n\nSecond paragraph.",
+      cardTitle: "We listen first",
+      steps: [{ title: "1. We listen", text: "Open questions." }, { title: "", text: "" }, { title: "3. We suggest", text: "" }],
+      questions: ["What made you think of Nepal?", "", 42],
+      understand: [{ label: "Your interests", value: "Peaks" }, { label: "", value: "" }],
+    },
+    honest: { heading: "Honest advice", advice: [{ quote: "Langtang may suit you better.", who: "To a first-timer" }, { quote: "", who: "No quote: left out." }] },
+    flexible: { heading: "Flexible", photoCaption: "At 4,980 m in Langtang", stages: [{ title: "Before booking", text: "Compare versions." }] },
+    openMind: {
+      heading: "An open mind",
+      more: "One.\n\nTwo.",
+      places: [
+        { title: "Ghandruk, Annapurna", text: "A Gurung village." },
+        { title: "Kyanjin Gompa", text: "Teahouses." },
+        { title: "Phu village", text: "No photo: left out." },
+      ],
+    },
+    safety: { heading: "Your safety", facts: [{ title: "Rescue plan", text: "From Kathmandu." }, { title: "", text: "" }] },
+    storyHeading: "Why Sandip started Travel To Nepal",
     storyTeaser: "Short story.",
-    story: ["First paragraph.", "  ", "Second paragraph."],
-    quote: "Like family.",
-    promisesHeading: "What to expect",
+    storyText: "Born in Tanahun.\n\nThree goals.",
+    quote: "It's time for Nepal to have its own voice.",
+    founderOrigin: "From Tanahun",
+    goals: [{ title: "Fair pay", text: "For the trail team." }],
+    voiceEyebrow: "Our voice",
+    voiceText: "Para one.\n\nPara two.",
     teamIntro: "Local guides.",
-    milestones: [
-      { year: "2015", title: "Founded", text: "In Kathmandu." },
-      { year: "", title: "", text: "No title: left out." },
-      { year: "Today", title: "One team", text: "" },
-    ],
     promises: [
       { icon: "price_check", title: "Clear prices", text: "No surprises." },
       { icon: "not-an-icon", title: "Safety", text: "Checks every day." },
@@ -40,52 +63,67 @@ const ROW: WebSitePageRow = {
   cover_variant_widths: null,
   cover_placeholder: null,
   cover_place: null,
-  founder_name: "Sujan Sherpa",
+  founder_name: "Sandip Kshetri",
   founder_role: "Founder",
   founder_photo_id: "f0000000-0000-4000-8000-000000000001",
   founder_photo_variant_widths: [400, 800],
   founder_photo_placeholder: null,
   story_photos: [
-    { id: "p1", width: 1600, height: 1200, variant_widths: [400, 800], placeholder: null, place: "Kyanjin Gompa" },
-    { id: "p2", width: 1600, height: 1200, variant_widths: [], placeholder: null, place: null },
+    { id: "founder", width: 955, height: 1000, variant_widths: [400, 800], placeholder: null, place: "Tserko Ri", position: 1 },
+    { id: "banner", width: 1210, height: 1260, variant_widths: [400, 800], placeholder: null, place: null, position: 2 },
+    { id: "ghandruk", width: 1400, height: 788, variant_widths: [400, 800], placeholder: null, place: "Ghandruk", position: 3 },
+    { id: "kyanjin", width: 1400, height: 788, variant_widths: [400, 800], placeholder: null, place: null, position: 4 },
+    { id: "no-sizes", width: 1400, height: 788, variant_widths: [], placeholder: null, place: null, position: 5 },
   ],
 };
 
 describe("toAboutPage", () => {
   const about = toAboutPage(ROW, BASE);
 
-  it("reads the top and Google result, trimmed", () => {
-    expect(about.top).toMatchObject({ eyebrow: "About Travel To Nepal", heading: "A Nepali team", seo: { keyword: "Nepali trekking company" } });
-    expect(about.top.cover).toBeUndefined();
+  it("reads the top, the four numbers' parts and the line under the beliefs, trimmed", () => {
+    expect(about.top).toMatchObject({ eyebrow: "About Travel To Nepal", heading: "Private treks in Nepal", seo: { keyword: "Nepali trekking company" } });
+    expect(about.trekkersGuided).toBe("50+");
+    expect(about.stat).toEqual({ value: "All", label: "Guides from their own valleys" });
+    expect(about.safetyLine).toEqual({ lead: "All four rest on one rule:", text: "your safety comes first." });
   });
 
-  it("reads the story saved as paragraphs (before rich text) as paragraphs, and keeps photos that have sizes", () => {
-    expect(about.story.body.content.map((block) => (block.type === "paragraph" ? block.content?.[0] : null))).toEqual([
-      { type: "text", text: "First paragraph." },
-      { type: "text", text: "Second paragraph." },
+  it("splits a belief's text into paragraphs and keeps its three steps in their places", () => {
+    expect(about.listen.paragraphs).toEqual(["First paragraph.", "Second paragraph."]);
+    expect(about.listen.card).toEqual({ title: "We listen first", text: "", link: "" });
+    expect(about.listen.steps.map((step) => step.title)).toEqual(["1. We listen", "", "3. We suggest"]);
+    expect(about.listen.questions).toEqual(["What made you think of Nepal?"]);
+    expect(about.listen.understand).toEqual([{ label: "Your interests", value: "Peaks" }]);
+  });
+
+  it("leaves out empty items", () => {
+    expect(about.honest.advice).toEqual([{ quote: "Langtang may suit you better.", who: "To a first-timer" }]);
+    expect(about.safety.facts).toEqual([{ title: "Rescue plan", text: "From Kathmandu." }]);
+  });
+
+  it("puts each photo in its place, described by its caption", () => {
+    expect(about.story.photo).toMatchObject({ src: `${BASE}/founder`, alt: "Sandip Kshetri, Founder" });
+    expect(about.flexible.photo).toMatchObject({ src: `${BASE}/banner`, alt: "At 4,980 m in Langtang" });
+    expect(about.openMind.places.map((place) => [place.title, place.photo.src])).toEqual([
+      ["Ghandruk, Annapurna", `${BASE}/ghandruk`],
+      ["Kyanjin Gompa", `${BASE}/kyanjin`],
     ]);
-    expect(about.story.photos).toHaveLength(1);
-    expect(about.story.photos[0]).toMatchObject({ src: `${BASE}/p1`, alt: expect.stringContaining("Kyanjin Gompa") });
+    expect(about.openMind.more).toEqual(["One.", "Two."]);
   });
 
-  it("takes the founder's first name and photo from the author", () => {
-    expect(about.founder).toMatchObject({ name: "Sujan Sherpa", shortName: "Sujan", role: "Founder" });
+  it("reads the story, its goals and our voice", () => {
+    expect(about.story).toMatchObject({ heading: "Why Sandip started Travel To Nepal", origin: "From Tanahun", goals: [{ title: "Fair pay", text: "For the trail team." }] });
+    expect(about.story.voice).toEqual({ eyebrow: "Our voice", heading: "", paragraphs: ["Para one.", "Para two."] });
+    expect(about.story.body.content).toHaveLength(2);
+    expect(about.headings.team).toEqual({ title: "", text: "Local guides." });
+  });
+
+  it("takes the founder's first name and photo from the author, and has none until one is picked", () => {
+    expect(about.founder).toMatchObject({ name: "Sandip Kshetri", shortName: "Sandip", role: "Founder" });
     expect(about.founder?.photo?.src).toBe(`${BASE}/f0000000-0000-4000-8000-000000000001`);
-  });
-
-  it("reads the founder's story as rich text, and the section headings", () => {
-    const storyText = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "In his own words." }] }] };
-    expect(toAboutPage({ ...ROW, content: { ...(ROW.content as object), storyText } }, BASE).story.body).toEqual(storyText);
-    expect(about.headings).toMatchObject({ promises: { title: "What to expect", text: "" }, team: { title: "", text: "Local guides." } });
-  });
-
-  it("has no founder until one is picked", () => {
     expect(toAboutPage({ ...ROW, founder_name: null, founder_role: null }, BASE).founder).toBeUndefined();
   });
 
-  it("leaves out milestones and promises without a title, and replaces an unknown icon", () => {
-    expect(about.milestones.map((milestone) => milestone.title)).toEqual(["Founded", "One team"]);
-    expect(about.milestones[0]).toMatchObject({ icon: "flag", tone: "saffron" });
+  it("keeps the trek pages' promises, replacing an unknown icon", () => {
     expect(about.promises.map((promise) => [promise.title, promise.icon])).toEqual([
       ["Clear prices", "price_check"],
       ["Safety", "verified"],
@@ -94,7 +132,10 @@ describe("toAboutPage", () => {
 
   it("survives content that is not what it should be", () => {
     const empty = toAboutPage({ ...ROW, content: "nonsense", story_photos: null }, BASE);
-    expect(empty).toMatchObject({ trekkersGuided: "", milestones: [], promises: [], story: { photos: [] } });
+    expect(empty).toMatchObject({ trekkersGuided: "", stat: undefined, promises: [], listen: { heading: "", paragraphs: [], questions: [] } });
+    expect(empty.listen.steps).toHaveLength(3);
+    expect(empty.openMind.places).toEqual([]);
+    expect(empty.story.photo).toBeUndefined();
     expect(empty.story.body).toEqual({ type: "doc", content: [{ type: "paragraph" }] });
   });
 });

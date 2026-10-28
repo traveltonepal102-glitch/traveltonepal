@@ -2,7 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { formatCount } from "@/lib/format";
 import type { SiteImageSource } from "@/lib/images";
-import { ABOUT_PATHS, MAIN_SECTIONS } from "@/lib/navigation";
+import { ABOUT_PATHS, MAIN_SECTIONS, REVIEWS_PATH } from "@/lib/navigation";
 import type { SectionKey } from "@/lib/navigation";
 import { ROUTES, trekPath } from "@/lib/routes";
 import { guideListHref } from "@/features/guides/guideFiltering";
@@ -112,7 +112,7 @@ export const GUIDE_LINKS: readonly TopicLink[] = [
 export const ABOUT_LINKS: readonly TopicLink[] = [
   { name: "Our story", meta: "Who we are and why we started", href: ABOUT_PATHS.story, icon: "cottage", tone: "brand" },
   { name: "Our guides and team", meta: "Meet the people who lead you", href: ABOUT_PATHS.team, icon: "groups", tone: "green" },
-  { name: "Reviews", meta: "What trekkers say about us", href: ABOUT_PATHS.reviews, icon: "person", tone: "saffron" },
+  { name: "Reviews", meta: "What trekkers say about us", href: REVIEWS_PATH, icon: "person", tone: "saffron" },
   { name: "Why travel with us", meta: "Safety, prices, flexibility", href: ABOUT_PATHS.whyUs, icon: "shield_person", tone: "navy" },
   { name: "Licences and legal", meta: "Registration and memberships", href: ABOUT_PATHS.licences, icon: "verified", tone: "brand" },
   { name: "Responsible travel", meta: "Porters, villages, nature", href: ABOUT_PATHS.responsibleTravel, icon: "volunteer_activism", tone: "green" },

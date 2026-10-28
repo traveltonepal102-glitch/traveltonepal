@@ -25,26 +25,26 @@ const top: [string, string][] = [
   ["photoId", ""],
 ];
 
-const milestone = (year: string, title: string, text: string): [string, string][] => [
-  ["milestoneYear", year],
-  ["milestoneTitle", title],
-  ["milestoneText", text],
-];
-
 describe("aboutPageSchema", () => {
   const about = (extra: [string, string][]) => aboutPageSchema.safeParse(readAboutForm(form([...top, ...extra])));
 
-  it("keeps filled rows, drops empty ones and reads the section headings", () => {
+  it("reads every section by its field paths, with the photos in their places", () => {
     const result = about([
       ["founderAuthorId", ID],
-      ["storyText", rich("Our founder grew up in the mountains.")],
-      ["storyPhotoId", ID],
-      ["storyPhotoId", ""],
-      ["storyPhotoId", ID],
-      ["promisesHeading", "What you can expect from us"],
+      ["storyText", rich("Sandip was born in Tanahun.")],
+      ["photoIds.0", ID],
+      ["photoIds.3", ID],
+      ["statValue", "All"],
+      ["listen.heading", "We understand you first."],
+      ["listen.steps.0.title", "1. We listen"],
+      ["listen.questions.2", "What should this trip mean for you?"],
+      ["listen.understand.1.label", "Your interests"],
+      ["honest.advice.0.quote", "Langtang may suit you better."],
+      ["flexible.stages.3.title", "After the trek"],
+      ["openMind.places.0.title", "Ghandruk, Annapurna"],
+      ["safety.facts.2.title", "Rescue plan"],
+      ["goals.1.title", "Places that deserve attention"],
       ["teamIntro", "Local guides."],
-      ...milestone("2015", "Founded", "In Kathmandu."),
-      ...milestone("", "", ""),
       ["promiseIcon", "price_check"],
       ["promiseTitle", "Clear prices"],
       ["promiseText", "No surprises."],
@@ -55,37 +55,40 @@ describe("aboutPageSchema", () => {
       founderAuthorId: ID,
       photoId: null,
       storyText: { type: "doc" },
-      storyPhotoIds: [ID],
-      promisesHeading: "What you can expect from us",
+      photoIds: [ID, null, null, ID, null],
+      statValue: "All",
+      listen: { heading: "We understand you first.", questions: ["", "", "What should this trip mean for you?", ""] },
       teamIntro: "Local guides.",
-      milestones: [{ year: "2015", title: "Founded", text: "In Kathmandu." }],
       promises: [{ icon: "price_check", title: "Clear prices", text: "No surprises." }],
     });
+    expect(result.data?.listen.steps[0]).toEqual({ title: "1. We listen", text: "" });
+    expect(result.data?.listen.understand[1]).toEqual({ label: "Your interests", value: "" });
+    expect(result.data?.honest.advice[0].quote).toBe("Langtang may suit you better.");
+    expect(result.data?.flexible.stages[3].title).toBe("After the trek");
+    expect(result.data?.openMind.places[0].title).toBe("Ghandruk, Annapurna");
+    expect(result.data?.safety.facts[2].title).toBe("Rescue plan");
+    expect(result.data?.goals[1].title).toBe("Places that deserve attention");
   });
 
-  it("needs a heading, and a title for a moment with words", () => {
-    const result = aboutPageSchema.safeParse(readAboutForm(form([["heading", ""], ...milestone("", "", ""), ...milestone("2020", "", "Moved office.")])));
+  it("needs a heading, and names a field that is too long by its path", () => {
+    const result = aboutPageSchema.safeParse(readAboutForm(form([["heading", ""], ["honest.points.1.title", "x".repeat(200)]])));
     expect(result.success).toBe(false);
     const errors = toFieldErrors(result.error!);
     expect(errors).toHaveProperty("heading");
-    expect(errors).toHaveProperty(["milestones.1.title"]);
-  });
-
-  it("allows at most four moments", () => {
-    const moments = [1, 2, 3, 4, 5].flatMap((n) => milestone(String(2010 + n), `Moment ${n}`, ""));
-    expect(toFieldErrors(about(moments).error!)).toHaveProperty("milestones");
+    expect(errors).toHaveProperty(["honest.points.1.title"]);
   });
 
   it("rejects an icon that is not in the list, an id that is not a library id, and a story that is not rich text", () => {
     const result = about([
       ["founderAuthorId", "../../etc"],
+      ["photoIds.1", "not-an-id"],
       ["storyText", "<script>alert(1)</script>"],
       ["promiseIcon", "rocket"],
       ["promiseTitle", "Fast"],
       ["promiseText", ""],
     ]);
     expect(result.success).toBe(false);
-    expect(Object.keys(toFieldErrors(result.error!))).toEqual(expect.arrayContaining(["founderAuthorId", "storyText", "promises.0.icon"]));
+    expect(Object.keys(toFieldErrors(result.error!))).toEqual(expect.arrayContaining(["founderAuthorId", "photoIds.1", "storyText", "promises.0.icon"]));
   });
 });
 

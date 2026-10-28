@@ -15,8 +15,10 @@ export type CompanyDetails = {
   memberships: readonly string[];
   staffInsurer: string;
   paymentsNote: string;
-  /** The registration certificate scan, opened full size. */
+  /** The trekking agency licence scan, opened full size. */
   certificate?: SiteImageSource;
+  /** The PAN registration certificate scan, opened full size. */
+  panCertificate?: SiteImageSource;
 };
 
 export type SocialNetwork = "facebook" | "instagram" | "youtube" | "linkedin" | "tripadvisor" | "google";

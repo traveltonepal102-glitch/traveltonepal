@@ -7,6 +7,7 @@ import type { SiteSettings, SiteSettingsValues } from "../types";
 
 const COLUMNS = `*,
   certificate:photos!site_settings_certificate_photo_id_fkey(${PHOTO_COLUMNS}),
+  panCertificate:photos!site_settings_pan_certificate_photo_id_fkey(${PHOTO_COLUMNS}),
   share:photos!site_settings_share_photo_id_fkey(${PHOTO_COLUMNS})` as const;
 
 /** Site settings (one row). Throws when the database can't be read. */
@@ -36,6 +37,7 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
     staffInsurer: data.staff_insurer,
     paymentsNote: data.payments_note,
     certificatePhotoId: data.certificate_photo_id,
+    panCertificatePhotoId: data.pan_certificate_photo_id,
     facebookUrl: data.facebook_url,
     instagramUrl: data.instagram_url,
     youtubeUrl: data.youtube_url,
@@ -45,6 +47,7 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
     googleReviewUrl: data.google_review_url,
     sharePhotoId: data.share_photo_id,
     certificatePhoto: data.certificate ? toPhoto(data.certificate) : null,
+    panCertificatePhoto: data.panCertificate ? toPhoto(data.panCertificate) : null,
     sharePhoto: data.share ? toPhoto(data.share) : null,
     updatedAt: data.updated_at,
   };
@@ -81,6 +84,7 @@ export const saveSiteSettings = async (values: SiteSettingsValues): Promise<Save
       staff_insurer: values.staffInsurer,
       payments_note: values.paymentsNote,
       certificate_photo_id: values.certificatePhotoId ?? "",
+      pan_certificate_photo_id: values.panCertificatePhotoId ?? "",
       facebook_url: values.facebookUrl,
       instagram_url: values.instagramUrl,
       youtube_url: values.youtubeUrl,

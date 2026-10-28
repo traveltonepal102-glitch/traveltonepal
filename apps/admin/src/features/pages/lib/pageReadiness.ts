@@ -6,6 +6,7 @@ import { legalTextToPlainText } from "@/lib/richText/legalText";
 import { LEGAL_PAGES, LIST_PAGES, PROMISE_ROWS, RECOMMENDED_CONTACT_FAQS } from "../constants";
 import type { LegalPageSlug, ListPageSlug } from "../constants";
 import type { AboutSectionKey, ContactSectionKey } from "../sections";
+import type { AboutBelief } from "../aboutTypes";
 import type { AboutFacts, AboutPageValues, AboutTeamPerson, ContactPageValues, LegalPagesValues, ListPagesValues, PageTopValues } from "../types";
 
 const done = (note: string): SectionReadiness => ({ status: "done", note });
@@ -15,17 +16,29 @@ const plural = (count: number, word: string) => `${count} ${word}${count === 1 ?
 const googleReadiness = (top: PageTopValues) =>
   top.seoKeyword && top.seoTitle && top.seoDescription ? done("Title and description") : warn("Keyword, title or description missing");
 
-/** Each About section's status in the editor's menu, from what is saved (Reviews has none until it exists). */
+const filled = (items: readonly { title: string }[]) => items.filter((item) => item.title.trim()).length;
+
+/** A belief is ready with its card and its section's heading and text. */
+const beliefReadiness = (belief: AboutBelief) =>
+  belief.heading && belief.body && belief.cardTitle ? done("Card and section") : warn("Card, heading or text missing");
+
+/** Each About section's status in the editor's menu, from what is saved. */
 export const aboutReadiness = (values: AboutPageValues, team: readonly AboutTeamPerson[], facts: AboutFacts): Partial<Record<AboutSectionKey, SectionReadiness>> => {
   const shown = team.filter((person) => person.isShown);
   const office = shown.filter((person) => person.group === "office").length;
   const promises = values.promises.length;
+  const certificates = Number(facts.hasCertificate) + Number(facts.hasPanCertificate);
   return {
     top: values.heading && values.intro ? done("Heading, text, 4 numbers") : warn("Heading or text missing"),
-    story: isRichTextEmpty(values.storyText) || !values.founderAuthorId ? warn("Founder or story missing") : done("Founder, photos, timeline"),
-    promises: promises === PROMISE_ROWS ? done(plural(promises, "promise")) : warn(`${plural(promises, "promise")} of ${PROMISE_ROWS}`),
+    listen: beliefReadiness(values.listen),
+    honest: beliefReadiness(values.honest),
+    flexible: beliefReadiness(values.flexible),
+    openMind: beliefReadiness(values.openMind),
+    safety: values.safety.heading ? done(plural(filled(values.safety.facts), "fact")) : warn("Heading missing"),
+    story: isRichTextEmpty(values.storyText) || !values.founderAuthorId ? warn("Founder or story missing") : done(`Founder, ${plural(filled(values.goals), "goal")}`),
     team: shown.length ? done(`${office} office · ${shown.length - office} guides`) : warn("No one shown yet"),
-    licences: !facts.licences.length ? warn("Numbers missing") : facts.hasCertificate ? done(plural(facts.licences.length, "number")) : warn("Scan missing"),
+    licences: !facts.licences.length ? warn("Numbers missing") : certificates === 2 ? done(plural(facts.licences.length, "number")) : warn(`${certificates} of 2 certificates`),
+    promises: promises === PROMISE_ROWS ? done(plural(promises, "promise")) : warn(`${plural(promises, "promise")} of ${PROMISE_ROWS}`),
     seo: googleReadiness(values),
   };
 };

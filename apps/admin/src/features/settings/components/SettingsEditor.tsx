@@ -66,7 +66,7 @@ export const SettingsEditor = ({ action, settings, canEdit, lastSaved }: Setting
       )}
       <fieldset disabled={!canEdit} className="m-0 flex min-w-0 flex-col gap-4 border-0 p-0">
         <ContactSettingsCard values={settings} errors={errors} onEdit={markDirty} />
-        <CompanySettingsCard values={settings} certificate={settings.certificatePhoto} errors={errors} onEdit={markDirty} />
+        <CompanySettingsCard values={settings} certificate={settings.certificatePhoto} panCertificate={settings.panCertificatePhoto} errors={errors} onEdit={markDirty} />
         <SocialSettingsCard values={settings} sharePhoto={settings.sharePhoto} errors={errors} onEdit={markDirty} />
       </fieldset>
     </form>

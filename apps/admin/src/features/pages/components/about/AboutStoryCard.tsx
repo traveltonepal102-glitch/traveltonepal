@@ -11,53 +11,65 @@ import { LibraryPhotoField } from "@/features/photos/components/LibraryPhotoFiel
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_STORY_PHOTOS, PAGE_LIMITS as LIMIT } from "../../constants";
+import { ABOUT_PHOTO_SLOTS, PAGE_LIMITS as LIMIT } from "../../constants";
 import type { AboutPageValues } from "../../types";
-import { SectionHeadingFields } from "../SectionHeadingFields";
+import { FieldGroup, TitledRows } from "./AboutFieldParts";
 
 type AboutStoryCardProps = {
   values: AboutPageValues;
-  /** Office authors: who the quote is by (the founder, also shown on every trek page). */
+  /** Office authors: the founder (name and job title, also on every trek page). */
   officeAuthors: { id: string; name: string; jobTitle: string }[];
-  storyPhotos: Photo[];
+  founderPhoto: Photo | null;
   libraryPhotos: Photo[];
   errors: FieldErrors;
   onEdit: () => void;
 };
 
-/** "Our story": the heading, the founder's story, the quote and who it is by, the short story and three photos. */
-export const AboutStoryCard = ({ values, officeAuthors, storyPhotos, libraryPhotos, errors, onEdit }: AboutStoryCardProps) => (
-  <FormSection title="The founder’s story">
-    <SectionHeadingFields eyebrow="Our story" heading={{ name: "storyHeading", value: values.storyHeading, placeholder: "Born in the mountains, built in Kathmandu" }} errors={errors} />
+/** "Our story": the founder and his photo, why he started the company, three goals, "Our voice" and the trek page teaser. */
+export const AboutStoryCard = ({ values, officeAuthors, founderPhoto, libraryPhotos, errors, onEdit }: AboutStoryCardProps) => (
+  <FormSection title="Our story">
+    <FieldGroup title="The founder">
+      <div className="grid gap-3 tablet:grid-cols-2">
+        <div className="flex flex-col gap-1">
+          <SelectField
+            name="founderAuthorId"
+            label="Founder"
+            hint="From the office team in Authors: the name and job title come from there."
+            options={[{ value: "", label: "No one" }, ...officeAuthors.map((author) => ({ value: author.id, label: `${author.name}${author.jobTitle ? ` · ${author.jobTitle}` : ""}` }))]}
+            defaultValue={values.founderAuthorId ?? ""}
+            error={errors.founderAuthorId}
+          />
+          <Link href={AUTHORS_PATH} className="self-start text-caption font-bold text-brand">
+            Add someone in Authors
+          </Link>
+        </div>
+        <TextField name="founderOrigin" label="Where he is from" placeholder="From Tanahun, near the Annapurna region" defaultValue={values.founderOrigin} maxLength={LIMIT.founderOrigin} error={errors.founderOrigin} />
+      </div>
+      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.founder}`} label="Founder's photo" hint="A tall photo of the founder on the trail works best." emptyText="No photo yet." initial={founderPhoto} photos={libraryPhotos} onEdit={onEdit} />
+    </FieldGroup>
+    <TextField name="storyHeading" label="Heading" labelNote="(H2)" placeholder="Why Sandip Kshetri started Travel To Nepal" defaultValue={values.storyHeading} maxLength={LIMIT.beliefHeading} inputClassName="font-display font-bold" error={errors.storyHeading} />
     <RichTextEditor
       name="storyText"
-      label="The founder’s story"
-      hint="Written in the founder’s own words. Two short paragraphs read best."
+      label="Why he started the company"
+      hint="Two short paragraphs, before the three goals."
       defaultValue={values.storyText}
       maxLength={LIMIT.storyText}
       error={errors.storyText}
       onEdit={onEdit}
     />
-    <div className="grid gap-3 tablet:grid-cols-2">
-      <TextField name="quote" label="Quote" labelNote="(optional)" defaultValue={values.quote} maxLength={LIMIT.quote} error={errors.quote} />
-      <div className="flex flex-col gap-1">
-        <SelectField
-          name="founderAuthorId"
-          label="Quote by"
-          hint="The founder, from the office team in Authors (name, job title and photo come from there)."
-          options={[{ value: "", label: "No one" }, ...officeAuthors.map((author) => ({ value: author.id, label: `${author.name}${author.jobTitle ? ` · ${author.jobTitle}` : ""}` }))]}
-          defaultValue={values.founderAuthorId ?? ""}
-          error={errors.founderAuthorId}
-        />
-        <Link href={AUTHORS_PATH} className="self-start text-caption font-bold text-brand">
-          Add someone in Authors
-        </Link>
+    <TitledRows base="goals" title="Three goals" itemLabel="Goal" rows={values.goals} errors={errors} />
+    <FieldGroup title="Our voice (the yellow box)">
+      <div className="grid gap-3 tablet:grid-cols-[1fr_2fr]">
+        <TextField name="voiceEyebrow" label="Small label" defaultValue={values.voiceEyebrow} maxLength={LIMIT.beliefEyebrow} error={errors.voiceEyebrow} />
+        <TextField name="voiceHeading" label="Heading" defaultValue={values.voiceHeading} maxLength={LIMIT.beliefHeading} error={errors.voiceHeading} />
       </div>
-    </div>
+      <TextField name="voiceText" label="Text" hint="Leave an empty line between paragraphs." multiline rows={6} defaultValue={values.voiceText} maxLength={LIMIT.beliefBody} showCount error={errors.voiceText} />
+      <TextField name="quote" label="Quote" hint="Shown with the founder's name." defaultValue={values.quote} maxLength={LIMIT.quote} error={errors.quote} />
+    </FieldGroup>
     <TextField
       name="storyTeaser"
       label="Short story for trek pages"
-      hint="Shown on every trek page next to the founder, with a link to this story."
+      hint="Not on this page: shown on every trek page next to the founder, with a link to this story."
       multiline
       rows={3}
       defaultValue={values.storyTeaser}
@@ -65,22 +77,5 @@ export const AboutStoryCard = ({ values, officeAuthors, storyPhotos, libraryPhot
       showCount
       error={errors.storyTeaser}
     />
-    <div className="flex flex-col gap-1.5">
-      <span className="text-caption font-semibold text-ink">Three photos next to the story</span>
-      <div className="grid gap-3 tablet:grid-cols-3">
-        {Array.from({ length: MAX_STORY_PHOTOS }, (_, index) => (
-          <LibraryPhotoField
-            key={index}
-            name="storyPhotoId"
-            label={index === 0 ? "Photo 1 (tall)" : `Photo ${index + 1}`}
-            initial={storyPhotos[index] ?? null}
-            photos={libraryPhotos}
-            onEdit={onEdit}
-          />
-        ))}
-      </div>
-      <span className="text-xs text-muted-foreground">A team photo at the office works well as one of them. The photo’s place is its description.</span>
-      {errors.storyPhotoIds && <p className="m-0 text-caption text-danger">{errors.storyPhotoIds}</p>}
-    </div>
   </FormSection>
 );

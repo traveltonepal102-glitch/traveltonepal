@@ -7,22 +7,18 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { PAGE_LIMITS as LIMIT, PROMISE_ICONS, PROMISE_ROWS } from "../../constants";
 import type { AboutPageValues } from "../../types";
-import { SectionHeadingFields } from "../SectionHeadingFields";
 
 type AboutPromisesCardProps = { values: AboutPageValues; errors: FieldErrors };
 
-/** "What you can expect from us": the heading, the line under it and six promises (also every trek page's "Why book"). */
+/** The six promises of every trek page's "Why book your trek with us" (kept in Pages › About, not shown on it). */
 export const AboutPromisesCard = ({ values, errors }: AboutPromisesCardProps) => (
-  <FormSection title="Six promises">
-    <SectionHeadingFields
-      eyebrow="Why travel with us"
-      heading={{ name: "promisesHeading", value: values.promisesHeading, placeholder: "What you can expect from us" }}
-      intro={{ name: "promisesIntro", value: values.promisesIntro, placeholder: "Six promises we keep on every trek, whatever the region or group size." }}
-      errors={errors}
-    />
+  <FormSection title="Six promises for trek pages">
     <p className="m-0 flex items-start gap-2.5 rounded-md bg-brand-tint px-3.5 py-3 text-caption text-ink">
       <Icon name="info" size={18} className="flex-none text-brand" />
-      These {PROMISE_ROWS} promises also show on every trek page as “Why book your trek with us”. Change them once, here.
+      <span>
+        <strong>Not shown on the About page.</strong> These {PROMISE_ROWS} promises show on every trek page as “Why book your trek with us”, so they stay
+        here and can’t be removed. Change them once, here.
+      </span>
     </p>
     {Array.from({ length: PROMISE_ROWS }, (_, index) => {
       const promise = values.promises[index];

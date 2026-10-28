@@ -311,6 +311,11 @@ export type WebSiteSettingsRow = {
   updated_at: string;
   linkedin_url: string;
   google_review_url: string;
+  /** The PAN registration certificate scan (About › Licences). */
+  pan_certificate_id: string | null;
+  pan_certificate_width: number | null;
+  pan_certificate_height: number | null;
+  pan_certificate_variant_widths: number[] | null;
 };
 
 /** An old address that answers with a permanent redirect to today's (only to a page that exists). */
@@ -335,7 +340,7 @@ export type WebSitePageRow = CoverColumns & {
   founder_photo_id: string | null;
   founder_photo_variant_widths: number[] | null;
   founder_photo_placeholder: string | null;
-  /** About › Our story: up to three photos, in order ({ id, width, height, variant_widths, placeholder, place }). */
+  /** The page's photos by place: [{ id, width, height, variant_widths, placeholder, place, position }] (About: 1 the founder, 2 "flexible", 3–5 the villages). */
   story_photos: unknown;
 };
 

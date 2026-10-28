@@ -8,7 +8,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
 import { pagePath } from "../constants";
-import { aboutContentOf } from "../lib/pageContent";
+import { aboutContentOf } from "../lib/aboutContent";
 import { aboutPageSchema, readAboutForm } from "../schemas/aboutPageSchema";
 import { saveSitePage } from "../services/pagesRepository";
 import { failedPageSave, invalidPageForm } from "./pageSaveResult";
@@ -24,7 +24,7 @@ export const saveAboutPage = async (_previous: EditorSaveState, formData: FormDa
   const result = await saveSitePage("about", { ...values, content: aboutContentOf(values) });
   if (!result.ok) return failedPageSave(result);
 
-  // The About page, and the founder and promises on every trek page.
+  // The About page, and the founder, his short story and the promises on every trek page.
   refreshWebsite([WEBSITE_CACHE_TAGS.pages]);
   revalidatePath(pagePath("about"));
   return { status: "saved" };

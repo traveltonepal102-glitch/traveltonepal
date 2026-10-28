@@ -17,7 +17,8 @@ import { EDITABLE_PAGES, LEGAL_PAGES, LEGAL_PAGES_ROUTE, LIST_PAGES, LIST_PAGES_
 import type { LegalPageSlug, ListPageSlug } from "@/features/pages/constants";
 import { aboutFactsFrom } from "@/features/pages/lib/aboutFacts";
 import { aboutTeamPeople } from "@/features/pages/lib/aboutTeamPeople";
-import { toAboutValues, toContactValues, toLegalValues } from "@/features/pages/lib/pageContent";
+import { toAboutValues } from "@/features/pages/lib/aboutContent";
+import { toContactValues, toLegalValues } from "@/features/pages/lib/pageContent";
 import { getSitePage, getSitePages } from "@/features/pages/services/pagesRepository";
 import { listLibraryPhotos } from "@/features/photos/services/photosRepository";
 import { listRegions } from "@/features/regions/services/regionsRepository";
@@ -99,7 +100,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
       action={saveAboutPage}
       values={toAboutValues(page)}
       photo={page.photo}
-      storyPhotos={page.storyPhotos}
+      photoSlots={page.photoSlots}
       libraryPhotos={libraryPhotos}
       officeAuthors={authors.filter((author) => author.kind === "office").map((author) => ({ id: author.id, name: author.name, jobTitle: author.jobTitle }))}
       team={aboutTeamPeople(authors, guides, { authorHref: authorPath, guideHref: guidePath })}

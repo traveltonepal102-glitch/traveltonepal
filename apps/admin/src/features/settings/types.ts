@@ -27,6 +27,8 @@ export type SiteSettingsValues = {
   staffInsurer: string;
   paymentsNote: string;
   certificatePhotoId: string | null;
+  /** The PAN registration certificate (Inland Revenue Department). */
+  panCertificatePhotoId: string | null;
   // Social and sharing
   facebookUrl: string;
   instagramUrl: string;
@@ -42,6 +44,7 @@ export type SiteSettingsValues = {
 /** The saved settings with the photos they use and when they were last saved. */
 export type SiteSettings = SiteSettingsValues & {
   certificatePhoto: Photo | null;
+  panCertificatePhoto: Photo | null;
   sharePhoto: Photo | null;
   updatedAt: string;
 };

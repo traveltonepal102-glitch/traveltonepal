@@ -5,7 +5,7 @@ import type { RichTextDoc } from "@/lib/richText/richText";
 
 import { toLegalTextDoc } from "@/lib/richText/legalText";
 
-import type { AboutPageValues, ContactPageValues, LegalPageValues, SitePage } from "../types";
+import type { ContactPageValues, LegalPageValues, SitePage } from "../types";
 
 /**
  * A saved page's `content` as the form's values. Lenient: a missing or broken part becomes empty, so an old or
@@ -27,29 +27,8 @@ const richText = z.unknown().transform((value): RichTextDoc => {
   return doc.success && !isRichTextEmpty(doc.data) ? doc.data : EMPTY_RICH_TEXT;
 });
 
-const milestone = z.object({ year: text, title: text, text });
-const promise = z.object({ icon: text, title: text, text });
 const step = z.object({ when: text, title: text, text });
 const faq = z.object({ question: text, answer: richText });
-
-const aboutFields = z.object({
-  trekkersGuided: text,
-  storyHeading: text,
-  storyText: z.unknown().optional(),
-  story: z.array(text).catch([]),
-  storyTeaser: text,
-  quote: text,
-  milestones: list(milestone),
-  promisesHeading: text,
-  promisesIntro: text,
-  promises: list(promise),
-  teamHeading: text,
-  teamIntro: text,
-  reviewsHeading: text,
-  licencesHeading: text,
-  licencesIntro: text,
-});
-const aboutContent = aboutFields.catch(() => aboutFields.parse({}));
 
 const contactFields = z.object({
   replyTimes: z.object({ whatsApp: text, email: text }).catch({ whatsApp: "", email: "" }),
@@ -62,39 +41,10 @@ const contactFields = z.object({
 });
 const contactContent = contactFields.catch(() => contactFields.parse({}));
 
-export const toAboutValues = (page: SitePage): AboutPageValues => {
-  const { storyText, story, ...content } = aboutContent.parse(page.content ?? {});
-  return {
-    ...page.top,
-    ...content,
-    storyText: storyText === undefined ? paragraphsDoc(story) : richText.parse(storyText),
-    founderAuthorId: page.founderAuthorId,
-    storyPhotoIds: page.storyPhotos.map((photo) => photo.id),
-  };
-};
-
 export const toContactValues = (page: SitePage): ContactPageValues => {
   const { replyTimes, ...content } = contactContent.parse(page.content ?? {});
   return { ...page.top, ...content, replyWhatsApp: replyTimes.whatsApp, replyEmail: replyTimes.email };
 };
-
-/** The About form's values as the page's saved `content` (the website reads these keys). */
-export const aboutContentOf = (values: AboutPageValues) => ({
-  trekkersGuided: values.trekkersGuided,
-  storyHeading: values.storyHeading,
-  storyText: values.storyText,
-  storyTeaser: values.storyTeaser,
-  quote: values.quote,
-  milestones: values.milestones,
-  promisesHeading: values.promisesHeading,
-  promisesIntro: values.promisesIntro,
-  promises: values.promises,
-  teamHeading: values.teamHeading,
-  teamIntro: values.teamIntro,
-  reviewsHeading: values.reviewsHeading,
-  licencesHeading: values.licencesHeading,
-  licencesIntro: values.licencesIntro,
-});
 
 /** The Contact form's values as the page's saved `content` (the website reads these keys). */
 export const contactContentOf = (values: ContactPageValues) => ({

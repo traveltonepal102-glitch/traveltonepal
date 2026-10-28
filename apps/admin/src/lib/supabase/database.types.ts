@@ -282,6 +282,8 @@ export type SiteSettingsRow = {
   staff_insurer: string;
   payments_note: string;
   certificate_photo_id: string | null;
+  /** The PAN registration certificate, beside the agency licence on the About page. */
+  pan_certificate_photo_id: string | null;
   facebook_url: string;
   instagram_url: string;
   youtube_url: string;
@@ -687,7 +689,10 @@ export type Database = {
         Row: SiteSettingsRow;
         Insert: Partial<SiteSettingsRow>;
         Update: Partial<SiteSettingsRow>;
-        Relationships: [Fk<"site_settings_certificate_photo_id_fkey", "certificate_photo_id", "photos">, Fk<"site_settings_share_photo_id_fkey", "share_photo_id", "photos">];
+        Relationships: [Fk<"site_settings_certificate_photo_id_fkey", "certificate_photo_id", "photos">,
+          Fk<"site_settings_share_photo_id_fkey", "share_photo_id", "photos">,
+          Fk<"site_settings_pan_certificate_photo_id_fkey", "pan_certificate_photo_id", "photos">,
+        ];
       };
       site_pages: {
         Row: SitePageRow;

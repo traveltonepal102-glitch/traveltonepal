@@ -14,9 +14,13 @@ export type SectionKey = (typeof MAIN_SECTIONS)[number]["key"];
 /** Anchors of the About us page's sections (the page uses these ids). */
 export const ABOUT_SECTION_IDS = {
   story: "our-story",
+  /** The four beliefs' cards (the menu's "Why travel with us"); each belief has its own section below. */
   whyUs: "why-us",
+  listen: "listen",
+  honest: "honest",
+  flexible: "flexible",
+  openMind: "open-mind",
   team: "team",
-  reviews: "reviews",
   licences: "licences",
   responsibleTravel: "responsible-travel",
   visit: "visit-us",
@@ -25,11 +29,16 @@ export const ABOUT_SECTION_IDS = {
 
 const aboutPath = (id: string) => `${ROUTES.about}#${id}`;
 
+/** Anchors of the home page's sections. */
+export const HOME_SECTION_IDS = { reviews: "reviews" } as const;
+
+/** The reviews trekkers wrote, on the home page (linked from the header menu and the footer). */
+export const REVIEWS_PATH = `${ROUTES.home}#${HOME_SECTION_IDS.reviews}`;
+
 /** Sections of the About us page, linked from the header menu and the footer. */
 export const ABOUT_PATHS = {
   story: aboutPath(ABOUT_SECTION_IDS.story),
   team: aboutPath(ABOUT_SECTION_IDS.team),
-  reviews: aboutPath(ABOUT_SECTION_IDS.reviews),
   whyUs: aboutPath(ABOUT_SECTION_IDS.whyUs),
   licences: aboutPath(ABOUT_SECTION_IDS.licences),
   responsibleTravel: aboutPath(ABOUT_SECTION_IDS.responsibleTravel),

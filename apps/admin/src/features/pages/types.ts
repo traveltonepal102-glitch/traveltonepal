@@ -16,33 +16,11 @@ export type PageTopValues = {
   photoId: string | null;
 };
 
-export type MilestoneValues = { year: string; title: string; text: string };
 export type PromiseValues = { icon: string; title: string; text: string };
+
+export type { AboutPageValues } from "./aboutTypes";
 export type NextStepValues = { when: string; title: string; text: string };
 export type FaqValues = { question: string; answer: RichTextDoc };
-
-/** Pages › About (the team is not here: it comes from Authors and Trekking guides). */
-export type AboutPageValues = PageTopValues & {
-  trekkersGuided: string;
-  storyHeading: string;
-  /** The founder's story, in his own words. */
-  storyText: RichTextDoc;
-  /** The short version on every trek page. */
-  storyTeaser: string;
-  quote: string;
-  /** An office author: "Quote by", and the founder on trek pages. */
-  founderAuthorId: string | null;
-  storyPhotoIds: string[];
-  milestones: MilestoneValues[];
-  promisesHeading: string;
-  promisesIntro: string;
-  promises: PromiseValues[];
-  teamHeading: string;
-  teamIntro: string;
-  reviewsHeading: string;
-  licencesHeading: string;
-  licencesIntro: string;
-};
 
 /** Pages › Contact (the contact details themselves are in Site settings). */
 export type ContactPageValues = PageTopValues & {
@@ -80,7 +58,8 @@ export type SitePage = {
   top: PageTopValues;
   photo: Photo | null;
   founderAuthorId: string | null;
-  storyPhotos: Photo[];
+  /** The page's photos by place (site_page_photos.position − 1); null for an empty place. */
+  photoSlots: (Photo | null)[];
   /** The page's own parts, as saved (read with lib/pageContent). */
   content: unknown;
   updatedAt: string;
@@ -95,4 +74,5 @@ export type AboutFacts = {
   regionCount: number;
   licences: { label: string; value: string }[];
   hasCertificate: boolean;
+  hasPanCertificate: boolean;
 };

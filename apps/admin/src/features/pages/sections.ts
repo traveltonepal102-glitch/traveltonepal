@@ -4,17 +4,21 @@ import type { EditorSection } from "@/components/editor/types";
 import { LEGAL_PAGES, LIST_PAGES } from "./constants";
 import type { LegalPageSlug, ListPageSlug } from "./constants";
 
-export type AboutSectionKey = "top" | "story" | "promises" | "team" | "reviews" | "licences" | "seo";
+export type AboutSectionKey = "top" | "listen" | "honest" | "flexible" | "openMind" | "safety" | "story" | "team" | "licences" | "promises" | "seo";
 export type ContactSectionKey = "top" | "ways" | "steps" | "office" | "faq" | "seo";
 
-/** The About editor's sections, top to bottom as on the page (design: Admin-pages, "About us"). */
+/** The About editor's sections, top to bottom as on the page (design: About.dc.html), then what only trek pages show. */
 export const ABOUT_SECTIONS: EditorSection<AboutSectionKey>[] = [
-  { key: "top", label: "Top of the page", icon: "description", description: "The photo, the big heading, the text under it and the four numbers." },
-  { key: "story", label: "Our story", icon: "notes", description: "The founder’s story in his own words, three photos and the timeline." },
-  { key: "promises", label: "What you can expect from us", icon: "verified", description: "The six promises. They also show on every trek page." },
+  { key: "top", label: "Top of the page", icon: "description", description: "The photo, the big heading, the text under it, the four numbers and the line under the four beliefs." },
+  { key: "listen", label: "01 · We listen first", icon: "chat", description: "Its card at the top, then its section: the text, the quote and the three steps (listen, understand, suggest)." },
+  { key: "honest", label: "02 · Honest and proactive", icon: "verified", description: "Its card at the top, then its section: the text, the quote, four pieces of advice and when we tell you." },
+  { key: "flexible", label: "03 · Private and flexible", icon: "tune", description: "Its card at the top, then its section: the text, the quote, the photo, how the trek stays flexible and where it stops." },
+  { key: "openMind", label: "04 · An open mind", icon: "landscape", description: "Its card at the top, then its section: the text, three villages with photos, how we invite you in and the quote." },
+  { key: "safety", label: "Safety above all", icon: "health_and_safety", description: "The band after the four beliefs: the one rule, and three facts." },
+  { key: "story", label: "Our story", icon: "notes", description: "The founder with his photo, why he started the company, three goals and “Our voice”." },
   { key: "team", label: "Our guides and team", icon: "groups", description: "The Kathmandu office team and the trekking guides." },
-  { key: "reviews", label: "Reviews", icon: "rate_review", description: "Review scores and the reviews shown.", waitsFor: "the Reviews screen" },
-  { key: "licences", label: "Licences and legal", icon: "workspace_premium", description: "Registration numbers, memberships and the licence certificate." },
+  { key: "licences", label: "Licences and legal", icon: "workspace_premium", description: "Registration numbers and the two certificates, from Site settings." },
+  { key: "promises", label: "Trek page promises", icon: "hiking", description: "Not on the About page: the six promises of every trek page’s “Why book your trek with us”." },
   { key: "seo", label: "Google search result", icon: "search", description: "How the About page looks in Google. Not shown on the page itself." },
 ];
 
@@ -64,19 +68,29 @@ export const aboutSectionErrors = createSectionErrorLookup<AboutSectionKey>(ABOU
   intro: "top",
   photoId: "top",
   trekkersGuided: "top",
+  statValue: "top",
+  statLabel: "top",
+  safetyLead: "top",
+  safetyText: "top",
+  listen: "listen",
+  honest: "honest",
+  flexible: "flexible",
+  openMind: "openMind",
+  safety: "safety",
   storyHeading: "story",
   storyText: "story",
   storyTeaser: "story",
   quote: "story",
   founderAuthorId: "story",
-  storyPhotoIds: "story",
-  milestones: "story",
-  promisesHeading: "promises",
-  promisesIntro: "promises",
+  founderOrigin: "story",
+  goals: "story",
+  voiceEyebrow: "story",
+  voiceHeading: "story",
+  voiceText: "story",
+  photoIds: "story",
   promises: "promises",
   teamHeading: "team",
   teamIntro: "team",
-  reviewsHeading: "reviews",
   licencesHeading: "licences",
   licencesIntro: "licences",
   ...SEO_FIELDS,
