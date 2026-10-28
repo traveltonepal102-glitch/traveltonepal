@@ -379,6 +379,28 @@ export type WebReviewRow = {
 /** The overall rating on a review site, as typed in the admin, with the profile from Site settings. */
 export type WebReviewRatingRow = { source: "google" | "tripadvisor"; rating: number; review_count: number; profile_url: string };
 
+/** The custom adventures section's words (web_adventure_section, one row). `steps`: 3 of { title, text }, read leniently. */
+export type WebAdventureSectionRow = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  ask_title: string;
+  ask_text: string;
+  steps_title: string;
+  steps: unknown;
+  note: string;
+};
+
+/** A custom adventure card the website shows (web_adventures: shown ones, always with a photo). */
+export type WebAdventureRow = CoverColumns & {
+  id: string;
+  title: string;
+  tag: string;
+  summary: string;
+  photo_alt: string;
+  position: number;
+};
+
 export type Database = {
   public: {
     Tables: { [_ in never]: never };
@@ -399,6 +421,8 @@ export type Database = {
       web_about_team: View<WebAboutTeamRow>;
       web_reviews: View<WebReviewRow>;
       web_review_ratings: View<WebReviewRatingRow>;
+      web_adventure_section: View<WebAdventureSectionRow>;
+      web_adventures: View<WebAdventureRow>;
     };
     Functions: {
       /** "Was this guide helpful?": the website's one write (…_guide_feedback.sql). False: unknown guide or too many votes. */

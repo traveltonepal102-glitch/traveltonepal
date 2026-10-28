@@ -20,6 +20,12 @@ export const ADMIN_SECTIONS = {
   regions: { label: "Regions", href: "/regions", icon: "map", summary: "Region pages: facts, best months, photos and FAQs." },
   travelGuides: { label: "Travel guides", href: "/travel-guides", icon: "article", summary: "Write and publish travel guides." },
   pages: { label: "Pages", href: "/pages", icon: "description", summary: "Fixed pages such as About us, Contact and Privacy." },
+  adventures: {
+    label: "Adventures",
+    href: "/adventures",
+    icon: "travel_explore",
+    summary: "Experiences beyond trekking, shown in a carousel on the home page.",
+  },
   trekkingGuides: {
     label: "Trekking guides",
     href: "/trekking-guides",
@@ -63,6 +69,7 @@ export const NAV_GROUPS: NavGroup[] = [
       ADMIN_SECTIONS.regions,
       ADMIN_SECTIONS.travelGuides,
       ADMIN_SECTIONS.pages,
+      ADMIN_SECTIONS.adventures,
     ],
   },
   { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },

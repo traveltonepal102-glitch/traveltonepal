@@ -18,13 +18,15 @@ type LibraryPhotoFieldProps = {
   initial: Photo | null;
   /** The library photos to choose from. */
   photos: Photo[];
+  /** Said while no photo is chosen. */
+  emptyText?: string;
   onEdit: () => void;
 };
 
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 
 /** A photo from the library (or a new upload) for one place on a page: a preview, Choose/Change and Remove. */
-export const LibraryPhotoField = ({ name, label, hint, initial, photos, onEdit }: LibraryPhotoFieldProps) => {
+export const LibraryPhotoField = ({ name, label, hint, initial, photos, emptyText = "No photo: the page uses its own default.", onEdit }: LibraryPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const [isOpen, setIsOpen] = useState(false);
   const choose = (next: Photo | null) => {
@@ -40,7 +42,7 @@ export const LibraryPhotoField = ({ name, label, hint, initial, photos, onEdit }
           {photo ? <PhotoImage key={photo.id} photo={photo} alt="" sizes="112px" className="block h-full w-full object-cover" /> : <Icon name="add_photo_alternate" size={28} />}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <span className="truncate text-caption text-text">{photo ? photo.place || "Photo from the library" : "No photo: the page uses its own default."}</span>
+          <span className="truncate text-caption text-text">{photo ? photo.place || "Photo from the library" : emptyText}</span>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => setIsOpen(true)} className={smallButton}>
               <Icon name="image" size={16} />

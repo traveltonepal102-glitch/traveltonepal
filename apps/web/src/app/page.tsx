@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { CustomAdventuresSection } from "@/features/adventures/components/CustomAdventuresSection";
 import { listGuideCards } from "@/features/guides/services/guidesRepository";
 import { GuidesSection } from "@/features/home/components/GuidesSection";
 import { HomeHero } from "@/features/home/components/HomeHero";
@@ -45,6 +46,7 @@ const HomePage = async () => {
         <TrekFinder regions={regions} />
         <RegionsSection regions={regions} />
         <TreksSection treks={popularTreksWithPage(treks)} />
+        <CustomAdventuresSection />
         <WhyUsSection />
         <HowBookingWorksSection />
         <ReviewsSection />

@@ -13,6 +13,8 @@ export const WEBSITE_CACHE_TAGS = {
   pages: "pages",
   /** Reviews the admin chose to show, and the overall ratings (home, About and trek pages). */
   reviews: "reviews",
+  /** Custom adventures: the home page section's words and its cards. */
+  adventures: "adventures",
 } as const;
 
 export type WebsiteCacheTag = (typeof WEBSITE_CACHE_TAGS)[keyof typeof WEBSITE_CACHE_TAGS];

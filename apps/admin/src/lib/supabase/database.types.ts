@@ -218,6 +218,38 @@ export type ReviewRow = {
   updated_by: string | null;
 };
 
+/** The home page's custom adventures section, one row (supabase/migrations/20261028110000_custom_adventures.sql). */
+export type AdventureSectionRow = {
+  id: boolean;
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  ask_title: string;
+  ask_text: string;
+  steps_title: string;
+  /** 3 of { title, text }. */
+  steps: Json;
+  note: string;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+/** One custom adventure card. */
+export type AdventureRow = {
+  id: string;
+  title: string;
+  tag: string;
+  summary: string;
+  photo_id: string | null;
+  photo_alt: string;
+  position: number;
+  is_shown: boolean;
+  created_at: string;
+  created_by: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 /** One "Was this guide helpful?" vote from the website (supabase/migrations/20261028100000_guide_feedback.sql). */
 export type ArticleFeedbackRow = { id: number; article_id: string; is_helpful: boolean; created_at: string };
 
@@ -675,6 +707,18 @@ export type Database = {
         Update: Partial<ReviewRow>;
         Relationships: [Fk<"reviews_trek_id_fkey", "trek_id", "treks">, Fk<"reviews_photo_id_fkey", "photo_id", "photos">];
       };
+      adventure_section: {
+        Row: AdventureSectionRow;
+        Insert: never;
+        Update: Partial<AdventureSectionRow>;
+        Relationships: [];
+      };
+      adventures: {
+        Row: AdventureRow;
+        Insert: Partial<AdventureRow> & Pick<AdventureRow, "title" | "summary">;
+        Update: Partial<AdventureRow>;
+        Relationships: [Fk<"adventures_photo_id_fkey", "photo_id", "photos">];
+      };
       article_feedback: {
         Row: ArticleFeedbackRow;
         Insert: never;
@@ -873,6 +917,14 @@ export type Database = {
       save_review_ratings: {
         Args: { p_ratings: Json };
         Returns: undefined;
+      };
+      save_adventure_section: {
+        Args: { p_section: Json };
+        Returns: undefined;
+      };
+      save_adventure: {
+        Args: { p_adventure_id: string | null; p_adventure: Json };
+        Returns: string;
       };
       guide_feedback_totals: {
         Args: { p_article_id?: string };

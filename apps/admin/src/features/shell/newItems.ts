@@ -1,5 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import { NEW_ADVENTURE_PATH } from "@/features/adventures/constants";
 import { NEW_REGION_PATH } from "@/features/regions/constants";
 import { NEW_GUIDE_PATH } from "@/features/trekking-guides/constants";
 import { NEW_TREK_PATH } from "@/features/treks/constants";
@@ -25,6 +26,7 @@ export const NEW_ITEMS: NewItem[] = [
   { label: "Trek", hint: "Itinerary, prices, photos", icon: "hiking", tone: "brand", href: NEW_TREK_PATH },
   { label: "Region", hint: "Its page, best months and map pin", icon: "map", tone: "brand", href: NEW_REGION_PATH, isSuperAdminOnly: true },
   { label: "Travel guide", hint: "Write it yourself", icon: "article", tone: "brand", href: ADMIN_SECTIONS.travelGuides.href },
+  { label: "Adventure", hint: "A home page card beyond trekking", icon: "travel_explore", tone: "brand", href: NEW_ADVENTURE_PATH },
   {
     label: "Trekking guide or author",
     hint: "Add once, pick from a list anywhere",
