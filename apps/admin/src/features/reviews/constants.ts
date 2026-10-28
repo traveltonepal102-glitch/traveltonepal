@@ -7,6 +7,14 @@ export const REVIEWS_PATH = ADMIN_SECTIONS.reviews.href;
 export const reviewPath = (reviewId: string) => `${REVIEWS_PATH}?review=${reviewId}`;
 export const NEW_REVIEW_PATH = reviewPath("new");
 
+/** What the list says after the panel closed ("?saved=…"). */
+export const SAVED_NOTICES = { added: "Review added.", changed: "Review saved.", removed: "Review removed." } as const;
+
+export type SavedNotice = keyof typeof SAVED_NOTICES;
+
+/** The list after a save or removal, with its note. */
+export const reviewsSavedPath = (notice: SavedNotice) => `${REVIEWS_PATH}?saved=${notice}`;
+
 /** Hard limits, the same as the database checks (supabase/migrations/20261027130000_reviews.sql). */
 export const REVIEW_LIMITS = {
   url: 500,
@@ -37,4 +45,5 @@ export const EMPTY_REVIEW_VALUES: ReviewValues = {
   reviewedOn: "",
   trekId: null,
   isShown: true,
+  photoId: null,
 };

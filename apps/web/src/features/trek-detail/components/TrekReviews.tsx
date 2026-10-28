@@ -1,5 +1,6 @@
-import { CompactReviewCard } from "@/features/reviews/components/CompactReviewCard";
+import { GoogleLogo } from "@/components/ui/GoogleLogo";
 import { GoogleReviewLinks } from "@/features/reviews/components/GoogleReviewLinks";
+import { ReviewCarousel } from "@/features/reviews/components/ReviewCarousel";
 import type { RatingSummary, Review } from "@/features/reviews/types";
 
 import { TREK_SECTION_IDS } from "../sections";
@@ -24,6 +25,7 @@ export const TrekReviews = ({ reviews, rating }: TrekReviewsProps) => (
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-sm hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
+          {rating.source === "Google" && <GoogleLogo size={18} />}
           <span className="rounded-sm bg-muted px-2 py-0.5 text-xs font-bold text-ink">
             {rating.rating.toFixed(1)} <span className="sr-only">out of</span>
             <span aria-hidden="true">/</span> 5.0
@@ -34,13 +36,7 @@ export const TrekReviews = ({ reviews, rating }: TrekReviewsProps) => (
         </a>
       )}
     </div>
-    <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {reviews.map((review) => (
-        <li key={review.id}>
-          <CompactReviewCard review={review} />
-        </li>
-      ))}
-    </ul>
+    <ReviewCarousel reviews={reviews} label="Reviews of this trek" />
     <GoogleReviewLinks />
   </section>
 );

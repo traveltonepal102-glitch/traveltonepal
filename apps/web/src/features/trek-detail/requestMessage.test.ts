@@ -89,7 +89,7 @@ describe("contact links", () => {
 
 describe("trekPageReviews", () => {
   const NONE = { reviews: [], rating: null };
-  const review = (id: string, trekSlug?: string) => ({ id, trekSlug, quote: "Great.", name: "Anna", country: "", source: "Google" as const, url: `https://maps.app.goo.gl/${id}` });
+  const review = (id: string, trekSlug?: string) => ({ id, trekSlug, quote: "Great.", name: "Anna", country: "", source: "Google" as const, url: `https://maps.app.goo.gl/${id}`, age: "a week ago" });
 
   it("shows placeholders only in development while there are no chosen reviews", () => {
     expect(trekPageReviews(NONE, "langtang-valley", true).length).toBeGreaterThan(0);

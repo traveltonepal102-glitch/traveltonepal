@@ -32,10 +32,11 @@ const reviewDate = z
   .refine((value) => value >= "2000-01-01", "Pick a date from 2000 on.")
   .refine((value) => value <= todayInNepal(), "The date can't be in the future.");
 
-const optionalId = z
-  .string()
-  .transform((value) => value || null)
-  .pipe(z.uuid("Pick the trek from the list.").nullable());
+const optionalId = (message: string) =>
+  z
+    .string()
+    .transform((value) => value || null)
+    .pipe(z.uuid(message).nullable());
 
 /** The review form (read with readReviewForm). Checked again on the server before saving. */
 export const reviewSchema = z.object({
@@ -47,8 +48,9 @@ export const reviewSchema = z.object({
   title: text(LIMIT.title),
   quote: requiredText(LIMIT.quote, "Paste the review text, word for word."),
   reviewedOn: reviewDate,
-  trekId: optionalId,
+  trekId: optionalId("Pick the trek from the list."),
   isShown: isOn,
+  photoId: optionalId("Upload the photo again."),
 }) satisfies z.ZodType<ReviewValues, unknown>;
 
 /** The review form's FormData as the schema expects it. */
@@ -63,6 +65,7 @@ export const readReviewForm = (formData: FormData) => ({
   reviewedOn: readText(formData, "reviewedOn"),
   trekId: readText(formData, "trekId"),
   isShown: readText(formData, "isShown"),
+  photoId: readText(formData, "photoId"),
 });
 
 /** "4.9" or "4,9" → 4.9; one decimal, 1.0–5.0, as review sites show it. */

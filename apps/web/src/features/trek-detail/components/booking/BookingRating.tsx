@@ -1,5 +1,6 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { GoogleLogo } from "@/components/ui/GoogleLogo";
 import type { RatingSummary } from "@/features/reviews/types";
 
 const STAR_COUNT = 5;
@@ -14,7 +15,8 @@ export const BookingRating = ({ rating }: { rating: RatingSummary }) => (
     className="flex items-center justify-between gap-2 border-b border-line pb-4 hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
   >
     <span className="inline-flex items-center gap-2">
-      <span aria-hidden="true" className="inline-flex text-saffron">
+      {rating.source === "Google" && <GoogleLogo size={18} />}
+      <span aria-hidden="true" className={`inline-flex ${rating.source === "Google" ? "text-[#fbbc04]" : "text-saffron"}`}>
         {Array.from({ length: STAR_COUNT }, (_, index) => (
           <Icon key={index} name={index < Math.round(rating.rating) ? "star-fill" : "star"} />
         ))}

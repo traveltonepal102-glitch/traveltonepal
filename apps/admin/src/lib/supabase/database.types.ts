@@ -210,6 +210,8 @@ export type ReviewRow = {
   reviewed_on: string;
   trek_id: string | null;
   is_shown: boolean;
+  /** The reviewer's photo (photo library); null: the website shows their initial. */
+  photo_id: string | null;
   created_at: string;
   created_by: string | null;
   updated_at: string;
@@ -668,7 +670,7 @@ export type Database = {
         Row: ReviewRow;
         Insert: Partial<ReviewRow> & Pick<ReviewRow, "url" | "reviewer_name" | "rating" | "quote" | "reviewed_on">;
         Update: Partial<ReviewRow>;
-        Relationships: [Fk<"reviews_trek_id_fkey", "trek_id", "treks">];
+        Relationships: [Fk<"reviews_trek_id_fkey", "trek_id", "treks">, Fk<"reviews_photo_id_fkey", "photo_id", "photos">];
       };
       review_ratings: {
         Row: ReviewRatingRow;

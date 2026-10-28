@@ -1,3 +1,5 @@
+import type { Photo } from "@/features/photos/types";
+
 import type { REVIEW_SOURCE_VALUES } from "./constants";
 
 export type ReviewSource = (typeof REVIEW_SOURCE_VALUES)[number];
@@ -20,9 +22,11 @@ export type ReviewValues = {
   /** The trek it is about; null: about the company. */
   trekId: string | null;
   isShown: boolean;
+  /** The reviewer's photo in the photo library; null: the website shows their initial. */
+  photoId: string | null;
 };
 
-export type Review = ReviewValues & { id: string; updatedAt: string };
+export type Review = ReviewValues & { id: string; updatedAt: string; photo: Photo | null };
 
 /** A trek a review can be about. */
 export type ReviewTrekOption = { id: string; name: string };

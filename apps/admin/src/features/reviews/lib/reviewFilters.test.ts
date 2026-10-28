@@ -10,6 +10,7 @@ const review = (id: string, overrides: Partial<Review> = {}): Review => ({
   ...EMPTY_REVIEW_VALUES,
   id,
   updatedAt: "2026-10-27T00:00:00Z",
+  photo: null,
   url: `https://maps.app.goo.gl/${id}`,
   reviewerName: "Anna",
   quote: "Great guide and teahouses.",

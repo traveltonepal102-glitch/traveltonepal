@@ -24,19 +24,17 @@ type ReviewPanelProps = {
   values: ReviewValues;
   treks: ReviewTrekOption[];
   canRemove: boolean;
-  isJustAdded: boolean;
 };
 
 const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutral: "text-muted-foreground" } as const;
 
-/** Add or edit one review in a drawer over the list. One Save sends everything. */
-export const ReviewPanel = ({ action, review, values, treks, canRemove, isJustAdded }: ReviewPanelProps) => {
+/** Add or edit one review in a drawer over the list. One Save sends everything and closes the drawer. */
+export const ReviewPanel = ({ action, review, values, treks, canRemove }: ReviewPanelProps) => {
   const form = useEditorForm<"review">({
     action,
     firstKey: "review",
     firstSectionWithError: () => undefined,
     isNew: !review,
-    addedLabel: isJustAdded ? "Review added" : undefined,
   });
   const router = useRouter();
   const [status, tone] = form.saveStatus;
@@ -61,7 +59,7 @@ export const ReviewPanel = ({ action, review, values, treks, canRemove, isJustAd
       <form noValidate onSubmit={form.handleSubmit} onChange={form.markDirty} className="flex min-h-0 flex-1 flex-col">
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-5 max-tablet:px-5">
           {form.state.status === "error" && <FormAlert message={form.state.message} />}
-          <ReviewTextFields values={values} errors={form.errors} />
+          <ReviewTextFields values={values} photo={review?.photo ?? null} errors={form.errors} onEdit={form.markDirty} />
           <ReviewPlacementFields values={values} treks={treks} errors={form.errors} />
         </div>
 

@@ -1,5 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { GoogleLogo } from "@/components/ui/GoogleLogo";
+
 const STAR_COUNT = 5;
 
 export type RatingBadgeData = {
@@ -13,17 +15,20 @@ export type RatingBadgeData = {
   accessibleLabel: string;
   /** Review page on Google; the badge links there when set. */
   href?: string;
+  /** A Google rating: the badge shows Google's "G" and star colour. */
+  isGoogle?: boolean;
 };
 
 /** White badge with the overall rating, five stars and the review count. */
-export const RatingBadge = ({ ratingLabel, stars, countLabel, accessibleLabel, href }: RatingBadgeData) => {
+export const RatingBadge = ({ ratingLabel, stars, countLabel, accessibleLabel, href, isGoogle = false }: RatingBadgeData) => {
   const content = (
     <>
+      {isGoogle && <GoogleLogo size={30} className="flex-none" />}
       <span aria-hidden="true" className="font-display text-h2 text-brand">
         {ratingLabel}
       </span>
       <span aria-hidden="true" className="flex flex-col leading-snug">
-        <span className="flex gap-px text-saffron">
+        <span className={`flex gap-px ${isGoogle ? "text-[#fbbc04]" : "text-saffron"}`}>
           {Array.from({ length: STAR_COUNT }, (_, index) => (
             <Icon key={index} name={index < stars ? "star-fill" : "star"} size={18} />
           ))}

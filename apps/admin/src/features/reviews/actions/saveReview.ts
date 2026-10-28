@@ -11,7 +11,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
 import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
-import { REVIEWS_PATH, reviewPath } from "../constants";
+import { REVIEWS_PATH, reviewsSavedPath } from "../constants";
 import { readReviewForm, reviewSchema } from "../schemas/reviewSchema";
 import { saveReview as saveReviewToDatabase } from "../services/reviewsRepository";
 
@@ -19,14 +19,14 @@ const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveStat
 
 const FAILURE_MESSAGES = {
   not_found: "This review no longer exists. Close the panel and open the review again.",
-  missing_trek: "That trek no longer exists. Pick another trek, or none.",
+  missing_link: "The trek or the photo no longer exists. Pick the trek again, or upload the photo again.",
   forbidden: "Your account can't make this change.",
   failed: "The review couldn't be saved. Nothing was lost in the form: try Save again in a moment.",
 } as const;
 
 /**
- * Saves the review form. reviewId null adds a review and opens it; otherwise updates it. reviewId comes from the
- * browser (bound argument), so it is checked here; access is enforced by RLS.
+ * Saves the review form (reviewId null adds a review), then closes the panel and the list says so. reviewId comes
+ * from the browser (bound argument), so it is checked here; access is enforced by RLS.
  */
 export const saveReview = async (reviewId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
@@ -47,6 +47,5 @@ export const saveReview = async (reviewId: string | null, _previous: EditorSaveS
 
   refreshWebsite([WEBSITE_CACHE_TAGS.reviews]);
   revalidatePath(REVIEWS_PATH);
-  if (reviewId === null) redirect(`${reviewPath(result.reviewId)}&added=1`);
-  return { status: "saved" };
+  redirect(reviewsSavedPath(reviewId === null ? "added" : "changed"));
 };

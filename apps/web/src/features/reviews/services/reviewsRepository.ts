@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 
+import { photosPublicBaseUrl } from "@/env";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE } from "@/lib/cacheTags";
 import { createWebsiteClient } from "@/lib/supabase/server";
 
@@ -21,5 +22,6 @@ export const getPublishedReviews = async (): Promise<PublishedReviews> => {
   const [reviews, ratings] = await Promise.all([client.from("web_reviews").select("*"), client.from("web_review_ratings").select("*")]);
   if (reviews.error) throw new Error(`Could not load reviews: ${reviews.error.message}`);
   if (ratings.error) throw new Error(`Could not load review ratings: ${ratings.error.message}`);
-  return toPublishedReviews(reviews.data, ratings.data);
+  // "5 months ago" is worked out here, so it stays true for as long as the page is cached (an hour at most).
+  return toPublishedReviews(reviews.data, ratings.data, photosPublicBaseUrl, new Date());
 };

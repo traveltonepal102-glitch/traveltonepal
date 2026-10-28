@@ -1,5 +1,6 @@
 import "server-only";
 
+import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { TREK_LOCALE } from "@/features/treks/constants";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -14,7 +15,10 @@ const RLS_VIOLATION = "42501";
 /** Every review, newest first. Throws when the database can't be read. */
 export const listReviews = async (): Promise<Review[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("reviews").select("*").order("reviewed_on", { ascending: false });
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(`*, photo:photos!reviews_photo_id_fkey(${PHOTO_COLUMNS})`)
+    .order("reviewed_on", { ascending: false });
   if (error) throw new Error(`Could not load reviews: ${error.message}`);
   return data.map((row) => ({
     id: row.id,
@@ -29,6 +33,8 @@ export const listReviews = async (): Promise<Review[]> => {
     reviewedOn: row.reviewed_on,
     trekId: row.trek_id,
     isShown: row.is_shown,
+    photoId: row.photo_id,
+    photo: row.photo ? toPhoto(row.photo) : null,
   }));
 };
 
@@ -42,7 +48,7 @@ export const listReviewTrekOptions = async (): Promise<ReviewTrekOption[]> => {
 
 export type SaveReviewResult =
   | { ok: true; reviewId: string }
-  | { ok: false; reason: "duplicate_link" | "missing_trek" | "not_found" | "forbidden" | "failed" };
+  | { ok: false; reason: "duplicate_link" | "missing_link" | "not_found" | "forbidden" | "failed" };
 
 /** Adds (reviewId null) or updates a review (save_review). */
 export const saveReview = async (values: ReviewValues, reviewId: string | null): Promise<SaveReviewResult> => {
@@ -60,11 +66,12 @@ export const saveReview = async (values: ReviewValues, reviewId: string | null):
       reviewed_on: values.reviewedOn,
       trek_id: values.trekId ?? "",
       is_shown: values.isShown,
+      photo_id: values.photoId ?? "",
     },
   });
   if (!error) return { ok: true, reviewId: data };
   if (error.code === UNIQUE_VIOLATION) return { ok: false, reason: "duplicate_link" };
-  if (error.code === FOREIGN_KEY_VIOLATION) return { ok: false, reason: "missing_trek" };
+  if (error.code === FOREIGN_KEY_VIOLATION) return { ok: false, reason: "missing_link" };
   if (error.code === NOT_FOUND) return { ok: false, reason: "not_found" };
   if (error.code === RLS_VIOLATION) return { ok: false, reason: "forbidden" };
   console.error(`save_review failed: ${error.code} ${error.message}`);

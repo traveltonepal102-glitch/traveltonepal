@@ -13,6 +13,7 @@ const FORM = {
   reviewedOn: "2026-10-01",
   trekId: "",
   isShown: "on",
+  photoId: "",
 };
 
 const formData = (fields: Record<string, string>) => {
@@ -23,7 +24,7 @@ const formData = (fields: Record<string, string>) => {
 
 describe("reviewSchema", () => {
   it("accepts a pasted Google review about the company", () => {
-    expect(reviewSchema.parse(FORM)).toEqual({ ...FORM, reviewerName: "Anna Schmidt", rating: 5, trekId: null, isShown: true });
+    expect(reviewSchema.parse(FORM)).toEqual({ ...FORM, reviewerName: "Anna Schmidt", rating: 5, trekId: null, isShown: true, photoId: null });
   });
 
   it("needs the review's own secure link, its text and its stars", () => {
@@ -36,6 +37,12 @@ describe("reviewSchema", () => {
   it("refuses a date in the future or that doesn't exist", () => {
     expect(reviewSchema.safeParse({ ...FORM, reviewedOn: "2999-01-01" }).success).toBe(false);
     expect(reviewSchema.safeParse({ ...FORM, reviewedOn: "2026-02-30" }).success).toBe(false);
+  });
+
+  it("keeps the reviewer photo's id, and refuses one that isn't an id", () => {
+    const photoId = "11111111-1111-4111-8111-111111111111";
+    expect(reviewSchema.parse({ ...FORM, photoId }).photoId).toBe(photoId);
+    expect(reviewSchema.safeParse({ ...FORM, photoId: "not-an-id" }).success).toBe(false);
   });
 
   it("keeps a review hidden when the switch is off", () => {

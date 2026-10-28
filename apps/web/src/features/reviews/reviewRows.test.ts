@@ -4,6 +4,9 @@ import type { WebReviewRatingRow, WebReviewRow } from "@/lib/supabase/database.t
 
 import { reviewMeta, reviewsForTrek, toPublishedReviews } from "./reviewRows";
 
+const PHOTOS = "https://photos.example.com";
+const NOW = new Date("2026-10-28T09:00:00Z");
+
 const row = (overrides: Partial<WebReviewRow> = {}): WebReviewRow => ({
   id: "r1",
   source: "google",
@@ -16,6 +19,9 @@ const row = (overrides: Partial<WebReviewRow> = {}): WebReviewRow => ({
   reviewed_on: "2026-10-01",
   trek_slug: "langtang-valley",
   trek_name: "Langtang Valley Trek",
+  photo_id: null,
+  photo_variant_widths: null,
+  photo_placeholder: null,
   ...overrides,
 });
 
@@ -29,7 +35,7 @@ const rating = (overrides: Partial<WebReviewRatingRow> = {}): WebReviewRatingRow
 
 describe("toPublishedReviews", () => {
   it("shows a review word for word, leaving out what the review site doesn't give", () => {
-    const [review] = toPublishedReviews([row()], []).reviews;
+    const [review] = toPublishedReviews([row()], [], PHOTOS, NOW).reviews;
     expect(review).toEqual({
       id: "r1",
       trekSlug: "langtang-valley",
@@ -41,28 +47,35 @@ describe("toPublishedReviews", () => {
       trekName: "Langtang Valley Trek",
       source: "Google",
       url: "https://maps.app.goo.gl/review1",
+      age: "3 weeks ago",
+      photo: undefined,
     });
   });
 
+  it("gives the reviewer's photo when one is picked", () => {
+    const [review] = toPublishedReviews([row({ photo_id: "p1", photo_variant_widths: [400, 800] })], [], PHOTOS, NOW).reviews;
+    expect(review?.photo).toMatchObject({ src: `${PHOTOS}/p1`, variantWidths: [400, 800] });
+  });
+
   it("puts the newest review first", () => {
-    const reviews = toPublishedReviews([row({ id: "old", reviewed_on: "2026-01-05" }), row({ id: "new", reviewed_on: "2026-09-30" })], []).reviews;
+    const reviews = toPublishedReviews([row({ id: "old", reviewed_on: "2026-01-05" }), row({ id: "new", reviewed_on: "2026-09-30" })], [], PHOTOS, NOW).reviews;
     expect(reviews.map((review) => review.id)).toEqual(["new", "old"]);
   });
 
   it("uses the Google rating first, and no rating when none is typed in", () => {
-    const published = toPublishedReviews([], [rating({ source: "tripadvisor", rating: 5, review_count: 3 }), rating()]);
+    const published = toPublishedReviews([], [rating({ source: "tripadvisor", rating: 5, review_count: 3 }), rating()], PHOTOS, NOW);
     expect(published.rating).toEqual({ rating: 4.9, count: 37, source: "Google", url: "https://g.page/traveltonepal" });
-    expect(toPublishedReviews([], []).rating).toBeNull();
+    expect(toPublishedReviews([], [], PHOTOS, NOW).rating).toBeNull();
   });
 
   it("drops a rating link that isn't secure", () => {
-    expect(toPublishedReviews([], [rating({ profile_url: "" })]).rating?.url).toBe("");
+    expect(toPublishedReviews([], [rating({ profile_url: "" })], PHOTOS, NOW).rating?.url).toBe("");
   });
 });
 
 describe("reviewsForTrek and reviewMeta", () => {
   it("keeps one trek's reviews; a company review has no trek", () => {
-    const published = toPublishedReviews([row(), row({ id: "company", trek_slug: null, trek_name: null })], []);
+    const published = toPublishedReviews([row(), row({ id: "company", trek_slug: null, trek_name: null })], [], PHOTOS, NOW);
     expect(reviewsForTrek(published, "langtang-valley").map((review) => review.id)).toEqual(["r1"]);
     expect(published.reviews[1]?.trekSlug).toBeUndefined();
   });

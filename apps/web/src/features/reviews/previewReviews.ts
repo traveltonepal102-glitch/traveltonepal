@@ -1,20 +1,10 @@
 import type { RatingBadgeData } from "./components/RatingBadge";
-import type { ReviewCardData } from "./components/ReviewCard";
 import type { Review } from "./types";
 
 /**
  * DEVELOPMENT ONLY: the design's bracketed placeholders, so the reviews section can be checked
  * locally before real reviews exist. Never shown in a production build.
  */
-const PREVIEW_TREKS = ["Langtang Valley", "Everest Base Camp", "Annapurna Circuit"] as const;
-
-export const PREVIEW_REVIEW_CARDS: readonly ReviewCardData[] = PREVIEW_TREKS.map((trek) => ({
-  key: trek,
-  quote: `[A real review from Google or TripAdvisor about the ${trek} trek goes here.]`,
-  name: "[Name]",
-  meta: `[Country] · ${trek}`,
-}));
-
 const PREVIEW_TOPICS = ["about the trek", "about the guide", "about teahouses and food"] as const;
 
 /** DEVELOPMENT ONLY: the trek page's review placeholders from the design (Trek.dc.html). */
@@ -28,6 +18,7 @@ export const PREVIEW_TREK_REVIEWS: readonly Review[] = PREVIEW_TOPICS.map((topic
   trekName: "[Trek]",
   source: "Google",
   url: "#",
+  age: "[5 months ago]",
 }));
 
 const PREVIEW_COMPANY_TOPICS = [
@@ -47,6 +38,7 @@ export const PREVIEW_COMPANY_REVIEWS: readonly Review[] = PREVIEW_COMPANY_TOPICS
   trekName,
   source: "Google",
   url: "#",
+  age: "[5 months ago]",
 }));
 
 export const PREVIEW_RATING: RatingBadgeData = {
@@ -54,4 +46,5 @@ export const PREVIEW_RATING: RatingBadgeData = {
   stars: 5,
   countLabel: "[COUNT] reviews on Google",
   accessibleLabel: "Placeholder rating",
+  isGoogle: true,
 };

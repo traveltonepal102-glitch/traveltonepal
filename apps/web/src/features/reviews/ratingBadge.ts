@@ -8,4 +8,5 @@ export const ratingBadgeFor = (summary: RatingSummary): RatingBadgeData => ({
   countLabel: `${summary.count} reviews on ${summary.source}`,
   accessibleLabel: `Rated ${summary.rating.toFixed(1)} out of 5 from ${summary.count} reviews on ${summary.source}`,
   href: summary.url,
+  isGoogle: summary.source === "Google",
 });

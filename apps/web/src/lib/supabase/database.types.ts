@@ -370,6 +370,10 @@ export type WebReviewRow = {
   /** Set while the trek it is about is published. */
   trek_slug: string | null;
   trek_name: string | null;
+  /** The reviewer's photo (photo library), or null: the card shows their initial. */
+  photo_id: string | null;
+  photo_variant_widths: number[] | null;
+  photo_placeholder: string | null;
 };
 
 /** The overall rating on a review site, as typed in the admin, with the profile from Site settings. */

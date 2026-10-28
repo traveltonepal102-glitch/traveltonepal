@@ -9,7 +9,7 @@ import type { RemoveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { refreshWebsite } from "@/lib/website/refreshWebsite";
 
-import { REVIEWS_PATH } from "../constants";
+import { REVIEWS_PATH, reviewsSavedPath } from "../constants";
 import { removeReview as removeReviewFromDatabase } from "../services/reviewsRepository";
 
 /**
@@ -30,5 +30,5 @@ export const removeReview = async (reviewId: string): Promise<RemoveState> => {
 
   refreshWebsite([WEBSITE_CACHE_TAGS.reviews]);
   revalidatePath(REVIEWS_PATH);
-  redirect(REVIEWS_PATH);
+  redirect(reviewsSavedPath("removed"));
 };

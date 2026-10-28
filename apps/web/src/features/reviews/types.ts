@@ -1,3 +1,5 @@
+import type { SiteImageSource } from "@/lib/images";
+
 /** The review site's name as visitors see it. */
 export type ReviewSource = "Google" | "Tripadvisor";
 
@@ -19,6 +21,10 @@ export type Review = {
   source: ReviewSource;
   /** The review itself on the review site, used as the quote's `cite`. */
   url: string;
+  /** When it was written, the way Google says it, e.g. "5 months ago". */
+  age: string;
+  /** The reviewer's photo; without one, the card shows their initial. */
+  photo?: SiteImageSource;
 };
 
 /** The agency's overall rating on a public review site. */

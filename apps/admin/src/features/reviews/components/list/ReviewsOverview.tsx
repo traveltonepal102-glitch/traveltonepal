@@ -22,10 +22,12 @@ type ReviewsOverviewProps = {
   openId: string | null;
   /** The edit drawer, when one is open (it shows over the list). */
   panel: ReactNode;
+  /** What the last save did, e.g. "Review saved."; null when there is nothing to say. */
+  savedNotice: string | null;
 };
 
 /** The Reviews screen: the overall rating, then every saved review with filters, and the edit drawer. */
-export const ReviewsOverview = ({ reviews, ratings, treks, openId, panel }: ReviewsOverviewProps) => {
+export const ReviewsOverview = ({ reviews, ratings, treks, openId, panel, savedNotice }: ReviewsOverviewProps) => {
   const [filters, setFilters] = useState(NO_REVIEW_FILTERS);
   const shown = filterReviews(reviews, filters);
   const onWebsite = reviews.filter((review) => review.isShown).length;
@@ -52,6 +54,12 @@ export const ReviewsOverview = ({ reviews, ratings, treks, openId, panel }: Revi
         </Link>
       </div>
 
+      {savedNotice && (
+        <p role="status" className="m-0 inline-flex items-center gap-1.5 self-start rounded-full bg-green-tint px-3 py-1 text-caption font-bold text-whatsapp">
+          <Icon name="check_circle" size={16} />
+          {savedNotice} The website shows the change within seconds.
+        </p>
+      )}
       <RatingsCard ratings={ratings} />
       <ReviewFilterBar filters={filters} onChange={setFilters} treks={treks} countLabel={countLabel} />
 

@@ -21,7 +21,7 @@ describe("aboutSectionLinks", () => {
 const NONE: PublishedReviews = { reviews: [], rating: null };
 
 const SOME: PublishedReviews = {
-  reviews: ["a", "b", "c", "d"].map((id) => ({ id, quote: "Great trek.", name: "Anna", country: "", source: "Google", url: `https://maps.app.goo.gl/${id}` })),
+  reviews: ["a", "b", "c", "d"].map((id) => ({ id, quote: "Great trek.", name: "Anna", country: "", source: "Google", url: `https://maps.app.goo.gl/${id}`, age: "a week ago" })),
   rating: { rating: 4.9, count: 37, source: "Google", url: "https://g.page/traveltonepal" },
 };
 
