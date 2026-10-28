@@ -54,14 +54,14 @@ export const ReviewCarousel = ({ reviews, label }: ReviewCarouselProps) => {
       <button type="button" onClick={() => scrollBy(1)} disabled={edges.atEnd} aria-label="Next reviews" className={`${ARROW} -right-3`}>
         <Icon name="arrow_forward" size={20} />
       </button>
-      {/* Focusable so keyboard users can scroll the row with the arrow keys. */}
+      {/* Focusable so keyboard users can scroll the row with the arrow keys; no scrollbar (swipe or the arrows). */}
       <div
         ref={rowRef}
         onScroll={readEdges}
         role="region"
         aria-label={label}
         tabIndex={0}
-        className="snap-x snap-mandatory overflow-x-auto rounded-md p-0.5 pb-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="snap-x snap-mandatory overflow-x-auto rounded-md p-0.5 pb-2 scrollbar-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-scrollbar]:hidden"
       >
         <ul className="m-0 flex list-none gap-4.5 p-0">
           {reviews.map((review) => (
