@@ -1,8 +1,9 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { SITE_NAME } from "@/lib/site";
 
 import { ChatPreview } from "./ChatPreview";
 
@@ -19,7 +20,7 @@ const STEPS: readonly Step[] = [
   { icon: "hiking", title: "Confirm and pack your boots", text: "We arrange permits, domestic flights, guides and porters." },
 ];
 
-/** "How booking works" (design: Main.dc.html): three steps and a WhatsApp button, next to an example chat. */
+/** "How booking works" (design: Main.dc.html): three steps, WhatsApp and email buttons, next to an example chat. */
 export const HowBookingWorksSection = () => (
   <section aria-labelledby="how-booking-title" className="py-16 md:py-24">
     <div className="mx-auto flex max-w-content flex-wrap items-center gap-12 px-4 md:px-6">
@@ -53,16 +54,14 @@ export const HowBookingWorksSection = () => (
           ))}
         </ol>
 
-        <ButtonLink
-          href={getWhatsAppUrl()}
-          variant="whatsapp"
-          size="lg"
-          icon="whatsapp"
-          isExternal
-          className="self-start max-md:w-full"
-        >
-          Start a chat on WhatsApp
-        </ButtonLink>
+        <div className="flex flex-wrap gap-3">
+          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" size="lg" icon="whatsapp" isExternal className="max-md:w-full">
+            Start a chat on WhatsApp
+          </ButtonLink>
+          <ButtonLink href={getEmailUrl({ subject: `Planning a trek with ${SITE_NAME}` })} variant="secondary" size="lg" icon="mail" className="max-md:w-full">
+            Send us an email
+          </ButtonLink>
+        </div>
       </div>
 
       <div className="flex grow basis-85 justify-center">
