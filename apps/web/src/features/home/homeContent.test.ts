@@ -5,7 +5,7 @@ import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { TREKS } from "@/features/treks/treks";
 import type { TrekSummary } from "@/features/treks/types";
 
-import { allRegionsLabel, homeGuides, homeTrekFilters, regionsHeading } from "./homeContent";
+import { allRegionsLabel, homeGuides, homeRegions, homeTrekFilters, moreRegionsText, regionsHeading } from "./homeContent";
 
 const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary => {
   const summary = TREKS.find((item) => item.slug === slug);
@@ -70,5 +70,24 @@ describe("homeTrekFilters", () => {
     const filters = homeTrekFilters(treks);
     expect(filters.map((filter) => filter.key)).toEqual(["classic", "quiet", "short"]);
     expect(filters.map((filter) => treks.filter(filter.matches).map((item) => item.slug))).toEqual([["langtang-valley"], ["mardi-himal"], ["mardi-himal"]]);
+  });
+});
+
+describe("homeRegions and moreRegionsText", () => {
+  const regions = ["Everest", "Annapurna", "Manaslu", "Langtang", "Dolpo", "Kanchenjunga", "Makalu", "Mustang", "Nar Phu", "Pikey Peak", "Tamang Heritage Trail", "Rolwaling"];
+
+  it("shows eight regions and keeps the rest for the See more card", () => {
+    const { shown, more } = homeRegions(regions);
+    expect(shown).toHaveLength(8);
+    expect(more).toEqual(["Nar Phu", "Pikey Peak", "Tamang Heritage Trail", "Rolwaling"]);
+    expect(homeRegions(regions.slice(0, 5)).more).toEqual([]);
+  });
+
+  it("names up to three of the regions not shown", () => {
+    expect(moreRegionsText(["Nar Phu", "Pikey Peak", "Tamang Heritage Trail", "Rolwaling"])).toBe("Nar Phu, Pikey Peak, Tamang Heritage Trail and more.");
+    expect(moreRegionsText(["Nar Phu", "Pikey Peak", "Tamang Heritage Trail"])).toBe("Nar Phu, Pikey Peak and Tamang Heritage Trail.");
+    expect(moreRegionsText(["Nar Phu", "Pikey Peak"])).toBe("Nar Phu and Pikey Peak.");
+    expect(moreRegionsText(["Nar Phu"])).toBe("Also Nar Phu.");
+    expect(moreRegionsText([])).toBe("");
   });
 });

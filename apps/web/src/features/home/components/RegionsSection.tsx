@@ -4,7 +4,8 @@ import { RegionTile } from "@/features/regions/components/RegionTile";
 import type { RegionSummary } from "@/features/regions/regions";
 import { ROUTES } from "@/lib/routes";
 
-import { regionsHeading } from "../homeContent";
+import { homeRegions, regionsHeading } from "../homeContent";
+import { SeeMoreRegionsCard } from "./SeeMoreRegionsCard";
 import { SwipeHint } from "./SwipeHint";
 import { SWIPE_ITEM, SWIPE_ROW, SWIPE_ROW_RESET } from "./swipeRow";
 
@@ -12,11 +13,13 @@ import { SWIPE_ITEM, SWIPE_ROW, SWIPE_ROW_RESET } from "./swipeRow";
  * "Nine regions" (design: Main.dc.html); the count follows the regions in the database.
  * - Phones: a swipe row; each tile is 84% wide so the next one peeks in, and snaps to the left edge.
  * - md and up: a grid of tiles at least 230px wide; the first region is the big 2×2 tile.
- *   With 9 regions the grid comes out even at 3 and 4 columns.
+ * Up to eight regions show; "See more regions" (design: Main.dc.html) always takes the next place, naming the
+ * regions left out (if any), so the grid comes out even at 4 columns.
  */
 export const RegionsSection = ({ regions }: { regions: RegionSummary[] }) => {
   // No regions to show: no section, rather than an empty one.
   if (regions.length === 0) return null;
+  const { shown, more } = homeRegions(regions);
 
   return (
     <section id="regions" aria-labelledby="regions-title" className="py-16 md:py-24">
@@ -40,7 +43,7 @@ export const RegionsSection = ({ regions }: { regions: RegionSummary[] }) => {
           aria-label="Trekking regions"
           className={`gap-3 pb-1 md:grid md:auto-rows-52.5 md:grid-cols-[repeat(auto-fill,minmax(230px,1fr))] md:gap-3.5 md:pb-0 ${SWIPE_ROW} ${SWIPE_ROW_RESET}`}
         >
-          {regions.map((region, index) => {
+          {shown.map((region, index) => {
             const isFeatured = index === 0;
             return (
               <li
@@ -51,6 +54,9 @@ export const RegionsSection = ({ regions }: { regions: RegionSummary[] }) => {
               </li>
             );
           })}
+          <li className={`h-85 md:h-auto ${SWIPE_ITEM}`}>
+            <SeeMoreRegionsCard names={more.map((region) => region.name)} />
+          </li>
         </ul>
 
         <SwipeHint text={regions.length > 1 ? `Swipe to see all ${regions.length} regions` : "Swipe to see more"} linkLabel="All regions" href={ROUTES.regions} />

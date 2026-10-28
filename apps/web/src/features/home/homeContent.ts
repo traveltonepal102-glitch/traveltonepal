@@ -11,6 +11,24 @@ const HOME_GUIDE_COUNT = 3;
  */
 export const homeGuides = (guides: readonly GuideSummary[]) => guides.slice(0, HOME_GUIDE_COUNT);
 
+/** The big tile and seven more fill the home grid; the "See more regions" card takes the last place. */
+const HOME_REGION_COUNT = 8;
+
+/** The regions the home page shows (in the website's order), and the rest, named on the "See more regions" card. */
+export const homeRegions = <Region>(regions: readonly Region[]) => ({
+  shown: regions.slice(0, HOME_REGION_COUNT),
+  more: regions.slice(HOME_REGION_COUNT),
+});
+
+/** "Nar Phu, Pikey Peak, Tamang Heritage Trail and more.": up to three of the regions not shown. */
+export const moreRegionsText = (names: readonly string[]) => {
+  const [first, second, third] = names;
+  if (!first) return "";
+  if (!second) return `Also ${first}.`;
+  if (!third) return `${first} and ${second}.`;
+  return names.length === 3 ? `${first}, ${second} and ${third}.` : `${first}, ${second}, ${third} and more.`;
+};
+
 /** "Nine regions. Each one a different Nepal." */
 export const regionsHeading = (regionCount: number) =>
   `${capitalize(formatCountWord(regionCount))} ${regionCount === 1 ? "region" : "regions"}. Each one a different Nepal.`;

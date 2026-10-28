@@ -14,8 +14,8 @@ const STEPS: readonly Step[] = [
   { icon: "search", title: "Pick a trek, or just an idea", text: "Browse by region, length and season, or tell us what you have in mind." },
   {
     icon: "chat",
-    title: "Message us on WhatsApp",
-    text: "Your trek, group size and dates are already filled in. A consultant replies with an itinerary and price.",
+    title: "Message us on WhatsApp or email",
+    text: "From a trek page, your trek, group size and dates are already filled in. A consultant replies with an itinerary and price.",
   },
   { icon: "hiking", title: "Confirm and pack your boots", text: "We arrange permits, domestic flights, guides and porters." },
 ];
