@@ -1,6 +1,7 @@
 import type { Photo } from "@/features/photos/types";
 
 import type { ArticleStatus, ArticleTopic } from "../types";
+import type { GuideFeedbackTotals } from "./guideFeedback";
 
 /** A travel guide as the list shows it. */
 export type ArticleListItem = {
@@ -17,6 +18,8 @@ export type ArticleListItem = {
   startHerePosition: number | null;
   updatedAt: string;
   cover: Photo | null;
+  /** "Was this guide helpful?" on the website; null without votes. */
+  feedback: GuideFeedbackTotals | null;
 };
 
 /** A travel guide as a region's "Before you go" list in the region editor shows it. */

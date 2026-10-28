@@ -7,6 +7,7 @@ import { saveArticle } from "@/features/travel-guides/actions/saveArticle";
 import { ArticleEditor } from "@/features/travel-guides/components/editor/ArticleEditor";
 import { getArticleOptions } from "@/features/travel-guides/services/articleOptions";
 import { getArticle } from "@/features/travel-guides/services/articlesRepository";
+import { getFeedbackTotals } from "@/features/travel-guides/services/guideFeedbackRepository";
 import { formatDateTime, todayInNepal } from "@/utils/formatDateTime";
 
 type TravelGuidePageProps = PageProps<"/travel-guides/[articleId]">;
@@ -29,7 +30,7 @@ export const generateMetadata = async ({ params }: TravelGuidePageProps): Promis
 const TravelGuidePage = async ({ params, searchParams }: TravelGuidePageProps) => {
   await requireAdmin();
   const article = await loadArticle(params);
-  const [options, { added }] = await Promise.all([getArticleOptions(article.id), searchParams]);
+  const [options, feedback, { added }] = await Promise.all([getArticleOptions(article.id), getFeedbackTotals(article.id), searchParams]);
 
   return (
     <ArticleEditor
@@ -37,6 +38,7 @@ const TravelGuidePage = async ({ params, searchParams }: TravelGuidePageProps) =
       article={article}
       values={article}
       options={options}
+      feedback={feedback}
       lastSaved={`Saved ${formatDateTime(article.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
     />

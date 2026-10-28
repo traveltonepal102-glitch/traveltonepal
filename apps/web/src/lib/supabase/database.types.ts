@@ -1,6 +1,6 @@
 /**
- * The database as the website sees it: only the read-only "web_" views (supabase/migrations/…_website_views.sql).
- * Keep in step with those views.
+ * The database as the website sees it: the read-only "web_" views (supabase/migrations/…_website_views.sql) and
+ * one write, record_guide_feedback. Keep in step with those.
  */
 type Locale = "en" | "de";
 
@@ -400,7 +400,10 @@ export type Database = {
       web_reviews: View<WebReviewRow>;
       web_review_ratings: View<WebReviewRatingRow>;
     };
-    Functions: { [_ in never]: never };
+    Functions: {
+      /** "Was this guide helpful?": the website's one write (…_guide_feedback.sql). False: unknown guide or too many votes. */
+      record_guide_feedback: { Args: { p_slug: string; p_is_helpful: boolean }; Returns: boolean };
+    };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };

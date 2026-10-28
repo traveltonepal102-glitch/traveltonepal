@@ -22,6 +22,7 @@ const item = (id: string, overrides: Partial<ArticleListItem> = {}): ArticleList
   startHerePosition: null,
   updatedAt: "2026-10-24T00:00:00Z",
   cover: null,
+  feedback: null,
   ...overrides,
 });
 

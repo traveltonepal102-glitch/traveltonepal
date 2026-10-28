@@ -18,6 +18,7 @@ import { getArticleSeoChecks } from "../../lib/articleSeoChecks";
 import { readMinutes } from "../../lib/readTime";
 import type { EditorSection } from "../../lib/sectionDrafts";
 import { toEditorSection } from "../../lib/sectionDrafts";
+import type { GuideFeedbackTotals } from "../../lib/guideFeedback";
 import type { Article, ArticleOptions, ArticleValues } from "../../types";
 import { ArticleBody } from "./body/ArticleBody";
 import { ArticleSeoCard } from "./settings/ArticleSeoCard";
@@ -25,6 +26,7 @@ import { GuidesPageCard } from "./settings/GuidesPageCard";
 import { LinksCard } from "./settings/LinksCard";
 import { PeopleCard } from "./settings/PeopleCard";
 import { PublishingCard } from "./settings/PublishingCard";
+import { ReaderFeedbackCard } from "./settings/ReaderFeedbackCard";
 import { ArticleTopCard } from "./top/ArticleTopCard";
 
 type ArticleEditorProps = {
@@ -34,6 +36,8 @@ type ArticleEditorProps = {
   article: Article | null;
   values: ArticleValues;
   options: ArticleOptions;
+  /** Readers' "Was this guide helpful?" answers; null without votes (and for a new guide). */
+  feedback?: GuideFeedbackTotals | null;
   lastSaved?: string;
   isJustAdded?: boolean;
 };
@@ -42,7 +46,7 @@ type ArticleEditorProps = {
  * Add or edit a travel guide (design: Admin-article-editor): "Top of the page" and the article body on the
  * left, the settings on the right (below on phones). One form: Save sends everything, including the status.
  */
-export const ArticleEditor = ({ action, article, values, options, lastSaved, isJustAdded = false }: ArticleEditorProps) => {
+export const ArticleEditor = ({ action, article, values, options, feedback = null, lastSaved, isJustAdded = false }: ArticleEditorProps) => {
   const form = useEditorForm<"article">({
     action,
     firstKey: "article",
@@ -141,6 +145,7 @@ export const ArticleEditor = ({ action, article, values, options, lastSaved, isJ
             checks={getArticleSeoChecks({ ...draft, hasCover: cover !== null, sections: sections.rows })}
             errors={errors}
           />
+          {article && <ReaderFeedbackCard feedback={feedback} />}
         </aside>
       </div>
     </form>

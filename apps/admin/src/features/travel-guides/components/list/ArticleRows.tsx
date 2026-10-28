@@ -6,6 +6,7 @@ import { formatDateTime } from "@/utils/formatDateTime";
 
 import { ARTICLE_TOPICS, articlePath } from "../../constants";
 import type { ArticleListItem } from "../../lib/articleListItem";
+import { feedbackSummary } from "../../lib/guideFeedback";
 import { ArticleStatusLine } from "../ArticleStatusLine";
 
 type ArticleRowsProps = {
@@ -18,7 +19,7 @@ type ArticleRowsProps = {
 
 const topicLabel = (article: ArticleListItem) => ARTICLE_TOPICS.find((topic) => topic.value === article.topic)?.label ?? "";
 
-/** One row per guide (a card on phones): photo, title, topic, website, author, status and last edit. */
+/** One row per guide (a card on phones): photo, title, topic, website, author, status, readers' votes and last edit. */
 export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRowsProps) => (
   <ul className="m-0 flex list-none flex-col overflow-hidden rounded-lg border border-solid border-border bg-surface p-0">
     {articles.map((article) => (
@@ -44,6 +45,7 @@ export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRo
           <span className="truncate text-caption max-tablet:hidden">{authorName(article.authorId) || "No author yet"}</span>
           <span className="flex flex-col gap-0.5">
             <ArticleStatusLine article={article} today={today} />
+            {article.feedback && <span className="text-xs font-semibold text-ink">{feedbackSummary(article.feedback)}</span>}
             <span className="text-xs text-muted-foreground">Edited {formatDateTime(article.updatedAt)}</span>
           </span>
         </Link>

@@ -1,4 +1,3 @@
-import { IS_GUIDE_FEEDBACK_OPEN } from "../../feedback/service";
 import type { TocLink } from "../../guideArticles";
 import type { GuideArticle } from "../../types";
 import { MobileToc } from "../toc/MobileToc";
@@ -28,7 +27,7 @@ export const ArticleBody = ({ article, toc }: ArticleBodyProps) => {
     ))}
     <ArticleFaq faqs={article.faqs} />
     <AuthorBox author={article.author} checker={article.checker} />
-    {IS_GUIDE_FEEDBACK_OPEN && <GuideFeedback slug={article.slug} />}
+    <GuideFeedback slug={article.slug} />
   </article>
   );
 };

@@ -1,25 +1,20 @@
 import "server-only";
 
+import { createWebsiteClient } from "@/lib/supabase/server";
+
 import type { GuideFeedback, GuideFeedbackResult } from "./schema";
 
-/**
- * True once votes are stored somewhere. Until then "Was this guide helpful?" only shows in `pnpm dev`
- * (votes are logged, not kept), so production never asks visitors for feedback that goes nowhere.
- */
-export const IS_GUIDE_FEEDBACK_CONNECTED = false;
-
-/** Whether the article shows the question. */
-export const IS_GUIDE_FEEDBACK_OPEN = IS_GUIDE_FEEDBACK_CONNECTED || process.env.NODE_ENV === "development";
+export const NOT_SAVED: GuideFeedbackResult = { status: "error", message: "We could not save that. Please try again." };
 
 /**
- * Stores one vote. TODO(owner): choose where votes go (e.g. a Payload "guide-feedback" collection
- * with slug, vote and date, or an analytics event), then set IS_GUIDE_FEEDBACK_CONNECTED.
+ * Stores one vote (record_guide_feedback): the database checks the guide is live and refuses floods, and keeps
+ * nothing about the visitor. The admin shows the totals on each travel guide.
  */
 export const recordGuideFeedback = async ({ slug, vote }: GuideFeedback): Promise<GuideFeedbackResult> => {
-  if (process.env.NODE_ENV === "development") {
-    console.info(`Guide feedback (dev only, not stored): "${slug}" voted ${vote}.`);
-    return { status: "recorded" };
+  const { data: isRecorded, error } = await createWebsiteClient().rpc("record_guide_feedback", { p_slug: slug, p_is_helpful: vote === "yes" });
+  if (error) {
+    console.error(`Guide feedback for "${slug}" was not stored: ${error.code} ${error.message}`);
+    return NOT_SAVED;
   }
-  console.error(`Guide feedback for "${slug}" was not stored: no feedback store is connected.`);
-  return { status: "error", message: "Feedback is not open yet." };
+  return isRecorded ? { status: "recorded" } : NOT_SAVED;
 };

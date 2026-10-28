@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ARTICLE_LOCALE } from "../constants";
 import type { ArticleListItem, RegionArticleItem } from "../lib/articleListItem";
 import type { ArticleOptions } from "../types";
+import { listFeedbackTotals } from "./guideFeedbackRepository";
 import { listLibraryPhotos, listSectionGuides } from "./sectionOptions";
 
 const byName = <Item extends { name: string }>(items: Item[]) => items.sort((a, b) => a.name.localeCompare(b.name));
@@ -96,14 +97,17 @@ export const listArticleOptions = async (exceptArticleId: string | null): Promis
 /** Every travel guide for the list, most recently edited first. Throws when the database can't be read. */
 export const listArticles = async (): Promise<ArticleListItem[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("articles")
-    .select(
-      `id, topic, status, site_region_id, author_id, published_on, is_featured, start_here_position, updated_at,
-      cover:photos!articles_cover_photo_id_fkey(${PHOTO_COLUMNS}), article_translations!inner(title)`,
-    )
-    .eq("article_translations.locale", ARTICLE_LOCALE)
-    .order("updated_at", { ascending: false });
+  const [{ data, error }, feedback] = await Promise.all([
+    supabase
+      .from("articles")
+      .select(
+        `id, topic, status, site_region_id, author_id, published_on, is_featured, start_here_position, updated_at,
+        cover:photos!articles_cover_photo_id_fkey(${PHOTO_COLUMNS}), article_translations!inner(title)`,
+      )
+      .eq("article_translations.locale", ARTICLE_LOCALE)
+      .order("updated_at", { ascending: false }),
+    listFeedbackTotals(),
+  ]);
   if (error) throw new Error(`Could not load travel guides: ${error.message}`);
 
   return data.map((row) => ({
@@ -118,6 +122,7 @@ export const listArticles = async (): Promise<ArticleListItem[]> => {
     startHerePosition: row.start_here_position,
     updatedAt: row.updated_at,
     cover: row.cover ? toPhoto(row.cover) : null,
+    feedback: feedback.get(row.id) ?? null,
   }));
 };
 

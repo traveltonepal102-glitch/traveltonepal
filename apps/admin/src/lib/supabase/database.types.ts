@@ -218,6 +218,9 @@ export type ReviewRow = {
   updated_by: string | null;
 };
 
+/** One "Was this guide helpful?" vote from the website (supabase/migrations/20261028100000_guide_feedback.sql). */
+export type ArticleFeedbackRow = { id: number; article_id: string; is_helpful: boolean; created_at: string };
+
 /** The overall rating on a review site, as typed in. */
 export type ReviewRatingRow = { source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
 
@@ -672,6 +675,12 @@ export type Database = {
         Update: Partial<ReviewRow>;
         Relationships: [Fk<"reviews_trek_id_fkey", "trek_id", "treks">, Fk<"reviews_photo_id_fkey", "photo_id", "photos">];
       };
+      article_feedback: {
+        Row: ArticleFeedbackRow;
+        Insert: never;
+        Update: never;
+        Relationships: [Fk<"article_feedback_article_id_fkey", "article_id", "articles">];
+      };
       review_ratings: {
         Row: ReviewRatingRow;
         Insert: Partial<ReviewRatingRow> & Pick<ReviewRatingRow, "source" | "rating" | "review_count">;
@@ -864,6 +873,10 @@ export type Database = {
       save_review_ratings: {
         Args: { p_ratings: Json };
         Returns: undefined;
+      };
+      guide_feedback_totals: {
+        Args: { p_article_id?: string };
+        Returns: { article_id: string; helpful_count: number; not_helpful_count: number; last_vote_at: string }[];
       };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
