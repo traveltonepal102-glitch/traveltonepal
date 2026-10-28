@@ -1,4 +1,5 @@
 import { CompactReviewCard } from "@/features/reviews/components/CompactReviewCard";
+import { GoogleReviewLinks } from "@/features/reviews/components/GoogleReviewLinks";
 import type { RatingSummary, Review } from "@/features/reviews/types";
 
 import { TREK_SECTION_IDS } from "../sections";
@@ -17,7 +18,8 @@ export const TrekReviews = ({ reviews, rating }: TrekReviewsProps) => (
       <SectionHeading id="trek-reviews-title" eyebrow="From real trekkers" title="Trekker reviews" />
       {rating && (
         <a
-          href={rating.url}
+          // Without the profile in Site settings: the same text, not a link.
+          href={rating.url || undefined}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-sm hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -39,5 +41,6 @@ export const TrekReviews = ({ reviews, rating }: TrekReviewsProps) => (
         </li>
       ))}
     </ul>
+    <GoogleReviewLinks />
   </section>
 );

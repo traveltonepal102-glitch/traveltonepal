@@ -69,6 +69,7 @@ export const settingsSchema = z
     tripadvisorUrl: profileLink,
     googleBusinessUrl: profileLink,
     linkedinUrl: profileLink,
+    googleReviewUrl: profileLink,
     sharePhotoId: photoId,
   })
   .superRefine((values, context) => {
@@ -104,5 +105,6 @@ export const readSettingsForm = (formData: FormData) => ({
   tripadvisorUrl: readText(formData, "tripadvisorUrl"),
   googleBusinessUrl: readText(formData, "googleBusinessUrl"),
   linkedinUrl: readText(formData, "linkedinUrl"),
+  googleReviewUrl: readText(formData, "googleReviewUrl"),
   sharePhotoId: readText(formData, "sharePhotoId"),
 });

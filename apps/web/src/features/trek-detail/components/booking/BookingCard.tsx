@@ -2,7 +2,7 @@
 import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { GOOGLE_RATING } from "@/features/reviews/reviews";
+import { getPublishedReviews } from "@/features/reviews/services/reviewsRepository";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
@@ -23,11 +23,11 @@ const ASSURANCES = [
 
 /** Right-hand booking card: price by group size, inquiry buttons and who to talk to. Sticky on desktop. */
 export const BookingCard = async ({ trek }: { trek: TrekDetail }) => {
-  const { contact } = await getSiteSettings();
+  const [{ contact }, { rating }] = await Promise.all([getSiteSettings(), getPublishedReviews()]);
   return (
     <aside id={TREK_SECTION_IDS.book} aria-label="Book this trek" className="scroll-mt-16 lg:sticky lg:top-16">
       <div className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
-        {GOOGLE_RATING && <BookingRating rating={GOOGLE_RATING} />}
+        {rating && <BookingRating rating={rating} />}
 
         <GroupPricing groupPrices={trek.groupPrices} />
 

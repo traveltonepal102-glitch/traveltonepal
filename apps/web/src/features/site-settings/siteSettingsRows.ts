@@ -22,6 +22,12 @@ const SOCIAL: readonly { key: keyof WebSiteSettingsRow; network: SocialNetwork; 
   { key: "google_business_url", network: "google", label: "Google" },
 ];
 
+/** A Site settings link, or "" unless it is a secure address. */
+const secureUrl = (value: string) => {
+  const url = value.trim();
+  return url.startsWith("https://") ? url : "";
+};
+
 /** The web_site_settings row as the pages use it; blank texts stay blank (pages leave those lines out). */
 export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): SiteSettings => {
   const schedule: OfficeSchedule = {
@@ -72,9 +78,10 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       ),
     },
     social: SOCIAL.flatMap(({ key, network, label }) => {
-      const url = String(row[key] ?? "").trim();
-      return url.startsWith("https://") ? [{ network, label, url }] : [];
+      const url = secureUrl(String(row[key] ?? ""));
+      return url ? [{ network, label, url }] : [];
     }),
+    googleReviews: { writeUrl: secureUrl(row.google_review_url), profileUrl: secureUrl(row.google_business_url) },
     shareImage: coverImage(
       { cover_id: row.share_id, cover_width: null, cover_height: null, cover_variant_widths: row.share_variant_widths, cover_placeholder: null, cover_place: null },
       photosBaseUrl,

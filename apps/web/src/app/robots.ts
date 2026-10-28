@@ -4,8 +4,8 @@ import { absoluteUrl } from "@/lib/site";
 
 /** /robots.txt: every page may be crawled (pages that shouldn't be found say `noindex` themselves); points to the sitemap. */
 const robots = (): MetadataRoute.Robots => ({
-  // /whatsapp and /email only redirect to a chat or an email (no content of their own).
-  rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/whatsapp", "/email"] },
+  // /whatsapp, /email and /review only redirect to a chat, an email or Google's review box (no content of their own).
+  rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/whatsapp", "/email", "/review"] },
   sitemap: absoluteUrl("/sitemap.xml"),
 });
 

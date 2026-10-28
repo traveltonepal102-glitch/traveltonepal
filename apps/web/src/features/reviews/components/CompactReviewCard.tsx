@@ -28,7 +28,7 @@ export const CompactReviewCard = ({ review }: { review: Review }) => (
       <span className="flex min-w-0 flex-col">
         <span className="font-display text-xs font-bold text-ink">{review.name}</span>
         <span className="text-[11px] text-muted-foreground">
-          {review.country} ·{" "}
+          {review.country && `${review.country} · `}
           <a href={review.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-brand">
             {review.source}
           </a>

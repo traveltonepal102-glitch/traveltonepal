@@ -88,8 +88,16 @@ describe("contact links", () => {
 });
 
 describe("trekPageReviews", () => {
-  it("shows placeholders only in development while there are no published reviews", () => {
-    expect(trekPageReviews("langtang-valley", true).length).toBeGreaterThan(0);
-    expect(trekPageReviews("langtang-valley", false)).toEqual([]);
+  const NONE = { reviews: [], rating: null };
+  const review = (id: string, trekSlug?: string) => ({ id, trekSlug, quote: "Great.", name: "Anna", country: "", source: "Google" as const, url: `https://maps.app.goo.gl/${id}` });
+
+  it("shows placeholders only in development while there are no chosen reviews", () => {
+    expect(trekPageReviews(NONE, "langtang-valley", true).length).toBeGreaterThan(0);
+    expect(trekPageReviews(NONE, "langtang-valley", false)).toEqual([]);
+  });
+
+  it("shows only this trek's reviews", () => {
+    const published = { reviews: [review("a", "langtang-valley"), review("b", "everest-base-camp"), review("c")], rating: null };
+    expect(trekPageReviews(published, "langtang-valley", false).map((item) => item.id)).toEqual(["a"]);
   });
 });

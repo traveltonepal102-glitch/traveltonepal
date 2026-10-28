@@ -194,6 +194,31 @@ type TrekkingGuideRow = {
 
 type TrekkingGuideTranslationRow = { guide_id: string; locale: "en" | "de"; role: string; bio: string; quote: string };
 
+export type ReviewSourceValue = "google" | "tripadvisor";
+
+/** A real review copied from a review site (supabase/migrations/20261027130000_reviews.sql). */
+export type ReviewRow = {
+  id: string;
+  source: ReviewSourceValue;
+  url: string;
+  reviewer_name: string;
+  reviewer_country: string;
+  rating: number;
+  title: string;
+  quote: string;
+  /** "YYYY-MM-DD". */
+  reviewed_on: string;
+  trek_id: string | null;
+  is_shown: boolean;
+  created_at: string;
+  created_by: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
+
+/** The overall rating on a review site, as typed in. */
+export type ReviewRatingRow = { source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
+
 export type AuthorKindValue = "office" | "guide" | "guest";
 
 /** The one row of Site settings (supabase/migrations/20261026120000_site_settings.sql). */
@@ -226,6 +251,7 @@ export type SiteSettingsRow = {
   tripadvisor_url: string;
   google_business_url: string;
   linkedin_url: string;
+  google_review_url: string;
   share_photo_id: string | null;
   updated_at: string;
   updated_by: string | null;
@@ -638,6 +664,18 @@ export type Database = {
         Update: never;
         Relationships: [Fk<"site_page_photos_page_slug_fkey", "page_slug", "site_pages">, Fk<"site_page_photos_photo_id_fkey", "photo_id", "photos">];
       };
+      reviews: {
+        Row: ReviewRow;
+        Insert: Partial<ReviewRow> & Pick<ReviewRow, "url" | "reviewer_name" | "rating" | "quote" | "reviewed_on">;
+        Update: Partial<ReviewRow>;
+        Relationships: [Fk<"reviews_trek_id_fkey", "trek_id", "treks">];
+      };
+      review_ratings: {
+        Row: ReviewRatingRow;
+        Insert: Partial<ReviewRatingRow> & Pick<ReviewRatingRow, "source" | "rating" | "review_count">;
+        Update: Partial<ReviewRatingRow>;
+        Relationships: [];
+      };
       authors: {
         Row: AuthorRow;
         Insert: Partial<AuthorRow> & Pick<AuthorRow, "kind">;
@@ -817,6 +855,14 @@ export type Database = {
         Args: { p_pages: Json };
         Returns: undefined;
       };
+      save_review: {
+        Args: { p_review_id: string | null; p_review: Json };
+        Returns: string;
+      };
+      save_review_ratings: {
+        Args: { p_ratings: Json };
+        Returns: undefined;
+      };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
         Returns: string;
@@ -853,6 +899,7 @@ export type Database = {
       trek_tag: TrekTagValue;
       guide_badge: GuideBadgeValue;
       author_kind: AuthorKindValue;
+      review_source: ReviewSourceValue;
       article_topic: ArticleTopicValue;
       article_status: ArticleStatusValue;
       article_section_type: ArticleSectionTypeValue;

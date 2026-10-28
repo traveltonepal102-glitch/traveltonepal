@@ -31,6 +31,8 @@ export type SiteSettings = {
   replyLanguages: readonly string[];
   company: CompanyDetails;
   social: readonly SocialProfile[];
+  /** Google reviews: where trekkers write one (/review leads there) and the profile with all of them; "" when not set. */
+  googleReviews: { writeUrl: string; profileUrl: string };
   /** For shared links of pages without their own photo. */
   shareImage?: SiteImageSource;
 };

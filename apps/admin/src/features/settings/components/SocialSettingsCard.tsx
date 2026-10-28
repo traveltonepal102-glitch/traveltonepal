@@ -17,6 +17,16 @@ export const SocialSettingsCard = ({ values, sharePhoto, errors, onEdit }: Socia
         <TextField key={social.key} name={social.key} label={social.label} labelNote="(optional)" defaultValue={values[social.key]} placeholder={social.placeholder} maxLength={LIMIT.url} error={errors[social.key]} />
       ))}
     </div>
+    <TextField
+      name="googleReviewUrl"
+      label="Google review link"
+      labelNote="(optional)"
+      defaultValue={values.googleReviewUrl}
+      placeholder="https://g.page/r/…/review"
+      maxLength={LIMIT.url}
+      hint="Google Business Profile › Ask for reviews › copy the link. The website's “Write a review on Google” buttons and traveltonepal.com/review (the link to send trekkers after their trek) lead here."
+      error={errors.googleReviewUrl}
+    />
     <div className="flex flex-col gap-1.5">
       <span className="text-caption font-semibold text-ink">Picture for shared links</span>
       <PersonPhotoField

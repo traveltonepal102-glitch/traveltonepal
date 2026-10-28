@@ -310,6 +310,7 @@ export type WebSiteSettingsRow = {
   share_variant_widths: number[] | null;
   updated_at: string;
   linkedin_url: string;
+  google_review_url: string;
 };
 
 /** An old address that answers with a permanent redirect to today's (only to a page that exists). */
@@ -352,6 +353,28 @@ export type WebAboutTeamRow = CoverColumns & {
 
 type View<Row> = { Row: Row; Relationships: [] };
 
+/** A review the admin chose to show (supabase/migrations/20261027130000_reviews.sql), copied word for word. */
+export type WebReviewRow = {
+  id: string;
+  source: "google" | "tripadvisor";
+  /** The review itself on the review site. */
+  url: string;
+  reviewer_name: string;
+  /** "" when the review site doesn't say. */
+  reviewer_country: string;
+  rating: number;
+  title: string;
+  quote: string;
+  /** "YYYY-MM-DD". */
+  reviewed_on: string;
+  /** Set while the trek it is about is published. */
+  trek_slug: string | null;
+  trek_name: string | null;
+};
+
+/** The overall rating on a review site, as typed in the admin, with the profile from Site settings. */
+export type WebReviewRatingRow = { source: "google" | "tripadvisor"; rating: number; review_count: number; profile_url: string };
+
 export type Database = {
   public: {
     Tables: { [_ in never]: never };
@@ -370,6 +393,8 @@ export type Database = {
       web_site_settings: View<WebSiteSettingsRow>;
       web_site_pages: View<WebSitePageRow>;
       web_about_team: View<WebAboutTeamRow>;
+      web_reviews: View<WebReviewRow>;
+      web_review_ratings: View<WebReviewRatingRow>;
     };
     Functions: { [_ in never]: never };
     Enums: { [_ in never]: never };

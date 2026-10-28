@@ -1,6 +1,6 @@
 import { JsonLd } from "@/components/shared/JsonLd";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
-import { GOOGLE_RATING } from "@/features/reviews/reviews";
+import { getPublishedReviews } from "@/features/reviews/services/reviewsRepository";
 
 import { defaultGroupIndex } from "../pricing";
 import { trekPageReviews } from "../reviews";
@@ -40,9 +40,10 @@ import { WhyBookWithUs } from "./WhyBookWithUs";
  * Trek page (design: Trek.dc.html). The provider shares the chosen group size and start day between
  * the booking card, the pricing section and both request forms. Shared sections the trek hides are left out.
  */
-export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
+export const TrekDetailPage = async ({ trek }: { trek: TrekDetail }) => {
   const shows = (section: SharedSection) => !trek.hiddenSections.includes(section);
-  const reviews = shows("reviews") ? trekPageReviews(trek.slug) : [];
+  const published = await getPublishedReviews();
+  const reviews = shows("reviews") ? trekPageReviews(published, trek.slug) : [];
   const requestProps = { name: trek.name, days: trek.days, groupPrices: trek.groupPrices };
 
   return (
@@ -70,7 +71,7 @@ export const TrekDetailPage = ({ trek }: { trek: TrekDetail }) => {
             {shows("why_book") && <WhyBookWithUs />}
             <TrekPricing name={trek.name} days={trek.days} region={trek.region} groupPrices={trek.groupPrices} />
             {shows("credentials") && <TrekCredentials />}
-            {reviews.length > 0 && <TrekReviews reviews={reviews} rating={GOOGLE_RATING} />}
+            {reviews.length > 0 && <TrekReviews reviews={reviews} rating={published.rating} />}
             {shows("differentiators") && <TrekDifferentiators differentiators={trek.differentiators} />}
             {shows("booking_form") && <TrekRequestSection {...requestProps} />}
             <TrekPacking shortName={trek.shortName} packing={trek.packing} />

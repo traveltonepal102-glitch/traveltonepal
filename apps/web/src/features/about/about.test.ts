@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { googleMapsSearchUrl } from "@/lib/googleMaps/links";
-import { REVIEWS } from "@/features/reviews/reviews";
+import type { PublishedReviews } from "@/features/reviews/types";
 
 import { aboutPageRating, aboutPageReviews } from "./reviews";
 import { aboutSectionLinks } from "./sections";
@@ -18,15 +18,26 @@ describe("aboutSectionLinks", () => {
   });
 });
 
+const NONE: PublishedReviews = { reviews: [], rating: null };
+
+const SOME: PublishedReviews = {
+  reviews: ["a", "b", "c", "d"].map((id) => ({ id, quote: "Great trek.", name: "Anna", country: "", source: "Google", url: `https://maps.app.goo.gl/${id}` })),
+  rating: { rating: 4.9, count: 37, source: "Google", url: "https://g.page/traveltonepal" },
+};
+
 describe("about reviews", () => {
   it("never shows placeholders in production", () => {
-    if (REVIEWS.length === 0) expect(aboutPageReviews(false)).toEqual([]);
-    expect(aboutPageReviews(false).every((review) => review.url !== "#")).toBe(true);
-    expect(aboutPageRating(false)?.ratingLabel ?? "").not.toContain("[");
+    expect(aboutPageReviews(NONE, false)).toEqual([]);
+    expect(aboutPageRating(NONE, false)).toBeNull();
   });
 
   it("shows the design's placeholders in development while there are no reviews", () => {
-    if (REVIEWS.length === 0) expect(aboutPageReviews(true)).toHaveLength(3);
+    expect(aboutPageReviews(NONE, true)).toHaveLength(3);
+  });
+
+  it("shows the newest three chosen reviews and the real rating", () => {
+    expect(aboutPageReviews(SOME, false).map((review) => review.id)).toEqual(["a", "b", "c"]);
+    expect(aboutPageRating(SOME, false)?.ratingLabel).toBe("4.9");
   });
 });
 

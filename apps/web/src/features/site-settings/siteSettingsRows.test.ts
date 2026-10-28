@@ -22,6 +22,12 @@ describe("toSiteSettings", () => {
     ]);
   });
 
+  it("gives the Google review links, and leaves out one that isn't secure", () => {
+    expect(SITE_SETTINGS.googleReviews).toEqual({ writeUrl: "https://g.page/r/traveltonepal/review", profileUrl: "https://g.page/traveltonepal" });
+    const unsafe = toSiteSettings({ ...SITE_SETTINGS_ROW, google_review_url: "http://g.page/r/x/review", google_business_url: "" }, PHOTOS_BASE_URL);
+    expect(unsafe.googleReviews).toEqual({ writeUrl: "", profileUrl: "" });
+  });
+
   it("has no certificate until one is picked, and a share image when one is", () => {
     expect(SITE_SETTINGS.company.certificate).toBeUndefined();
     expect(SITE_SETTINGS.shareImage?.src).toBe(`${PHOTOS_BASE_URL}/c0ffee00-0000-4000-8000-000000000001`);

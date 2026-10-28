@@ -38,6 +38,7 @@ export const SITE_SETTINGS_ROW: WebSiteSettingsRow = {
   share_variant_widths: [640, 1280],
   updated_at: "2026-10-26T08:00:00Z",
   linkedin_url: "https://www.linkedin.com/company/traveltonepal",
+  google_review_url: "https://g.page/r/traveltonepal/review",
 };
 
 export const SITE_SETTINGS = toSiteSettings(SITE_SETTINGS_ROW, PHOTOS_BASE_URL);

@@ -1,5 +1,6 @@
 import { PageSectionHeading } from "@/components/shared/PageSectionHeading";
 import { CompactReviewCard } from "@/features/reviews/components/CompactReviewCard";
+import { GoogleReviewLinks } from "@/features/reviews/components/GoogleReviewLinks";
 import { RatingBadge } from "@/features/reviews/components/RatingBadge";
 import type { RatingBadgeData } from "@/features/reviews/components/RatingBadge";
 import type { Review } from "@/features/reviews/types";
@@ -33,6 +34,7 @@ export const AboutReviews = ({ reviews, rating, heading }: AboutReviewsProps) =>
           </li>
         ))}
       </ul>
+      <GoogleReviewLinks />
     </div>
   </section>
 );

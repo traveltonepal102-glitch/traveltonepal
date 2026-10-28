@@ -1,5 +1,6 @@
 import { JsonLd } from "@/components/shared/JsonLd";
 import { listRegions } from "@/features/regions/services/regionsRepository";
+import { getPublishedReviews } from "@/features/reviews/services/reviewsRepository";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 
 import { aboutPageRating, aboutPageReviews } from "../reviews";
@@ -24,9 +25,15 @@ import { VisitSection } from "./VisitSection";
  * in `pnpm dev`).
  */
 export const AboutPage = async () => {
-  const [about, team, regions, { company }] = await Promise.all([getAboutPage(), listAboutTeam(), listRegions(), getSiteSettings()]);
-  const reviews = aboutPageReviews();
-  const rating = aboutPageRating();
+  const [about, team, regions, { company }, published] = await Promise.all([
+    getAboutPage(),
+    listAboutTeam(),
+    listRegions(),
+    getSiteSettings(),
+    getPublishedReviews(),
+  ]);
+  const reviews = aboutPageReviews(published);
+  const rating = aboutPageRating(published);
   const stats: AboutStat[] = [
     ...(company.foundedYear ? [{ value: String(company.foundedYear), label: "Founded in Kathmandu" }] : []),
     ...(regions.length ? [{ value: String(regions.length), label: "Trekking regions" }] : []),

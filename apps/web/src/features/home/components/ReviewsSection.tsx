@@ -1,33 +1,35 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { GoogleReviewLinks } from "@/features/reviews/components/GoogleReviewLinks";
 import { RatingBadge } from "@/features/reviews/components/RatingBadge";
-import type { RatingBadgeData } from "@/features/reviews/components/RatingBadge";
 import { ReviewCard } from "@/features/reviews/components/ReviewCard";
 import type { ReviewCardData } from "@/features/reviews/components/ReviewCard";
 import { PREVIEW_RATING, PREVIEW_REVIEW_CARDS } from "@/features/reviews/previewReviews";
 import { ratingBadgeFor } from "@/features/reviews/ratingBadge";
-import { GOOGLE_RATING, REVIEWS } from "@/features/reviews/reviews";
+import { reviewMeta } from "@/features/reviews/reviewRows";
+import { getPublishedReviews } from "@/features/reviews/services/reviewsRepository";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-const realCards: ReviewCardData[] = REVIEWS.map((review) => ({
-  key: review.id,
-  quote: review.quote,
-  name: review.name,
-  meta: `${review.country} · ${review.trekName}`,
-  cite: review.url,
-}));
-
-const realRating: RatingBadgeData | null = GOOGLE_RATING && ratingBadgeFor(GOOGLE_RATING);
+/** The home page shows the newest few; the rest are on the About and trek pages, and all of them on Google. */
+const HOME_REVIEW_COUNT = 6;
 
 /**
- * "Trekkers tell it best" (design: Main.dc.html). Shows real reviews only: with none yet the section
+ * "Trekkers tell it best" (design: Main.dc.html). Shows the reviews the admin chose: with none yet the section
  * is left out of production builds, and `pnpm dev` shows the design's placeholders to check the layout.
  */
-export const ReviewsSection = () => {
+export const ReviewsSection = async () => {
+  const published = await getPublishedReviews();
+  const realCards: ReviewCardData[] = published.reviews.slice(0, HOME_REVIEW_COUNT).map((review) => ({
+    key: review.id,
+    quote: review.quote,
+    name: review.name,
+    meta: reviewMeta(review) || review.source,
+    cite: review.url,
+  }));
   const isPreview = realCards.length === 0 && isDevelopment;
   const cards = isPreview ? PREVIEW_REVIEW_CARDS : realCards;
-  const rating = isPreview ? PREVIEW_RATING : realRating;
+  const rating = isPreview ? PREVIEW_RATING : published.rating && ratingBadgeFor(published.rating);
 
   if (cards.length === 0) return null;
 
@@ -54,6 +56,7 @@ export const ReviewsSection = () => {
             </li>
           ))}
         </ul>
+        <GoogleReviewLinks />
       </div>
     </section>
   );

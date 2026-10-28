@@ -1,9 +1,10 @@
-export type ReviewSource = "Google" | "TripAdvisor";
+/** The review site's name as visitors see it. */
+export type ReviewSource = "Google" | "Tripadvisor";
 
-/** A real, published review. Every review must link to where it was published (TRD). */
+/** A real review the admin chose to show, copied word for word; it links to the original (TRD). */
 export type Review = {
   id: string;
-  /** The trek page that shows this review (slug in TREKS); left out for reviews about the company. */
+  /** The trek page that shows this review; left out for reviews about the company. */
   trekSlug?: string;
   /** The reviewer's own headline, when the review site has one. */
   title?: string;
@@ -11,10 +12,12 @@ export type Review = {
   rating?: 1 | 2 | 3 | 4 | 5;
   quote: string;
   name: string;
+  /** "" when the review site doesn't say (Google doesn't). */
   country: string;
-  trekName: string;
+  /** The trek it is about, while that trek is published. */
+  trekName?: string;
   source: ReviewSource;
-  /** Public page of this review, used as the quote's `cite`. */
+  /** The review itself on the review site, used as the quote's `cite`. */
   url: string;
 };
 
@@ -23,5 +26,9 @@ export type RatingSummary = {
   rating: number;
   count: number;
   source: ReviewSource;
+  /** The profile with all the reviews ("" when not set in Site settings). */
   url: string;
 };
+
+/** What the website shows: the chosen reviews (newest first) and the overall rating, Google first. */
+export type PublishedReviews = { reviews: readonly Review[]; rating: RatingSummary | null };

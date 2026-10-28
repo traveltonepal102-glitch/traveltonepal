@@ -11,6 +11,8 @@ export const WEBSITE_CACHE_TAGS = {
   settings: "settings",
   /** Pages: About, Contact (with the About team, from Authors and Trekking guides). */
   pages: "pages",
+  /** Reviews the admin chose to show, and the overall ratings (home, About and trek pages). */
+  reviews: "reviews",
 } as const;
 
 export type WebsiteCacheTag = (typeof WEBSITE_CACHE_TAGS)[keyof typeof WEBSITE_CACHE_TAGS];

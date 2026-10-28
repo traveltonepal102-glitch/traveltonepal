@@ -7,7 +7,8 @@ const STAR_COUNT = 5;
 /** Stars, "4.9 / 5" and the review count, linking to the public review page. */
 export const BookingRating = ({ rating }: { rating: RatingSummary }) => (
   <a
-    href={rating.url}
+    // Without the profile in Site settings: the same text, not a link.
+    href={rating.url || undefined}
     target="_blank"
     rel="noopener noreferrer"
     className="flex items-center justify-between gap-2 border-b border-line pb-4 hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"

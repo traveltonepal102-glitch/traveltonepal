@@ -34,6 +34,8 @@ export type SiteSettingsValues = {
   tripadvisorUrl: string;
   googleBusinessUrl: string;
   linkedinUrl: string;
+  /** Where trekkers write a Google review (the website's /review leads here). */
+  googleReviewUrl: string;
   sharePhotoId: string | null;
 };
 

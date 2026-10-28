@@ -42,6 +42,7 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
     tripadvisorUrl: data.tripadvisor_url,
     googleBusinessUrl: data.google_business_url,
     linkedinUrl: data.linkedin_url,
+    googleReviewUrl: data.google_review_url,
     sharePhotoId: data.share_photo_id,
     certificatePhoto: data.certificate ? toPhoto(data.certificate) : null,
     sharePhoto: data.share ? toPhoto(data.share) : null,
@@ -86,6 +87,7 @@ export const saveSiteSettings = async (values: SiteSettingsValues): Promise<Save
       tripadvisor_url: values.tripadvisorUrl,
       google_business_url: values.googleBusinessUrl,
       linkedin_url: values.linkedinUrl,
+      google_review_url: values.googleReviewUrl,
       share_photo_id: values.sharePhotoId ?? "",
     },
   });

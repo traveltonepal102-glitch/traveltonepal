@@ -11,6 +11,8 @@ export const ROUTES = {
   terms: "/terms",
   impressum: "/impressum",
   cookies: "/cookies",
+  /** Redirects to the Google review link from Site settings: the link sent to trekkers after their trek. */
+  review: "/review",
 } as const;
 
 export const trekPath = (slug: string) => `${ROUTES.treks}/${slug}`;
