@@ -18,7 +18,12 @@ const NOTE_MS = 6000;
 
 /** What we tell the visitor after they choose (announced to screen readers too). */
 const savedNote = (choices: ConsentChoices, isStored: boolean) => {
-  const what = choices.externalMedia ? "Everything allowed." : "Only necessary functions are on. Maps ask before loading.";
+  const what =
+    choices.analytics && choices.externalMedia
+      ? "Everything allowed."
+      : choices.analytics || choices.externalMedia
+        ? "Your choices are saved."
+        : "Only necessary functions are on. Maps and videos ask before loading.";
   return isStored ? `${what} Change it any time in Cookie settings.` : `${what} Your browser blocks saving this, so we will ask again next visit.`;
 };
 
@@ -72,8 +77,8 @@ export const CookieBanner = () => {
                 Your privacy, your choice
               </h2>
               <p className="text-body-sm text-text">
-                We use only what is needed to run this site. With your permission we also show Google Maps. You can change
-                this at any time under{" "}
+                We use only what is needed to run this site. With your permission we also count page visits (Google Analytics
+                and Microsoft Clarity) and show Google Maps and YouTube videos. You can change this at any time under{" "}
                 <Link href={ROUTES.cookies} className={LINK}>
                   Cookie settings
                 </Link>

@@ -12,7 +12,7 @@ type PageSectionNavProps = {
  */
 export const PageSectionNav = ({ links, className = "" }: PageSectionNavProps) => (
   <nav aria-label="On this page" className={`sticky top-0 z-30 border-b border-line bg-page/95 backdrop-blur-md ${className}`}>
-    <div className="mx-auto flex w-full max-w-content gap-1 overflow-x-auto px-4 scrollbar-none md:px-6 [&::-webkit-scrollbar]:hidden">
+    <div className="mx-auto flex w-full max-w-content gap-1 relative overflow-x-auto px-4 scrollbar-none md:px-6 [&::-webkit-scrollbar]:hidden">
       {links.map((link) => (
         <a
           key={link.id}

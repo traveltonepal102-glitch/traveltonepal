@@ -12,7 +12,7 @@ const LegalTableView = ({ table }: { table: LegalTable }) => {
   const hasHead = first?.content.every((cell) => cell.type === "tableHeader");
   const body = hasHead ? rest : table.content;
   return (
-    <div className="overflow-x-auto rounded-xl border border-line">
+    <div className="relative overflow-x-auto rounded-xl border border-line">
       <table className="w-full min-w-115 border-collapse text-left text-body-sm">
         {hasHead && first && (
           <thead>

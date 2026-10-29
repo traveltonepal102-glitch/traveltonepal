@@ -40,7 +40,7 @@ export const TrekGuides = ({ guides }: Pick<TrekDetail, "guides">) => {
         role="region"
         aria-label="Trek guides"
         tabIndex={0}
-        className="snap-x snap-mandatory overflow-x-auto rounded-md px-0.5 pt-0.5 pb-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="snap-x snap-mandatory relative overflow-x-auto rounded-md px-0.5 pt-0.5 pb-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <ul className="flex gap-5">
           {team.map((guide) => (

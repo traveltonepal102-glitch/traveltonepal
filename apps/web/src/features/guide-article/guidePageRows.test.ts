@@ -103,7 +103,8 @@ describe("toGuideArticle", () => {
   });
 
   it("keeps the sections that can show, in order, and drops the rest", () => {
-    expect(article?.blocks.map((block) => block.type)).toEqual(["quick", "text", "text", "trek", "months", "tip", "image", "cta"]);
+    expect(article?.blocks.map((block) => block.type)).toEqual(["quick", "text", "text", "trek", "months", "tip", "image", "video", "cta"]);
+    expect(article?.blocks.find((block) => block.type === "video")).toEqual({ type: "video", youtubeId: "dQw4w9WgXcQ", title: "A video" });
     expect(article?.faqs.map((faq) => faq.question)).toEqual(["When?"]);
   });
 

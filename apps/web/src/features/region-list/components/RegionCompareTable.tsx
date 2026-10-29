@@ -22,7 +22,7 @@ export const RegionCompareTable = ({ regions }: { regions: readonly RegionListIt
         role="region"
         aria-labelledby="regions-compare-title"
         tabIndex={0}
-        className={`${CARD} overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
+        className={`${CARD} relative overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
       >
         <table className="w-full min-w-215 border-collapse text-left text-caption font-normal">
           <thead>

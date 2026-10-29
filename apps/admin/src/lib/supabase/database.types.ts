@@ -931,6 +931,10 @@ export type Database = {
         Args: { p_adventure_id: string | null; p_adventure: Json };
         Returns: string;
       };
+      contact_click_totals: {
+        Args: { p_days?: number };
+        Returns: { channel: "whatsapp" | "email"; page_path: string; clicks: number }[];
+      };
       guide_feedback_totals: {
         Args: { p_article_id?: string };
         Returns: { article_id: string; helpful_count: number; not_helpful_count: number; last_vote_at: string }[];

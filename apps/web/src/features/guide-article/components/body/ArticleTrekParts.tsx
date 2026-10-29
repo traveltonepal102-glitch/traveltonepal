@@ -64,7 +64,7 @@ const FACTS: readonly { label: string; value: (trek: TrekSummary) => string }[] 
 
 /** "Compare treks": two or three treks side by side; the table scrolls sideways on small phones. */
 export const ArticleCompare = ({ treks }: { treks: readonly TrekSummary[] }) => (
-  <section aria-label="Treks compared" className="overflow-x-auto rounded-xl border border-line bg-surface">
+  <section aria-label="Treks compared" className="relative overflow-x-auto rounded-xl border border-line bg-surface">
     <table className="w-full min-w-120 text-[15px]">
       <thead>
         <tr className="border-b border-line bg-page">

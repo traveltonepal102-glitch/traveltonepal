@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
+import { AnalyticsScripts } from "@/features/analytics/AnalyticsScripts";
 import { CookieBanner } from "@/features/consent/components/CookieBanner";
 import { OrganizationJsonLd } from "@/features/seo/OrganizationJsonLd";
 import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
@@ -30,6 +31,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
       {children}
       <SiteFooter />
       <CookieBanner />
+      <AnalyticsScripts />
     </body>
   </html>
 );

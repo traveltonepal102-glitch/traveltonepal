@@ -57,8 +57,9 @@ type SelectFieldProps = { label: string; value: string; options: readonly Select
 export const SelectField = ({ label, value, options, onChange }: SelectFieldProps) => {
   const triggerId = useId();
 
+  // min-w-0: the trigger's text doesn't wrap, so in a grid cell it would otherwise widen the page on small phones.
   return (
-    <div className={LABEL}>
+    <div className={`${LABEL} min-w-0`}>
       <label htmlFor={triggerId}>{label}</label>
       <Select items={options} value={value} onValueChange={(next) => next !== null && onChange(next)}>
         <SelectTrigger

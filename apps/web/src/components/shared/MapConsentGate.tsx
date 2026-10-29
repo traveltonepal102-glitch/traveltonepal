@@ -46,7 +46,7 @@ export const MapConsentGate = ({ preview, previewLabel, children, className = ""
             role="region"
             aria-label={previewLabel}
             tabIndex={0}
-            className="overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
+            className="relative overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
           >
             {preview}
           </div>

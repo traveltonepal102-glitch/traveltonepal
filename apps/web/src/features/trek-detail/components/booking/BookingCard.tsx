@@ -26,7 +26,7 @@ export const BookingCard = async ({ trek }: { trek: TrekDetail }) => {
   const [{ contact }, { rating }] = await Promise.all([getSiteSettings(), getPublishedReviews()]);
   return (
     <aside id={TREK_SECTION_IDS.book} aria-label="Book this trek" className="scroll-mt-16 lg:sticky lg:top-16">
-      <div className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
+      <div className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-4.5 shadow-[0_12px_28px_rgba(15,23,42,0.12)] sm:p-6">
         {rating && <BookingRating rating={rating} />}
 
         <GroupPricing groupPrices={trek.groupPrices} />

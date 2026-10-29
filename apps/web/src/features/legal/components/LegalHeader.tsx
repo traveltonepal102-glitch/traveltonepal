@@ -32,7 +32,7 @@ export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
         )}
       </div>
 
-      <nav aria-label="Legal pages" className="-mx-4 overflow-x-auto px-4 pt-1.5 scrollbar-none lg:hidden [&::-webkit-scrollbar]:hidden">
+      <nav aria-label="Legal pages" className="-mx-4 relative overflow-x-auto px-4 pt-1.5 scrollbar-none lg:hidden [&::-webkit-scrollbar]:hidden">
         <ul className="flex gap-1.5">
           {LEGAL_MENU.map((item) => {
             const isCurrent = item.slug === doc.slug;

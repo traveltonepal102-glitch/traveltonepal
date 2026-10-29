@@ -22,7 +22,7 @@ export const ShortcutBar = ({ active, onPick }: ShortcutBarProps) => (
     <div
       role="group"
       aria-label="Quick filters"
-      className="mx-auto flex max-w-content gap-2 overflow-x-auto px-4 py-3.5 scrollbar-none md:px-6 [&::-webkit-scrollbar]:hidden"
+      className="mx-auto flex max-w-content gap-2 relative overflow-x-auto px-4 py-3.5 scrollbar-none md:px-6 [&::-webkit-scrollbar]:hidden"
     >
       {OPTIONS.map((option) => {
         const isActive = option.value === active;

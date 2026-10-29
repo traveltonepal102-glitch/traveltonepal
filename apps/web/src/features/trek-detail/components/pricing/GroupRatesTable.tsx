@@ -16,7 +16,7 @@ export const GroupRatesTable = ({ groupPrices }: { groupPrices: readonly GroupPr
       role="region"
       aria-label="Group rates"
       tabIndex={0}
-      className="overflow-x-auto rounded-lg border border-line bg-surface shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="relative overflow-x-auto rounded-lg border border-line bg-surface shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       <table className="w-full min-w-140 border-collapse text-left">
         <caption className="sr-only">Price per person by group size</caption>

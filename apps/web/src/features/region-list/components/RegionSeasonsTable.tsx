@@ -33,7 +33,7 @@ export const RegionSeasonsTable = ({ regions }: { regions: readonly RegionListIt
         role="region"
         aria-labelledby="regions-seasons-title"
         tabIndex={0}
-        className={`${CARD} overflow-x-auto p-4.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
+        className={`${CARD} relative overflow-x-auto p-4.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`}
       >
         <table className="w-full min-w-190 border-separate border-spacing-1 text-xs">
           <thead>

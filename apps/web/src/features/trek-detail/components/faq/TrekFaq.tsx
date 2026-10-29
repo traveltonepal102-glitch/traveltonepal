@@ -28,7 +28,7 @@ export const TrekFaq = ({ name, faqs }: TrekFaqProps) => {
         {/* grid-cols-1 (minmax(0, 1fr)) keeps the scrolling topic row from widening the column on phones. */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:items-start">
           <nav aria-label="FAQ topics" className="rounded-xl border border-line bg-surface p-3.5 shadow-card lg:sticky lg:top-16">
-            <ul className="flex gap-1 overflow-x-auto lg:flex-col">
+            <ul className="flex gap-1 relative overflow-x-auto lg:flex-col">
               {faqs.map((group) => (
                 <li key={group.title} className="flex-none">
                   <a

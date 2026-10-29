@@ -65,7 +65,9 @@ export const CardCarousel = ({ label, count, children, isGridOnDesktop = false }
       <button type="button" onClick={() => scrollBy(1)} disabled={edges.atEnd} aria-label={`Next: ${label}`} className={cn(ARROW, "-right-3", isGridOnDesktop && "lg:hidden")}>
         <Icon name="arrow_forward" size={20} />
       </button>
-      {/* Focusable so keyboard users can scroll the row with the arrow keys; no scrollbar (swipe or the arrows). */}
+      {/* Focusable so keyboard users can scroll the row with the arrow keys; no scrollbar (swipe or the arrows).
+          `relative` makes the row the containing block of the cards' absolute parts (sr-only text, photos), so it
+          clips them; otherwise they escape to the wrapper and widen the whole page on phones. */}
       <div
         ref={rowRef}
         onScroll={readEdges}
@@ -73,7 +75,7 @@ export const CardCarousel = ({ label, count, children, isGridOnDesktop = false }
         aria-label={label}
         tabIndex={0}
         className={cn(
-          "snap-x snap-mandatory overflow-x-auto rounded-md p-0.5 pb-2 scrollbar-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-scrollbar]:hidden",
+          "relative snap-x snap-mandatory overflow-x-auto rounded-md p-0.5 pb-2 scrollbar-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&::-webkit-scrollbar]:hidden",
           isGridOnDesktop && "lg:snap-none lg:overflow-visible lg:p-0",
         )}
       >

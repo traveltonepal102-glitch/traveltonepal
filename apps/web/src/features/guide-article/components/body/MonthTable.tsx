@@ -13,7 +13,7 @@ const CELL = "px-3.5 py-2.75";
 
 /** Month / On the trail / Crowds / Our verdict. Scrolls sideways inside its box on phones. */
 export const MonthTable = ({ notes, ratings }: MonthTableProps) => (
-  <div className="overflow-x-auto rounded-xl border border-line">
+  <div className="relative overflow-x-auto rounded-xl border border-line">
     <table className="w-full min-w-140 border-collapse text-left text-body-sm">
       <thead>
         <tr className="bg-page text-[11px] font-bold tracking-[0.06em] text-text uppercase">

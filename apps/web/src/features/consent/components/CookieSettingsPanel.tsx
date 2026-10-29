@@ -15,7 +15,7 @@ export const CookieSettingsPanel = () => {
   // The visitor's edits; until they touch a switch, the panel shows what is stored.
   const [draft, setDraft] = useState<ConsentChoices | null>(null);
   const [status, setStatus] = useState("");
-  const shown = draft ?? (consent ? { externalMedia: consent.externalMedia } : ONLY_NECESSARY);
+  const shown = draft ?? (consent ? { analytics: consent.analytics, externalMedia: consent.externalMedia } : ONLY_NECESSARY);
 
   const save = (choices: ConsentChoices) => {
     const isStored = saveConsent(choices);

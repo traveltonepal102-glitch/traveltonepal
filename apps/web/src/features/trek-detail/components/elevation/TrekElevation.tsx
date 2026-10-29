@@ -45,7 +45,7 @@ export const TrekElevation = ({ itinerary, trailhead }: TrekElevationProps) => {
           role="region"
           aria-label="Altitude chart"
           tabIndex={0}
-          className="overflow-x-auto rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="relative overflow-x-auto rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <ElevationChart profile={profile} />
         </div>

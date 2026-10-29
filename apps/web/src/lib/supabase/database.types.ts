@@ -1,6 +1,6 @@
 /**
  * The database as the website sees it: the read-only "web_" views (supabase/migrations/…_website_views.sql) and
- * one write, record_guide_feedback. Keep in step with those.
+ * two writes, record_guide_feedback and record_contact_click. Keep in step with those.
  */
 type Locale = "en" | "de";
 
@@ -432,6 +432,8 @@ export type Database = {
     Functions: {
       /** "Was this guide helpful?": the website's one write (…_guide_feedback.sql). False: unknown guide or too many votes. */
       record_guide_feedback: { Args: { p_slug: string; p_is_helpful: boolean }; Returns: boolean };
+      /** One WhatsApp or email button click for a page (…_contact_clicks.sql): no cookie, no IP address. */
+      record_contact_click: { Args: { p_channel: "whatsapp" | "email"; p_page_path: string }; Returns: boolean };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

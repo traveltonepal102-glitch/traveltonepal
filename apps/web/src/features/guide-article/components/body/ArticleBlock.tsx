@@ -7,6 +7,7 @@ import { GuideTip, GuideWords, MeetGuides } from "./ArticlePeopleParts";
 import { ArticleCallout, ArticleChecklist, ArticleCta, ArticlePullQuote } from "./ArticleTextParts";
 import { ArticleTrekCard } from "./ArticleTrekCard";
 import { ArticleCompare, ArticleCostTable, ArticleDays } from "./ArticleTrekParts";
+import { ArticleVideo } from "./ArticleVideo";
 import { MonthTable } from "./MonthTable";
 import { SeasonStrip } from "./SeasonStrip";
 
@@ -70,5 +71,7 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
       return <ArticleGallery images={block.images} />;
     case "map":
       return <ArticleMap title={block.title} place={block.place} />;
+    case "video":
+      return <ArticleVideo youtubeId={block.youtubeId} title={block.title} />;
   }
 };

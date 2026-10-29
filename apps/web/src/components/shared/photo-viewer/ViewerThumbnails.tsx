@@ -24,7 +24,7 @@ export const ViewerThumbnails = ({ photos, currentIndex, onSelect }: ViewerThumb
   return (
     <ul
       ref={stripRef}
-      className="flex flex-none snap-x snap-proximity gap-1.5 overflow-x-auto px-3 pt-2 pb-4.5 [scrollbar-width:none] md:justify-center md:gap-2 md:px-4 md:pt-2.5 [&::-webkit-scrollbar]:hidden"
+      className="flex flex-none snap-x snap-proximity gap-1.5 relative overflow-x-auto px-3 pt-2 pb-4.5 [scrollbar-width:none] md:justify-center md:gap-2 md:px-4 md:pt-2.5 [&::-webkit-scrollbar]:hidden"
     >
       {photos.map((photo, index) => {
         const isCurrent = index === currentIndex;

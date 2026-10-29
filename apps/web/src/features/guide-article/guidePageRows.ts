@@ -34,6 +34,9 @@ const toPerson = (row: PersonRow, photosBaseUrl: string): GuidePerson => ({
 
 const toImage = (row: CoverRow, photosBaseUrl: string, subject: string, alt?: string) => coverImage(row, photosBaseUrl, subject, alt);
 
+/** A YouTube video id, as the admin saves it (11 letters, digits, "-" or "_"). */
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+
 /** One section as a block of the article, or nothing when what it needs is missing (a trek not published, no text…). */
 const toBlock = (section: SectionRow, context: { treks: readonly TrekSummary[]; title: string; photosBaseUrl: string; hasMonths: boolean }): ArticleBlock | undefined => {
   const { content, settings } = section;
@@ -118,7 +121,11 @@ const toBlock = (section: SectionRow, context: { treks: readonly TrekSummary[]; 
       const place = field.text(content, "place");
       return place ? { type: "map", title: field.text(content, "title"), place } : undefined;
     }
-    // Questions are gathered for the end of the article; videos wait for the website's video player.
+    case "video": {
+      const youtubeId = typeof settings.youtubeId === "string" && YOUTUBE_ID.test(settings.youtubeId) ? settings.youtubeId : "";
+      return youtubeId ? { type: "video", youtubeId, title: field.text(content, "title") } : undefined;
+    }
+    // Questions are gathered for the end of the article.
     default:
       return undefined;
   }

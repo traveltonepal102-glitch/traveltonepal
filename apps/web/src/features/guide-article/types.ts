@@ -38,7 +38,9 @@ export type ArticleBlock =
   | { type: "meet"; heading: string; guides: readonly GuidePerson[] }
   | { type: "image"; image: SiteImageSource; caption: string }
   | { type: "gallery"; images: readonly SiteImageSource[] }
-  | { type: "map"; title: string; place: string };
+  | { type: "map"; title: string; place: string }
+  /** A YouTube video, played in privacy-enhanced mode once the visitor allows it. */
+  | { type: "video"; youtubeId: string; title: string };
 
 export type GuideFact = { icon: IconName; tone: IconTone; label: string; value: string };
 

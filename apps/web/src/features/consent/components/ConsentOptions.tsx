@@ -73,10 +73,18 @@ export const ConsentOptions = ({ choices, onChange }: ConsentOptionsProps) => (
       isLocked
     />
     <ConsentRow
+      icon="trending_up"
+      tone="brand"
+      name="Analytics"
+      text="Helps us see which pages are useful. No advertising, no tracking across sites."
+      isOn={choices.analytics}
+      onToggle={() => onChange({ ...choices, analytics: !choices.analytics })}
+    />
+    <ConsentRow
       icon="map"
       tone="saffron"
       name="External media"
-      text="Google Maps on trek and region pages. It sends data to Google when it loads."
+      text="Google Maps and YouTube videos. These send data to Google when they load."
       isOn={choices.externalMedia}
       onToggle={() => onChange({ ...choices, externalMedia: !choices.externalMedia })}
     />
