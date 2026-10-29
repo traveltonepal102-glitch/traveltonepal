@@ -291,6 +291,9 @@ export type SiteSettingsRow = {
   google_business_url: string;
   linkedin_url: string;
   google_review_url: string;
+  /** The office's Google Maps share link, and the address from Google's "Embed a map" code. */
+  google_maps_url: string;
+  google_maps_embed_url: string;
   share_photo_id: string | null;
   updated_at: string;
   updated_by: string | null;

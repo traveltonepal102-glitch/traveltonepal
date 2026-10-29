@@ -316,6 +316,9 @@ export type WebSiteSettingsRow = {
   pan_certificate_width: number | null;
   pan_certificate_height: number | null;
   pan_certificate_variant_widths: number[] | null;
+  /** The office on Google Maps: its share link and the address from Google's "Embed a map" code ("" when not set). */
+  google_maps_url: string;
+  google_maps_embed_url: string;
 };
 
 /** An old address that answers with a permanent redirect to today's (only to a page that exists). */

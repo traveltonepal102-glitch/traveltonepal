@@ -28,6 +28,18 @@ describe("toSiteSettings", () => {
     expect(unsafe.googleReviews).toEqual({ writeUrl: "", profileUrl: "" });
   });
 
+  it("opens the saved Google Maps link and shows the saved map, else searches for the office and keeps the drawn map", () => {
+    expect(SITE_SETTINGS.officeMap).toEqual({
+      url: "https://maps.app.goo.gl/HR1FQfBGSSpwiyHq5",
+      embedUrl: "https://www.google.com/maps/embed?pb=!1m18!2sTravel%20To%20Nepal!5e0",
+    });
+    const unset = toSiteSettings({ ...SITE_SETTINGS_ROW, google_maps_url: "https://example.com/x", google_maps_embed_url: "https://example.com/embed" }, PHOTOS_BASE_URL);
+    expect(unset.officeMap).toEqual({
+      url: "https://www.google.com/maps/search/?api=1&query=Travel%20To%20Nepal%2C%20Thamel%2C%20Kathmandu%2C%20Nepal",
+      embedUrl: "",
+    });
+  });
+
   it("has no certificate until one is picked, and a share image when one is", () => {
     expect(SITE_SETTINGS.company.certificate).toBeUndefined();
     expect(SITE_SETTINGS.shareImage?.src).toBe(`${PHOTOS_BASE_URL}/c0ffee00-0000-4000-8000-000000000001`);

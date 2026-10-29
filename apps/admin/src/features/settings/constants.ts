@@ -17,6 +17,9 @@ export const SETTINGS_LIMITS = {
   staffInsurer: 120,
   paymentsNote: 160,
   url: 300,
+  /** Google's "Embed a map" code as pasted (the iframe), and the address kept from it. */
+  mapEmbedCode: 2000,
+  mapEmbedUrl: 1000,
 } as const;
 
 export const MAX_REPLY_LANGUAGES = 10;

@@ -8,6 +8,10 @@ export type SiteSettingsValues = {
   phoneNumber: string;
   email: string;
   officeAddress: string;
+  /** The office's Google Maps share link ("Open in Google Maps"), e.g. https://maps.app.goo.gl/…. */
+  googleMapsUrl: string;
+  /** The address inside Google's "Embed a map" code: the live map on the Contact and About pages. */
+  googleMapsEmbedUrl: string;
   /** 0 = Sunday … 6 = Saturday. */
   officeDays: number[];
   /** "HH:MM", Nepal time. */

@@ -43,6 +43,8 @@ export const SITE_SETTINGS_ROW: WebSiteSettingsRow = {
   pan_certificate_width: null,
   pan_certificate_height: null,
   pan_certificate_variant_widths: null,
+  google_maps_url: "https://maps.app.goo.gl/HR1FQfBGSSpwiyHq5",
+  google_maps_embed_url: "https://www.google.com/maps/embed?pb=!1m18!2sTravel%20To%20Nepal!5e0",
 };
 
 export const SITE_SETTINGS = toSiteSettings(SITE_SETTINGS_ROW, PHOTOS_BASE_URL);

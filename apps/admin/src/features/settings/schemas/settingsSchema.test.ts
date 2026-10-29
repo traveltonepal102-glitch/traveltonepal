@@ -55,4 +55,21 @@ describe("settingsSchema", () => {
     expect(errorsOf({ officeCloses: "08:00" }).officeCloses).toBe("The office must close after it opens.");
     expect(errorsOf({ youtubeUrl: "not a link" })).toHaveProperty("youtubeUrl");
   });
+
+  it("keeps the map's address from Google's embed code, and accepts a share link", () => {
+    const src = "https://www.google.com/maps/embed?pb=!1m18!1m12!3d27.70!2sTravel%20To%20Nepal!5e0&amp;hl=en";
+    const iframe = `<iframe src="${src}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+    expect(parse({ googleMapsUrl: "maps.app.goo.gl/HR1FQfBGSSpwiyHq5", googleMapsEmbedUrl: iframe }).data).toMatchObject({
+      googleMapsUrl: "https://maps.app.goo.gl/HR1FQfBGSSpwiyHq5",
+      googleMapsEmbedUrl: src.replace("&amp;", "&"),
+    });
+    expect(parse({ googleMapsEmbedUrl: src.replace("&amp;", "&") }).data?.googleMapsEmbedUrl).toBe(src.replace("&amp;", "&"));
+    expect(parse().data).toMatchObject({ googleMapsUrl: "", googleMapsEmbedUrl: "" });
+  });
+
+  it("refuses a map link that isn't Google Maps, and a share link pasted as the embed code", () => {
+    expect(errorsOf({ googleMapsUrl: "https://example.com/maps" })).toHaveProperty("googleMapsUrl");
+    expect(errorsOf({ googleMapsEmbedUrl: "https://maps.app.goo.gl/HR1FQfBGSSpwiyHq5" })).toHaveProperty("googleMapsEmbedUrl");
+    expect(errorsOf({ googleMapsEmbedUrl: '<iframe src="https://evil.example/maps/embed?pb=1"></iframe>' })).toHaveProperty("googleMapsEmbedUrl");
+  });
 });

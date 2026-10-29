@@ -10,7 +10,7 @@ export const cookieTable = () =>
       [CONSENT_STORAGE_KEY, "Remembers your choices on this page (stored in your browser, not a cookie)", CONSENT_MAX_AGE_LABEL],
       ["Google Analytics", "Counts page visits (only with your consent to analytics)", "Set by Google"],
       ["Microsoft Clarity", "Shows which parts of a page are used (only with your consent to analytics)", "Set by Microsoft"],
-      ["Google Maps", "Interactive route and region maps (only with your consent or after you click to load a map)", "Set by Google"],
+      ["Google Maps", "Interactive route, region and office maps (only with your consent or after you click to load a map)", "Set by Google"],
       ["YouTube", "Trail videos in privacy-enhanced mode (only with your consent or after you press Play)", "Set by Google"],
     ],
   );

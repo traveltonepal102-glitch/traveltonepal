@@ -1,6 +1,8 @@
 import { officeDaysLabel, officeHoursLabel } from "@ttn/config/contact";
 import type { ClockTime, OfficeSchedule } from "@ttn/config/contact";
+import { isGoogleMapsEmbedUrl, isGoogleMapsLink } from "@ttn/config/googleMaps";
 
+import { googleMapsSearchUrl } from "@/lib/googleMaps/links";
 import { coverImage } from "@/lib/images";
 import type { WebSiteSettingsRow } from "@/lib/supabase/database.types";
 import { SITE_NAME } from "@/lib/site";
@@ -37,6 +39,9 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
     closes: clockOf(row.office_closes, { hour: 18, minute: 0 }),
   };
   const local = row.phone_number.trim();
+  const officeAddress = row.office_address.trim();
+  const mapsUrl = row.google_maps_url.trim();
+  const embedUrl = row.google_maps_embed_url.trim();
   const code = row.phone_country_code.trim();
 
   return {
@@ -44,7 +49,7 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       email: row.email.trim(),
       phoneDisplay: local ? `+${code} ${local}` : "",
       phoneDigits: local ? `${code}${local}` : "",
-      officeAddress: row.office_address.trim(),
+      officeAddress,
       officeHours: officeHoursLabel(schedule),
       registrationNumber: row.tourism_registration.trim(),
       taanMemberNumber: row.taan_number.trim(),
@@ -95,6 +100,10 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       return url ? [{ network, label, url }] : [];
     }),
     googleReviews: { writeUrl: secureUrl(row.google_review_url), profileUrl: secureUrl(row.google_business_url) },
+    officeMap: {
+      url: isGoogleMapsLink(mapsUrl) ? mapsUrl : googleMapsSearchUrl(officeAddress ? `${SITE_NAME}, ${officeAddress}` : SITE_NAME),
+      embedUrl: isGoogleMapsEmbedUrl(embedUrl) ? embedUrl : "",
+    },
     shareImage: coverImage(
       { cover_id: row.share_id, cover_width: null, cover_height: null, cover_variant_widths: row.share_variant_widths, cover_placeholder: null, cover_place: null },
       photosBaseUrl,

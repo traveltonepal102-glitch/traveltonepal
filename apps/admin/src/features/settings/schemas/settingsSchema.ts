@@ -1,3 +1,4 @@
+import { isGoogleMapsLink, toGoogleMapsEmbedUrl } from "@ttn/config/googleMaps";
 import { z } from "zod";
 
 import { optionalWholeNumber, readList, readText, text } from "@/lib/forms/formFields";
@@ -29,6 +30,27 @@ const profileLink = z
     }
   }, "Paste the full address of the profile, e.g. https://www.instagram.com/…");
 
+/** The office's Google Maps share link: empty, or a Google Maps address (https:// added when left out). */
+const googleMapsLink = z
+  .string()
+  .trim()
+  .max(LIMIT.url, `Use ${LIMIT.url} characters or fewer.`)
+  .transform((value) => (value && !/^https?:\/\//i.test(value) ? `https://${value}` : value.replace(/^http:\/\//i, "https://")))
+  .refine((value) => !value || isGoogleMapsLink(value), "Paste the office's link from Google Maps › Share › Copy link, e.g. https://maps.app.goo.gl/…");
+
+/** Google's "Embed a map" code (or only its src): empty, or kept as the embed address. */
+const googleMapsEmbed = z
+  .string()
+  .trim()
+  .max(LIMIT.mapEmbedCode, "Paste only the code Google Maps gives under Share › Embed a map.")
+  .transform((value, context) => {
+    if (!value) return "";
+    const url = toGoogleMapsEmbedUrl(value);
+    if (url && url.length <= LIMIT.mapEmbedUrl) return url;
+    context.addIssue({ code: "custom", message: "Paste the code from Google Maps › Share › Embed a map › Copy HTML (it starts with <iframe). A share link goes in the field above." });
+    return z.NEVER;
+  });
+
 const photoId = z
   .string()
   .transform((value) => value || null)
@@ -44,6 +66,8 @@ export const settingsSchema = z
       .pipe(z.string().regex(/^\d{6,15}$/, "Enter the phone number, digits only, without the country code.")),
     email: z.email("Enter the office email address.").max(LIMIT.email),
     officeAddress: text(LIMIT.officeAddress).min(1, "Enter where the office is, e.g. Thamel, Kathmandu, Nepal."),
+    googleMapsUrl: googleMapsLink,
+    googleMapsEmbedUrl: googleMapsEmbed,
     officeDays: z
       .array(z.string().regex(/^[0-6]$/))
       .transform((days) => [...new Set(days.map(Number))].sort((a, b) => a - b))
@@ -84,6 +108,8 @@ export const readSettingsForm = (formData: FormData) => ({
   phoneNumber: readText(formData, "phoneNumber"),
   email: readText(formData, "email"),
   officeAddress: readText(formData, "officeAddress"),
+  googleMapsUrl: readText(formData, "googleMapsUrl"),
+  googleMapsEmbedUrl: readText(formData, "googleMapsEmbedUrl"),
   officeDays: readList(formData, "officeDay"),
   officeOpens: readText(formData, "officeOpens"),
   officeCloses: readText(formData, "officeCloses"),

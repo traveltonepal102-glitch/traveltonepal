@@ -2,19 +2,18 @@ import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 
-import { OfficeMapPreview } from "@/components/shared/OfficeMapPreview";
+import { OfficeMap } from "@/components/shared/OfficeMap";
 import { PageSectionHeading } from "@/components/shared/PageSectionHeading";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { googleMapsSearchUrl } from "@/lib/googleMaps/links";
 import { ABOUT_SECTION_IDS } from "@/lib/navigation";
 import { SITE_NAME } from "@/lib/site";
 
 import { SECTION, WRAP } from "./styles";
 
-/** "Our office in Kathmandu": address, hours, phone and email, contact buttons and a link to the map. */
+/** "Our office in Kathmandu": address, hours, phone and email, contact buttons and the office map. */
 export const VisitSection = async () => {
-  const { contact } = await getSiteSettings();
+  const { contact, officeMap } = await getSiteSettings();
   const details: { icon: IconName; text: string }[] = [
     { icon: "location_on", text: contact.officeAddress },
     { icon: "schedule", text: contact.officeHours },
@@ -51,7 +50,7 @@ export const VisitSection = async () => {
           </ButtonLink>
         </div>
       </div>
-      <OfficeMapPreview mapsUrl={googleMapsSearchUrl(`${SITE_NAME}, ${contact.officeAddress}`)} />
+      <OfficeMap mapsUrl={officeMap.url} embedUrl={officeMap.embedUrl} />
     </div>
   </section>
 );

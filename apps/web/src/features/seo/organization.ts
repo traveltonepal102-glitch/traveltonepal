@@ -65,6 +65,7 @@ export const travelAgencyJsonLd = (settings: SiteSettings): JsonLdData => {
           },
         }
       : {}),
+    hasMap: settings.officeMap.url,
     ...(social.length ? { sameAs: social.map((profile) => profile.url) } : {}),
   };
 };

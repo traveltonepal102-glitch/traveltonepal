@@ -35,6 +35,11 @@ export type SiteSettings = {
   social: readonly SocialProfile[];
   /** Google reviews: where trekkers write one (/review leads there) and the profile with all of them; "" when not set. */
   googleReviews: { writeUrl: string; profileUrl: string };
+  /**
+   * The office on Google Maps: `url` opens it (the saved share link, else a search for the address); `embedUrl` is
+   * the live map from Google's "Embed a map" code, "" when not set (pages then keep the drawn map).
+   */
+  officeMap: { url: string; embedUrl: string };
   /** For shared links of pages without their own photo. */
   shareImage?: SiteImageSource;
 };
