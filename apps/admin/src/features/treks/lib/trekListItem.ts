@@ -7,7 +7,10 @@ import type { Trek, TrekDifficulty, TrekStatus } from "../types";
 export type TrekListItem = {
   id: string;
   name: string;
+  /** The main region, and the regions the route passes through after it. */
   regionId: string;
+  routeRegionIds: string[];
+  /** The route, e.g. "Langtang → Manaslu". */
   regionName: string;
   days: number | null;
   difficulty: TrekDifficulty;
@@ -24,7 +27,8 @@ export const toTrekListItem = (trek: Trek): TrekListItem => ({
   id: trek.id,
   name: trek.name,
   regionId: trek.regionId,
-  regionName: trek.regionName,
+  routeRegionIds: trek.routeRegionIds,
+  regionName: [trek.regionName, ...trek.routeRegionNames].filter(Boolean).join(" → "),
   days: trek.days,
   difficulty: trek.difficulty,
   priceFromUsd: trek.priceFromUsd,
@@ -51,7 +55,8 @@ export const filterTreks = (treks: TrekListItem[], { search, regionId, status, s
   const words = search.trim().toLowerCase();
   return treks
     .filter((trek) => !words || `${trek.name} ${trek.regionName}`.toLowerCase().includes(words))
-    .filter((trek) => !regionId || trek.regionId === regionId)
+    // A region finds the treks that start there and the ones that pass through.
+    .filter((trek) => !regionId || trek.regionId === regionId || trek.routeRegionIds.includes(regionId))
     .filter((trek) => status === "all" || (status === "published") === (trek.status === "published"))
     .sort(SORTS[sort]);
 };

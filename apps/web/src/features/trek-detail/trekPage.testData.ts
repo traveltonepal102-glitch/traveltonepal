@@ -14,6 +14,7 @@ export const LANGTANG_SUMMARY: TrekSummary = {
   name: "Langtang Valley Trek",
   region: "Langtang",
   regionSlug: "langtang",
+  route: [{ slug: "langtang", name: "Langtang" }],
   summary: "Glaciers, yak pastures and Tamang villages, close to Kathmandu with no flights.",
   days: 10,
   maxAltitudeM: 4773,
@@ -582,73 +583,239 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
     {
       "icon": "wb_twilight",
       "title": "Best season and weather windows",
-      "points": [
-        {
-          "title": "Spring (March to May)",
-          "text": "warm days and rhododendron forest in bloom."
-        },
-        {
-          "title": "Autumn (October to November)",
-          "text": "the clearest skies of the year and stable temperatures."
-        }
-      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Spring (March to May):",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " warm days and rhododendron forest in bloom."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Autumn (October to November):",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " the clearest skies of the year and stable temperatures."
+              }
+            ]
+          }
+        ]
+      },
       "note": "Winter (Dec–Feb) is clear but very cold at Kyanjin. The monsoon (Jun–Sep) brings rain, leeches and landslide risk on the road."
     },
     {
       "icon": "cottage",
       "title": "Teahouse accommodation and facilities",
-      "points": [
-        {
-          "title": "Rooms",
-          "text": "simple twin rooms with foam mattresses and blankets; use your sleeping bag on top."
-        },
-        {
-          "title": "Heating and showers",
-          "text": "dining rooms are warmed in the evening; hot showers cost a few dollars."
-        },
-        {
-          "title": "Wi-Fi and power",
-          "text": "charging and Wi-Fi are available in most lodges for a small fee."
-        }
-      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Rooms:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " simple twin rooms with foam mattresses and blankets; use your sleeping bag on top."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Heating and showers:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " dining rooms are warmed in the evening; hot showers cost a few dollars."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Wi-Fi and power:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " charging and Wi-Fi are available in most lodges for a small fee."
+              }
+            ]
+          }
+        ]
+      },
       "note": ""
     },
     {
       "icon": "soup_kitchen",
       "title": "Food, nutrition and safe water",
-      "points": [
-        {
-          "title": "Dal bhat",
-          "text": "rice, lentil soup, vegetables and pickle, with free refills."
-        },
-        {
-          "title": "Trail menus",
-          "text": "garlic soup, Tibetan bread, porridge, noodles, pasta and ginger tea."
-        },
-        {
-          "title": "Hydration",
-          "text": "drink 3–4 litres a day and treat your water; skip single-use plastic."
-        }
-      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Dal bhat:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " rice, lentil soup, vegetables and pickle, with free refills."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Trail menus:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " garlic soup, Tibetan bread, porridge, noodles, pasta and ginger tea."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Hydration:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " drink 3–4 litres a day and treat your water; skip single-use plastic."
+              }
+            ]
+          }
+        ]
+      },
       "note": ""
     },
     {
       "icon": "emergency",
       "title": "Emergency plan and helicopter evacuation",
-      "points": [
-        {
-          "title": "Rescue",
-          "text": "our Kathmandu office coordinates helicopter evacuation with your insurer if it is ever needed."
-        },
-        {
-          "title": "On the trail",
-          "text": "your guide carries a first-aid kit and pulse oximeter and knows the nearest helipads."
-        },
-        {
-          "title": "Insurance",
-          "text": "travel insurance covering emergency evacuation is required for every trekker."
-        }
-      ],
+      "body": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Rescue:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " our Kathmandu office coordinates helicopter evacuation with your insurer if it is ever needed."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "On the trail:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " your guide carries a first-aid kit and pulse oximeter and knows the nearest helipads."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Insurance:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " travel insurance covering emergency evacuation is required for every trekker."
+              }
+            ]
+          }
+        ]
+      },
       "note": ""
     }
   ],
@@ -910,7 +1077,8 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
     }
   ],
   "similar_slugs": [],
-  "hidden_shared_sections": []
+  "hidden_shared_sections": [],
+  "section_order": []
 };
 
 export const LANGTANG_PHOTOS: WebTrekPhotoRow[] = [
@@ -951,6 +1119,7 @@ const otherTrek = (slug: string, regionSlug: string, days: number): TrekSummary 
   slug,
   name: slug,
   regionSlug,
+  route: [{ slug: regionSlug, name: regionSlug }],
   days,
   isPopular: false,
   image: undefined,

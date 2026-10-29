@@ -2,6 +2,7 @@ import { coverImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebTrekRow } from "@/lib/supabase/database.types";
 
+import { readRoute } from "./route";
 import type { TrekDifficulty, TrekSummary } from "./types";
 
 const DIFFICULTY: Record<WebTrekRow["difficulty"], TrekDifficulty> = {
@@ -24,12 +25,14 @@ export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: stri
     .flatMap((row): TrekSummary[] => {
       const name = firstText(row.name);
       if (!name || row.days === null || row.max_altitude_m === null) return [];
+      const region = row.region_name.trim();
       return [
         {
           slug: row.slug,
           name,
-          region: row.region_name.trim(),
+          region,
           regionSlug: row.region_slug,
+          route: readRoute(row.route_regions, { slug: row.region_slug, name: region }),
           summary: row.summary.trim(),
           days: row.days,
           maxAltitudeM: row.max_altitude_m,

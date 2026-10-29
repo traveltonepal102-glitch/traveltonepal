@@ -1,3 +1,5 @@
+import { TREK_PAGE_SECTIONS } from "@ttn/config/trekPageSections";
+
 import type { SectionReadiness } from "@/components/editor/types";
 import { isRichTextEmpty, richTextToPlainText } from "@/lib/richText/richText";
 
@@ -131,6 +133,12 @@ const shared = (trek: TrekValues): SectionReadiness => ({
   note: `${SHARED_SECTIONS.length - trek.hiddenSharedSections.length} of ${SHARED_SECTIONS.length} shown`,
 });
 
+/** Nothing to fill in: whether the trek keeps the page's usual order. */
+const order = (trek: TrekValues): SectionReadiness => ({
+  status: "done",
+  note: trek.sectionOrder.every((section, index) => section === TREK_PAGE_SECTIONS[index]) ? "Usual order" : "Own order",
+});
+
 /** How complete each section is, from the saved values (the editor's checklist). */
 export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos): Record<ReadyTrekSectionKey, SectionReadiness> => ({
   top: top(trek),
@@ -150,4 +158,5 @@ export const getTrekReadiness = (trek: TrekValues, trekPhotos: TrekPhotos): Reco
   similar: similar(trek),
   seo: seo(trek),
   shared: shared(trek),
+  order: order(trek),
 });

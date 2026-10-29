@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { youtubeIdFrom } from "@/features/treks/lib/youtube";
 import { requiredText, text } from "@/lib/forms/formFields";
-import { isRichTextEmpty, richTextDocSchema, richTextToPlainText } from "@/lib/richText/richText";
+import { isRichTextEmpty } from "@/lib/richText/richText";
 
 import {
   COMPARE_TREKS,
@@ -17,33 +17,9 @@ import {
   SECTION_LIMITS as LIMIT,
 } from "../sectionKinds";
 import type { ArticleSection } from "../types";
-
-const sectionId = z
-  .string()
-  .nullable()
-  .transform((value) => value || null)
-  .pipe(z.uuid("Reload the page and try again.").nullable());
-
-/** A rich text document of at most `max` characters of words; `required` also refuses an empty one. */
-const richText = (max: number, emptyMessage?: string) =>
-  richTextDocSchema
-    .refine((doc) => richTextToPlainText(doc).length <= max, `Use ${max.toLocaleString("en")} characters or fewer.`)
-    .refine((doc) => !emptyMessage || !isRichTextEmpty(doc), emptyMessage ?? "");
-
-/** An id picked from a list; `message` when nothing is picked. */
-const pickedId = (message: string) =>
-  z
-    .string()
-    .nullable()
-    .refine((value) => Boolean(value), message)
-    .pipe(z.uuid("Pick it again from the list."));
-
-/** Several ids picked from a list, each once, between `min` and `max`. */
-const pickedIds = (min: number, max: number, message: string) =>
-  z
-    .array(z.uuid("Pick them again from the list."))
-    .transform((ids) => [...new Set(ids)])
-    .refine((ids) => ids.length >= min && ids.length <= max, message);
+import { embedSection, htmlSection } from "./htmlAndEmbedSchemas";
+import { pickedId, pickedIds, richText, sectionId } from "./sectionFields";
+import { tableSection } from "./tableSchema";
 
 const costRow = z.object({ item: text(LIMIT.costItem), price: text(LIMIT.costPrice) }).superRefine((row, context) => {
   if (Boolean(row.item) === Boolean(row.price)) return;
@@ -87,6 +63,8 @@ const sectionSchema = z.discriminatedUnion(
         .refine((items) => items.length > 0, "Add an item, or remove this section.")
         .refine((items) => items.length <= MAX_CHECK_ITEMS, `Up to ${MAX_CHECK_ITEMS} items.`),
     }),
+    tableSection,
+    htmlSection,
     z.object({
       id: sectionId,
       type: z.literal("months"),
@@ -116,6 +94,7 @@ const sectionSchema = z.discriminatedUnion(
       trekId: pickedId("Pick the trek."),
       dayIds: pickedIds(1, MAX_DAYS_SHOWN, `Pick 1 to ${MAX_DAYS_SHOWN} days.`),
     }),
+    z.object({ id: sectionId, type: z.literal("altitude"), trekId: pickedId("Pick the trek."), heading: text(LIMIT.heading) }),
     z
       .object({
         id: sectionId,
@@ -156,6 +135,7 @@ const sectionSchema = z.discriminatedUnion(
       photoIds: pickedIds(2, MAX_GALLERY_PHOTOS, `Choose 2 to ${MAX_GALLERY_PHOTOS} photos.`),
     }),
     z.object({ id: sectionId, type: z.literal("map"), title: text(LIMIT.mapTitle), place: requiredText(LIMIT.mapPlace, "Write the place for the map.") }),
+    embedSection,
     z.object({
       id: sectionId,
       type: z.literal("video"),

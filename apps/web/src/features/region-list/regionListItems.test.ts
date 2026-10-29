@@ -75,3 +75,17 @@ describe("regionListItems", () => {
   });
 });
 
+
+describe("regionListItems with a trek across regions", () => {
+  it("lists a region's own treks first, then the treks that pass through it", () => {
+    const crossing = trek("langtang-valley", {
+      slug: "langtang-to-manaslu",
+      name: "Langtang to Manaslu",
+      route: [{ slug: "langtang", name: "Langtang" }, { slug: "manaslu", name: "Manaslu" }],
+    });
+    const own = trek("manaslu-circuit");
+    const [manaslu] = regionListItems([card("manaslu")], [crossing, own]);
+    expect(manaslu.treks.map((item) => item.slug)).toEqual(["manaslu-circuit", "langtang-to-manaslu"]);
+    expect(manaslu.isAskOnly).toBe(false);
+  });
+});

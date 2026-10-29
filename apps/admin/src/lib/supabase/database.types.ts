@@ -78,6 +78,8 @@ type TrekRow = {
   my_maps_id: string | null;
   /** Shared sections this trek doesn't show (see the trek editor's SHARED_SECTIONS). */
   hidden_shared_sections: string[];
+  /** TREK_PAGE_SECTIONS keys in the trek's own order; empty = the default order. */
+  section_order: string[];
   optional_high_point_m: number | null;
   /** pdf-maps/<uuid>.pdf in the trek-files bucket. */
   pdf_map_path: string | null;
@@ -250,6 +252,22 @@ export type AdventureRow = {
   updated_by: string | null;
 };
 
+/** One custom JSON-LD block on a page (supabase/migrations/20261029155000_page_schemas.sql): exactly one page column is set. */
+export type PageSchemaRow = {
+  id: string;
+  site_page_slug: SitePageSlug | null;
+  trek_id: string | null;
+  region_id: string | null;
+  article_id: string | null;
+  position: number;
+  label: string;
+  /** schema.org data without "@context". */
+  data: Json;
+  is_shown: boolean;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 /** One "Was this guide helpful?" vote from the website (supabase/migrations/20261028100000_guide_feedback.sql). */
 export type ArticleFeedbackRow = { id: number; article_id: string; is_helpful: boolean; created_at: string };
 
@@ -394,10 +412,13 @@ export type ArticleSectionTypeValue =
   | "quick"
   | "callout"
   | "check"
+  | "table"
+  | "html"
   | "quote"
   | "trek"
   | "months"
   | "days"
+  | "altitude"
   | "cost"
   | "compare"
   | "tip"
@@ -406,6 +427,7 @@ export type ArticleSectionTypeValue =
   | "image"
   | "gallery"
   | "map"
+  | "embed"
   | "video"
   | "faq"
   | "cta";
@@ -435,6 +457,9 @@ type ArticleRelatedRow = { article_id: string; related_article_id: string; posit
 type TrekkingGuideRegionRow = { guide_id: string; region_id: string };
 
 type TrekSimilarRow = { trek_id: string; similar_trek_id: string; position: number };
+
+/** A region a trek passes through after its main region (treks.region_id); position 1 = second on the route. */
+type TrekRegionRow = { trek_id: string; region_id: string; position: number };
 
 type TrekDayRow = {
   id: string;
@@ -727,6 +752,12 @@ export type Database = {
         Update: Partial<AdventureRow>;
         Relationships: [Fk<"adventures_photo_id_fkey", "photo_id", "photos">];
       };
+      page_schemas: {
+        Row: PageSchemaRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       article_feedback: {
         Row: ArticleFeedbackRow;
         Insert: never;
@@ -833,6 +864,15 @@ export type Database = {
           Fk<"trek_similar_similar_trek_id_fkey", "similar_trek_id", "treks">,
         ];
       };
+      trek_regions: {
+        Row: TrekRegionRow;
+        Insert: TrekRegionRow;
+        Update: Partial<TrekRegionRow>;
+        Relationships: [
+          Fk<"trek_regions_trek_id_fkey", "trek_id", "treks">,
+          Fk<"trek_regions_region_id_fkey", "region_id", "regions">,
+        ];
+      };
       region_photos: {
         Row: RegionPhotoRow;
         Insert: RegionPhotoRow;
@@ -933,6 +973,10 @@ export type Database = {
       save_adventure: {
         Args: { p_adventure_id: string | null; p_adventure: Json };
         Returns: string;
+      };
+      save_page_schemas: {
+        Args: { p_page_kind: "page" | "trek" | "region" | "guide"; p_page_key: string; p_schemas: Json };
+        Returns: undefined;
       };
       contact_click_totals: {
         Args: { p_days?: number };

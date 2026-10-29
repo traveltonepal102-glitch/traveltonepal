@@ -5,6 +5,7 @@ import { GuideArticlePage } from "@/features/guide-article/components/GuideArtic
 import { articleMetadata } from "@/features/guide-article/seo";
 import { getGuideArticle, listGuidePageSlugs } from "@/features/guide-article/services/guidePageRepository";
 import { listTravelGuides } from "@/features/guides/services/guidesRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
 
 type GuidePageProps = PageProps<"/travel-guides/[slug]">;
@@ -40,6 +41,7 @@ const GuidePage = async ({ params }: GuidePageProps) => {
 
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="guide" slug={slug} />
       <GuideArticlePage article={article} guides={guides} />
     </main>
   );

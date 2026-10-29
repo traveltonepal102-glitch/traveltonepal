@@ -26,6 +26,7 @@ const trek = (slug: string): TrekSummary => ({
   name: `${slug} trek`,
   region: "Langtang",
   regionSlug: "langtang",
+  route: [{ slug: "langtang", name: "Langtang" }],
   summary: "",
   days: 10,
   maxAltitudeM: 4773,

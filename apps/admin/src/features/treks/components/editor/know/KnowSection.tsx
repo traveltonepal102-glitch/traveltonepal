@@ -9,6 +9,7 @@ import { FormSection } from "@/components/ui/FormSection";
 import type { Photo } from "@/features/photos/types";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
+import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
 import { MAX_KNOW_TOPICS, TREK_LIMITS as LIMIT } from "../../../constants";
 import type { KnowTopic, TrekValues } from "../../../types";
@@ -23,7 +24,7 @@ type KnowSectionProps = {
   onEdit: () => void;
 };
 
-const NEW_TOPIC: KnowTopic = { icon: "wb_twilight", title: "", points: [], note: "", photoId: null, videoId: null };
+const NEW_TOPIC: KnowTopic = { icon: "wb_twilight", title: "", body: EMPTY_RICH_TEXT, note: "", photoId: null, videoId: null };
 
 /**
  * "Trek guide: season, facilities and safety" (the page's "Practical field knowledge"): heading, line and topics,

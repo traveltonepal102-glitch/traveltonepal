@@ -1,5 +1,6 @@
 "use client";
 
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
 import { Icon } from "@ttn/ui/icon";
 import { useState } from "react";
 
@@ -7,17 +8,23 @@ import { FormSection } from "@/components/ui/FormSection";
 import { Switch } from "@/components/ui/Switch";
 
 import { SHARED_SECTIONS } from "../../constants";
+import { placeOnPage } from "../../pageSections";
 import type { SharedSectionKey } from "../../types";
 
 type SharedSectionsCardProps = {
   hiddenSharedSections: SharedSectionKey[];
+  /** The page's order of sections, to say where each one sits. */
+  sectionOrder: TrekPageSection[];
 };
+
+const isPageSection = (key: SharedSectionKey, order: TrekPageSection[]): key is SharedSectionKey & TrekPageSection =>
+  (order as string[]).includes(key);
 
 /**
  * Sections written once for every trek page (design: section "shared"). Here a trek only switches them on or
  * off; each switch on is sent as sharedSectionShown.
  */
-export const SharedSectionsCard = ({ hiddenSharedSections }: SharedSectionsCardProps) => {
+export const SharedSectionsCard = ({ hiddenSharedSections, sectionOrder }: SharedSectionsCardProps) => {
   const [hidden, setHidden] = useState(() => new Set(hiddenSharedSections));
   const shownCount = SHARED_SECTIONS.length - hidden.size;
 
@@ -58,7 +65,9 @@ export const SharedSectionsCard = ({ hiddenSharedSections }: SharedSectionsCardP
                 <span className="min-w-0 flex-1">
                   <span className="block font-bold text-ink">{section.label}</span>
                   <span className="block text-xs text-muted-foreground">{section.description}</span>
-                  <span className="block text-[11px] font-semibold text-brand">{section.where}</span>
+                  <span className="block text-[11px] font-semibold text-brand">
+                    {isPageSection(section.key, sectionOrder) ? placeOnPage(section.key, sectionOrder) : section.where}
+                  </span>
                 </span>
                 <Switch
                   name="sharedSectionShown"

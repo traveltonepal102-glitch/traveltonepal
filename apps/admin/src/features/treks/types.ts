@@ -1,3 +1,4 @@
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { PhotoSelection } from "@/features/photos/hooks/usePhotoSelection";
@@ -116,8 +117,9 @@ export type TrekVideo = {
 export type KnowTopic = {
   icon: KnowIcon;
   title: string;
-  points: TrekPoint[];
-  /** A smaller line after the points, e.g. about winter and the monsoon. */
+  /** Free text: paragraphs, lists, bold lead-ins ("Rooms: simple twin rooms…"), links and photos. */
+  body: RichTextDoc;
+  /** A smaller line after the text, e.g. about winter and the monsoon. */
   note: string;
   /** A photo from the trek's photos, or one of its videos (not both). */
   photoId: string | null;
@@ -130,7 +132,10 @@ export type KnowIcon = Extract<IconName, "wb_twilight" | "cottage" | "soup_kitch
 export type TrekValues = {
   name: string;
   slug: string;
+  /** The main region: the first on the route (breadcrumb, "Langtang local" guides). */
   regionId: string;
+  /** The regions the route passes through after the main one, in order (e.g. Ganesh Himal, then Manaslu). */
+  routeRegionIds: string[];
   status: TrekStatus;
   difficulty: TrekDifficulty;
   /** 1 (easiest) to 5. */
@@ -190,6 +195,8 @@ export type TrekValues = {
   similarTrekIds: string[];
   /** Shared sections (written once in Site settings) this trek doesn't show. */
   hiddenSharedSections: SharedSectionKey[];
+  /** Every section of the page with a heading, in this trek's order (full-width ones last). */
+  sectionOrder: TrekPageSection[];
   /** "Meet your trek guide": one line about the guides, and the guides in page order. */
   guidesIntro: string;
   guideIds: string[];
@@ -250,6 +257,8 @@ export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinera
 export type Trek = TrekValues & {
   id: string;
   regionName: string;
+  /** The names of routeRegionIds, in route order. */
+  routeRegionNames: string[];
   /** Until group prices are in the editor, the "From" price stored with the trek. */
   priceFromUsd: number | null;
   updatedAt: string;
@@ -264,6 +273,8 @@ export type SimilarTrekOption = {
   difficulty: TrekDifficulty;
   regionId: string;
   regionName: string;
+  /** The regions it passes through after its main region, in order. */
+  routeRegionIds: string[];
   cover: Photo | null;
 };
 
@@ -289,4 +300,5 @@ export type TrekSectionKey =
   | "faq"
   | "similar"
   | "seo"
-  | "shared";
+  | "shared"
+  | "order";

@@ -1,6 +1,7 @@
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
 import type { ArticleSection, FaqItem, SectionType } from "../types";
+import { emptyTableCells } from "./tableDraft";
 
 /** A question in the editor, with a key that never changes (its answer editor keeps its place when moved). */
 export type KeyedFaqItem = FaqItem & { key: string };
@@ -29,6 +30,10 @@ export const newSection = (type: SectionType): EditorSection => {
       return { id: null, type, tone: "warning", body: EMPTY_RICH_TEXT };
     case "check":
       return { id: null, type, heading: "", items: [""] };
+    case "table":
+      return { id: null, type, heading: "", hasHeader: true, hasFooter: false, hasRowHeadings: false, ...emptyTableCells() };
+    case "html":
+      return { id: null, type, html: "" };
     case "quote":
       return { id: null, type, text: "" };
     case "trek":
@@ -37,6 +42,8 @@ export const newSection = (type: SectionType): EditorSection => {
       return { id: null, type, heading: "", view: "strip" };
     case "days":
       return { id: null, type, trekId: null, dayIds: [] };
+    case "altitude":
+      return { id: null, type, trekId: null, heading: "" };
     case "cost":
       return { id: null, type, heading: "", rows: [{ item: "", price: "" }], totalLabel: "", total: "" };
     case "compare":
@@ -52,6 +59,8 @@ export const newSection = (type: SectionType): EditorSection => {
       return { id: null, type, photoIds: [] };
     case "map":
       return { id: null, type, title: "", place: "" };
+    case "embed":
+      return { id: null, type, code: "", height: "medium", title: "", caption: "" };
     case "video":
       return { id: null, type, youtubeId: "", title: "" };
     case "cta":

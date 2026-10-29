@@ -1,3 +1,4 @@
+import { orderTrekSections } from "@ttn/config/trekPageSections";
 import type { IconName } from "@ttn/ui/icon";
 
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
@@ -76,13 +77,14 @@ export const TREK_LIMITS = {
   place: 80,
   pricingIntro: 300,
   knowIntro: 200,
+  /** A topic's text: room for 3–4 paragraphs (about 400 words). */
+  knowText: 3000,
   knowNote: 300,
   similarIntro: 200,
   videoTitle: 100,
 } as const;
 
 export const MAX_KNOW_TOPICS = 8;
-export const MAX_KNOW_POINTS = 8;
 export const MAX_VIDEOS = 10;
 
 /** Parks and protected areas for the second tag above the heading ("" = none). */
@@ -378,6 +380,8 @@ export const MAX_TREK_GUIDES = 10;
 
 /** The trek page shows 4 similar treks. */
 export const MAX_SIMILAR_TREKS = 4;
+/** Regions a route can pass through after its main one (save_trek's limit). */
+export const MAX_ROUTE_REGIONS = 4;
 
 export const MAX_FAQ_TOPICS = 15;
 export const MAX_FAQ_QUESTIONS = 15;
@@ -426,6 +430,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   name: "",
   slug: "",
   regionId: "",
+  routeRegionIds: [],
   status: "draft",
   difficulty: "moderate",
   grade: 3,
@@ -470,6 +475,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   seoDescription: "",
   similarTrekIds: [],
   hiddenSharedSections: [],
+  sectionOrder: orderTrekSections([]),
   guidesIntro: "",
   guideIds: [],
   currentSeason: "",

@@ -15,6 +15,10 @@ const sectionText = (section: ArticleSection) => {
   if (section.type === "months" || section.type === "cta" || section.type === "meet") return section.heading;
   if (section.type === "quote" || section.type === "tip" || section.type === "gquote") return section.text;
   if (section.type === "cost") return [section.heading, ...section.rows.map((row) => row.item)].join(" ");
+  if (section.type === "table") return [section.heading, ...(section.hasHeader ? section.header : []), ...section.rows.flat()].join(" ");
+  // Near enough for a reading time: the words between the tags.
+  if (section.type === "html") return section.html.replace(/<[^>]*>/g, " ");
+  if (section.type === "embed") return section.caption;
   if (section.type === "image") return section.caption;
   if (section.type === "faq") return section.items.map((item) => `${item.question} ${richTextToPlainText(item.answer)}`).join(" ");
   return "";

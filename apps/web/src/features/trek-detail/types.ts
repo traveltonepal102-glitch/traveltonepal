@@ -1,4 +1,5 @@
-import type { RichTextImage } from "@ttn/ui/lib/richText";
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
+import type { RichTextDoc, RichTextImage } from "@ttn/ui/lib/richText";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
@@ -135,10 +136,13 @@ export type PackingGroup = { title: string; icon: IconName; items: readonly Trek
 export type FieldGuideTopic = {
   title: string;
   icon: IconName;
-  points: readonly TrekPoint[];
-  /** Smaller italic line after the points, e.g. a word on winter and the monsoon. */
+  /** The text as written in the admin (paragraphs, lists, bold lead-ins), without its photos. */
+  body: RichTextDoc;
+  /** Photos added in the text, shown under it. */
+  textPhotos: readonly RichTextImage[];
+  /** Smaller italic line after the text, e.g. a word on winter and the monsoon. */
   note?: string;
-  /** Shown beside the points (the admin's photo for the topic). */
+  /** Shown beside the text (the admin's photo for the topic). */
   photo?: SiteImageSource;
 };
 
@@ -216,6 +220,8 @@ export type TrekDetailContent = {
   similarTreks: readonly TrekSummary[];
   /** Shared sections this trek leaves out. */
   hiddenSections: readonly SharedSection[];
+  /** Every section with a heading, in the trek's own order (full-width ones last). */
+  sectionOrder: readonly TrekPageSection[];
 };
 
 export type TrekDetail = TrekSummary & TrekDetailContent;

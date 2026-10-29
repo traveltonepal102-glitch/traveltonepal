@@ -13,6 +13,7 @@ import { TreksSection } from "@/features/home/components/TreksSection";
 import { WhyUsSection } from "@/features/home/components/WhyUsSection";
 import { homeGuides } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
@@ -42,6 +43,7 @@ const HomePage = async () => {
         <SiteHeader variant="overlay" />
       </div>
       <main className="flex-1 bg-surface">
+        <PageSchemasJsonLd kind="page" slug="home" />
         <HomeHero top={top} />
         <TrekFinder regions={regions} />
         <RegionsSection regions={regions} />

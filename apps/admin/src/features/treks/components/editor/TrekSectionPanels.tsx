@@ -1,5 +1,6 @@
 "use client";
 
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
 import { flushSync } from "react-dom";
 
 import { useEditorSectionLinks } from "@/components/editor/EditorSectionLinks";
@@ -25,6 +26,7 @@ import { GroupPricesCard } from "./prices/GroupPricesCard";
 import { StartDateCard } from "./prices/StartDateCard";
 import { ElevationCard } from "./route/ElevationCard";
 import { RouteMapCard } from "./route/RouteMapCard";
+import { SectionOrderCard } from "./SectionOrderCard";
 import { GoogleSearchCard } from "./seo/GoogleSearchCard";
 import { SimilarTreksCard } from "./seo/SimilarTreksCard";
 import { SharedSectionsCard } from "./SharedSectionsCard";
@@ -48,13 +50,30 @@ type TrekSectionPanelsProps = {
   regionId: string | null;
   isNew: boolean;
   pdfMapUrl: string | null;
+  /** The page's order of sections, kept by the editor so its section list follows it. */
+  sectionOrder: TrekPageSection[];
+  onSectionOrderChange: (order: TrekPageSection[]) => void;
 };
 
 /**
  * Every section of the trek editor, in the page's order. All stay in the form (the closed ones hidden), so Save
  * sends every field whichever section is open.
  */
-export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl }: TrekSectionPanelsProps) => {
+export const TrekSectionPanels = ({
+  activeKey,
+  values,
+  photos,
+  errors,
+  onEdit,
+  regions,
+  similarOptions,
+  guideOptions,
+  regionId,
+  isNew,
+  pdfMapUrl,
+  sectionOrder,
+  onSectionOrderChange,
+}: TrekSectionPanelsProps) => {
   const photosError = Object.entries(errors).find(([field]) => field.startsWith("photos"))?.[1];
   const trekPhotos = [...(photos.cover ? [photos.cover] : []), ...photos.gallery];
   const panel = (key: TrekSectionKey) => ({ hidden: activeKey !== key, className: "flex flex-col gap-4" });
@@ -71,7 +90,7 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
   return (
     <>
       <div {...panel("top")}>
-        <TrekNameCard values={values} errors={errors} regions={regions} isNew={isNew} />
+        <TrekNameCard values={values} errors={errors} regions={regions} isNew={isNew} onEdit={onEdit} />
         <LinesAboveHeadingCard values={values} errors={errors} />
         <LinesUnderHeadingCard values={values} errors={errors} />
         <TrekDifficultyCard values={values} errors={errors} />
@@ -145,7 +164,7 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
           line={{ name: "pricingIntro", defaultValue: values.pricingIntro, placeholder: "Book directly with our Kathmandu team, with no middlemen.", maxLength: LIMIT.pricingIntro, error: errors.pricingIntro }}
         />
         <GroupPricesCard prices={values.groupPrices} errors={errors} onEdit={onEdit} />
-        <StartDateCard region={regions.find((region) => region.id === values.regionId)} />
+        <StartDateCard regions={[values.regionId, ...values.routeRegionIds].flatMap((id) => regions.find((region) => region.id === id) ?? [])} />
       </div>
       <div {...panel("packing")}>
         <PageHeadingFields
@@ -179,7 +198,10 @@ export const TrekSectionPanels = ({ activeKey, values, photos, errors, onEdit, r
         <GoogleSearchCard values={values} errors={errors} />
       </div>
       <div {...panel("shared")}>
-        <SharedSectionsCard hiddenSharedSections={values.hiddenSharedSections} />
+        <SharedSectionsCard hiddenSharedSections={values.hiddenSharedSections} sectionOrder={sectionOrder} />
+      </div>
+      <div {...panel("order")}>
+        <SectionOrderCard order={sectionOrder} onChange={onSectionOrderChange} />
       </div>
     </>
   );

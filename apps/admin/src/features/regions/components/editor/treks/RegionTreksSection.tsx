@@ -20,10 +20,12 @@ import { NearbyTreksCard } from "./NearbyTreksCard";
 
 type RegionTreksSectionProps = {
   values: RegionValues;
+  /** null for a new region. */
+  regionId: string | null;
   regionName: string;
-  /** The treks whose region this is (from the trek editor), A–Z. */
+  /** The treks whose main region this is (A–Z), then the treks that pass through it (from the trek editor). */
   regionTreks: SimilarTrekOption[];
-  /** Treks in other regions, to suggest as nearby. */
+  /** Treks that don't touch this region, to suggest as nearby. */
   otherTreks: SimilarTrekOption[];
   errors: FieldErrors;
   onEdit: () => void;
@@ -33,7 +35,7 @@ type RegionTreksSectionProps = {
  * "Trek in …" on the region page (design: section "treks"): the region's own treks with one featured, nearby
  * treks from other regions, and the "Want your own route?" line. The treks themselves are listed, not picked.
  */
-export const RegionTreksSection = ({ values, regionName, regionTreks, otherTreks, errors, onEdit }: RegionTreksSectionProps) => {
+export const RegionTreksSection = ({ values, regionId, regionName, regionTreks, otherTreks, errors, onEdit }: RegionTreksSectionProps) => {
   // A featured trek moved to another region since the last save no longer counts.
   const [featuredId, setFeaturedId] = useState(regionTreks.some((trek) => trek.id === values.featuredTrekId) ? values.featuredTrekId : null);
   const name = regionName.trim() || "this region";
@@ -42,7 +44,7 @@ export const RegionTreksSection = ({ values, regionName, regionTreks, otherTreks
     <>
       <FormSection
         title={`Treks in ${name}`}
-        hint={`A trek joins this region when you choose “${name}” as its region in the trek editor. Pick the one to feature.`}
+        hint={`A trek joins this region when you add “${name}” to its regions on the route in the trek editor: first, or as a region it passes through. Pick the one to feature.`}
         aside={
           <Link href={TREKS_PATH} className={cn(secondaryButton, "min-h-8 px-3 text-caption")}>
             Open Treks
@@ -63,6 +65,7 @@ export const RegionTreksSection = ({ values, regionName, regionTreks, otherTreks
                     <span className="block truncate font-bold text-ink">{trek.name}</span>
                     <span className="block text-caption text-muted-foreground">
                       {trek.days} days · {difficultyOf(trek.difficulty).label}
+                      {trek.regionId !== regionId && ` · Passes through, starts in ${trek.regionName}`}
                     </span>
                   </span>
                   <label className="flex cursor-pointer items-center gap-2 text-caption font-bold">

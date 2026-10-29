@@ -131,3 +131,15 @@ describe("helpers", () => {
     expect(toggleValue(["a", "b"], "a")).toEqual(["b"]);
   });
 });
+
+describe("filtering treks across regions", () => {
+  const [base] = TREKS;
+  const crossing = { ...base, slug: "langtang-to-manaslu", name: "Langtang to Manaslu", region: "Langtang", regionSlug: "langtang", route: [{ slug: "langtang", name: "Langtang" }, { slug: "ganesh-himal", name: "Ganesh Himal" }, { slug: "manaslu", name: "Manaslu" }] };
+  const treks = [...TREKS, crossing];
+
+  it("finds a trek through any region on its route, and counts it there", () => {
+    expect(filterAndSortTreks(treks, { ...EMPTY_TREK_FILTERS, regions: ["manaslu"] }).map((trek) => trek.slug)).toContain("langtang-to-manaslu");
+    expect(filterAndSortTreks(treks, { ...EMPTY_TREK_FILTERS, q: "ganesh" }).map((trek) => trek.slug)).toEqual(["langtang-to-manaslu"]);
+    expect(countForOption(treks, EMPTY_TREK_FILTERS, "regions", "manaslu")).toBe(countForOption(TREKS, EMPTY_TREK_FILTERS, "regions", "manaslu") + 1);
+  });
+});

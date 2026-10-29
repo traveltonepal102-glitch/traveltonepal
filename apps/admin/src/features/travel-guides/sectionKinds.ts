@@ -8,6 +8,8 @@ export const MAX_CHECK_ITEMS = 20;
 export const MAX_COST_ROWS = 15;
 export const MAX_DAYS_SHOWN = 6;
 export const MAX_GALLERY_PHOTOS = 20;
+/** "Table": columns and body rows. */
+export const TABLE_SIZE = { maxColumns: 8, maxRows: 30 } as const;
 /** "Compare treks": 2 or 3; "Meet the guides": 2 to 4. */
 export const COMPARE_TREKS = { min: 2, max: 3 } as const;
 export const MEET_GUIDES = { min: 2, max: 4 } as const;
@@ -37,6 +39,10 @@ export const SECTION_LIMITS = {
   mapTitle: 80,
   mapPlace: 120,
   videoTitle: 100,
+  tableCell: 200,
+  embedTitle: 100,
+  embedCode: 4000,
+  customHtml: 20000,
 } as const;
 
 export const CROWDS: { value: Crowds; label: string }[] = [
@@ -49,7 +55,7 @@ export const CROWDS: { value: Crowds; label: string }[] = [
 
 export const CROWD_VALUES = ["very-low", "low", "medium", "busy", "busiest"] as const satisfies readonly Crowds[];
 
-export type SectionGroup = "text" | "trek" | "people" | "media" | "engage";
+export type SectionGroup = "text" | "trek" | "people" | "media" | "engage" | "advanced";
 
 /** The catalog's groups (design order), with the colors of their icons. */
 export const SECTION_GROUPS: { value: SectionGroup; label: string; tone: string }[] = [
@@ -58,6 +64,7 @@ export const SECTION_GROUPS: { value: SectionGroup; label: string; tone: string 
   { value: "people", label: "Guides and people", tone: "bg-saffron-tint text-saffron-deep" },
   { value: "media", label: "Photos, map and video", tone: "bg-muted text-text" },
   { value: "engage", label: "End of the article", tone: "bg-green-tint text-whatsapp" },
+  { value: "advanced", label: "Advanced", tone: "bg-muted text-text" },
 ];
 
 export type SectionKind = {
@@ -107,6 +114,15 @@ export const SECTION_KINDS: SectionKind[] = [
   { type: "quote", group: "text", name: "Pull quote", description: "One sentence in large type.", goodFor: "Breaking up long text with a strong line.", youFillIn: ["One sentence"], icon: "format_quote" },
   { type: "check", group: "text", name: "Checklist", description: "A list with green ticks.", goodFor: "Packing lists, things to book before you fly.", youFillIn: ["List items"], icon: "checklist" },
   {
+    type: "table",
+    group: "text",
+    name: "Table",
+    description: "A table you build: as many rows and columns as you need, with a header row and a footer row if wanted.",
+    goodFor: "Walking times between villages, teahouse prices, what to wear each season.",
+    youFillIn: ["Heading (optional)", "The cells", "Header row, footer row, first column as row headings"],
+    icon: "grid_on",
+  },
+  {
     type: "trek",
     group: "trek",
     name: "Trek card",
@@ -125,6 +141,15 @@ export const SECTION_KINDS: SectionKind[] = [
     icon: "calendar_month",
   },
   { type: "days", group: "trek", name: "Itinerary days", description: "Some days from a trek’s day-by-day plan.", goodFor: "Showing what one part of the trek is like.", youFillIn: ["Pick a trek", "Pick the days"], icon: "route" },
+  {
+    type: "altitude",
+    group: "trek",
+    name: "Altitude chart",
+    description: "A trek’s altitude day by day, as on its trek page, with the high point and the highest night.",
+    goodFor: "Altitude sickness and acclimatisation articles.",
+    youFillIn: ["Pick a trek: the chart comes from its day-by-day plan", "Heading (optional)"],
+    icon: "altitude",
+  },
   { type: "cost", group: "trek", name: "Cost table", description: "A list of costs with a total.", goodFor: "Budget and permit articles.", youFillIn: ["Item", "Price"], icon: "payments" },
   { type: "compare", group: "trek", name: "Compare treks", description: "Two or three treks side by side.", goodFor: "Articles like “Langtang or Annapurna?”.", youFillIn: ["Pick 2–3 treks"], icon: "table" },
   { type: "tip", group: "people", name: "Guide’s tip", description: "Advice shown with the guide’s photo and name.", goodFor: "Local advice that shows real experience.", youFillIn: ["Pick a guide", "The tip"], icon: "lightbulb" },
@@ -141,6 +166,15 @@ export const SECTION_KINDS: SectionKind[] = [
   },
   { type: "gallery", group: "media", name: "Photo gallery", description: "Several photos visitors can swipe through.", goodFor: "Trip reports and “what you will see”.", youFillIn: ["Photos from library"], icon: "photo_library" },
   { type: "map", group: "media", name: "Map", description: "A Google map with a “Load map” button first (privacy rules).", goodFor: "Trailheads and how to get there.", youFillIn: ["Place name or pin"], icon: "map" },
+  {
+    type: "embed",
+    group: "media",
+    name: "Embed",
+    description: "A Google My Maps route, a Komoot or Wikiloc track or a Vimeo video, with a “Load” button first (privacy rules).",
+    goodFor: "Your own route maps and GPS tracks.",
+    youFillIn: ["Embed code or link", "Title", "Height"],
+    icon: "code_blocks",
+  },
   { type: "video", group: "media", name: "YouTube video", description: "A video with a “Play” button first (privacy rules).", goodFor: "Trail videos, guide introductions.", youFillIn: ["YouTube link"], icon: "smart_display" },
   {
     type: "faq",
@@ -160,6 +194,15 @@ export const SECTION_KINDS: SectionKind[] = [
     goodFor: "The end of the article, or right after a trek card.",
     youFillIn: ["Heading", "Button text", "Message"],
     icon: "chat",
+  },
+  {
+    type: "html",
+    group: "advanced",
+    name: "Custom HTML",
+    description: "Your own HTML, for a layout the other sections don’t offer. Scripts, frames, forms and images are taken out.",
+    goodFor: "A styled box, a details list or a table copied from elsewhere.",
+    youFillIn: ["HTML"],
+    icon: "code",
   },
 ];
 

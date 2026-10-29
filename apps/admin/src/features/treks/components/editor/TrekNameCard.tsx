@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { FormSection } from "@/components/ui/FormSection";
-import { SelectField } from "@/components/ui/SelectField";
 import { SlugField } from "@/components/ui/SlugField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
@@ -11,16 +10,18 @@ import { slugify } from "@/utils/slugify";
 
 import { MAIN_SITE_TREKS_PREFIX, TREK_LIMITS as LIMIT } from "../../constants";
 import type { RegionOption, TrekValues } from "../../types";
+import { RouteRegionsField } from "./top/RouteRegionsField";
 
 type TrekNameCardProps = {
   values: TrekValues;
   errors: FieldErrors;
   regions: RegionOption[];
   isNew: boolean;
+  onEdit: () => void;
 };
 
-/** Name, the big heading (H1), web address, region and the summary (design: "Name and big heading"). */
-export const TrekNameCard = ({ values, errors, regions, isNew }: TrekNameCardProps) => {
+/** Name, the big heading (H1), web address, the regions on the route and the summary (design: "Name and big heading"). */
+export const TrekNameCard = ({ values, errors, regions, isNew, onEdit }: TrekNameCardProps) => {
   const [slug, setSlug] = useState(values.slug);
   // A new trek gets its web address from the name until the admin types one.
   const [isSlugTyped, setIsSlugTyped] = useState(!isNew);
@@ -62,28 +63,24 @@ export const TrekNameCard = ({ values, errors, regions, isNew }: TrekNameCardPro
         error={errors.headline}
         inputClassName="font-display text-lg font-bold"
       />
-      <div className="grid gap-3 tablet:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <SlugField
-          label="Web address"
-          prefix={MAIN_SITE_TREKS_PREFIX}
-          value={slug}
-          onChange={(next) => {
-            setIsSlugTyped(true);
-            setSlug(next);
-          }}
-          hint={isNew ? "Made from the name. Lowercase letters, numbers and dashes." : "Changing it moves the page to a new address."}
-          error={errors.slug}
-        />
-        <SelectField
-          name="regionId"
-          label="Region"
-          placeholder="Pick a region"
-          options={regions.map((region) => ({ value: region.id, label: region.name }))}
-          defaultValue={values.regionId}
-          hint="Every trek belongs to one region."
-          error={errors.regionId}
-        />
-      </div>
+      <SlugField
+        label="Web address"
+        prefix={MAIN_SITE_TREKS_PREFIX}
+        value={slug}
+        onChange={(next) => {
+          setIsSlugTyped(true);
+          setSlug(next);
+        }}
+        hint={isNew ? "Made from the name. Lowercase letters, numbers and dashes." : "Changing it moves the page to a new address."}
+        error={errors.slug}
+      />
+      <RouteRegionsField
+        regionId={values.regionId}
+        routeRegionIds={values.routeRegionIds}
+        regions={regions}
+        errors={{ regionId: errors.regionId, routeRegionIds: errors.routeRegionIds }}
+        onEdit={onEdit}
+      />
       <TextField
         name="summary"
         label="Short summary"

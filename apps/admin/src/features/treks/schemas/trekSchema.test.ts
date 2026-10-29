@@ -1,3 +1,4 @@
+import { TREK_PAGE_SECTIONS } from "@ttn/config/trekPageSections";
 import { describe, expect, it } from "vitest";
 
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
@@ -346,36 +347,83 @@ describe("trekSchema", () => {
     expect(errorsOf(twice).videos).toBe("A video is in the list twice.");
   });
 
-  it("reads know-before-you-go topics with their points and photo or video", () => {
+  it("reads know-before-you-go topics with their text and photo or video", () => {
     const photo = "00000000-0000-4000-8000-000000000031";
     const result = parse({
       knowIcon: ["cottage", "emergency", "route"],
       knowTitle: ["Teahouses", "", "Getting there"],
+      knowBody: [json("Twin beds, shared toilets."), "", json("7 hours by jeep to Syabrubesi.")],
       knowNote: ["Book Kyanjin early in October.", "", ""],
       knowMedia: [`photo:${photo}`, "", "video:dQw4w9WgXcQ"],
-      know0Title: ["Rooms"],
-      know0Text: ["Twin beds, shared toilets."],
-      know2Title: ["Jeep"],
-      know2Text: ["7 hours to Syabrubesi."],
     });
     expect(result.data?.knowTopics).toEqual([
-      { icon: "cottage", title: "Teahouses", points: [{ title: "Rooms", text: "Twin beds, shared toilets." }], note: "Book Kyanjin early in October.", photoId: photo, videoId: null },
-      { icon: "route", title: "Getting there", points: [{ title: "Jeep", text: "7 hours to Syabrubesi." }], note: "", photoId: null, videoId: "dQw4w9WgXcQ" },
+      { icon: "cottage", title: "Teahouses", body: doc("Twin beds, shared toilets."), note: "Book Kyanjin early in October.", photoId: photo, videoId: null },
+      { icon: "route", title: "Getting there", body: doc("7 hours by jeep to Syabrubesi."), note: "", photoId: null, videoId: "dQw4w9WgXcQ" },
     ]);
+  });
+
+  it("keeps a topic's long text in several paragraphs and lists", () => {
+    const body: RichTextDoc = {
+      type: "doc",
+      content: [
+        { type: "paragraph", content: [{ type: "text", text: "First paragraph. ".repeat(40) }] },
+        { type: "paragraph", content: [{ type: "text", text: "Second paragraph. ".repeat(40) }] },
+        { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Rescue:", marks: [{ type: "bold" }] }, { type: "text", text: " by helicopter." }] }] }] },
+      ],
+    };
+    const result = parse({ knowIcon: ["emergency"], knowTitle: ["Emergencies"], knowBody: [JSON.stringify(body)], knowNote: [""], knowMedia: [""] });
+    expect(result.data?.knowTopics[0].body).toEqual(body);
+    const tooLong = json("x".repeat(3001));
+    expect(errorsOf({ knowIcon: ["emergency"], knowTitle: ["Emergencies"], knowBody: [tooLong], knowNote: [""], knowMedia: [""] })["knowTopics.0.body"]).toBeDefined();
   });
 
   it("checks each know-before-you-go topic at its own number", () => {
     const errors = errorsOf({
       knowIcon: ["cottage", "rocket", "route"],
       knowTitle: ["Teahouses", "Altitude", ""],
+      knowBody: ["", json("300 m a day above 3,000 m."), ""],
       knowNote: ["", "", "A note without a heading."],
       knowMedia: ["", "photo:not-an-id", ""],
-      know1Title: ["Go slowly"],
-      know1Text: ["300 m a day above 3,000 m."],
     });
-    expect(errors["knowTopics.0.points"]).toBe("Add at least one point, or remove this topic.");
+    expect(errors["knowTopics.0.body"]).toBe("Write the topic's text, or remove this topic.");
     expect(errors["knowTopics.1.icon"]).toBe("Pick an icon.");
     expect(errors["knowTopics.1.media"]).toBe("Pick the photo or video again.");
     expect(errors["knowTopics.2.title"]).toBe("Write the topic's heading, or remove this topic.");
+  });
+});
+
+describe("trekSchema route regions", () => {
+  const GANESH = "00000000-0000-4000-8000-000000000002";
+  const MANASLU = "00000000-0000-4000-8000-000000000003";
+
+  it("keeps the regions after the main one in route order, each once, without the main region", () => {
+    expect(parse({ routeRegionId: [GANESH, MANASLU, GANESH, REGION] }).data?.routeRegionIds).toEqual([GANESH, MANASLU]);
+    expect(parse().data?.routeRegionIds).toEqual([]);
+  });
+
+  it("refuses an unknown region and more than four after the main one", () => {
+    expect(errorsOf({ routeRegionId: ["not-a-region"] })["routeRegionIds.0"]).toBe("Pick the regions from the list.");
+    const five = [1, 2, 3, 4, 5].map((n) => `00000000-0000-4000-8000-00000000001${n}`);
+    expect(errorsOf({ routeRegionId: five }).routeRegionIds).toBe("A route can pass through up to 4 more regions.");
+  });
+});
+
+describe("trekSchema section order", () => {
+  it("gives the usual order when none is sent", () => {
+    expect(parse().data?.sectionOrder.slice(0, 3)).toEqual(["intro", "overview", "founder"]);
+  });
+
+  it("keeps the order sent", () => {
+    const sent = ["reviews", ...TREK_PAGE_SECTIONS.filter((section) => section !== "reviews")];
+    expect(parse({ sectionOrder: sent }).data?.sectionOrder).toEqual(sent);
+  });
+
+  it("puts a section left out back in its usual place", () => {
+    const sent = TREK_PAGE_SECTIONS.filter((section) => section !== "why_book");
+    expect(parse({ sectionOrder: sent }).data?.sectionOrder).toEqual(TREK_PAGE_SECTIONS);
+  });
+
+  it("refuses a section the page doesn't have", () => {
+    expect(parse({ sectionOrder: ["intro", "sidebar"] }).success).toBe(false);
   });
 });

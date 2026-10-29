@@ -13,6 +13,7 @@ const item = (name: string, overrides: Partial<TrekListItem> = {}): TrekListItem
   id: name,
   name,
   regionId: "langtang",
+  routeRegionIds: [],
   regionName: "Langtang",
   days: 10,
   difficulty: "moderate",
@@ -41,6 +42,12 @@ describe("filterTreks", () => {
   it("searches names and regions, and filters by region", () => {
     expect(names(filterTreks(TREKS, { ...all, search: "  everest " }))).toEqual(["Gokyo Lakes Trek", "Everest Base Camp Trek"]);
     expect(names(filterTreks(TREKS, { ...all, regionId: "langtang" }))).toEqual(["Langtang Valley Trek"]);
+  });
+
+  it("finds a trek through any region on its route", () => {
+    const crossing = item("Langtang to Manaslu", { routeRegionIds: ["ganesh", "manaslu"], regionName: "Langtang → Ganesh Himal → Manaslu" });
+    expect(names(filterTreks([...TREKS, crossing], { ...all, regionId: "manaslu" }))).toEqual(["Langtang to Manaslu"]);
+    expect(names(filterTreks([...TREKS, crossing], { ...all, search: "ganesh" }))).toEqual(["Langtang to Manaslu"]);
   });
 
   it("splits published from drafts and hidden treks", () => {
@@ -148,7 +155,7 @@ describe("getTrekReadiness", () => {
   });
 
   it("asks for know-before-you-go topics, and flags a long heading", () => {
-    const topic = { icon: "cottage" as const, title: "Teahouses", points: [], note: "", photoId: null, videoId: null };
+    const topic = { icon: "cottage" as const, title: "Teahouses", body: EMPTY_RICH_TEXT, note: "", photoId: null, videoId: null };
     expect(readiness({ knowTopics: [topic] }).know).toEqual({ status: "done", note: "1 topic" });
     expect(readiness({ knowTopics: [topic], knowHeading: "x".repeat(71) }).know).toEqual({ status: "warn", note: "Heading is a bit long" });
   });

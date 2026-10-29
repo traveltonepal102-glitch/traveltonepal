@@ -58,7 +58,7 @@ export const TopicMediaField = ({ defaultValue, topicLabel, photos, videos, erro
         <span className="min-w-0 flex-1 text-caption text-text">
           {photo && <>Photo{photo.place ? ` · ${photo.place}` : ""}</>}
           {videoId && <>YouTube video{video ? ` · ${video.title}` : ""}</>}
-          {!photo && !videoId && (value ? "The chosen photo is no longer in this trek’s photos." : "None. The topic shows its points only.")}
+          {!photo && !videoId && (value ? "The chosen photo is no longer in this trek’s photos." : "None. The topic shows its text only.")}
         </span>
         <button type="button" onClick={() => setIsOpen(true)} className={cn(secondaryButton, "min-h-8 flex-none px-3 text-caption")}>
           <Icon name={value ? "edit" : "add"} size={16} />

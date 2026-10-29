@@ -21,15 +21,15 @@ const PERKS = ["No fixed departures", "No minimum group size", "Free date change
 
 type StartDatePickerProps = {
   days: number;
-  /** e.g. "Langtang": the months' colours are that region's. */
-  regionName: string;
+  /** The regions on the route, e.g. ["Langtang"]: the months' colours are theirs (each month the worst of them). */
+  regionNames: readonly string[];
 };
 
 /**
  * "Choose your own start date" (design: Trek, pricing): no fixed departures. A month from the next 12 (coloured by
- * the region's best months), then the start day; the choice shows in the booking card and goes into the requests.
+ * the route's best months), then the start day; the choice shows in the booking card and goes into the requests.
  */
-export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
+export const StartDatePicker = ({ days, regionNames }: StartDatePickerProps) => {
   const { today, months, startDate, selectStartDate } = useBookingSelection();
   const dateId = useId();
   const chosenIndex = startDate ? monthIndexOf(months, startDate) : -1;
@@ -61,7 +61,8 @@ export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
       </div>
       <p className="text-body-sm text-text">
         There are no fixed departures. Pick the month that suits you, then your start day.
-        {regionName && ` The colours show how good each month is for the ${regionName} region.`}
+        {regionNames.length === 1 && ` The colours show how good each month is for the ${regionNames[0]} region.`}
+        {regionNames.length > 1 && ` The colours show how good each month is along the route (${regionNames.join(", ")}): as good as its worst region.`}
       </p>
 
       <div

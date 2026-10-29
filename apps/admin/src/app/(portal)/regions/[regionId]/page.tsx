@@ -57,8 +57,9 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
       regionId={region.id}
       isNew={false}
       websiteDomain={region.websiteDomain}
-      regionTreks={treks.filter((trek) => trek.regionId === region.id)}
-      otherTreks={treks.filter((trek) => trek.regionId !== region.id)}
+      // Its own treks first, then the treks that pass through it.
+      regionTreks={[...treks.filter((trek) => trek.regionId === region.id), ...treks.filter((trek) => trek.routeRegionIds.includes(region.id))]}
+      otherTreks={treks.filter((trek) => trek.regionId !== region.id && !trek.routeRegionIds.includes(region.id))}
       otherRegions={regions.filter((other) => other.id !== region.id)}
       guides={guides.filter((guide) => guide.regionIds.includes(region.id)).map((guide) => toGuideOption(guide, today))}
       articles={articles}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { listRegions } from "@/features/regions/services/regionsRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { HowToChooseSection } from "@/features/treks/components/HowToChooseSection";
@@ -26,6 +27,7 @@ const TreksPage = async () => {
 
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="page" slug="treks" />
       <TreksHero top={top} trekCount={treks.length} regionCount={regions.length} />
       <TreksBrowser treks={treks} regions={regions} />
       <HowToChooseSection treks={treks} />

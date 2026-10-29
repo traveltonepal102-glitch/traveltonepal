@@ -1,3 +1,4 @@
+import type { EmbedProvider } from "@ttn/config/embeds";
 import type { IconName } from "@ttn/ui/icon";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -25,12 +26,18 @@ export type ArticleBlock =
   | { type: "text"; id: string; heading: string; tocLabel: string; body: RichTextDoc }
   | { type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
   | { type: "check"; heading: string; items: readonly string[] }
+  /** Every row as wide as the widest; no header or footer: []. */
+  | { type: "table"; heading: string; header: readonly string[]; rows: readonly (readonly string[])[]; footer: readonly string[]; hasRowHeadings: boolean }
+  /** The admin's own HTML, cleaned (@ttn/ui/lib/customHtml). */
+  | { type: "html"; html: string }
   /** The article's months, as a colour strip or a table with notes. */
   | { type: "months"; heading: string; view: "strip" | "table" }
   | { type: "cta"; heading: string; buttonText: string; message: string }
   | { type: "trek"; trek: TrekSummary }
   | { type: "quote"; text: string }
   | { type: "days"; trek: TrekSummary; days: readonly ArticleDay[] }
+  /** Every day of the trek, for its altitude curve. */
+  | { type: "altitude"; heading: string; trek: TrekSummary; days: readonly ArticleDay[] }
   | { type: "cost"; heading: string; rows: readonly { item: string; price: string }[]; totalLabel: string; total: string }
   | { type: "compare"; treks: readonly TrekSummary[] }
   | { type: "tip"; guide: GuidePerson; text: string }
@@ -39,6 +46,8 @@ export type ArticleBlock =
   | { type: "image"; image: SiteImageSource; caption: string }
   | { type: "gallery"; images: readonly SiteImageSource[] }
   | { type: "map"; title: string; place: string }
+  /** A frame from an allowed service (@ttn/config/embeds), loaded once the visitor allows it. `height` in px. */
+  | { type: "embed"; url: string; service: Pick<EmbedProvider, "name" | "company" | "kind">; height: number; title: string; caption: string }
   /** A YouTube video, played in privacy-enhanced mode once the visitor allows it. */
   | { type: "video"; youtubeId: string; title: string };
 

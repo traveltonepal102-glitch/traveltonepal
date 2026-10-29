@@ -2,6 +2,7 @@ import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 
 import { formatAltitude, formatDays } from "@/features/treks/format";
+import { routeText } from "@/features/treks/route";
 
 import type { TrekDetail } from "../types";
 
@@ -45,6 +46,8 @@ export const TrekTitle = ({ trek }: { trek: TrekDetail }) => {
       text: `Best window: ${trek.seasonLabel}`,
       iconClassName: "text-whatsapp",
     },
+    // A trek across several regions says which, in route order.
+    ...(trek.route.length > 1 ? [{ icon: "route" as const, text: `Route: ${routeText(trek)}`, iconClassName: "text-brand" }] : []),
   ];
 
   return (

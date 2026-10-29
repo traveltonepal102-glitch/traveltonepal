@@ -1,3 +1,4 @@
+import type { EmbedHeight } from "@ttn/config/embeds";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { Photo } from "@/features/photos/types";
@@ -42,10 +43,15 @@ export type ArticleSection =
   | { id: string | null; type: "quick"; body: RichTextDoc }
   | { id: string | null; type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
   | { id: string | null; type: "check"; heading: string; items: string[] }
+  /** Every row has as many cells as `header` (kept, empty, while the header row is off; the same for the footer). */
+  | { id: string | null; type: "table"; heading: string; hasHeader: boolean; hasFooter: boolean; hasRowHeadings: boolean; header: string[]; rows: string[][]; footer: string[] }
+  /** Cleaned when saved (@ttn/ui/lib/customHtml). */
+  | { id: string | null; type: "html"; html: string }
   | { id: string | null; type: "months"; heading: string; view: "strip" | "table" }
   | { id: string | null; type: "cta"; heading: string; buttonText: string; message: string }
   | { id: string | null; type: "quote"; text: string }
   | { id: string | null; type: "days"; trekId: string | null; dayIds: string[] }
+  | { id: string | null; type: "altitude"; trekId: string | null; heading: string }
   | { id: string | null; type: "cost"; heading: string; rows: CostRow[]; totalLabel: string; total: string }
   | { id: string | null; type: "compare"; trekIds: string[] }
   | { id: string | null; type: "tip"; guideId: string | null; text: string }
@@ -54,6 +60,8 @@ export type ArticleSection =
   | { id: string | null; type: "image"; photoId: string | null; caption: string; alt: string }
   | { id: string | null; type: "gallery"; photoIds: string[] }
   | { id: string | null; type: "map"; title: string; place: string }
+  /** `code`: the pasted embed code or link (saved as the frame's address only, @ttn/config/embeds). */
+  | { id: string | null; type: "embed"; code: string; height: EmbedHeight; title: string; caption: string }
   | { id: string | null; type: "video"; youtubeId: string; title: string }
   | { id: string | null; type: "trek"; trekId: string | null }
   | { id: string | null; type: "faq"; items: FaqItem[] };

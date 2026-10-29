@@ -6,7 +6,7 @@ const SPRING_AUTUMN = ["spring", "autumn"] as const;
  * All treks, in "Recommended" order. Demo values from the website design (Treks.dc.html) until
  * treks come from Payload (CMS phase). Prices the design left as [PRICE] are left out.
  */
-export const TREKS: readonly TrekSummary[] = [
+const DEMO_TREKS: readonly Omit<TrekSummary, "route">[] = [
   {
     slug: "everest-base-camp",
     name: "Everest Base Camp Trek",
@@ -198,6 +198,9 @@ export const TREKS: readonly TrekSummary[] = [
     hasPage: true,
   },
 ];
+
+/** The demo treks each stay in one region. */
+export const TREKS: readonly TrekSummary[] = DEMO_TREKS.map((trek) => ({ ...trek, route: [{ slug: trek.regionSlug, name: trek.region }] }));
 
 /** Look up treks by slug, in the given order (throws on a typo, so a bad slug fails the build). */
 export const treksBySlug = (slugs: readonly string[]): TrekSummary[] =>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
 import { EditorSectionLinks } from "@/components/editor/EditorSectionLinks";
@@ -11,7 +13,7 @@ import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 
 import { TREKS_PATH } from "../../constants";
 import { getTrekReadiness } from "../../lib/readiness";
-import { TREK_SECTIONS, firstSectionWithError, sectionsWithErrors } from "../../sections";
+import { firstSectionWithError, sectionsWithErrors, trekSectionsInPageOrder } from "../../sections";
 import type { RegionOption, SimilarTrekOption, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
 import { TrekSectionPanels } from "./TrekSectionPanels";
 import { TrekStatusSelect } from "./TrekStatusSelect";
@@ -50,7 +52,14 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
   });
   const { errors, activeKey, markDirty } = form;
   const [status, statusTone] = form.saveStatus;
-  const active = TREK_SECTIONS.find((section) => section.key === activeKey) ?? TREK_SECTIONS[0];
+  // Kept here so the section list follows the page's order as it is changed.
+  const [sectionOrder, setSectionOrder] = useState(values.sectionOrder);
+  const sections = trekSectionsInPageOrder(sectionOrder);
+  const active = sections.find((section) => section.key === activeKey) ?? sections[0];
+  const changeSectionOrder = (order: typeof sectionOrder) => {
+    setSectionOrder(order);
+    markDirty();
+  };
 
   return (
     <form noValidate onSubmit={form.handleSubmit} onChange={markDirty} className="flex flex-col gap-5">
@@ -70,7 +79,7 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
         <EditorSectionNav
           label="Trek sections"
           progressTitle="Ready to publish"
-          sections={TREK_SECTIONS}
+          sections={sections}
           activeKey={activeKey}
           onSelect={form.setActiveKey}
           readiness={getTrekReadiness(values, photos)}
@@ -80,7 +89,7 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
         <div className="flex min-w-0 flex-col gap-4">
           <EditorSectionHeading section={active} name={values.name} />
 
-          <EditorSectionLinks sections={TREK_SECTIONS} onShow={form.setActiveKey}>
+          <EditorSectionLinks sections={sections} onShow={form.setActiveKey}>
             <TrekSectionPanels
               activeKey={activeKey}
               values={values}
@@ -93,6 +102,8 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
               regionId={regionId}
               isNew={isNew}
               pdfMapUrl={pdfMapUrl}
+              sectionOrder={sectionOrder}
+              onSectionOrderChange={changeSectionOrder}
             />
           </EditorSectionLinks>
         </div>

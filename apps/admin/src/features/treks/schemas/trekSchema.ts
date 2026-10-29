@@ -1,3 +1,4 @@
+import { TREK_PAGE_SECTIONS, orderTrekSections } from "@ttn/config/trekPageSections";
 import { z } from "zod";
 
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
@@ -10,6 +11,7 @@ import {
   MAX_INCLUDED_ITEMS,
   MAX_MEAL_TIPS,
   MAX_PHOTO_BADGES,
+  MAX_ROUTE_REGIONS,
   MAX_SIMILAR_TREKS,
   MAX_TREK_GUIDES,
   SHARED_SECTION_KEYS,
@@ -40,6 +42,10 @@ export const trekSchema = z
     name: requiredText(LIMIT.name, "Enter the trek name."),
     slug: slugField("langtang-valley"),
     regionId: z.uuid("Pick the region this trek is in."),
+    routeRegionIds: z
+      .array(z.uuid("Pick the regions from the list."))
+      .transform(unique)
+      .refine((ids) => ids.length <= MAX_ROUTE_REGIONS, `A route can pass through up to ${MAX_ROUTE_REGIONS} more regions.`),
     status: z.enum(["draft", "published", "hidden"]),
     difficulty: z.enum(["easy", "moderate", "challenging", "strenuous"]),
     grade: z.string().transform(Number).pipe(z.number().int().min(1).max(5)),
@@ -125,6 +131,8 @@ export const trekSchema = z
       .refine((ids) => ids.length <= MAX_TREK_GUIDES, `Pick up to ${MAX_TREK_GUIDES} guides.`),
     // The switches send the sections that show; the trek stores the ones it hides.
     sharedSectionsShown: z.array(z.enum(SHARED_SECTION_KEYS)).transform(unique),
+    // Made whole: a section left out goes back to its default place.
+    sectionOrder: z.array(z.enum(TREK_PAGE_SECTIONS)).transform(orderTrekSections),
     photos: photoSelectionSchema("trek"),
   })
   .superRefine((values, context) => {
@@ -154,6 +162,8 @@ export const trekSchema = z
   // With a plan, its length and highest point win, so the cards, the facts and the days never disagree.
   .transform(({ days, maxAltitudeM, sharedSectionsShown, ...values }) => ({
     ...values,
+    // The main region is already first on the route.
+    routeRegionIds: values.routeRegionIds.filter((id) => id !== values.regionId),
     hiddenSharedSections: SHARED_SECTION_KEYS.filter((key) => !sharedSectionsShown.includes(key)),
     days: values.itinerary.length || (days ?? 0),
     maxAltitudeM: values.itinerary.length ? Math.max(...values.itinerary.map((day) => day.altitudeM)) : (maxAltitudeM ?? 0),
@@ -169,6 +179,7 @@ export const readTrekForm = (formData: FormData) => {
     name: readText(formData, "name"),
     slug: readText(formData, "slug"),
     regionId: readText(formData, "regionId"),
+    routeRegionIds: readList(formData, "routeRegionId"),
     status: readText(formData, "status"),
     difficulty: readText(formData, "difficulty"),
     grade: readText(formData, "grade"),
@@ -213,6 +224,7 @@ export const readTrekForm = (formData: FormData) => {
     seoDescription: readText(formData, "seoDescription"),
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
+    sectionOrder: readList(formData, "sectionOrder"),
     guidesIntro: readText(formData, "guidesIntro"),
     ...readTexts(formData, [
       "currentSeason",

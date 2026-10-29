@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { RegionDetailPage } from "@/features/region-detail/components/RegionDetailPage";
 import { regionMetadata } from "@/features/region-detail/seo";
 import { getRegionDetail, listRegionPageSlugs } from "@/features/region-detail/services/regionPageRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
 
 type RegionPageProps = PageProps<"/regions/[slug]">;
@@ -38,6 +39,7 @@ const RegionPage = async ({ params }: RegionPageProps) => {
 
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="region" slug={slug} />
       <RegionDetailPage region={region} />
     </main>
   );

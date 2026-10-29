@@ -2,14 +2,14 @@
 
 import { Icon } from "@ttn/ui/icon";
 
-import { PointListEditor } from "@/components/editor/PointListEditor";
 import { ghostIconButton } from "@/components/ui/buttonStyles";
+import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
 import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { KNOW_ICONS, MAX_KNOW_POINTS, TREK_LIMITS as LIMIT } from "../../../constants";
+import { KNOW_ICONS, TREK_LIMITS as LIMIT } from "../../../constants";
 import type { KnowTopic, TrekVideo } from "../../../types";
 import { TopicMediaField } from "./TopicMediaField";
 
@@ -26,9 +26,9 @@ type KnowTopicCardProps = {
 };
 
 /**
- * One topic of the trek guide: icon, heading (H3), its points ("Rooms: simple twin rooms…"), an optional
- * smaller note, and an optional photo or video. Sent as knowIcon / knowTitle / knowNote / knowMedia and
- * know<number>Title / Text for the points.
+ * One topic of the trek guide: icon, heading (H3), its text (paragraphs, lists or bold lead-ins like
+ * "Rooms: simple twin rooms…"), an optional smaller note, and an optional photo or video. Sent as
+ * knowIcon / knowTitle / knowBody / knowNote / knowMedia.
  */
 export const KnowTopicCard = ({ topic, index, photos, videos, errors, onMoveUp, onRemove, onEdit }: KnowTopicCardProps) => {
   const number = index + 1;
@@ -58,22 +58,19 @@ export const KnowTopicCard = ({ topic, index, photos, videos, errors, onMoveUp, 
           </button>
         </span>
       </div>
-      <PointListEditor
-        prefix={`know${index}`}
-        field={`${field}.points`}
-        itemLabel="Point"
-        points={topic.points}
-        maxItems={MAX_KNOW_POINTS}
-        limits={{ title: LIMIT.pointTitle, text: LIMIT.pointText }}
-        placeholders={{ title: "e.g. Rooms", text: "e.g. simple twin rooms with foam mattresses and blankets." }}
-        errors={errors}
+      <RichTextEditor
+        name="knowBody"
+        label="Text"
+        hint="Write it your way: paragraphs, a list, or short points that start with a bold lead-in (“Rooms: simple twin rooms…”)."
+        defaultValue={topic.body}
+        maxLength={LIMIT.knowText}
+        error={errors[`${field}.body`]}
         onEdit={onEdit}
-        layout="rows"
       />
       <div className="grid items-start gap-3 desktop:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <TextField
           name="knowNote"
-          label="Smaller note after the points"
+          label="Smaller note after the text"
           labelNote="(optional)"
           defaultValue={topic.note}
           placeholder="Winter (Dec–Feb) is clear but very cold at Kyanjin."

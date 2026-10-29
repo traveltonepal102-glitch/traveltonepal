@@ -5,6 +5,7 @@ import { LANGTANG_GUIDES, PHOTOS_BASE, langtangSource } from "./trekPage.testDat
 import { toTrekDetail } from "./trekPageRows";
 
 const detail = (page: Parameters<typeof langtangSource>[0] = {}) => toTrekDetail(langtangSource(page), PHOTOS_BASE);
+const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 
 describe("toTrekDetail", () => {
   it("maps the Langtang page from its database rows", () => {
@@ -83,13 +84,28 @@ describe("toTrekDetail", () => {
   it("shows a field guide topic's photo, and drops a note's own leading asterisk (the page adds one)", () => {
     const photo = { cover_id: "k1", cover_width: 800, cover_height: 600, cover_variant_widths: [400, 800], cover_placeholder: "", cover_place: "Manang" };
     const know_topics = [
-      { title: "Best season", icon: "wb_twilight", points: [{ title: "Autumn", text: "Clear skies." }], note: "**Snow can close the pass.", photo },
-      { title: "Teahouses", icon: "cottage", points: [{ title: "Rooms", text: "Simple." }], note: "", photo: null },
+      { title: "Best season", icon: "wb_twilight", body: doc("Autumn: clear skies."), note: "**Snow can close the pass.", photo },
+      { title: "Teahouses", icon: "cottage", body: doc("Simple rooms."), note: "", photo: null },
     ];
     const [season, teahouses] = detail({ know_topics }).fieldGuide.topics;
     expect(season).toMatchObject({ note: "Snow can close the pass.", photo: { src: `${PHOTOS_BASE}/k1`, alt: "Manang, Best season, Langtang Valley Trek" } });
     expect(teahouses.photo).toBeUndefined();
     expect(teahouses).not.toHaveProperty("note");
+  });
+
+  it("keeps a field guide topic's text as written, with its photos apart, and drops a topic without text", () => {
+    const image = { type: "image", attrs: { photoId: "00000000-0000-4000-8000-000000000041", alt: "Kyanjin", width: 800, height: 600, variantWidths: [400, 800] } };
+    const list = { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Rescue", marks: [{ type: "bold" }] }] }] }, { type: "listItem", content: [image] }] };
+    const body = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Two paragraphs." }] }, image, list] };
+    const know_topics = [
+      { title: "Emergencies", icon: "emergency", body, note: "", photo: null },
+      { title: "Empty", icon: "cottage", body: { type: "doc", content: [{ type: "paragraph" }] }, note: "", photo: null },
+      { title: "Old points", icon: "cottage", points: [{ title: "Rooms", text: "Simple." }], note: "", photo: null },
+    ];
+    const topics = detail({ know_topics }).fieldGuide.topics;
+    expect(topics.map((topic) => topic.title)).toEqual(["Emergencies"]);
+    expect(topics[0].body.content).toEqual([body.content[0], { type: "bulletList", content: [list.content[0]] }]);
+    expect(topics[0].textPhotos).toEqual([image, image]);
   });
 
   it("skips broken list items instead of emptying the section", () => {

@@ -1,3 +1,6 @@
+import { isFullWidthTrekSection } from "@ttn/config/trekPageSections";
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
+
 /**
  * Anchors of the trek page's sections, shared by the "On this page" bar, the booking card links and
  * the sections themselves. Sections below the top of the page are still to be built.
@@ -22,13 +25,38 @@ export const TREK_SECTION_IDS = {
   book: "book",
 } as const;
 
-/** Links in the sticky "On this page" bar, in page order. "Reviews" only when the page shows them. */
-export const trekSectionLinks = ({ hasReviews }: { hasReviews: boolean }) => [
-  { id: TREK_SECTION_IDS.itinerary, label: "Itinerary" },
-  { id: TREK_SECTION_IDS.inclusions, label: "Inclusions" },
-  { id: TREK_SECTION_IDS.routeMap, label: "Trip map" },
-  { id: TREK_SECTION_IDS.pricing, label: "Dates" },
-  { id: TREK_SECTION_IDS.usefulInfo, label: "Useful info" },
-  ...(hasReviews ? [{ id: TREK_SECTION_IDS.reviews, label: "Reviews" }] : []),
-  { id: TREK_SECTION_IDS.faq, label: "FAQ" },
+/** Links in the sticky "On this page" bar, with the section each one jumps to. */
+const SECTION_LINKS: { section: TrekPageSection; id: string; label: string }[] = [
+  { section: "itinerary", id: TREK_SECTION_IDS.itinerary, label: "Itinerary" },
+  { section: "inclusions", id: TREK_SECTION_IDS.inclusions, label: "Inclusions" },
+  { section: "route_map", id: TREK_SECTION_IDS.routeMap, label: "Trip map" },
+  { section: "pricing", id: TREK_SECTION_IDS.pricing, label: "Dates" },
+  { section: "packing", id: TREK_SECTION_IDS.usefulInfo, label: "Useful info" },
+  { section: "reviews", id: TREK_SECTION_IDS.reviews, label: "Reviews" },
+  { section: "faq", id: TREK_SECTION_IDS.faq, label: "FAQ" },
 ];
+
+type SectionLinksOptions = { hasReviews: boolean; order: readonly TrekPageSection[] };
+
+/** The "On this page" links in the trek's order of sections. "Reviews" only when the page shows them. */
+export const trekSectionLinks = ({ hasReviews, order }: SectionLinksOptions) =>
+  SECTION_LINKS.filter((link) => hasReviews || link.section !== "reviews")
+    .toSorted((a, b) => order.indexOf(a.section) - order.indexOf(b.section))
+    .map(({ id, label }) => ({ id, label }));
+
+/** Full-width sections that sit on one shared band (the others are bands themselves). */
+const BAND_SECTIONS: readonly TrekPageSection[] = ["similar", "newsletter"];
+
+export const isBandSection = (section: TrekPageSection) => BAND_SECTIONS.includes(section);
+
+/**
+ * The full-width sections at the end of the page, in order: similar treks and the newsletter share one band
+ * when they are next to each other, as in the design.
+ */
+export const fullWidthGroups = (order: readonly TrekPageSection[]) =>
+  order.filter(isFullWidthTrekSection).reduce<TrekPageSection[][]>((groups, section) => {
+    const last = groups.at(-1);
+    if (last && isBandSection(section) && isBandSection(last[0])) last.push(section);
+    else groups.push([section]);
+    return groups;
+  }, []);

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { TrekDetailPage } from "@/features/trek-detail/components/TrekDetailPage";
 import { trekMetadata } from "@/features/trek-detail/seo";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
@@ -38,6 +39,7 @@ const TrekPage = async ({ params }: TrekPageProps) => {
 
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="trek" slug={slug} />
       <TrekDetailPage trek={trek} />
     </main>
   );

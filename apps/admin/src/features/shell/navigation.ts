@@ -40,6 +40,12 @@ export const ADMIN_SECTIONS = {
     icon: "monitoring",
     summary: "How your sites do on Google: clicks, searches and positions.",
   },
+  structuredData: {
+    label: "Structured data",
+    href: "/structured-data",
+    icon: "code_blocks",
+    summary: "Your own schema.org JSON-LD for any page, added to what the website writes by itself.",
+  },
   photos: {
     label: "Photos",
     href: "/photos",
@@ -74,7 +80,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },
-  { title: "Growth", items: [ADMIN_SECTIONS.searchPerformance] },
+  { title: "Growth", items: [ADMIN_SECTIONS.searchPerformance, ADMIN_SECTIONS.structuredData] },
 ];
 
 /** The current screen's menu item: an exact match for the dashboard, otherwise the section and its sub-pages. */

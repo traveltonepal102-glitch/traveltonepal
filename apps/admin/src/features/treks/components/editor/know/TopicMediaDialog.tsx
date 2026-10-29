@@ -57,7 +57,7 @@ export const TopicMediaDialog = ({ topicLabel, value, photos, videos, onChoose, 
             <div className="min-w-0">
               <p className="m-0 text-xs font-bold tracking-wider text-muted-foreground uppercase">Trek guide topic</p>
               <Dialog.Title className="m-0 font-display text-h4 text-ink">Photo or video for {topicLabel}</Dialog.Title>
-              <Dialog.Description className="m-0 text-caption text-muted-foreground">It shows beside the topic’s points on the trek page.</Dialog.Description>
+              <Dialog.Description className="m-0 text-caption text-muted-foreground">It shows beside the topic’s text on the trek page.</Dialog.Description>
             </div>
             <Dialog.Close aria-label="Close" className={iconButton}>
               <Icon name="close" size={20} />

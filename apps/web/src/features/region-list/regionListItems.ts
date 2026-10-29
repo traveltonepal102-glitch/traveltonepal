@@ -4,6 +4,7 @@ import { regionMapEmbedUrl } from "@/features/regions/nepalMap";
 import type { RegionCard } from "@/features/regions/regionRows";
 import { treksFilterPath } from "@/features/treks/filters";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
+import { passesThrough } from "@/features/treks/route";
 import type { TrekSummary } from "@/features/treks/types";
 import { formatCount } from "@/lib/format";
 import { trekPath } from "@/lib/routes";
@@ -43,7 +44,11 @@ const trekLinkFor = (trek: TrekSummary): RegionTrekLink => {
 /** The Regions page's regions (west to east, as given) with their numbers, links and published treks. */
 export const regionListItems = (regions: readonly RegionCard[], treks: readonly TrekSummary[]): RegionListItem[] =>
   regions.map((region, index) => {
-    const regionTreks = treks.filter((trek) => trek.regionSlug === region.slug).map(trekLinkFor);
+    // Its own treks first, then the treks that pass through it.
+    const regionTreks = [
+      ...treks.filter((trek) => trek.regionSlug === region.slug),
+      ...treks.filter((trek) => trek.regionSlug !== region.slug && passesThrough(trek, region.slug)),
+    ].map(trekLinkFor);
     return {
       ...region,
       number: index + 1,

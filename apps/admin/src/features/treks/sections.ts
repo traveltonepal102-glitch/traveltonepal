@@ -1,6 +1,9 @@
+import type { TrekPageSection } from "@ttn/config/trekPageSections";
+
 import { createSectionErrorLookup } from "@/components/editor/sectionErrors";
 import type { EditorSection } from "@/components/editor/types";
 
+import { TREK_PAGE_SECTION_INFO } from "./pageSections";
 import type { TrekSectionKey } from "./types";
 
 /**
@@ -80,6 +83,12 @@ export const TREK_SECTIONS: EditorSection<TrekSectionKey>[] = [
     icon: "view_agenda",
     description: "Sections written once for every trek. Choose which ones show on this trek.",
   },
+  {
+    key: "order",
+    label: "Order of the page sections",
+    icon: "format_list_numbered",
+    description: "Put every section of the trek page in the order you want, the shared ones too. Drag a row or use its arrows.",
+  },
 ];
 
 /** Which section each saved field is on, to open the right one when a field has an error. */
@@ -89,6 +98,7 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   shortName: "top",
   slug: "top",
   regionId: "top",
+  routeRegionIds: "top",
   status: "top",
   summary: "top",
   currentSeason: "top",
@@ -164,6 +174,21 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   seoDescription: "seo",
   hiddenSharedSections: "shared",
   sharedSectionsShown: "shared",
+  sectionOrder: "order",
+};
+
+/**
+ * The editor's sections in this trek's page order: the top and the photos first, then each one where its first
+ * heading comes on the page, then the ones the page doesn't show in one place (Google, shared sections, order).
+ */
+export const trekSectionsInPageOrder = (order: readonly TrekPageSection[]) => {
+  const onPage = order.flatMap((section) => {
+    const info = TREK_PAGE_SECTION_INFO[section];
+    return "editorKey" in info ? [info.editorKey] : [];
+  });
+  const keys = [...new Set<TrekSectionKey>(["top", "photos", ...onPage])];
+  const rank = (key: TrekSectionKey) => (keys.includes(key) ? keys.indexOf(key) : keys.length);
+  return TREK_SECTIONS.toSorted((a, b) => rank(a.key) - rank(b.key));
 };
 
 export const { sectionsWithErrors, firstSectionWithError } = createSectionErrorLookup(TREK_SECTIONS, FIELD_SECTIONS);

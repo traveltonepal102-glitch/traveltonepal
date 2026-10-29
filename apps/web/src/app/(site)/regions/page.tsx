@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { RegionsPage } from "@/features/region-list/components/RegionsPage";
 import { regionListItems } from "@/features/region-list/regionListItems";
 import { listRegionCards } from "@/features/regions/services/regionsRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
@@ -25,6 +26,7 @@ const Regions = async () => {
 
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="page" slug="regions" />
       <RegionsPage top={top} regions={regionListItems(regions, treks)} trekCount={treks.length} />
     </main>
   );

@@ -1,6 +1,7 @@
 import { DIFFICULTIES } from "./difficulty";
 import { TREK_LENGTHS, TREK_SEASONS, TREK_SHORTCUTS, TREK_SORTS } from "./filters";
 import type { TrekLength, TrekShortcut, TrekSort } from "./filters";
+import { passesThrough } from "./route";
 import type { TrekSummary } from "./types";
 
 /** Treks page filter state. The URL is its source of truth (see parse/serialize below). */
@@ -92,7 +93,7 @@ const matchesShortcut = (trek: TrekSummary, shortcut: TrekShortcut) => {
 
 const matchesSearch = (trek: TrekSummary, q: string) => {
   const needle = q.toLowerCase();
-  return [trek.name, trek.region, trek.summary].some((text) => text.toLowerCase().includes(needle));
+  return [trek.name, ...trek.route.map((stop) => stop.name), trek.summary].some((text) => text.toLowerCase().includes(needle));
 };
 
 /** A sidebar list whose option counts ignore its own selection (so options never count 0 just because another is picked). */
@@ -100,7 +101,8 @@ export type CountedDimension = "regions" | "difficulties";
 
 export const matchesTrek = (trek: TrekSummary, filters: TrekFilters, ignore?: CountedDimension): boolean => {
   if (filters.q && !matchesSearch(trek, filters.q)) return false;
-  if (ignore !== "regions" && filters.regions.length && !filters.regions.includes(trek.regionSlug)) return false;
+  // A region finds the treks that start there and the ones that pass through.
+  if (ignore !== "regions" && filters.regions.length && !filters.regions.some((region) => passesThrough(trek, region))) return false;
   if (filters.length && !matchesLength(trek.days, filters.length)) return false;
   if (ignore !== "difficulties" && filters.difficulties.length && !filters.difficulties.includes(difficultyValue(trek)))
     return false;
@@ -137,7 +139,7 @@ export const countForOption = (
   treks.filter(
     (trek) =>
       matchesTrek(trek, filters, dimension) &&
-      (dimension === "regions" ? trek.regionSlug === value : difficultyValue(trek) === value),
+      (dimension === "regions" ? passesThrough(trek, value) : difficultyValue(trek) === value),
   ).length;
 
 /** Number of filters set in the sidebar or search (the shortcut and sort don't count). */

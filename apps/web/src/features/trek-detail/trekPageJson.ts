@@ -1,6 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
-import { richTextDocSchema, richTextImages, richTextToPlainText } from "@ttn/ui/lib/richText";
-import type { RichTextImage } from "@ttn/ui/lib/richText";
+import { EMPTY_RICH_TEXT, isRichTextEmpty, richTextDocSchema, richTextImages, richTextToPlainText } from "@ttn/ui/lib/richText";
+import type { RichTextBlock, RichTextImage } from "@ttn/ui/lib/richText";
 import { z } from "zod";
 
 /** Icons each list may use (the admin's choices); anything else shows the list's first icon. */
@@ -95,7 +95,7 @@ const packingGroupSchema = z.object({ title: text.min(1), icon: iconOf(PACKING_I
 const knowTopicSchema = z.object({
   title: text.min(1),
   icon: iconOf(KNOW_ICONS),
-  points: z.array(z.unknown()).catch([]),
+  body: z.unknown(),
   note: optionalText,
   photo: coverSchema.nullable().catch(null),
 });
@@ -117,13 +117,30 @@ export const readPackingGroups = (value: unknown) =>
     return items.length ? [{ title: group.title, icon: group.icon, items }] : [];
   });
 
-/** Field guide topics with their photo row; a note's own leading "*" is dropped (the page adds one). */
+/** A text without its photos, also inside lists (they show under it). */
+const withoutPhotos = (blocks: readonly RichTextBlock[]): RichTextBlock[] =>
+  blocks.flatMap((block): RichTextBlock[] => {
+    if (block.type === "image") return [];
+    if (block.type !== "bulletList" && block.type !== "orderedList") return [block];
+    const items = block.content.flatMap((item) => {
+      const content = withoutPhotos(item.content);
+      return content.length ? [{ ...item, content }] : [];
+    });
+    return items.length ? [{ ...block, content: items }] : [];
+  });
+
+/**
+ * Field guide topics with their photo row: the text as written (its photos apart, shown under it); a note's own
+ * leading "*" is dropped (the page adds one).
+ */
 export const readKnowTopics = (value: unknown) =>
   listOf(value, knowTopicSchema).flatMap((topic) => {
-    const points = readPoints(topic.points);
+    const { content } = richTextDocSchema.safeParse(topic.body).data ?? EMPTY_RICH_TEXT;
+    const body = { type: "doc" as const, content: withoutPhotos(content) };
+    const textPhotos = richTextImages(content);
     const note = topic.note.replace(/^\*+\s*/, "");
-    if (!points.length && !note) return [];
-    return [{ title: topic.title, icon: topic.icon, points, ...(note ? { note } : {}), photo: topic.photo }];
+    if (isRichTextEmpty(body) && !textPhotos.length && !note) return [];
+    return [{ title: topic.title, icon: topic.icon, body, textPhotos, ...(note ? { note } : {}), photo: topic.photo }];
   });
 
 /** Question topics; a question shows only with an answer. */

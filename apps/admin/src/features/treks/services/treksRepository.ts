@@ -1,4 +1,5 @@
 import "server-only";
+import { orderTrekSections } from "@ttn/config/trekPageSections";
 import { cache } from "react";
 import { z } from "zod";
 
@@ -32,7 +33,8 @@ const TREK_COLUMNS = `*,
   trek_days(*, photo:photos(${PHOTO_COLUMNS}), trek_day_translations!inner(*)),
   trek_group_prices(*, trek_group_price_translations!inner(*)),
   trek_similar!trek_similar_trek_id_fkey(position, similar_trek_id),
-  trek_guides(position, guide_id)` as const;
+  trek_guides(position, guide_id),
+  trek_regions(position, region_id)` as const;
 
 type DayQueryRow = DayRow & { photo: PhotoFields | null; trek_day_translations: DayTextRow[] };
 
@@ -44,7 +46,13 @@ type TrekQueryRow = TrekRow & {
   trek_group_prices: (PriceRow & { trek_group_price_translations: PriceTextRow[] })[];
   trek_similar: { position: number; similar_trek_id: string }[];
   trek_guides: { position: number; guide_id: string }[];
+  trek_regions: RouteRegionRow[];
 };
+
+type RouteRegionRow = { position: number; region_id: string };
+
+/** The regions after the main one, in route order. */
+const toRouteRegionIds = (rows: RouteRegionRow[]) => [...rows].sort((a, b) => a.position - b.position).map((row) => row.region_id);
 
 const toGroupPrices = (rows: TrekQueryRow["trek_group_prices"]): GroupPrice[] =>
   [...rows]
@@ -92,13 +100,14 @@ const faqsSchema = z
   .array(z.object({ title: z.string(), icon: z.enum(FAQ_ICON_VALUES), items: z.array(z.object({ question: z.string(), answer: richTextDocSchema })) }))
   .catch([]);
 const sharedSectionsSchema = z.array(z.enum(SHARED_SECTION_KEYS)).catch([]);
+const sectionOrderSchema = z.array(z.string()).catch([]).transform(orderTrekSections);
 const richTextSchema = richTextDocSchema.catch(EMPTY_RICH_TEXT);
 const knowTopicsSchema = z
   .array(
     z.object({
       icon: z.enum(KNOW_ICON_VALUES),
       title: z.string(),
-      points: z.array(pointSchema),
+      body: richTextSchema,
       note: z.string(),
       photoId: z.string().nullable(),
       videoId: z.string().nullable(),
@@ -113,6 +122,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     id: row.id,
     updatedAt: row.updated_at,
     regionName: regionNames.get(row.region_id) ?? "",
+    routeRegionNames: toRouteRegionIds(row.trek_regions).map((id) => regionNames.get(id) ?? ""),
     priceFromUsd: row.price_from_usd,
     photos: {
       cover: row.cover ? toPhoto(row.cover) : null,
@@ -164,6 +174,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     seoTitle: text.seo_title,
     seoDescription: text.seo_description,
     hiddenSharedSections: sharedSectionsSchema.parse(row.hidden_shared_sections),
+    sectionOrder: sectionOrderSchema.parse(row.section_order),
     guidesIntro: text.guides_intro,
     currentSeason: text.current_season,
     category: text.category,
@@ -195,6 +206,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     videos: videosSchema.parse(text.videos),
     pdfMapPath: row.pdf_map_path,
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
+    routeRegionIds: toRouteRegionIds(row.trek_regions),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
   };
 };
@@ -221,7 +233,7 @@ export const listSimilarTrekOptions = async (exceptId: string | null): Promise<S
   const [{ data, error }, regionNames] = await Promise.all([
     supabase
       .from("treks")
-      .select(`id, days, difficulty, region_id, cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}), trek_translations!inner(name)`)
+      .select(`id, days, difficulty, region_id, cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}), trek_translations!inner(name), trek_regions(position, region_id)`)
       .eq("trek_translations.locale", TREK_LOCALE),
     regionNameMap(),
   ]);
@@ -236,6 +248,7 @@ export const listSimilarTrekOptions = async (exceptId: string | null): Promise<S
       difficulty: trek.difficulty,
       regionId: trek.region_id,
       regionName: regionNames.get(trek.region_id) ?? "",
+      routeRegionIds: toRouteRegionIds(trek.trek_regions),
       cover: trek.cover ? toPhoto(trek.cover) : null,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -313,9 +326,11 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
       hidden_shared_sections: values.hiddenSharedSections,
+      section_order: values.sectionOrder,
       optional_high_point_m: values.optionalHighPointM,
       pdf_map_path: values.pdfMapPath ?? "",
       guide_ids: values.guideIds,
+      route_region_ids: values.routeRegionIds,
     },
     p_text: {
       name: values.name,

@@ -15,6 +15,8 @@ export const WEBSITE_CACHE_TAGS = {
   reviews: "reviews",
   /** Custom adventures: the home page section's words and its cards. */
   adventures: "adventures",
+  /** Structured data: the SEO person's own JSON-LD blocks on any page. */
+  structuredData: "structured-data",
 } as const;
 
 export type WebsiteCacheTag = (typeof WEBSITE_CACHE_TAGS)[keyof typeof WEBSITE_CACHE_TAGS];

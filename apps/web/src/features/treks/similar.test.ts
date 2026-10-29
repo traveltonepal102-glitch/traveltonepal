@@ -8,6 +8,7 @@ const trek = (slug: string, regionSlug: string, days: number, isPopular = false)
   name: slug,
   region: regionSlug,
   regionSlug,
+  route: [{ slug: regionSlug, name: regionSlug }],
   summary: "",
   days,
   maxAltitudeM: 4000,
@@ -37,5 +38,14 @@ describe("similarTreks", () => {
 
   it("ranks the same region first, then popular treks, then similar lengths", () => {
     expect(similarTreks(current, 4, all).map((item) => item.slug)).toEqual(["neighbour", "popular", "close-length", "far-long"]);
+  });
+});
+
+describe("similarTreks across regions", () => {
+  it("counts a trek passing through the same region as the same region", () => {
+    const crossing = { ...trek("langtang-to-manaslu", "langtang", 16), route: [{ slug: "langtang", name: "Langtang" }, { slug: "manaslu", name: "Manaslu" }] };
+    const manaslu = trek("manaslu-circuit", "manaslu", 16);
+    const everest = trek("everest-base-camp", "everest", 16, true);
+    expect(similarTreks(manaslu, 1, [manaslu, everest, crossing]).map((other) => other.slug)).toEqual(["langtang-to-manaslu"]);
   });
 });

@@ -2,10 +2,14 @@ import { RichText } from "@/components/shared/RichText";
 
 import type { ArticleBlock as Block, GuideArticle } from "../../types";
 import { PROSE, SECTION_TITLE } from "../styles";
+import { ArticleAltitude } from "./ArticleAltitude";
+import { ArticleEmbed } from "./ArticleEmbed";
+import { ArticleHtml } from "./ArticleHtml";
 import { ArticleFigure, ArticleGallery, ArticleMap } from "./ArticleMediaParts";
 import { GuideTip, GuideWords, MeetGuides } from "./ArticlePeopleParts";
 import { ArticleCallout, ArticleChecklist, ArticleCta, ArticlePullQuote } from "./ArticleTextParts";
 import { ArticleTrekCard } from "./ArticleTrekCard";
+import { ArticleTable } from "./ArticleTable";
 import { ArticleCompare, ArticleCostTable, ArticleDays } from "./ArticleTrekParts";
 import { ArticleVideo } from "./ArticleVideo";
 import { MonthTable } from "./MonthTable";
@@ -39,6 +43,10 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
       return <ArticleCallout tone={block.tone} body={block.body} />;
     case "check":
       return <ArticleChecklist heading={block.heading} items={block.items} />;
+    case "table":
+      return <ArticleTable heading={block.heading} header={block.header} rows={block.rows} footer={block.footer} hasRowHeadings={block.hasRowHeadings} />;
+    case "html":
+      return <ArticleHtml html={block.html} />;
     case "months":
       if (!article.months) return null;
       return (
@@ -55,6 +63,8 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
       return <ArticlePullQuote text={block.text} />;
     case "days":
       return <ArticleDays trek={block.trek} days={block.days} />;
+    case "altitude":
+      return <ArticleAltitude heading={block.heading} trek={block.trek} days={block.days} />;
     case "cost":
       return <ArticleCostTable heading={block.heading} rows={block.rows} totalLabel={block.totalLabel} total={block.total} />;
     case "compare":
@@ -71,6 +81,8 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
       return <ArticleGallery images={block.images} />;
     case "map":
       return <ArticleMap title={block.title} place={block.place} />;
+    case "embed":
+      return <ArticleEmbed url={block.url} service={block.service} height={block.height} title={block.title} caption={block.caption} />;
     case "video":
       return <ArticleVideo youtubeId={block.youtubeId} title={block.title} />;
   }

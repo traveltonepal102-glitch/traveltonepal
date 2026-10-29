@@ -7,6 +7,9 @@ export type TrekTag = "classic" | "off-the-beaten-path";
 
 export type TrekSeason = "spring" | "autumn" | "winter" | "monsoon";
 
+/** A region on a trek's route. */
+export type TrekRouteRegion = { slug: string; name: string };
+
 /** What cards, menus and filters need; the full trek comes from Payload later. */
 export type TrekSummary = {
   slug: string;
@@ -14,6 +17,8 @@ export type TrekSummary = {
   region: string;
   /** Slug of the region (filters and links). */
   regionSlug: string;
+  /** Every region on the route in order, the main one (region) first; a one-region trek has just that. */
+  route: readonly TrekRouteRegion[];
   /** One line for the Treks page card. */
   summary: string;
   days: number;

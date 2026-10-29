@@ -119,6 +119,8 @@ export type WebTrekRow = CoverColumns & {
   updated_at: string;
   /** True once it has a day-by-day plan: the trek has its own page (web_trek_pages). */
   has_page: boolean;
+  /** Every region on the route in order, the main region (region_slug) first. */
+  route_regions: { slug: string; name: string }[];
 };
 
 /**
@@ -186,8 +188,10 @@ export type WebTrekPageRow = {
   /** Published ones only, in the admin's order. */
   similar_slugs: string[];
   hidden_shared_sections: string[];
-  /** The region's best months, Jan–Dec ("best" | "possible" | "avoid"); null without a region. */
+  /** The route's best months, Jan–Dec ("best" | "possible" | "avoid"): each month the worst of its regions. */
   region_month_ratings: string[] | null;
+  /** The trek's own order of its page sections (TREK_PAGE_SECTIONS keys); empty = the default order. */
+  section_order: string[];
 };
 
 /** A trek's gallery photo (the photo columns named as in the other views). */
@@ -409,6 +413,12 @@ export type WebAdventureRow = CoverColumns & {
   position: number;
 };
 
+/**
+ * One of the SEO person's own JSON-LD blocks (web_page_schemas: shown ones, on pages the website shows), for a
+ * fixed page (page_slug: its SitePageSlug) or a trek, region or guide (its slug). `data`: schema.org without "@context".
+ */
+export type WebPageSchemaRow = { page_kind: "page" | "trek" | "region" | "guide"; page_slug: string; position: number; data: unknown };
+
 export type Database = {
   public: {
     Tables: { [_ in never]: never };
@@ -431,6 +441,7 @@ export type Database = {
       web_review_ratings: View<WebReviewRatingRow>;
       web_adventure_section: View<WebAdventureSectionRow>;
       web_adventures: View<WebAdventureRow>;
+      web_page_schemas: View<WebPageSchemaRow>;
     };
     Functions: {
       /** "Was this guide helpful?": the website's one write (…_guide_feedback.sql). False: unknown guide or too many votes. */

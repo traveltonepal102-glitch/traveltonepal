@@ -107,6 +107,13 @@ export const field = {
   text: (record: Record<string, unknown>, key: string) => text.parse(record[key]),
   doc: (record: Record<string, unknown>, key: string) => doc.safeParse(record[key]).data,
   texts: (record: Record<string, unknown>, key: string) => listOf(record[key], z.string().trim().min(1)),
+  /** A table row's cells, empty ones kept in their place. */
+  cells: (record: Record<string, unknown>, key: string) => listOf(record[key], text),
+  // Not listOf: its flatMap would flatten the rows into one.
+  cellRows: (record: Record<string, unknown>, key: string): string[][] => {
+    const rows = record[key];
+    return Array.isArray(rows) ? rows.map((row) => listOf(row, text)) : [];
+  },
   costRows: (record: Record<string, unknown>) => listOf(record.rows, z.object({ item: z.string().trim().min(1), price: text })),
   faqItems: (record: Record<string, unknown>) =>
     listOf(record.items, z.object({ question: z.string().trim().min(1), answer: doc })).map((item) => ({ question: item.question, answer: item.answer })),

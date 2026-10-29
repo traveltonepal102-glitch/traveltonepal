@@ -1,3 +1,5 @@
+import { orderTrekSections } from "@ttn/config/trekPageSections";
+
 import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage } from "@/lib/images";
@@ -167,5 +169,6 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks }: TrekPageS
     monthRatings: toMonthRatings(page.region_month_ratings),
     similarTreks: toSimilarTreks(summary, page.similar_slugs, treks),
     hiddenSections: SHARED_SECTIONS.filter((section) => page.hidden_shared_sections.includes(section)),
+    sectionOrder: orderTrekSections(page.section_order ?? []),
   };
 };

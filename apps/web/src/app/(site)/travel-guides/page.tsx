@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GuidesPage } from "@/features/guides/components/GuidesPage";
 import { listTravelGuides } from "@/features/guides/services/guidesRepository";
 import { listRegions } from "@/features/regions/services/regionsRepository";
+import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
@@ -20,6 +21,7 @@ const TravelGuides = async () => {
   const [guides, top] = await Promise.all([listTravelGuides(), guidesTop()]);
   return (
     <main className="flex-1 bg-page">
+      <PageSchemasJsonLd kind="page" slug="travel-guides" />
       <GuidesPage top={top} guides={guides} />
     </main>
   );
