@@ -1,6 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
+import { TrekCardMedia } from "@/features/treks/components/TrekCardMedia";
 import { formatDays, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import type { TrekSummary } from "@/features/treks/types";
@@ -45,19 +46,26 @@ export const SimilarTreks = ({ treks }: { treks: readonly TrekSummary[] }) => (
     />
     <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {treks.map((other, index) => (
-        <li key={other.slug} className="flex flex-col justify-between gap-3 rounded-lg border border-line bg-page p-4 shadow-card">
-          <div className="flex flex-col gap-2">
-            <p className={`self-start rounded-xs px-2 py-0.5 text-[10px] font-bold uppercase ${TAG_TONES[index % TAG_TONES.length]}`}>
-              {formatDays(other.days)} · {other.difficulty}
-            </p>
-            <h3 className="text-base font-bold">{other.name}</h3>
-            <p className="text-xs text-text">{other.summary}</p>
-          </div>
-          <div className="flex items-center justify-between gap-2 border-t border-line pt-2">
-            <p className="text-body-sm font-bold text-brand">
-              {other.priceFromUsd ? `From ${formatUsd(other.priceFromUsd)}` : "Price on request"}
-            </p>
-            <TrekAction trek={other} />
+        <li key={other.slug} className="flex flex-col overflow-hidden rounded-lg border border-line bg-page shadow-card">
+          <TrekCardMedia
+            trek={other}
+            className="aspect-16/10"
+            sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+          />
+          <div className="flex flex-1 flex-col justify-between gap-3 p-4">
+            <div className="flex flex-col gap-2">
+              <p className={`self-start rounded-xs px-2 py-0.5 text-[10px] font-bold uppercase ${TAG_TONES[index % TAG_TONES.length]}`}>
+                {formatDays(other.days)} · {other.difficulty}
+              </p>
+              <h3 className="text-base font-bold">{other.name}</h3>
+              <p className="text-xs text-text">{other.summary}</p>
+            </div>
+            <div className="flex items-center justify-between gap-2 border-t border-line pt-2">
+              <p className="text-body-sm font-bold text-brand">
+                {other.priceFromUsd ? `From ${formatUsd(other.priceFromUsd)}` : "Price on request"}
+              </p>
+              <TrekAction trek={other} />
+            </div>
           </div>
         </li>
       ))}

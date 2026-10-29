@@ -17,7 +17,6 @@ const CTA =
 
 /** Booking terms, from the website design. */
 const ASSURANCES = [
-  { icon: "check_circle", text: "Free cancellation up to 30 days before you start", className: "text-whatsapp" },
   { icon: "lock", text: "Only 10% deposit secures permits and transport", className: "text-brand" },
 ] as const;
 
