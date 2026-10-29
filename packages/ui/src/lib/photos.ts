@@ -1,3 +1,9 @@
+/**
+ * Widths made for every library photo (admin). Both apps' next.config use them as next/image's widths, so a srcset
+ * names each file at its real width and the browser picks the one it needs.
+ */
+export const VARIANT_WIDTHS = [400, 800, 1200, 1600, 2400];
+
 /** A library photo's prepared files: `${baseUrl}/${width}.webp`, one per variant width (admin and website). */
 export type PhotoFiles = { baseUrl: string; variantWidths: readonly number[] };
 

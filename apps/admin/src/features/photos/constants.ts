@@ -10,7 +10,7 @@ export const MAX_PHOTO_PIXELS = 100_000_000;
 export const MASTER_MAX_SIDE = 3000;
 
 /** Widths made for every photo; the website picks the one it needs (srcset). */
-export const VARIANT_WIDTHS = [400, 800, 1200, 1600, 2400];
+export { VARIANT_WIDTHS } from "@ttn/ui/lib/photos";
 
 /** A region's gallery (the cover is separate). */
 export const MAX_GALLERY_PHOTOS = 30;

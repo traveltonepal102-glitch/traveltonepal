@@ -52,14 +52,17 @@ export const RouteRegionCard = ({ stop, number }: RouteRegionCardProps) => {
           {facts
             .filter((fact) => fact.text)
             .map((fact) => (
-              <div key={fact.label} className="flex items-start gap-2">
-                <Icon name={fact.icon} size={16} className="mt-0.5 flex-none text-brand" />
+              <div key={fact.label}>
                 <dt className="sr-only">{fact.label}</dt>
-                <dd className="text-text">
-                  <span aria-hidden="true" className="font-semibold text-ink">
-                    {fact.label}:{" "}
+                {/* The icon sits inside the <dd>: a <dl> may hold only <dt>/<dd> pairs. */}
+                <dd className="flex items-start gap-2 text-text">
+                  <Icon name={fact.icon} size={16} className="mt-0.5 flex-none text-brand" />
+                  <span>
+                    <span aria-hidden="true" className="font-semibold text-ink">
+                      {fact.label}:{" "}
+                    </span>
+                    {fact.text}
                   </span>
-                  {fact.text}
                 </dd>
               </div>
             ))}

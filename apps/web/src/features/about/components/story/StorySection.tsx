@@ -54,7 +54,7 @@ export const StorySection = ({ story, founder }: StorySectionProps) => (
             const isLast = index === story.goals.length - 1;
             return (
               <li key={goal.title} className={`flex flex-col gap-3 rounded-2xl p-6.5 ${isLast ? "bg-navy text-white" : "border border-line bg-page"}`}>
-                <span className="font-display text-sm font-extrabold tracking-[0.08em] text-saffron">{String(index + 1).padStart(2, "0")}</span>
+                <span className={`font-display text-sm font-extrabold tracking-[0.08em] ${isLast ? "text-saffron" : "text-saffron-ink"}`}>{String(index + 1).padStart(2, "0")}</span>
                 <h3 className={`font-display text-xl leading-[26px] font-bold ${isLast ? "text-white" : ""}`}>{goal.title}</h3>
                 {goal.text && <p className={`text-[15px] leading-6 ${isLast ? "text-navy-text" : "text-text"}`}>{goal.text}</p>}
               </li>

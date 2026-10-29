@@ -11,6 +11,7 @@ export const HeroBackdrop = () => (
       alt="Gokyo village and turquoise Gokyo Lake beside the Ngozumpa Glacier, with snow peaks of the Everest region behind"
       fill
       preload
+      fetchPriority="high"
       sizes="100vw"
       className="object-cover object-[50%_55%]"
     />

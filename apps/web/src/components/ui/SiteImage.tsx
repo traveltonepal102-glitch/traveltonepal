@@ -10,6 +10,7 @@ type SiteImageProps = {
   /** How wide it shows, e.g. "(min-width: 768px) 300px, 85vw", so the browser picks the right size. */
   sizes: string;
   className?: string;
+  /** The page's main photo (its Largest Contentful Paint): preloaded from the <head> and fetched first. */
   priority?: boolean;
   /** e.g. the photo viewer's tap to zoom. */
   onClick?: () => void;
@@ -27,7 +28,8 @@ export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteIm
       alt={image.alt}
       fill
       sizes={sizes}
-      priority={priority}
+      preload={priority}
+      fetchPriority={priority ? "high" : undefined}
       // Library photos: their own files for each width (`${src}/<width>.webp`), not Next's image service.
       loader={variantWidths?.length ? ({ width }) => photoUrl({ baseUrl: image.src, variantWidths }, width) : undefined}
       placeholder={image.placeholder ? "blur" : "empty"}

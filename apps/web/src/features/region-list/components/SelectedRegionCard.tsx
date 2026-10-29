@@ -40,17 +40,18 @@ export const SelectedRegionCard = ({ region }: { region: RegionListItem }) => {
       <div className="flex flex-1 flex-col gap-3 p-4.5">
         <h3 className="text-[22px] font-extrabold">{region.name}</h3>
         {region.summary && <p className="text-body-sm text-text">{region.summary}</p>}
-        <dl className="grid grid-cols-2 gap-2">
+        {/* One small <dl> per fact: a <dl> may hold only <dt>/<dd> pairs, not the icon beside them. */}
+        <ul className="grid grid-cols-2 gap-2">
           {facts.map((fact) => (
-            <div key={fact.label} className="flex items-center gap-2 rounded-md border border-[#eef2f6] bg-page px-2.5 py-2 text-xs leading-snug">
+            <li key={fact.label} className="flex items-center gap-2 rounded-md border border-[#eef2f6] bg-page px-2.5 py-2 text-xs leading-snug">
               <Icon name={fact.icon} size={18} className="flex-none text-brand" />
-              <div className="flex flex-col">
+              <dl className="flex flex-col">
                 <dt className="text-[10px] font-bold tracking-wide text-muted-foreground uppercase">{fact.label}</dt>
                 <dd className="font-bold text-ink">{fact.value}</dd>
-              </div>
-            </div>
+              </dl>
+            </li>
           ))}
-        </dl>
+        </ul>
         {region.treks.length > 0 && (
           <div className="flex flex-col gap-1.5">
             <p className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase">Treks in this region</p>

@@ -25,20 +25,21 @@ export const TrekOverview = ({ trek }: { trek: TrekDetail }) => (
       </p>
     </div>
 
-    <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+    {/* One small <dl> per spec: a <dl> may hold only <dt>/<dd> pairs, not the icon beside them. */}
+    <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
       {trekSpecs(trek).map((spec) => (
-        <div key={spec.label} className="flex flex-col items-start gap-2 rounded-md border border-line bg-surface p-3 shadow-card sm:flex-row sm:items-center sm:gap-2.5">
-          <span className={`inline-flex size-9 flex-none items-center justify-center rounded-full ${TONES[spec.tone]}`}>
+        <li key={spec.label} className="flex flex-col items-start gap-2 rounded-md border border-line bg-surface p-3 shadow-card sm:flex-row sm:items-center sm:gap-2.5">
+          <span aria-hidden="true" className={`inline-flex size-9 flex-none items-center justify-center rounded-full ${TONES[spec.tone]}`}>
             <Icon name={spec.icon} size={18} />
           </span>
-          <div className="flex min-w-0 flex-col leading-tight">
+          <dl className="flex min-w-0 flex-col leading-tight">
             <dt className="text-[10.5px] font-semibold tracking-wide break-words text-muted-foreground uppercase">{spec.label}</dt>
             <dd className={`mt-0.75 font-display text-caption font-bold ${spec.isHighlighted ? "text-whatsapp" : "text-ink"}`}>
               {spec.value}
             </dd>
-          </div>
-        </div>
+          </dl>
+        </li>
       ))}
-    </dl>
+    </ul>
   </section>
 );

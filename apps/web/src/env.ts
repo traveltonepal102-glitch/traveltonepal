@@ -28,7 +28,13 @@ const envSchema = z.object({
   BREVO_API_KEY: optional(z.string().startsWith("xkeysib-", "BREVO_API_KEY must be a Brevo API key (xkeysib-…).")),
   BREVO_NEWSLETTER_LIST_ID: optional(z.coerce.number().int().positive("BREVO_NEWSLETTER_LIST_ID must be the list's number, e.g. 3.")),
   BREVO_CONFIRM_TEMPLATE_ID: optional(z.coerce.number().int().positive("BREVO_CONFIRM_TEMPLATE_ID must be the template's number, e.g. 1.")),
-});
+  // The site's public address (read by lib/site.ts). Not set: the dev server's.
+  SITE_URL: optional(z.url("SITE_URL must be a URL, e.g. https://www.traveltonepal.com.")),
+}).refine(
+  // Without it, canonical links, the sitemap, robots.txt and structured data would all name localhost (2026-10-30).
+  (settings) => settings.NEXT_PUBLIC_APP_ENV !== "production" || /^https:\/\/(?!localhost)/.test(settings.SITE_URL ?? ""),
+  { message: "SITE_URL must be the site's https address in production, e.g. https://www.traveltonepal.com." },
+);
 
 const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {

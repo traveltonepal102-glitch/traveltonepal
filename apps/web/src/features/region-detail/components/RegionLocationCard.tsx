@@ -40,18 +40,19 @@ export const RegionLocationCard = ({ region }: { region: RegionDetail }) => (
         className="block aspect-4/3 w-full border-0"
       />
     </MapConsentGate>
+    {/* One small <dl> per way: a <dl> may hold only <dt>/<dd> pairs, not the icon beside them. */}
     {region.gettingThere.length > 0 && (
-      <dl className="flex flex-col">
+      <ul className="flex flex-col">
         {region.gettingThere.map((item) => (
-          <div key={item.label} className="flex items-start gap-3 border-t border-[#eef2f6] pt-3 pb-1">
+          <li key={item.label} className="flex items-start gap-3 border-t border-[#eef2f6] pt-3 pb-1">
             <Icon name={item.icon} size={22} className="flex-none text-brand" />
-            <div>
+            <dl>
               <dt className="text-xs font-bold tracking-wider text-muted-foreground uppercase">{item.label}</dt>
               <dd className="font-semibold text-ink">{item.value}</dd>
-            </div>
-          </div>
+            </dl>
+          </li>
         ))}
-      </dl>
+      </ul>
     )}
   </aside>
 );

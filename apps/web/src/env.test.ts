@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const SETTINGS = { SUPABASE_URL: "https://abc.supabase.co", SUPABASE_PUBLISHABLE_KEY: "sb_publishable_0123456789abcdef", PHOTOS_PUBLIC_URL: "", REVALIDATE_SECRET: "", NEXT_PUBLIC_APP_ENV: "" };
+const SETTINGS = { SUPABASE_URL: "https://abc.supabase.co", SUPABASE_PUBLISHABLE_KEY: "sb_publishable_0123456789abcdef", PHOTOS_PUBLIC_URL: "", REVALIDATE_SECRET: "", NEXT_PUBLIC_APP_ENV: "", SITE_URL: "" };
 
 /** env.ts read with these settings (it reads process.env once, when first imported). */
 const loadEnv = async (overrides: Partial<typeof SETTINGS> = {}) => {
@@ -40,7 +40,13 @@ describe("website settings", () => {
   });
 
   it("accepts production or development as the app environment, and stops on a typo", async () => {
-    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production" })).resolves.toBeDefined();
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production", SITE_URL: "https://www.example.com" })).resolves.toBeDefined();
     await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "prod" })).rejects.toThrow(/NEXT_PUBLIC_APP_ENV must be production or development/);
+  });
+
+  it("needs the site's https address in production, so links never name localhost", async () => {
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production" })).rejects.toThrow(/SITE_URL/);
+    await expect(loadEnv({ NEXT_PUBLIC_APP_ENV: "production", SITE_URL: "http://localhost:3000" })).rejects.toThrow(/SITE_URL/);
+    await expect(loadEnv({ SITE_URL: "http://localhost:3000" })).resolves.toBeDefined();
   });
 });

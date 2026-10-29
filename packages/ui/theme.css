@@ -14,7 +14,7 @@
   --ttn-navy-label: #7f98b1; /* small uppercase labels on navy */
   --ttn-ink: #1f2328;
   --ttn-text: #334155;
-  --ttn-muted: #64748b;
+  --ttn-muted: #56657a; /* 4.5:1 or more on white, muted grey, brand tint and the WhatsApp bubble */
   --ttn-subtle: #94a3b8; /* placeholders and disabled text only */
   --ttn-line: #e2e8f0;
   --ttn-line-strong: #cbd5e1;
@@ -25,7 +25,7 @@
   --ttn-saffron: #f2a33a; /* text on saffron is navy or ink, never white */
   --ttn-saffron-tint: #fff8ec;
   --ttn-saffron-line: #f3d9ae;
-  --ttn-saffron-ink: #8a5a12;
+  --ttn-saffron-ink: #83550f; /* 4.5:1 or more on white, saffron tint and saffron line */
   --ttn-saffron-deep: #b4690e; /* icons only, not small text */
   --ttn-whatsapp: #15803d; /* WhatsApp and success only */
   --ttn-whatsapp-on-dark: #86efac; /* WhatsApp/verified on navy (whatsapp is too dark there) */

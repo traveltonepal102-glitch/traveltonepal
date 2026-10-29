@@ -1,3 +1,4 @@
+import { EMAIL_PATH, WHATSAPP_PATH } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 import Link from "next/link";
@@ -50,6 +51,8 @@ type ButtonLinkProps = {
   className?: string;
 };
 
+const isContactRedirect = (href: string) => [EMAIL_PATH, WHATSAPP_PATH].some((path) => href === path || href.startsWith(`${path}?`));
+
 /** A link styled as the website's pill button. */
 export const ButtonLink = ({
   href,
@@ -76,6 +79,16 @@ export const ButtonLink = ({
   if (isExternal) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+        {content}
+      </a>
+    );
+  }
+
+  // /email and /whatsapp redirect to mailto: and wa.me: a plain link, as <Link> would prefetch them (an error in the
+  // browser console) and can't follow them in the app.
+  if (isContactRedirect(href)) {
+    return (
+      <a href={href} className={classes}>
         {content}
       </a>
     );

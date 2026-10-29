@@ -25,7 +25,8 @@ export const RegionPhotoGrid = ({ photos, title }: RegionPhotoGridProps) => {
             <button
               type="button"
               onClick={() => setViewerIndex(index)}
-              aria-label={`Open photo: ${photo.alt}`}
+              // The name starts with the words shown on the button (the first one shows "View all … photos").
+              aria-label={index === 0 ? `View all ${photos.length} photos, starting with ${photo.alt}` : `Open photo: ${photo.alt}`}
               className="group relative block size-full cursor-zoom-in overflow-hidden rounded-lg bg-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               <SiteImage

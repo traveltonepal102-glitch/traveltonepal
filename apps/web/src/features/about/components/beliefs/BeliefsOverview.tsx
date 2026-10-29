@@ -28,7 +28,7 @@ export const BeliefsOverview = ({ listen, honest, flexible, openMind, safetyLine
           {cards.map((card, index) => (
             <li key={card.id} className="bg-surface">
               <a href={`#${card.id}`} className={`flex h-full flex-col gap-2 p-6.5 text-text hover:bg-page ${FOCUS} focus-visible:-outline-offset-2`}>
-                <span className="font-display text-sm font-extrabold tracking-[0.08em] text-saffron">{String(index + 1).padStart(2, "0")}</span>
+                <span className="font-display text-sm font-extrabold tracking-[0.08em] text-saffron-ink">{String(index + 1).padStart(2, "0")}</span>
                 <span className="font-display text-[22px] leading-7 font-extrabold text-ink">{card.title}</span>
                 {card.text && <span className="text-[15px]">{card.text}</span>}
                 {card.link && <span className="mt-auto pt-1 text-sm font-bold text-brand">{card.link} →</span>}

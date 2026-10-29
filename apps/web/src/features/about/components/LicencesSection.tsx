@@ -77,17 +77,18 @@ export const LicencesSection = async ({ heading }: { heading: SectionHeading }) 
           text={heading.text || "You can check every number below with the Nepal Department of Tourism and TAAN."}
         />
         <div className="flex flex-wrap gap-6">
-          <dl className={`${CARD} grid min-w-0 flex-[1_1_480px] content-start gap-3 sm:grid-cols-2`}>
+          {/* One small <dl> per item: a <dl> may hold only <dt>/<dd> pairs, not the icon beside them. */}
+          <ul className={`${CARD} grid min-w-0 flex-[1_1_480px] content-start gap-3 sm:grid-cols-2`}>
             {licences.map((licence) => (
-              <div key={licence.label} className="flex items-center gap-3 rounded-lg bg-muted px-4 py-3.5">
+              <li key={licence.label} className="flex items-center gap-3 rounded-lg bg-muted px-4 py-3.5">
                 <Icon name={licence.icon} size={20} className="flex-none text-whatsapp" />
-                <div className="flex flex-col-reverse leading-snug">
+                <dl className="flex flex-col-reverse leading-snug">
                   <dt className="text-[11px] font-bold tracking-[0.08em] text-muted-foreground uppercase">{licence.label}</dt>
                   <dd className="font-display text-base font-bold text-ink">{licence.value}</dd>
-                </div>
-              </div>
+                </dl>
+              </li>
             ))}
-          </dl>
+          </ul>
 
           <div className={`${CARD} flex min-w-0 flex-[1_1_420px] flex-col gap-3.5`}>
             {certificates.length > 0 ? (

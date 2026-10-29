@@ -14,6 +14,7 @@ import { ShortcutBar } from "./ShortcutBar";
 import type { FilterActions, TrekExplorerData } from "./types";
 
 const SIDEBAR_ID = "trek-filters";
+const RESULTS_TITLE_ID = "trek-results-title";
 
 type TrekExplorerViewProps = TrekExplorerData & FilterActions & { filters: TrekFilters };
 
@@ -27,7 +28,11 @@ const TrekExplorerView = (props: TrekExplorerViewProps) => {
     <>
       <ShortcutBar active={filters.shortcut} onPick={(shortcut) => update({ shortcut })} />
 
-      <section id={TREK_RESULTS_ID} aria-label="Treks" className="scroll-mt-4 pt-7 pb-12">
+      <section id={TREK_RESULTS_ID} aria-labelledby={RESULTS_TITLE_ID} className="scroll-mt-4 pt-7 pb-12">
+        {/* The cards' titles are h3s; on phones the filters (with their h2) are hidden, so the results have their own. */}
+        <h2 id={RESULTS_TITLE_ID} className="sr-only">
+          Treks
+        </h2>
         <div className="mx-auto max-w-content gap-7 px-4 md:px-6 lg:grid lg:grid-cols-[272px_minmax(0,1fr)] lg:items-start">
           <FilterSidebar
             id={SIDEBAR_ID}
