@@ -172,6 +172,8 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   seoKeyword: "seo",
   seoTitle: "seo",
   seoDescription: "seo",
+  sharePhotoId: "seo",
+  canonicalPath: "seo",
   hiddenSharedSections: "shared",
   sharedSectionsShown: "shared",
   sectionOrder: "order",

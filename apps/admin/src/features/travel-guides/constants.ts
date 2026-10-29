@@ -113,4 +113,5 @@ export const EMPTY_ARTICLE_VALUES: ArticleValues = {
   seoKeyword: "",
   seoTitle: "",
   seoDescription: "",
+  canonicalPath: "",
 };

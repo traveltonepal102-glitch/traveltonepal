@@ -4,7 +4,7 @@ import { RegionsPage } from "@/features/region-list/components/RegionsPage";
 import { regionListItems } from "@/features/region-list/regionListItems";
 import { listRegionCards } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
-import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
+import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
@@ -16,7 +16,7 @@ const regionsTop = async () => {
   return getListPageTop("regions", { regions: regions.length, treks: treks.length });
 };
 
-export const generateMetadata = async (): Promise<Metadata> => withSiteShareImage(sitePageMetadata(await regionsTop(), ROUTES.regions));
+export const generateMetadata = async (): Promise<Metadata> => withSiteDefaults(sitePageMetadata(await regionsTop(), ROUTES.regions));
 
 /**
  * The Regions page: regions and published treks come from the database (cached; a save in the admin refreshes

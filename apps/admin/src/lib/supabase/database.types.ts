@@ -161,6 +161,8 @@ type TrekTranslationRow = {
   seo_description: string;
   /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
   share_photo_id: string | null;
+  /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
+  canonical_path: string;
   updated_at: string;
 };
 
@@ -331,6 +333,8 @@ export type SitePageRow = {
   seo_description: string;
   /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
   share_photo_id: string | null;
+  /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
+  canonical_path: string;
   seo_keyword: string;
   photo_id: string | null;
   founder_author_id: string | null;
@@ -407,6 +411,8 @@ type ArticleTranslationRow = {
   seo_description: string;
   /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
   share_photo_id: string | null;
+  /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
+  canonical_path: string;
   /** Jan–Dec: [{ onTheTrail, crowds }], or [] */
   month_notes: Json;
   updated_at: string;
@@ -542,6 +548,8 @@ type RegionTranslationRow = {
   seo_description: string;
   /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
   share_photo_id: string | null;
+  /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
+  canonical_path: string;
   featured_trek_label: string;
   featured_trek_pitch: string;
   custom_route_pitch: string;

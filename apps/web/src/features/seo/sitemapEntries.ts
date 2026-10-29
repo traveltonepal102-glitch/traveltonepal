@@ -16,17 +16,28 @@ export type SitemapSource = {
  */
 const FIXED_PAGES = [ROUTES.home, ROUTES.treks, ROUTES.regions, ROUTES.guides, ROUTES.about, ROUTES.contact, ROUTES.privacy, ROUTES.terms];
 
-/**
- * The sitemap's entries, as full URLs on `siteUrl`: the fixed pages, then every trek, region and travel guide with
- * a page (a link to a page that answers 404 would only waste Google's visit). Each address once.
- */
-export const sitemapEntries = ({ treks, regions, guideSlugs }: SitemapSource, siteUrl: URL): MetadataRoute.Sitemap => {
-  const url = (path: string) => new URL(path, siteUrl).toString();
-  const entries: MetadataRoute.Sitemap = [
-    ...FIXED_PAGES.map((path) => ({ url: url(path) })),
-    ...treks.flatMap((trek) => (trek.hasPage ? [{ url: url(trekPath(trek.slug)), ...(trek.updatedAt ? { lastModified: trek.updatedAt } : {}) }] : [])),
-    ...regions.flatMap((region) => (region.hasPage ? [{ url: url(regionPath(region.slug)) }] : [])),
-    ...guideSlugs.map((slug) => ({ url: url(guidePath(slug)) })),
+type SitemapPage = { path: string; lastModified?: string };
+
+/** The fixed pages, then every trek, region and travel guide with a page; each path once. */
+const sitemapPages = ({ treks, regions, guideSlugs }: SitemapSource): SitemapPage[] => {
+  const pages: SitemapPage[] = [
+    ...FIXED_PAGES.map((path) => ({ path })),
+    ...treks.flatMap((trek) => (trek.hasPage ? [{ path: trekPath(trek.slug), ...(trek.updatedAt ? { lastModified: trek.updatedAt } : {}) }] : [])),
+    ...regions.flatMap((region) => (region.hasPage ? [{ path: regionPath(region.slug) }] : [])),
+    ...guideSlugs.map((slug) => ({ path: guidePath(slug) })),
   ];
-  return entries.filter((entry, index) => entries.findIndex((other) => other.url === entry.url) === index);
+  return pages.filter((page, index) => pages.findIndex((other) => other.path === page.path) === index);
 };
+
+/** The paths of the pages meant for Google (a canonical address may only name one of these). */
+export const sitemapPaths = (source: SitemapSource): ReadonlySet<string> => new Set(sitemapPages(source).map((page) => page.path));
+
+/**
+ * The sitemap's entries, as full URLs on `siteUrl` (a link to a page that answers 404 would only waste Google's
+ * visit). Pages in `pointingElsewhere` (a canonical address the website follows) are left out: Google should list
+ * the page they name instead.
+ */
+export const sitemapEntries = (source: SitemapSource, siteUrl: URL, pointingElsewhere: ReadonlySet<string> = new Set()): MetadataRoute.Sitemap =>
+  sitemapPages(source)
+    .filter((page) => !pointingElsewhere.has(page.path))
+    .map(({ path, lastModified }) => ({ url: new URL(path, siteUrl).toString(), ...(lastModified ? { lastModified } : {}) }));

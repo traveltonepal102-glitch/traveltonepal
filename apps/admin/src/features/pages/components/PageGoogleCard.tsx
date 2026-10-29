@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
+import { CanonicalPathField } from "@/components/editor/CanonicalPathField";
 import { FormSection } from "@/components/ui/FormSection";
 import { tileLabelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
@@ -87,6 +88,7 @@ export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", 
             showCount
             error={errors[name("seoDescription")]}
           />
+          <CanonicalPathField name={name("canonicalPath")} defaultValue={values.canonicalPath} error={errors[name("canonicalPath")]} />
           <SharePhotoField name={name("sharePhotoId")} initial={sharePhoto} fallback={shareFallback} onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-2.5">

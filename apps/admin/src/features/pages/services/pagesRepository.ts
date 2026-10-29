@@ -23,6 +23,7 @@ const toPageTop = (row: PageRow): PageTopValues => ({
   seoKeyword: row.seo_keyword,
   photoId: row.photo_id,
   sharePhotoId: row.share_photo_id,
+  canonicalPath: row.canonical_path,
 });
 
 /** When each page was last saved, for the Pages list. Throws when the database can't be read. */
@@ -96,6 +97,7 @@ const toPagePayload = (page: SavePageInput) => ({
   seo_keyword: page.seoKeyword,
   photo_id: page.photoId ?? "",
   share_photo_id: page.sharePhotoId ?? "",
+  canonical_path: page.canonicalPath,
   founder_author_id: page.founderAuthorId ?? "",
   content: page.content,
 });
@@ -134,7 +136,7 @@ export const saveLegalPages = (pages: LegalPagesValues): Promise<SavePageResult>
     Object.fromEntries(
       Object.entries(pages).map(([slug, page]) => [
         slug,
-        { eyebrow: "", heading: page.heading, intro: page.intro, seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, sharePhotoId: null, content: legalContentOf(page) },
+        { eyebrow: "", heading: page.heading, intro: page.intro, seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, sharePhotoId: null, canonicalPath: "", content: legalContentOf(page) },
       ]),
     ),
   );

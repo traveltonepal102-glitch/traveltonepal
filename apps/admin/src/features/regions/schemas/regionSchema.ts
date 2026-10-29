@@ -4,6 +4,7 @@ import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
 import { optionalWholeNumber, readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
+import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
 import {
   MAX_BEST_FOR,
@@ -123,6 +124,7 @@ export const regionSchema = z
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalPhotoId,
+    canonicalPath: canonicalPathField,
     featuredTrekId: z
       .string()
       .transform((value) => value || null)
@@ -212,6 +214,7 @@ export const readRegionForm = (formData: FormData) => {
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
     sharePhotoId: readText(formData, "sharePhotoId"),
+    canonicalPath: readText(formData, "canonicalPath"),
     featuredTrekId: readText(formData, "featuredTrekId"),
     featuredTrekLabel: readText(formData, "featuredTrekLabel"),
     featuredTrekPitch: readText(formData, "featuredTrekPitch"),

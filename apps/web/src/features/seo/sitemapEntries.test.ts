@@ -36,6 +36,14 @@ describe("sitemapEntries", () => {
     expect(urls).not.toContain("https://traveltonepal.com/cookies");
   });
 
+  it("leaves out pages that name another page as their main version", () => {
+    const source = { treks: [{ slug: "langtang-valley", hasPage: true }], regions: [], guideSlugs: [] };
+    const left = sitemapEntries(source, SITE, new Set(["/treks/langtang-valley", "/contact"])).map((entry) => entry.url);
+    expect(left).not.toContain("https://traveltonepal.com/treks/langtang-valley");
+    expect(left).not.toContain("https://traveltonepal.com/contact");
+    expect(left).toContain("https://traveltonepal.com/treks");
+  });
+
   it("lists only treks and regions that have a page, a trek with the day it was last saved", () => {
     expect(entries).toContainEqual({ url: "https://traveltonepal.com/treks/langtang-valley", lastModified: "2026-10-24T09:05:11Z" });
     expect(urls).toContain("https://traveltonepal.com/regions/langtang");

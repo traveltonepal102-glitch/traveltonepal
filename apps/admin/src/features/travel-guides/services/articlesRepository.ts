@@ -89,6 +89,7 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
     seoKeyword: text?.seo_keyword ?? "",
     seoTitle: text?.seo_title ?? "",
     seoDescription: text?.seo_description ?? "",
+    canonicalPath: text?.canonical_path ?? "",
     months: storedMonths(row.month_ratings, text?.month_notes),
   };
 };
@@ -135,6 +136,7 @@ export const saveArticle = async (values: ArticleFormValues, articleId: string |
       seo_title: values.seoTitle,
       seo_description: values.seoDescription,
       share_photo_id: values.sharePhotoId ?? "",
+      canonical_path: values.canonicalPath,
       month_notes: values.months.map(({ onTheTrail, crowds }) => ({ onTheTrail, crowds })),
     },
     p_region_ids: values.regionIds,

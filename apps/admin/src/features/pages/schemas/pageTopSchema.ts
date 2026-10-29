@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { readList, readText, requiredText, text } from "@/lib/forms/formFields";
+import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
 import { PAGE_LIMITS as LIMIT } from "../constants";
 
@@ -23,6 +24,7 @@ export const pageTopFields = {
   seoKeyword: text(LIMIT.seoKeyword),
   photoId: optionalId,
   sharePhotoId: optionalId,
+  canonicalPath: canonicalPathField,
 };
 
 /** The top's fields; `prefix` when one form holds several pages ("home." → "home.heading"). */
@@ -35,6 +37,7 @@ export const readPageTop = (formData: FormData, prefix = "") => ({
   seoKeyword: readText(formData, `${prefix}seoKeyword`),
   photoId: readText(formData, `${prefix}photoId`),
   sharePhotoId: readText(formData, `${prefix}sharePhotoId`),
+  canonicalPath: readText(formData, `${prefix}canonicalPath`),
 });
 
 /** Rows sent as repeated fields (e.g. milestoneYear, milestoneTitle…), zipped back into objects. */

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
-import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
+import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { HowToChooseSection } from "@/features/treks/components/HowToChooseSection";
@@ -17,7 +17,7 @@ const treksTop = async () => {
   return getListPageTop("treks", { regions: regions.length, treks: treks.length });
 };
 
-export const generateMetadata = async (): Promise<Metadata> => withSiteShareImage(sitePageMetadata(await treksTop(), ROUTES.treks));
+export const generateMetadata = async (): Promise<Metadata> => withSiteDefaults(sitePageMetadata(await treksTop(), ROUTES.treks));
 
 /**
  * The Treks page: published treks and the regions come from the database (cached; a save in the admin

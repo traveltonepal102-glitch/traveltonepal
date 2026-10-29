@@ -119,6 +119,8 @@ const FIELD_SECTIONS: Record<string, RegionSectionKey> = {
   seoKeyword: "seo",
   seoTitle: "seo",
   seoDescription: "seo",
+  sharePhotoId: "seo",
+  canonicalPath: "seo",
   photos: "photos",
 };
 

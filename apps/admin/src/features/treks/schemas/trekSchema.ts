@@ -5,6 +5,7 @@ import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
 import { optionalWholeNumber, readList, readText, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { richTextField } from "@/lib/richText/richText";
+import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
 import {
   BADGE_ICON_VALUES,
@@ -90,6 +91,7 @@ export const trekSchema = z
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalPhotoId,
+    canonicalPath: canonicalPathField,
     similarTrekIds: z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
@@ -230,6 +232,7 @@ export const readTrekForm = (formData: FormData) => {
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
     sharePhotoId: readText(formData, "sharePhotoId"),
+    canonicalPath: readText(formData, "canonicalPath"),
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     sectionOrder: readList(formData, "sectionOrder"),

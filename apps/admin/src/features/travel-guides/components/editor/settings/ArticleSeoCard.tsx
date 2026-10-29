@@ -1,6 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 
+import { CanonicalPathField } from "@/components/editor/CanonicalPathField";
 import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
 import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
@@ -81,6 +82,7 @@ export const ArticleSeoCard = ({ values, draft, domain, checks, errors, sharePho
           </li>
         ))}
       </ul>
+      <CanonicalPathField defaultValue={values.canonicalPath} error={errors.canonicalPath} />
       <SharePhotoField initial={sharePhoto} fallback="the guide's photo" onEdit={onEdit} />
     </FormSection>
   );

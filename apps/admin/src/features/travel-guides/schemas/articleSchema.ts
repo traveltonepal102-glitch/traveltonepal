@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { calendarDate, readList, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
+import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
 import { ARTICLE_LIMITS as LIMIT, ARTICLE_STATUS_VALUES, ARTICLE_TOPIC_VALUES, FACT_ICON_VALUES, MAX_FACTS, MAX_RELATED } from "../constants";
 import type { ArticleFormValues } from "../types";
@@ -67,6 +68,7 @@ export const articleSchema = z
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalId("The photo couldn't be read. Reload the page and try again."),
+    canonicalPath: canonicalPathField,
   })
   .superRefine((article, context) => {
     const issue = (path: string, message: string) => context.addIssue({ code: "custom", path: [path], message });
@@ -120,6 +122,7 @@ export const readArticleForm = (formData: FormData) => ({
     "seoTitle",
     "seoDescription",
     "sharePhotoId",
+    "canonicalPath",
     "sections",
     "months",
   ]),

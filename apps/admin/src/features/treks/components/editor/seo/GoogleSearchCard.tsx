@@ -4,6 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
+import { CanonicalPathField } from "@/components/editor/CanonicalPathField";
 import { FormSection } from "@/components/ui/FormSection";
 import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
 import { TextField } from "@/components/ui/TextField";
@@ -78,6 +79,7 @@ export const GoogleSearchCard = ({ values, errors, onEdit }: GoogleSearchCardPro
             showCount
             error={errors.seoDescription}
           />
+          <CanonicalPathField defaultValue={values.canonicalPath} error={errors.canonicalPath} />
           <SharePhotoField initial={values.sharePhoto} fallback="the trek's first photo" onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-3">

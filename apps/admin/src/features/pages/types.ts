@@ -16,6 +16,8 @@ export type PageTopValues = {
   photoId: string | null;
   /** The photo of the page's shared links (its 1200×630 share picture); null: the top photo, else Site settings'. */
   sharePhotoId: string | null;
+  /** Another page of the website ("/treks/…") as the main version of this one; "" = this page itself. */
+  canonicalPath: string;
 };
 
 export type PromiseValues = { icon: string; title: string; text: string };

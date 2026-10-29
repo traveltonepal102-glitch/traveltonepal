@@ -426,6 +426,12 @@ export type WebAdventureRow = CoverColumns & {
  */
 export type WebPageSchemaRow = { page_kind: "page" | "trek" | "region" | "guide"; page_slug: string; position: number; data: unknown };
 
+/**
+ * A page the website shows that names another page of the site as its main version (web_canonical_overrides): a
+ * fixed page (page_slug: its SitePageSlug) or a trek, region or guide (its slug), and that page's path.
+ */
+export type WebCanonicalOverrideRow = { page_kind: "page" | "trek" | "region" | "guide"; page_slug: string; locale: Locale; canonical_path: string };
+
 export type Database = {
   public: {
     Tables: { [_ in never]: never };
@@ -449,6 +455,7 @@ export type Database = {
       web_adventure_section: View<WebAdventureSectionRow>;
       web_adventures: View<WebAdventureRow>;
       web_page_schemas: View<WebPageSchemaRow>;
+      web_canonical_overrides: View<WebCanonicalOverrideRow>;
     };
     Functions: {
       /** "Was this guide helpful?": the website's one write (…_guide_feedback.sql). False: unknown guide or too many votes. */

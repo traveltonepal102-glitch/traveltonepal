@@ -2,9 +2,9 @@ import { ContactPage } from "@/features/contact/components/ContactPage";
 import { contactMetadata } from "@/features/contact/seo";
 import { getContactPage } from "@/features/contact/services/contactRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
-import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
+import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
 
-export const generateMetadata = async () => withSiteShareImage(contactMetadata(await getContactPage()));
+export const generateMetadata = async () => withSiteDefaults(contactMetadata(await getContactPage()));
 
 const Contact = () => (
   <main className="flex-1 bg-page">

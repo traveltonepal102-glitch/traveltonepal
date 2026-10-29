@@ -60,7 +60,7 @@ export const legalSectionErrors = createSectionErrorLookup<LegalPageSlug>(
   Object.fromEntries(LEGAL_PAGES.map((page) => [page.slug, page.slug])),
 );
 
-const SEO_FIELDS = { seoKeyword: "seo", seoTitle: "seo", seoDescription: "seo" } as const;
+const SEO_FIELDS = { seoKeyword: "seo", seoTitle: "seo", seoDescription: "seo", sharePhotoId: "seo", canonicalPath: "seo" } as const;
 
 export const aboutSectionErrors = createSectionErrorLookup<AboutSectionKey>(ABOUT_SECTIONS, {
   eyebrow: "top",
