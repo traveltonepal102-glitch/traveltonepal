@@ -8,11 +8,11 @@ import { LEGAL_MENU, LEGAL_PATHS } from "../legalDocs";
 import type { LegalDoc } from "../types";
 import { WRAP } from "./styles";
 
-/** Breadcrumb, title, intro and "Last updated"; on phones and tablets, the legal pages as tabs. */
+/** Breadcrumb (Home / Legal / page), title, intro and "Last updated"; on phones and tablets, the legal pages as tabs. */
 export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
   <section aria-labelledby="legal-title" className="border-b border-line bg-surface">
     <div className={`${WRAP} flex flex-col gap-3 pt-5 pb-7`}>
-      <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: doc.title }]} />
+      <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Legal" }, { label: doc.title }]} />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex max-w-190 flex-col gap-2">
           <p className="inline-flex items-center gap-2 text-eyebrow text-brand uppercase">

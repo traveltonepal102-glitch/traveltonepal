@@ -23,7 +23,7 @@ type LegalPagesEditorProps = {
   lastSaved: string;
 };
 
-const FIXED_NOTE = "The layout, the “On this page” list and “Save as PDF” come from the design. Company details come from Site settings through the placeholders below.";
+const FIXED_NOTE = "The layout, the “On this page” list and “Download as PDF” come from the design. Company details come from Site settings through the placeholders below.";
 
 const pathOf = (slug: LegalPageSlug) => LEGAL_PAGES.find((page) => page.slug === slug)?.websitePath ?? "/";
 

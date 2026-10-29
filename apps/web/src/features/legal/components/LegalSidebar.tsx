@@ -6,7 +6,7 @@ import type { LegalDoc } from "../types";
 import { PrintButton } from "./PrintButton";
 import { FOCUS, PANEL } from "./styles";
 
-/** Desktop side column: the legal pages, this page's sections, and Save as PDF. Stays in view while reading. */
+/** Desktop side column: the legal pages, this page’s sections, and Download as PDF. Stays in view while reading. */
 export const LegalSidebar = ({ doc }: { doc: LegalDoc }) => (
   <aside className="sticky top-5 hidden flex-col gap-3.5 lg:flex print:hidden">
     <nav aria-label="Legal pages" className={`${PANEL} p-2.5`}>

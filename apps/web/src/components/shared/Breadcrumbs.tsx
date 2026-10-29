@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export type BreadcrumbItem = {
   label: string;
-  /** Leave out for the current page (the last item). */
+  /** Leave out for the current page (the last item), or for a group with no page of its own (e.g. "Legal"). */
   href?: string;
 };
 
@@ -38,10 +38,12 @@ export const Breadcrumbs = ({ items, tone = "default" }: BreadcrumbsProps) => {
               >
                 {item.label}
               </Link>
-            ) : (
+            ) : index === items.length - 1 ? (
               <span aria-current="page" className={`font-semibold ${look.current}`}>
                 {item.label}
               </span>
+            ) : (
+              <span>{item.label}</span>
             )}
           </li>
         ))}
