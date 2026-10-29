@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  // The build prerenders every page from Supabase. The database's small compute plan answers about 4 heavy reads at
+  // once (more and the website's 3 s statement limit cancels them; measured 2026-10-30), and each page makes a few:
+  // one worker making 2 pages at a time (the site has under 100 pages), and a page that still fails is tried again
+  // before the build gives up.
+  experimental: {
+    staticGenerationMaxConcurrency: 2,
+    staticGenerationMinPagesPerWorker: 1000,
+    staticGenerationRetryCount: 3,
+  },
   turbopack: {
     rules: {
       "*.css": {
