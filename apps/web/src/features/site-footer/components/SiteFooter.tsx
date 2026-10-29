@@ -1,6 +1,7 @@
 import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import Image from "next/image";
 
+import { PreferredSourceBadge } from "@/components/shared/PreferredSourceBadge";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { MAIN_SECTIONS } from "@/lib/navigation";
@@ -70,6 +71,7 @@ export const SiteFooter = async () => {
                 ))}
               </ul>
             )}
+            <PreferredSourceBadge theme="light" />
           </div>
         </div>
 
