@@ -1,24 +1,20 @@
 import Image from "next/image";
 
 /**
- * Hero photo with navy shading so white text stays readable, and the white wave at the bottom.
- * Phones get stronger shading: there the text runs across the bright right side of the photo too.
+ * Hero photo (design: Main.dc.html, Gokyo Lake) with navy shading from the top and bottom so white text stays
+ * readable, and the white wave at the bottom.
  */
 export const HeroBackdrop = () => (
   <>
     <Image
-      src="/images/kyanjin-gompa-prayer-wheels.jpg"
-      alt="Prayer wheels at Kyanjin Gompa with the snow peaks of the Langtang valley behind"
+      src="/images/gokyo-lake-everest.jpg"
+      alt="Gokyo village and turquoise Gokyo Lake beside the Ngozumpa Glacier, with snow peaks of the Everest region behind"
       fill
       preload
       sizes="100vw"
-      className="object-cover object-[62%_40%]"
+      className="object-cover object-[50%_55%]"
     />
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 bg-linear-to-r from-navy/90 via-navy/75 to-navy/55 md:via-navy/65 md:via-48% md:to-navy/20"
-    />
-    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-42.5 bg-linear-to-b from-navy/75 to-transparent" />
+    <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-navy/82 via-navy/45 via-38% to-navy/96" />
     <svg
       aria-hidden="true"
       viewBox="0 0 1440 80"

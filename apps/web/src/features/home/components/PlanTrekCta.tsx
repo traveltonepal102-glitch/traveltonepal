@@ -26,7 +26,7 @@ export const PlanTrekCta = () => (
           </h2>
           {/* 90% white, not navy-text: that is under 4.5:1 contrast on the brand blue. */}
           <p className="text-body-lg text-white/90">
-            Send us your dates, fitness and budget. We reply on WhatsApp with a route and a clear price.
+            Send us your dates, fitness and budget. We reply on WhatsApp or email with a route and a clear price.
           </p>
         </div>
         <div className="flex flex-wrap gap-3 max-md:w-full">

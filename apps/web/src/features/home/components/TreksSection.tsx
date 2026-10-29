@@ -15,16 +15,16 @@ const ALL = "all";
 const Heading = () => (
   <div className="flex flex-col gap-2.5">
     <p className="inline-flex items-center gap-2 text-eyebrow text-brand uppercase">
-      <Icon name="hiking" size={18} />
-      Most loved
+      <Icon name="chat" size={18} />
+      Message us to personalize your itinerary
     </p>
     <h2 id="treks-title" className="text-h2 tracking-tight md:text-h1">
-      Treks trekkers book first
+      Popular Nepal treks, done your way
     </h2>
   </div>
 );
 
-/** "Treks trekkers book first" (design: Main.dc.html): filter chips, trek cards, a way to all treks. */
+/** "Popular Nepal treks, done your way" (design: Main.dc.html): filter chips, trek cards, a way to all treks. */
 export const TreksSection = ({ treks }: { treks: TrekSummary[] }) => {
   // Nothing published yet: no section, rather than an empty one.
   if (treks.length === 0) return null;

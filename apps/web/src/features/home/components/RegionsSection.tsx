@@ -28,14 +28,14 @@ export const RegionsSection = ({ regions }: { regions: RegionSummary[] }) => {
           <div className="flex max-w-155 flex-col gap-2.5">
             <p className="inline-flex items-center gap-2 text-eyebrow text-brand uppercase">
               <Icon name="landscape" size={18} />
-              Choose your mountains
+              Choose your Himalaya
             </p>
             <h2 id="regions-title" className="text-h2 tracking-tight md:text-h1">
               {regionsHeading(regions.length)}
             </h2>
           </div>
           <p className="max-w-95 text-body-lg">
-            From the classic trail to Everest to quiet Tamang villages a day from Kathmandu.
+            From the classic trail to Everest to the remote Nar Phu Valley.
           </p>
         </div>
 

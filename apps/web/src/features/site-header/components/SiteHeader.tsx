@@ -1,4 +1,4 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,6 +70,17 @@ export const SiteHeader = async ({ variant = "solid" }: SiteHeaderProps) => {
           </nav>
 
           <div className="flex items-center gap-2.5">
+            <a
+              href={getEmailUrl()}
+              className={`hidden min-h-11.5 items-center gap-2 rounded-full border-[1.5px] px-4.5 text-body font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 lg:inline-flex ${
+                isOverlay
+                  ? "border-white/55 text-white hover:bg-white/12 focus-visible:outline-white"
+                  : "border-line-strong text-ink hover:bg-brand-tint focus-visible:outline-ring"
+              }`}
+            >
+              <Icon name="mail" size={18} />
+              Email us
+            </a>
             <a
               href={getWhatsAppUrl()}
               target="_blank"

@@ -1,6 +1,6 @@
 import type { GuideSummary } from "@/features/guides/types";
 import type { TrekSummary } from "@/features/treks/types";
-import { capitalize, formatCount, formatCountWord } from "@/lib/format";
+import { formatCount } from "@/lib/format";
 
 /** The featured guide and two more (the guides row has three places). */
 const HOME_GUIDE_COUNT = 3;
@@ -29,9 +29,9 @@ export const moreRegionsText = (names: readonly string[]) => {
   return names.length === 3 ? `${first}, ${second} and ${third}.` : `${first}, ${second}, ${third} and more.`;
 };
 
-/** "Nine regions. Each one a different Nepal." */
+/** "12 iconic regions. Each one a different Nepal." (design: Main.dc.html) */
 export const regionsHeading = (regionCount: number) =>
-  `${capitalize(formatCountWord(regionCount))} ${regionCount === 1 ? "region" : "regions"}. Each one a different Nepal.`;
+  regionCount === 1 ? "One iconic region. A different Nepal." : `${regionCount} iconic regions. Each one a different Nepal.`;
 
 /** The trek finder's "any region" choice: "All 9 regions" ("All regions" with fewer than two). */
 export const allRegionsLabel = (regionCount: number) => (regionCount > 1 ? `All ${formatCount(regionCount, "region")}` : "All regions");

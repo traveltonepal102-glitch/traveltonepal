@@ -1,40 +1,72 @@
-import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
 
-const INQUIRY = `Hi! I'd like to inquire about this trek:
-Trek: Langtang Valley Trek – 10 days
-Group size: 3–5 people
-Dates: flexible, April 2027
-My name: Anna`;
+type ChatMessage = { from: "trekker" | "guide"; time: string; lines: readonly (string | { label: string; value: string })[] };
+
+/** The design's example conversation: the guide asks first, then suggests the trek that fits (Main.dc.html). */
+const MESSAGES: readonly ChatMessage[] = [
+  {
+    from: "trekker",
+    time: "10:14 AM",
+    lines: [
+      "Hi! I'd like to ask about this trek:",
+      { label: "Trek", value: "Langtang Valley Trek for 10 days" },
+      { label: "Group size", value: "3 people" },
+      { label: "Dates", value: "flexible, April 2027" },
+      { label: "My name", value: "Anna" },
+    ],
+  },
+  { from: "guide", time: "10:16 AM", lines: ["Namaste Anna! Have you trekked at high altitude before? And how fit would you say you are?"] },
+  { from: "trekker", time: "10:21 AM", lines: ["No, it's our first trek. We're fairly fit, but steep climbs worry us. We'd also like less crowded trails."] },
+  {
+    from: "guide",
+    time: "10:24 AM",
+    lines: [
+      "Langtang is a great first trek. Kyanjin Ri and Tserko Ri are steep, so I'd suggest a day hike to Langshisha Valley instead. The climb is gradual and few trekkers go there. Sound good?",
+    ],
+  },
+];
+
+/** WhatsApp's own green for messages you send, so the example reads as a WhatsApp chat. */
+const WHATSAPP_BUBBLE = "bg-[#d9fdd3]";
 
 /** Example WhatsApp chat (design: Main.dc.html, "How booking works"). An illustration, not a live chat. */
 export const ChatPreview = () => (
-  <figure className="w-full max-w-105 rounded-xl bg-brand-tint p-4 shadow-popover">
+  <figure className="flex w-full max-w-107.5 flex-col gap-3 rounded-3xl border border-line bg-brand-tint p-5 shadow-raised">
     <figcaption className="sr-only">Example of a trek inquiry and reply on WhatsApp</figcaption>
 
-    <div className="flex items-center gap-3 border-b border-line px-1.5 pt-1.5 pb-3.5">
-      <span className="inline-flex size-11.5 flex-none items-center justify-center rounded-full bg-surface">
+    <div aria-hidden="true" className="flex items-center gap-3 border-b border-line-strong pb-3">
+      <span className="inline-flex size-11 flex-none items-center justify-center rounded-full border border-line bg-surface p-1.5">
         <Image src="/brand/logo-mark.svg" alt="" width={15} height={30} className="h-7.5 w-auto" />
       </span>
-      <span className="flex flex-col leading-tight">
-        <span className="font-bold text-ink">Travel To Nepal</span>
-        <span className="text-caption font-semibold text-whatsapp">Trek consultant</span>
+      <span className="flex flex-col">
+        <span className="text-sm leading-[18px] font-bold text-ink">Travel To Nepal</span>
+        <span className="text-xs leading-4 font-semibold text-whatsapp">Experienced trek guide: Sandip · Online</span>
       </span>
     </div>
 
-    <div className="flex flex-col gap-2.5 pt-3.5 text-body-sm text-ink">
-      <p className="max-w-[90%] self-end rounded-lg rounded-br-sm bg-green-line px-3.5 py-3 whitespace-pre-line">
-        {INQUIRY}
-      </p>
-      <p className="max-w-[90%] self-start rounded-lg rounded-bl-sm bg-surface px-3.5 py-3">
-        Namaste Anna! Here is the day-by-day plan and the price for your group. Which week in April suits you best?
-      </p>
-      <p className="inline-flex items-center gap-2.5 self-start rounded-lg bg-surface px-3 py-2.5 font-semibold">
-        <span className="inline-flex size-9 items-center justify-center rounded-md bg-brand text-white">
-          <Icon name="description" />
-        </span>
-        Langtang-itinerary-10-days.pdf
-      </p>
-    </div>
+    {MESSAGES.map((message) => {
+      const isTrekker = message.from === "trekker";
+      return (
+        <p
+          key={message.time}
+          className={`max-w-[85%] px-3 py-2.5 text-[13px] leading-5 text-ink ${
+            isTrekker ? `self-end rounded-[14px_4px_14px_14px] ${WHATSAPP_BUBBLE}` : "self-start rounded-[4px_14px_14px_14px] bg-surface"
+          }`}
+        >
+          {message.lines.map((line, index) => (
+            <span key={index} className="block">
+              {typeof line === "string" ? (
+                line
+              ) : (
+                <>
+                  <strong>{line.label}:</strong> {line.value}
+                </>
+              )}
+            </span>
+          ))}
+          <span className="block text-right text-[11px] text-muted-foreground">{message.time}</span>
+        </p>
+      );
+    })}
   </figure>
 );

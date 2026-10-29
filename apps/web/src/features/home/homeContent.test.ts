@@ -44,8 +44,8 @@ describe("homeGuides", () => {
 
 describe("home copy", () => {
   it("counts the regions in words", () => {
-    expect(regionsHeading(9)).toBe("Nine regions. Each one a different Nepal.");
-    expect(regionsHeading(1)).toBe("One region. Each one a different Nepal.");
+    expect(regionsHeading(12)).toBe("12 iconic regions. Each one a different Nepal.");
+    expect(regionsHeading(1)).toBe("One iconic region. A different Nepal.");
   });
 
   it("labels the finder's any-region choice", () => {
