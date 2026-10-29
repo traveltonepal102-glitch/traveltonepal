@@ -7,6 +7,8 @@ import type { TrekPageSection } from "@ttn/config/trekPageSections";
  */
 export const TREK_SECTION_IDS = {
   highlights: "highlights",
+  /** "Regions on this route" (a trek across several regions). */
+  regions: "regions",
   itinerary: "itinerary",
   guides: "guides",
   inclusions: "inclusions",

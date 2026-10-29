@@ -80,6 +80,8 @@ const daySchema = z.object({
   is_high_point: z.boolean().catch(false),
   description: z.unknown(),
   photo: coverSchema.nullable().catch(null),
+  /** The day's region (trek_days.region_id), null = the same as the day before. */
+  region_slug: z.string().nullable().catch(null),
 });
 
 const groupPriceSchema = z.object({

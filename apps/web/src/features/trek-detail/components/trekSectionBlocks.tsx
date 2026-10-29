@@ -12,6 +12,7 @@ import { FounderStoryCard } from "./FounderStoryCard";
 import { TrekGuides } from "./guides/TrekGuides";
 import { TrekItinerary } from "./itinerary/TrekItinerary";
 import { TrekPricing } from "./pricing/TrekPricing";
+import { TrekRouteRegions } from "./regions/TrekRouteRegions";
 import { BookingCallout } from "./request/BookingCallout";
 import { TrekRequestSection } from "./request/TrekRequestSection";
 import { TrekRouteMap } from "./route/TrekRouteMap";
@@ -47,6 +48,7 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
     consultation: shows("consultation") && <DirectConsultationCard trekName={trek.name} />,
     highlights: <TrekHighlights heading={trek.highlightsHeading} highlights={trek.highlights} />,
     suitability: <TrekSuitability trek={trek} />,
+    regions: <TrekRouteRegions routeStops={trek.routeStops} monthRatings={trek.monthRatings} />,
     itinerary: <TrekItinerary trek={trek} />,
     guides: <TrekGuides guides={trek.guides} />,
     inclusions: <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} hiddenSections={trek.hiddenSections} />,

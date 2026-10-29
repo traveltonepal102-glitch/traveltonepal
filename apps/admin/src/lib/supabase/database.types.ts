@@ -471,6 +471,8 @@ type TrekDayRow = {
   photo_id: string | null;
   /** "breakfast" | "lunch" | "dinner" */
   meals: string[];
+  /** On a trek across several regions: the region the day is in; null = the same as the day before. */
+  region_id: string | null;
 };
 
 type TrekGroupPriceRow = { id: string; trek_id: string; position: number; price_usd: number; is_default: boolean };

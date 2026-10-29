@@ -21,6 +21,7 @@ export const TREK_PAGE_SECTION_INFO: Record<TrekPageSection, PageSectionInfo> = 
   consultation: { label: "Ask us personally", icon: "chat", sharedKey: "consultation" },
   highlights: { label: "Highlights", icon: "star", editorKey: "highlights" },
   suitability: { label: "Is this trek for you?", icon: "checklist", editorKey: "fit" },
+  regions: { label: "Regions on this route (treks across several regions)", icon: "pin_drop", editorKey: "top" },
   itinerary: { label: "Day-by-day itinerary", icon: "route", editorKey: "itinerary" },
   guides: { label: "Meet your trek guide", icon: "hiking", editorKey: "guides" },
   inclusions: { label: "What’s covered · What’s not included", icon: "task_alt", editorKey: "inclusions" },

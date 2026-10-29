@@ -110,7 +110,7 @@ describe("getTrekReadiness", () => {
   });
 
   it("asks for days, a description for each day and a highlight day", () => {
-    const planDay = { id: "d1", place: "", title: "Day", subtitle: "", duration: "", altitudeM: 2000, sleepAltitudeM: null, isHighPoint: false, description: EMPTY_RICH_TEXT, photo: null, meals: [] };
+    const planDay = { id: "d1", place: "", title: "Day", subtitle: "", duration: "", altitudeM: 2000, sleepAltitudeM: null, isHighPoint: false, description: EMPTY_RICH_TEXT, photo: null, meals: [], regionId: null };
     expect(readiness().itinerary).toEqual({ status: "todo", note: "Add the days" });
     expect(readiness({ itinerary: [planDay, planDay] }).itinerary.note).toBe("2 days without a description");
     const described = { ...planDay, description: doc("Walk.") };

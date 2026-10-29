@@ -15,7 +15,8 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../../../constants";
 import { dayPeak } from "../../../hooks/useItineraryDays";
 import type { ItineraryPlan } from "../../../hooks/useItineraryDays";
-import type { TrekValues } from "../../../types";
+import { dayRegionIds } from "../../../lib/dayRegions";
+import type { RegionOption, TrekValues } from "../../../types";
 import { PageHeadingFields } from "../PageHeadingFields";
 import { ItineraryDayCard } from "./ItineraryDayCard";
 
@@ -23,6 +24,8 @@ type TrekItinerarySectionProps = {
   values: TrekValues;
   /** The days as edited (shared with the altitude chart, which opens a day here). */
   plan: ItineraryPlan;
+  /** The regions on the route as edited, main first: each day picks one when there are several. */
+  routeRegions: RegionOption[];
   errors: FieldErrors;
   /** The trek's saved photos, to pick a photo for a day. */
   photoChoices: Photo[];
@@ -36,7 +39,9 @@ const dayErrors = (errors: FieldErrors, index: number): FieldErrors => {
 };
 
 /** "Day-by-day itinerary": the heading, the text and route line above the days, and the days. */
-export const TrekItinerarySection = ({ values, plan, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
+export const TrekItinerarySection = ({ values, plan, routeRegions, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
+  const dayRegions = dayRegionIds(plan.days.map((day) => day.regionId), routeRegions.map((region) => region.id));
+  const regionName = (index: number) => routeRegions.find((region) => region.id === dayRegions[index])?.name ?? "";
   const altitudes = plan.days.map(dayPeak);
   const known = altitudes.filter((altitude) => altitude !== null);
   const highest = known.length ? Math.max(...known) : null;
@@ -91,6 +96,9 @@ export const TrekItinerarySection = ({ values, plan, errors, photoChoices, onEdi
                 isOpen={plan.openKey === day.key || Object.keys(ownErrors).length > 0}
                 errors={ownErrors}
                 photoChoices={photoChoices}
+                routeRegions={routeRegions}
+                regionName={regionName(index)}
+                previousRegionName={index > 0 ? regionName(index - 1) : ""}
                 handle={handle}
                 onToggleOpen={() => plan.toggleOpen(day.key)}
                 onChange={(patch) => plan.update(day.key, patch)}

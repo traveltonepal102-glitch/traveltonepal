@@ -1,6 +1,7 @@
 "use client";
 
 import type { TrekPageSection } from "@ttn/config/trekPageSections";
+import { useState } from "react";
 import { flushSync } from "react-dom";
 
 import { useEditorSectionLinks } from "@/components/editor/EditorSectionLinks";
@@ -79,6 +80,14 @@ export const TrekSectionPanels = ({
   const panel = (key: TrekSectionKey) => ({ hidden: activeKey !== key, className: "flex flex-col gap-4" });
   // The days live here, so the altitude chart (Route) follows them as they are typed and can open one.
   const plan = useItineraryDays(values.itinerary, onEdit);
+  // The regions on the route live here too, so the days' region pick and the month colours follow them as edited.
+  // A region deleted since the last save drops out.
+  const [routeIds, setRouteIds] = useState(() => [values.regionId, ...values.routeRegionIds].filter((id) => regions.some((region) => region.id === id)));
+  const routeRegions = routeIds.flatMap((id) => regions.find((region) => region.id === id) ?? []);
+  const handleRouteIdsChange = (ids: string[]) => {
+    setRouteIds(ids);
+    onEdit();
+  };
   const links = useEditorSectionLinks();
   const openDay = (index: number) => {
     const day = plan.days[index];
@@ -90,7 +99,7 @@ export const TrekSectionPanels = ({
   return (
     <>
       <div {...panel("top")}>
-        <TrekNameCard values={values} errors={errors} regions={regions} isNew={isNew} onEdit={onEdit} />
+        <TrekNameCard values={values} errors={errors} regions={regions} isNew={isNew} routeIds={routeIds} onRouteIdsChange={handleRouteIdsChange} />
         <LinesAboveHeadingCard values={values} errors={errors} />
         <LinesUnderHeadingCard values={values} errors={errors} />
         <TrekDifficultyCard values={values} errors={errors} />
@@ -114,7 +123,7 @@ export const TrekSectionPanels = ({
         <FitSection values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("itinerary")}>
-        <TrekItinerarySection values={values} plan={plan} errors={errors} photoChoices={trekPhotos} onEdit={onEdit} />
+        <TrekItinerarySection values={values} plan={plan} routeRegions={routeRegions} errors={errors} photoChoices={trekPhotos} onEdit={onEdit} />
       </div>
       <div {...panel("inclusions")}>
         <PageHeadingFields
@@ -164,7 +173,7 @@ export const TrekSectionPanels = ({
           line={{ name: "pricingIntro", defaultValue: values.pricingIntro, placeholder: "Book directly with our Kathmandu team, with no middlemen.", maxLength: LIMIT.pricingIntro, error: errors.pricingIntro }}
         />
         <GroupPricesCard prices={values.groupPrices} errors={errors} onEdit={onEdit} />
-        <StartDateCard regions={[values.regionId, ...values.routeRegionIds].flatMap((id) => regions.find((region) => region.id === id) ?? [])} />
+        <StartDateCard regions={routeRegions} />
       </div>
       <div {...panel("packing")}>
         <PageHeadingFields

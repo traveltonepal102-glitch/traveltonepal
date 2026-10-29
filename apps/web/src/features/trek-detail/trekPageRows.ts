@@ -4,10 +4,12 @@ import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage } from "@/lib/images";
 import type { MonthRating } from "@/features/regions/overviews";
+import type { RegionCard } from "@/features/regions/regionRows";
 import { firstText } from "@/lib/rowText";
 import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow } from "@/lib/supabase/database.types";
 
 import { ROUTE_SKETCHES } from "./content/routeSketches";
+import { dayRegionSlugs, toRouteStops } from "./routeRegions";
 import { customizationFor, differentiatorsFor } from "./content/sharedContent";
 import { toTrekGuides } from "./trekGuideRows";
 import type { TrekDayRow } from "./trekPageJson";
@@ -33,6 +35,8 @@ export type TrekPageSource = {
   guides: readonly WebTrekGuideRow[];
   /** Every published trek, for "Explore more of the Himalaya". */
   treks: readonly TrekSummary[];
+  /** Every region's card, for "Regions on this route" (a trek across several regions). */
+  regions: readonly RegionCard[];
 };
 
 const SHARED_SECTIONS: readonly SharedSection[] = [
@@ -100,9 +104,11 @@ const toSimilarTreks = (summary: TrekSummary, slugs: readonly string[], treks: r
 };
 
 /** The trek page's content from its database rows. Blank texts fall back or are left out, never shown empty. */
-export const toTrekDetail = ({ summary, page, photos, guides, treks }: TrekPageSource, photosBaseUrl: string): TrekDetail => {
+export const toTrekDetail = ({ summary, page, photos, guides, treks, regions }: TrekPageSource, photosBaseUrl: string): TrekDetail => {
   const shortName = firstText(page.short_name) ?? summary.name;
-  const days = readDays(page.days).map((day) => toDay(day, photosBaseUrl));
+  const dayRows = readDays(page.days);
+  const daySlugs = dayRegionSlugs(dayRows.map((day) => day.region_slug), summary.route);
+  const days = dayRows.map((day, index) => ({ ...toDay(day, photosBaseUrl), regionSlug: daySlugs[index] }));
   const sideTrip = firstText(page.optional_high_point);
   const { meal_budget_min_usd: low, meal_budget_max_usd: high } = page;
 
@@ -129,6 +135,7 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks }: TrekPageS
     highlights: readPoints(page.highlights),
     suitability: { intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
     itinerary: { intro: paragraphsOf(page.itinerary_intro).join(" "), days },
+    routeStops: toRouteStops(summary.route, regions, daySlugs),
     routeSketch: ROUTE_SKETCHES[summary.slug],
     customization: customizationFor(shortName, sideTrip),
     guides: {

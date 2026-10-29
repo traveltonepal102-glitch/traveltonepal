@@ -427,3 +427,25 @@ describe("trekSchema section order", () => {
     expect(parse({ sectionOrder: ["intro", "sidebar"] }).success).toBe(false);
   });
 });
+
+describe("trekSchema day regions", () => {
+  const MANASLU = "00000000-0000-4000-8000-000000000003";
+  const EVEREST = "00000000-0000-4000-8000-000000000004";
+  /** Three days, the given region picked on each ("" = the same as the day before). */
+  const threeDays = (regionIds: string[]) => ({
+    dayId: ["", "", ""],
+    dayTitle: ["Arrive", "Walk", "Cross"],
+    daySleepAltitude: ["1400", "2400", "3400"],
+    dayHighPoint: ["false", "false", "false"],
+    dayRegionId: regionIds,
+  });
+
+  it("keeps a day's region when it is on the route, and drops one that isn't", () => {
+    const result = parse({ routeRegionId: [MANASLU], ...threeDays(["", MANASLU, EVEREST]) });
+    expect(result.data?.itinerary.map((day) => day.regionId)).toEqual([null, MANASLU, null]);
+  });
+
+  it("drops the days' regions on a trek in one region", () => {
+    expect(parse(threeDays([REGION, MANASLU, ""])).data?.itinerary.map((day) => day.regionId)).toEqual([null, null, null]);
+  });
+});

@@ -11,13 +11,12 @@ import { ReviewsSection } from "@/features/home/components/ReviewsSection";
 import { TrekFinder } from "@/features/home/components/TrekFinder";
 import { TreksSection } from "@/features/home/components/TreksSection";
 import { WhyUsSection } from "@/features/home/components/WhyUsSection";
-import { homeGuides } from "@/features/home/homeContent";
+import { homeGuides, homeTreks } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
-import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { listTreks } from "@/features/treks/services/treksRepository";
 import { ROUTES } from "@/lib/routes";
 
@@ -47,7 +46,7 @@ const HomePage = async () => {
         <HomeHero top={top} />
         <TrekFinder regions={regions} />
         <RegionsSection regions={regions} />
-        <TreksSection treks={popularTreksWithPage(treks)} />
+        <TreksSection treks={homeTreks(treks)} />
         <CustomAdventuresSection />
         <WhyUsSection />
         <HowBookingWorksSection />

@@ -55,6 +55,7 @@ const emptyRow = (): DayRow => ({
   isHighPoint: false,
   description: EMPTY_RICH_TEXT,
   photo: null,
+  regionId: null,
 });
 
 /**

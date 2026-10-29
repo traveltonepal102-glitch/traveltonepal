@@ -41,6 +41,8 @@ export type ItineraryDay = {
   description: RichTextDoc;
   photo: Photo | null;
   meals: Meal[];
+  /** On a trek across several regions: the region this day is in; null = the same as the day before. */
+  regionId: string | null;
 };
 
 /** A day as the editor's Save sends it. */

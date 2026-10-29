@@ -5,7 +5,7 @@ import { popularTreksWithPage } from "@/features/trek-detail/trekDetails";
 import { TREKS } from "@/features/treks/treks";
 import type { TrekSummary } from "@/features/treks/types";
 
-import { allRegionsLabel, homeGuides, homeRegions, homeTrekFilters, moreRegionsText, regionsHeading } from "./homeContent";
+import { allRegionsLabel, homeGuides, homeRegions, homeTrekFilters, homeTreks, moreRegionsText, regionsHeading } from "./homeContent";
 
 const trek = (slug: string, overrides: Partial<TrekSummary> = {}): TrekSummary => {
   const summary = TREKS.find((item) => item.slug === slug);
@@ -27,6 +27,31 @@ describe("popularTreksWithPage", () => {
 
   it("leaves out a trek with a page that isn't popular", () => {
     expect(popularTreksWithPage([trek("langtang-valley", { isPopular: false })])).toEqual([]);
+  });
+});
+
+describe("homeTreks", () => {
+  it("shows popular treks first, then fills up to six with other treks that have a page", () => {
+    const treks = [
+      trek("tamang-heritage-trail", { isPopular: false }),
+      trek("langtang-valley", { isPopular: true }),
+      trek("everest-base-camp", { isPopular: false, hasPage: false }),
+      ...["annapurna-base-camp", "annapurna-circuit", "gokyo-lakes", "mardi-himal", "poon-hill"].map((slug) => trek(slug, { isPopular: false })),
+    ];
+    expect(homeTreks(treks).map((item) => item.slug)).toEqual([
+      "langtang-valley",
+      "tamang-heritage-trail",
+      "annapurna-base-camp",
+      "annapurna-circuit",
+      "gokyo-lakes",
+      "mardi-himal",
+    ]);
+  });
+
+  it("shows fewer than six when fewer treks have a page", () => {
+    expect(homeTreks([trek("langtang-valley", { isPopular: false }), trek("poon-hill", { hasPage: false })]).map((item) => item.slug)).toEqual([
+      "langtang-valley",
+    ]);
   });
 });
 

@@ -1133,10 +1133,12 @@ export const OTHER_TREKS: TrekSummary[] = [
   otherTrek("kanchenjunga-base-camp", "kanchenjunga", 22),
 ];
 
-export const langtangSource = (page: Partial<WebTrekPageRow> = {}): TrekPageSource => ({
+export const langtangSource = (page: Partial<WebTrekPageRow> = {}, source: Partial<TrekPageSource> = {}): TrekPageSource => ({
   summary: LANGTANG_SUMMARY,
   page: { ...LANGTANG_PAGE, ...page },
   photos: LANGTANG_PHOTOS,
   guides: LANGTANG_GUIDES,
   treks: [LANGTANG_SUMMARY, ...OTHER_TREKS],
+  regions: [],
+  ...source,
 });

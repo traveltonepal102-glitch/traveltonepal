@@ -160,3 +160,25 @@ describe("toTrekGuides", () => {
     expect(card).toMatchObject({ certBadge: "First aid", certifications: "Trekking guide licence, first aid" });
   });
 });
+
+describe("toTrekDetail for a trek across several regions", () => {
+  const route = [{ slug: "langtang", name: "Langtang" }, { slug: "manaslu", name: "Manaslu" }];
+  const manaslu = { slug: "manaslu", name: "Manaslu", maxAltitudeM: 5106, hasPage: false, district: "Gorkha", location: { lat: 28.5, lon: 84.6 }, trekLength: "", difficulty: "Challenging" as const, access: { short: "", long: "", isFlight: false }, permits: "MCAP, RAP", bestFor: "", bestForTags: [], summary: "", months: Array.from({ length: 12 }, () => "possible" as const) };
+
+  it("lists the regions on the route with their days, and each day's region", () => {
+    const base = langtangSource();
+    const days = (base.page.days as Record<string, unknown>[]).map((day, index, all) => ({ ...day, region_slug: index === all.length - 2 ? "manaslu" : null }));
+    const trek = toTrekDetail(langtangSource({ days }, { summary: { ...base.summary, route }, regions: [manaslu] }), PHOTOS_BASE);
+    const count = trek.itinerary.days.length;
+    expect(trek.routeStops.map((stop) => [stop.slug, stop.place, stop.days])).toEqual([
+      ["langtang", "start", `Days 1–${count - 2}`],
+      ["manaslu", "end", `Days ${count - 1}–${count}`],
+    ]);
+    expect(trek.routeStops[1]).toMatchObject({ permits: "MCAP, RAP", href: "/treks?region=manaslu" });
+    expect(trek.itinerary.days.map((day) => day.regionSlug).slice(-3)).toEqual(["langtang", "manaslu", "manaslu"]);
+  });
+
+  it("has no route section for a trek in one region", () => {
+    expect(toTrekDetail(langtangSource(), PHOTOS_BASE).routeStops).toEqual([]);
+  });
+});

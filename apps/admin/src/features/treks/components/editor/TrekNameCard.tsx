@@ -17,11 +17,13 @@ type TrekNameCardProps = {
   errors: FieldErrors;
   regions: RegionOption[];
   isNew: boolean;
-  onEdit: () => void;
+  /** The regions on the route, main first (kept by the editor). */
+  routeIds: string[];
+  onRouteIdsChange: (ids: string[]) => void;
 };
 
 /** Name, the big heading (H1), web address, the regions on the route and the summary (design: "Name and big heading"). */
-export const TrekNameCard = ({ values, errors, regions, isNew, onEdit }: TrekNameCardProps) => {
+export const TrekNameCard = ({ values, errors, regions, isNew, routeIds, onRouteIdsChange }: TrekNameCardProps) => {
   const [slug, setSlug] = useState(values.slug);
   // A new trek gets its web address from the name until the admin types one.
   const [isSlugTyped, setIsSlugTyped] = useState(!isNew);
@@ -74,13 +76,7 @@ export const TrekNameCard = ({ values, errors, regions, isNew, onEdit }: TrekNam
         hint={isNew ? "Made from the name. Lowercase letters, numbers and dashes." : "Changing it moves the page to a new address."}
         error={errors.slug}
       />
-      <RouteRegionsField
-        regionId={values.regionId}
-        routeRegionIds={values.routeRegionIds}
-        regions={regions}
-        errors={{ regionId: errors.regionId, routeRegionIds: errors.routeRegionIds }}
-        onEdit={onEdit}
-      />
+      <RouteRegionsField ids={routeIds} onIdsChange={onRouteIdsChange} regions={regions} errors={{ regionId: errors.regionId, routeRegionIds: errors.routeRegionIds }} />
       <TextField
         name="summary"
         label="Short summary"

@@ -11,6 +11,20 @@ const HOME_GUIDE_COUNT = 3;
  */
 export const homeGuides = (guides: readonly GuideSummary[]) => guides.slice(0, HOME_GUIDE_COUNT);
 
+/** Two rows of three on wide screens. */
+const HOME_TREK_COUNT = 6;
+
+/**
+ * "Popular Nepal treks": six treks with a page, the popular ones first, then others (in the website's order) to
+ * fill the places left. A trek without a page has no card here (it would open a 404).
+ */
+export const homeTreks = (treks: readonly TrekSummary[]) => {
+  const withPage = treks.filter((trek) => trek.hasPage);
+  const popular = withPage.filter((trek) => trek.isPopular);
+  const others = withPage.filter((trek) => !trek.isPopular);
+  return [...popular, ...others].slice(0, HOME_TREK_COUNT);
+};
+
 /** The big tile and seven more fill the home grid; the "See more regions" card takes the last place. */
 const HOME_REGION_COUNT = 8;
 

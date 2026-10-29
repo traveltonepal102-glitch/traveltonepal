@@ -164,6 +164,11 @@ export const trekSchema = z
     ...values,
     // The main region is already first on the route.
     routeRegionIds: values.routeRegionIds.filter((id) => id !== values.regionId),
+    // A day keeps its region only while the trek crosses several and that one is on the route.
+    itinerary: values.itinerary.map((day) => ({
+      ...day,
+      regionId: day.regionId && values.routeRegionIds.some((id) => id !== values.regionId) && [values.regionId, ...values.routeRegionIds].includes(day.regionId) ? day.regionId : null,
+    })),
     hiddenSharedSections: SHARED_SECTION_KEYS.filter((key) => !sharedSectionsShown.includes(key)),
     days: values.itinerary.length || (days ?? 0),
     maxAltitudeM: values.itinerary.length ? Math.max(...values.itinerary.map((day) => day.altitudeM)) : (maxAltitudeM ?? 0),

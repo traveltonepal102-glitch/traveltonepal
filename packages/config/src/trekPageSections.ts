@@ -10,6 +10,8 @@ export const TREK_PAGE_SECTIONS = [
   "consultation",
   "highlights",
   "suitability",
+  // Only on a trek across several regions.
+  "regions",
   "itinerary",
   "guides",
   "inclusions",

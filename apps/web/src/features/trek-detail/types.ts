@@ -3,7 +3,7 @@ import type { RichTextDoc, RichTextImage } from "@ttn/ui/lib/richText";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
-import type { MonthRating } from "@/features/regions/overviews";
+import type { MonthRating, RegionDifficulty } from "@/features/regions/overviews";
 import type { TrekGuide } from "@/features/team/types";
 import type { TrekSummary } from "@/features/treks/types";
 import type { SiteImageSource } from "@/lib/images";
@@ -71,6 +71,27 @@ export type ItineraryDay = {
   isHighPoint?: boolean;
   text: string;
   photo?: SiteImageSource;
+  /** On a trek across several regions: the region this day is in (when the admin set the days' regions). */
+  regionSlug?: string;
+};
+
+/** A region on the route of a trek across several regions ("Regions on this route"), from its own card. */
+export type TrekRouteStop = {
+  slug: string;
+  name: string;
+  /** Where it sits on the route: the first region, the last one, or one in between. */
+  place: "start" | "through" | "end";
+  tagline?: string;
+  image?: SiteImageSource;
+  maxAltitudeM?: number;
+  difficulty?: RegionDifficulty;
+  permits: string;
+  /** Its best months, Jan–Dec. */
+  months?: readonly MonthRating[];
+  /** Its page, else the treks in it. */
+  href: string;
+  /** e.g. "Days 1–5" (when the admin set the days' regions). */
+  days?: string;
 };
 
 /** Pin colors on the route sketch: start, overnight stop, high point, optional side trip. */
@@ -188,6 +209,8 @@ export type TrekDetailContent = {
   suitability: { intro: string; points: readonly TrekPoint[] };
   /** Day-by-day plan: one entry per day of the trek. */
   itinerary: { intro: string; days: readonly ItineraryDay[] };
+  /** "Regions on this route", in route order; empty for a trek in one region (the section is left out). */
+  routeStops: readonly TrekRouteStop[];
   routeSketch?: RouteSketch;
   /** "Custom itinerary and private changes": the pitch and the typical changes people ask for. */
   customization: { pitch: string; options: readonly { label: string; icon: IconName }[] };

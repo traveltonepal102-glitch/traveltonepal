@@ -32,6 +32,7 @@ const daySchema = z
     isHighPoint: z.string().transform((value) => value === "true"),
     description: richTextField(LIMIT.dayDescription),
     photoId: optionalId("The day's photo couldn't be read. Pick it again."),
+    regionId: optionalId("Pick the day's region from the list."),
   })
   .superRefine((day, context) => {
     if (day.topAltitude === null || day.topAltitude > day.sleepAltitude) return;
@@ -52,7 +53,7 @@ export const itinerarySchema = z
 /** The days in the editor's FormData: one value per day for each day field, in order (meals: "breakfast,dinner"). */
 export const readItinerary = (formData: FormData) => {
   const field = (name: string) => readList(formData, name);
-  const [places, titles, subtitles, durations, tops, sleeps, meals, highPoints, descriptions, photoIds] = [
+  const [places, titles, subtitles, durations, tops, sleeps, meals, highPoints, descriptions, photoIds, regionIds] = [
     "dayPlace",
     "dayTitle",
     "daySubtitle",
@@ -63,6 +64,7 @@ export const readItinerary = (formData: FormData) => {
     "dayHighPoint",
     "dayDescription",
     "dayPhotoId",
+    "dayRegionId",
   ].map(field);
 
   return field("dayId").map((id, index) => ({
@@ -77,5 +79,6 @@ export const readItinerary = (formData: FormData) => {
     isHighPoint: highPoints[index] ?? "false",
     description: descriptions[index] ?? "",
     photoId: photoIds[index] ?? "",
+    regionId: regionIds[index] ?? "",
   }));
 };
