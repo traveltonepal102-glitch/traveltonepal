@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
 import { TrekDetailPage } from "@/features/trek-detail/components/TrekDetailPage";
 import { trekMetadata } from "@/features/trek-detail/seo";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
@@ -25,7 +26,7 @@ export const instant = false;
 
 export const generateMetadata = async ({ params }: TrekPageProps): Promise<Metadata> => {
   const trek = await getTrekDetail((await params).slug);
-  return trek ? trekMetadata(trek) : {};
+  return withSiteShareImage(trek ? trekMetadata(trek) : {});
 };
 
 const TrekPage = async ({ params }: TrekPageProps) => {

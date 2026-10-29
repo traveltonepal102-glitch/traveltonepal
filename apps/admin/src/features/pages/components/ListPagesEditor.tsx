@@ -3,6 +3,7 @@
 import { Icon } from "@ttn/ui/icon";
 
 import type { EditorSaveAction } from "@/components/editor/types";
+import type { Photo } from "@/features/photos/types";
 
 import { COUNT_TOKENS_HINT, LIST_PAGES } from "../constants";
 import type { ListPageSlug } from "../constants";
@@ -16,6 +17,7 @@ import { PageTopCard } from "./PageTopCard";
 type ListPagesEditorProps = {
   action: EditorSaveAction;
   values: ListPagesValues;
+  sharePhotos: Record<ListPageSlug, Photo | null>;
   /** The page open first, e.g. from the Pages list's row. */
   initialPage: ListPageSlug;
   websiteUrl: string | null;
@@ -27,7 +29,7 @@ const FIXED_NOTE = "The lists fill themselves from your treks, regions and trave
 const pathOf = (slug: ListPageSlug) => LIST_PAGES.find((page) => page.slug === slug)?.websitePath ?? "/";
 
 /** Pages › List pages (design: Admin-pages, "List pages"): Home, Treks, Regions and Travel guides, one form, one Publish. */
-export const ListPagesEditor = ({ action, values, initialPage, websiteUrl, lastSaved }: ListPagesEditorProps) => (
+export const ListPagesEditor = ({ action, values, sharePhotos, initialPage, websiteUrl, lastSaved }: ListPagesEditorProps) => (
   <PageEditorForm
     action={action}
     title="List pages"
@@ -40,7 +42,7 @@ export const ListPagesEditor = ({ action, values, initialPage, websiteUrl, lastS
     errorLookup={listSectionErrors}
     fixedNote={FIXED_NOTE}
   >
-    {({ activeKey, errors }) => (
+    {({ activeKey, errors, onEdit }) => (
       <>
         <p className="m-0 flex items-start gap-2.5 rounded-xl border border-solid border-saffron-line bg-saffron-tint px-3.5 py-3 text-caption text-saffron-ink">
           <Icon name="info" size={18} className="flex-none" />
@@ -55,7 +57,16 @@ export const ListPagesEditor = ({ action, values, initialPage, websiteUrl, lastS
               hint={`${page.hint} ${COUNT_TOKENS_HINT}`}
               eyebrow={{ label: page.slug === "home" ? "Small label above the heading (the yellow badge)" : "Small label above the heading", placeholder: page.slug === "regions" ? "{regions} trekking regions" : "" }}
             />
-            <PageGoogleCard values={values[page.slug]} errors={errors} fieldPrefix={`${page.slug}.`} websitePath={page.websitePath} hint={COUNT_TOKENS_HINT} />
+            <PageGoogleCard
+              values={values[page.slug]}
+              errors={errors}
+              fieldPrefix={`${page.slug}.`}
+              websitePath={page.websitePath}
+              hint={COUNT_TOKENS_HINT}
+              sharePhoto={sharePhotos[page.slug]}
+              shareFallback="the share image in Site settings"
+              onEdit={onEdit}
+            />
             <p className="m-0 flex items-start gap-2.5 rounded-xl border border-solid border-border bg-page px-3.5 py-3 text-caption text-text">
               <Icon name="check_circle" size={18} className="flex-none text-whatsapp" />
               {page.auto}

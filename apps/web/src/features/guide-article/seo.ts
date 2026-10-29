@@ -6,13 +6,14 @@ import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
 import { guideListHref } from "@/features/guides/guideFiltering";
 import { getGuideTopic } from "@/features/guides/topics";
 import { imageFileUrl } from "@/lib/images";
+import { shareMetadata } from "@/features/seo/shareMetadata";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, guidePath } from "@/lib/routes";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 import type { GuideArticle } from "./types";
 
-/** Share previews and Google read one file of the photo, about this wide. */
+/** Google reads one file of each photo in the structured data, about this wide (shared links use the share picture). */
 const SHARE_IMAGE_WIDTH = 1200;
 
 /** Home / Travel guides / Best time to trek (the topic, linking to its guides), as in the design. */
@@ -22,24 +23,21 @@ export const articleBreadcrumbs = (article: GuideArticle): BreadcrumbItem[] => [
   { label: getGuideTopic(article.topic).label, href: guideListHref({ topic: article.topic }) },
 ];
 
+/** Title, description and canonical address; shared links (an article) show the chosen share photo, else the guide's photo. */
 export const articleMetadata = (article: GuideArticle): Metadata => {
   const path = guidePath(article.slug);
-
+  const { title, description, shareImage } = article.seo;
   return {
-    title: article.seo.title,
-    description: article.seo.description,
+    title,
+    description,
     alternates: { canonical: path },
-    openGraph: {
-      type: "article",
-      siteName: SITE_NAME,
-      url: path,
-      title: article.seo.title,
-      description: article.seo.description,
-      publishedTime: article.publishedOn,
-      ...(article.updatedOn ? { modifiedTime: article.updatedOn } : {}),
-      images: [{ url: imageFileUrl(article.image, SHARE_IMAGE_WIDTH), alt: article.image.alt }],
-    },
-    twitter: { card: "summary_large_image" },
+    ...shareMetadata({
+      path,
+      title,
+      description,
+      images: [shareImage, article.image],
+      article: { publishedTime: article.publishedOn, modifiedTime: article.updatedOn },
+    }),
   };
 };
 

@@ -204,7 +204,7 @@ export const TrekSectionPanels = ({
         <SimilarTreksCard similarTrekIds={values.similarTrekIds} options={similarOptions} error={errors.similarTrekIds} onEdit={onEdit} />
       </div>
       <div {...panel("seo")}>
-        <GoogleSearchCard values={values} errors={errors} />
+        <GoogleSearchCard values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("shared")}>
         <SharedSectionsCard hiddenSharedSections={values.hiddenSharedSections} sectionOrder={sectionOrder} />

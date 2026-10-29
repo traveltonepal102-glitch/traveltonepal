@@ -473,6 +473,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   seoKeyword: "",
   seoTitle: "",
   seoDescription: "",
+  sharePhoto: null,
   similarTrekIds: [],
   hiddenSharedSections: [],
   sectionOrder: orderTrekSections([]),

@@ -12,6 +12,9 @@ const ROW: WebSitePageRow = {
   seo_title: "",
   seo_description: "",
   seo_keyword: "",
+  share_id: null,
+  share_variant_widths: null,
+  share_place: null,
   content: {
     replyTimes: { whatsApp: " Within a few hours ", email: "Within 24 hours" },
     officeDirections: "Near the Garden of Dreams",

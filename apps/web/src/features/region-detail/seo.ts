@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
 import { imageFileUrl } from "@/lib/images";
+import { shareMetadata } from "@/features/seo/shareMetadata";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath } from "@/lib/routes";
-import { SITE_NAME, absoluteUrl } from "@/lib/site";
+import { absoluteUrl } from "@/lib/site";
 
 import type { RegionDetail } from "./types";
 
-/** Share previews and Google use one large file per photo. */
+/** Google reads one file of each photo in the structured data, about this wide (shared links use the share picture). */
 const SHARE_IMAGE_WIDTH = 1200;
 
 /** Home / Regions / Langtang: shown on the page and sent as JSON-LD. */
@@ -19,22 +20,15 @@ export const regionBreadcrumbs = (region: RegionDetail): BreadcrumbItem[] => [
   { label: region.name },
 ];
 
+/** Title, description and canonical address; shared links show the chosen share photo, else the region's cover. */
 export const regionMetadata = (region: RegionDetail): Metadata => {
   const path = regionPath(region.slug);
-  const { image } = region;
+  const { title, description, shareImage } = region.seo;
   return {
-    title: region.seo.title,
-    description: region.seo.description,
+    title,
+    description,
     alternates: { canonical: path },
-    openGraph: {
-      type: "website",
-      siteName: SITE_NAME,
-      url: path,
-      title: region.seo.title,
-      description: region.seo.description,
-      images: image ? [{ url: imageFileUrl(image, SHARE_IMAGE_WIDTH), alt: image.alt }] : undefined,
-    },
-    twitter: { card: "summary_large_image" },
+    ...shareMetadata({ path, title, description, images: [shareImage, region.image] }),
   };
 };
 

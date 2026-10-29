@@ -115,13 +115,15 @@ export type ArticleValues = {
 export type Article = ArticleValues & {
   id: string;
   cover: Photo | null;
+  /** The photo of the guide's shared links (its 1200×630 share picture); null: the guide's photo. */
+  sharePhoto: Photo | null;
   /** "YYYY-MM-DD": the last big update, if any. */
   updatedOn: string | null;
   updatedAt: string;
 };
 
 /** What the form's Save sends (checked by articleSchema). */
-export type ArticleFormValues = ArticleValues & { coverPhotoId: string | null; isBigUpdate: boolean };
+export type ArticleFormValues = ArticleValues & { coverPhotoId: string | null; sharePhotoId: string | null; isBigUpdate: boolean };
 
 /** The choices the editor offers. */
 export type ArticleOptions = {

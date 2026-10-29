@@ -27,7 +27,7 @@ const NOT_FOUND = "P0002";
 const RLS_VIOLATION = "42501";
 
 const TREK_COLUMNS = `*,
-  trek_translations!inner(*),
+  trek_translations!inner(*, share:photos!trek_translations_share_photo_id_fkey(${PHOTO_COLUMNS})),
   cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}),
   trek_photos(position, photo:photos(${PHOTO_COLUMNS})),
   trek_days(*, photo:photos(${PHOTO_COLUMNS}), trek_day_translations!inner(*)),
@@ -39,7 +39,7 @@ const TREK_COLUMNS = `*,
 type DayQueryRow = DayRow & { photo: PhotoFields | null; trek_day_translations: DayTextRow[] };
 
 type TrekQueryRow = TrekRow & {
-  trek_translations: TextRow[];
+  trek_translations: (TextRow & { share: PhotoFields | null })[];
   cover: PhotoFields | null;
   trek_photos: { position: number; photo: PhotoFields }[];
   trek_days: DayQueryRow[];
@@ -174,6 +174,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     seoKeyword: text.seo_keyword,
     seoTitle: text.seo_title,
     seoDescription: text.seo_description,
+    sharePhoto: text.share ? toPhoto(text.share) : null,
     hiddenSharedSections: sharedSectionsSchema.parse(row.hidden_shared_sections),
     sectionOrder: sectionOrderSchema.parse(row.section_order),
     guidesIntro: text.guides_intro,
@@ -362,6 +363,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       seo_keyword: values.seoKeyword,
       seo_title: values.seoTitle,
       seo_description: values.seoDescription,
+      share_photo_id: values.sharePhotoId ?? "",
       guides_intro: values.guidesIntro,
       current_season: values.currentSeason,
       category: values.category,

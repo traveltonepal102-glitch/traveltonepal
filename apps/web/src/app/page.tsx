@@ -14,6 +14,7 @@ import { WhyUsSection } from "@/features/home/components/WhyUsSection";
 import { homeGuides, homeTreks } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
@@ -26,7 +27,7 @@ const homeTop = async () => {
   return getListPageTop("home", { regions: regions.length, treks: treks.length });
 };
 
-export const generateMetadata = async (): Promise<Metadata> => sitePageMetadata(await homeTop(), ROUTES.home);
+export const generateMetadata = async (): Promise<Metadata> => withSiteShareImage(sitePageMetadata(await homeTop(), ROUTES.home));
 
 /**
  * The home page; regions, popular treks and travel guides come from the database (cached, see lib/cacheTags).

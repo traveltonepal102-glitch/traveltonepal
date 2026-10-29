@@ -5,7 +5,7 @@ import type { IconTone } from "@/components/shared/iconTones";
 import type { GuideSummary } from "@/features/guides/types";
 import type { RegionCard } from "@/features/regions/regionRows";
 import type { TrekSummary } from "@/features/treks/types";
-import { coverImage } from "@/lib/images";
+import { coverImage, sharePhotoImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebRegionGuideRow, WebRegionPageRow, WebRegionPhotoRow } from "@/lib/supabase/database.types";
 
@@ -76,6 +76,7 @@ export const toRegionDetail = (source: RegionPageSource, photosBaseUrl: string):
     seo: {
       title: firstText(page.seo_title) ?? `${card.name} trekking region: treks, best time and local guides`,
       description: firstText(page.seo_description, card.summary, card.tagline) ?? "",
+      shareImage: sharePhotoImage(page, photosBaseUrl, `${card.name} region`),
     },
     heroHighlight: page.hero_highlight.trim(),
     bestMonthsLabel: formatBestMonths(card.months),

@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
 import { imageFileUrl } from "@/lib/images";
+import { shareMetadata } from "@/features/seo/shareMetadata";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath, trekPath } from "@/lib/routes";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 import type { TrekDetail } from "./types";
 
-/** Share previews and Google read one file of the photo, about this wide. */
+/** Google reads one file of each photo in the structured data, about this wide (shared links use the share picture). */
 const SHARE_IMAGE_WIDTH = 1200;
 
 /** Home / Nepal treks / Langtang region / Langtang Valley Trek: shown on the page and sent as JSON-LD. */
@@ -19,23 +20,15 @@ export const trekBreadcrumbs = (trek: TrekDetail): BreadcrumbItem[] => [
   { label: trek.name },
 ];
 
+/** Title, description and canonical address; shared links show the chosen share photo, else the trek's first photo. */
 export const trekMetadata = (trek: TrekDetail): Metadata => {
   const path = trekPath(trek.slug);
-  const image = trek.photos[0];
-
+  const { title, description, shareImage } = trek.seo;
   return {
-    title: trek.seo.title,
-    description: trek.seo.description,
+    title,
+    description,
     alternates: { canonical: path },
-    openGraph: {
-      type: "website",
-      siteName: SITE_NAME,
-      url: path,
-      title: trek.seo.title,
-      description: trek.seo.description,
-      images: image ? [{ url: imageFileUrl(image, SHARE_IMAGE_WIDTH), alt: image.alt }] : undefined,
-    },
-    twitter: { card: "summary_large_image" },
+    ...shareMetadata({ path, title, description, images: [shareImage, trek.photos[0]] }),
   };
 };
 

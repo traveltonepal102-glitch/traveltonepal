@@ -2,32 +2,29 @@ import { ROUTES } from "@/lib/routes";
 
 /**
  * Trek filters, shared by the home trek finder, the header Treks menu and the Treks page, so a
- * link like /treks?length=9 means the same thing everywhere. Values are the URL values.
+ * link like /treks?length=6-9 means the same thing everywhere. Values are the URL values.
  */
 export type TrekFilterParam = "q" | "region" | "length" | "difficulty" | "season" | "show" | "sort";
 
 /**
- * "How long": the longest trek to show, so "Up to 5 days" shows 1–5 days (one choice at a time), or the long ones.
- * The URL value is the number of days, e.g. /treks?length=5.
+ * "How long": ranges that don't overlap (one choice at a time), as the client asked on 2026-10-29.
+ * The URL value names the range, e.g. /treks?length=6-9.
  */
 export const TREK_LENGTHS = [
-  { value: "1", label: "Up to 1 day", minDays: 1, maxDays: 1 },
-  { value: "3", label: "Up to 3 days", minDays: 1, maxDays: 3 },
-  { value: "5", label: "Up to 5 days", minDays: 1, maxDays: 5 },
-  { value: "7", label: "Up to 7 days", minDays: 1, maxDays: 7 },
-  { value: "9", label: "Up to 9 days", minDays: 1, maxDays: 9 },
-  { value: "11", label: "Up to 11 days", minDays: 1, maxDays: 11 },
-  { value: "13", label: "Up to 13 days", minDays: 1, maxDays: 13 },
-  { value: "15", label: "Up to 15 days", minDays: 1, maxDays: 15 },
-  { value: "16plus", label: "16+ days", minDays: 16, maxDays: Infinity },
+  { value: "1", label: "1 Day Hike", minDays: 1, maxDays: 1 },
+  { value: "2-5", label: "2 to 5 Days", minDays: 2, maxDays: 5 },
+  { value: "6-9", label: "6 to 9 Days", minDays: 6, maxDays: 9 },
+  { value: "10-15", label: "10 to 15 Days", minDays: 10, maxDays: 15 },
+  { value: "16plus", label: "15+ Days", minDays: 16, maxDays: Infinity },
 ] as const;
 
 export type TrekLength = (typeof TREK_LENGTHS)[number]["value"];
 
 export const TREK_SEASONS = [
-  { value: "spring", label: "Spring · Mar–May" },
-  { value: "autumn", label: "Autumn · Sep–Nov" },
-  { value: "winter", label: "Winter · Dec–Feb" },
+  { value: "spring", label: "Spring (March - May)" },
+  { value: "autumn", label: "Autumn (September - November)" },
+  { value: "winter", label: "Winter (December - February)" },
+  { value: "monsoon", label: "Monsoon (June - August)" },
 ] as const;
 
 /** The Treks page results (with the filters), for links that jump to them. */
@@ -54,6 +51,6 @@ export const TREK_SORTS = [
 
 export type TrekSort = (typeof TREK_SORTS)[number]["value"];
 
-/** /treks with the given filters, e.g. { length: "9" } → "/treks?length=9". */
+/** /treks with the given filters, e.g. { length: "6-9" } → "/treks?length=6-9". */
 export const treksFilterPath = (filters: Partial<Record<TrekFilterParam, string>>) =>
   `${ROUTES.treks}?${new URLSearchParams(filters).toString()}`;

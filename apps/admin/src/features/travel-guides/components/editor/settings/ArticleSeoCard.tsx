@@ -3,6 +3,8 @@ import { cn } from "@ttn/ui/lib/utils";
 
 import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
+import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
+import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { ARTICLE_LIMITS as LIMIT } from "../../../constants";
@@ -17,10 +19,12 @@ type ArticleSeoCardProps = {
   domain: string;
   checks: SeoCheck[];
   errors: FieldErrors;
+  sharePhoto: Photo | null;
+  onEdit: () => void;
 };
 
-/** "Google (SEO)": the keyword, Google title and description, a preview of the result and the checklist. */
-export const ArticleSeoCard = ({ values, draft, domain, checks, errors }: ArticleSeoCardProps) => {
+/** "Google (SEO)": the keyword, Google title and description, a preview of the result, the checklist and the shared links' photo. */
+export const ArticleSeoCard = ({ values, draft, domain, checks, errors, sharePhoto, onEdit }: ArticleSeoCardProps) => {
   const done = checks.filter((check) => check.isDone).length;
 
   return (
@@ -77,6 +81,7 @@ export const ArticleSeoCard = ({ values, draft, domain, checks, errors }: Articl
           </li>
         ))}
       </ul>
+      <SharePhotoField initial={sharePhoto} fallback="the guide's photo" onEdit={onEdit} />
     </FormSection>
   );
 };

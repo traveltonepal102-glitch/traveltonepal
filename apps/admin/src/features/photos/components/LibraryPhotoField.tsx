@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 
+import { usePickerPhotos } from "../hooks/usePickerPhotos";
 import type { Photo } from "../types";
 import { LibraryPhotoDialog } from "./LibraryPhotoDialog";
 import { PhotoImage } from "./PhotoImage";
@@ -16,8 +17,8 @@ type LibraryPhotoFieldProps = {
   label: string;
   hint?: string;
   initial: Photo | null;
-  /** The library photos to choose from. */
-  photos: Photo[];
+  /** The library photos to choose from; without them, they load when the window opens. */
+  photos?: Photo[];
   /** Said while no photo is chosen. */
   emptyText?: string;
   onEdit: () => void;
@@ -29,6 +30,11 @@ const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 export const LibraryPhotoField = ({ name, label, hint, initial, photos, emptyText = "No photo: the page uses its own default.", onEdit }: LibraryPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const [isOpen, setIsOpen] = useState(false);
+  const picker = usePickerPhotos(photos);
+  const open = () => {
+    setIsOpen(true);
+    picker.load();
+  };
   const choose = (next: Photo | null) => {
     setPhoto(next);
     onEdit();
@@ -44,7 +50,7 @@ export const LibraryPhotoField = ({ name, label, hint, initial, photos, emptyTex
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className="truncate text-caption text-text">{photo ? photo.place || "Photo from the library" : emptyText}</span>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => setIsOpen(true)} className={smallButton}>
+            <button type="button" onClick={open} className={smallButton}>
               <Icon name="image" size={16} />
               {photo ? "Change" : "Choose photo"}
             </button>
@@ -59,7 +65,7 @@ export const LibraryPhotoField = ({ name, label, hint, initial, photos, emptyTex
       </div>
       {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
       <input type="hidden" name={name} value={photo?.id ?? ""} />
-      {isOpen && <LibraryPhotoDialog title={label} photos={photos} selectedId={photo?.id ?? null} onChoose={choose} onClose={() => setIsOpen(false)} />}
+      {isOpen && <LibraryPhotoDialog title={label} photos={picker.photos} loadError={picker.loadError} selectedId={photo?.id ?? null} onChoose={choose} onClose={() => setIsOpen(false)} />}
     </div>
   );
 };

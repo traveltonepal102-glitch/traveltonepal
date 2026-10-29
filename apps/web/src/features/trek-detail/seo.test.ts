@@ -17,6 +17,16 @@ describe("trek page SEO", () => {
     expect(metadata.alternates?.canonical).toBe("/treks/langtang-valley");
   });
 
+  it("shares the trek's first photo, or the share photo chosen in the admin, as a 1200×630 picture", () => {
+    const [firstPhoto] = trek.photos;
+    expect(trekMetadata(trek).openGraph).toMatchObject({ images: [{ url: `${firstPhoto.src}/share.jpg`, width: 1200, height: 630 }] });
+
+    const chosen = toTrekDetail(langtangSource({ share_id: "share-photo", share_variant_widths: [400, 800], share_place: "Kyanjin Ri" }), PHOTOS_BASE);
+    expect(trekMetadata(chosen).openGraph).toMatchObject({
+      images: [{ url: `${PHOTOS_BASE}/share-photo/share.jpg`, alt: "Kyanjin Ri, Langtang Valley Trek" }],
+    });
+  });
+
   it("lists the breadcrumb trail with full URLs, ending at the trek page", () => {
     const items = byType("BreadcrumbList")?.itemListElement as { position: number; name: string; item: string }[];
     expect(items.map((item) => item.name)).toEqual(["Home", "Nepal treks", "Langtang region", "Langtang Valley Trek"]);

@@ -1,5 +1,5 @@
 import type { WebSitePageRow } from "@/lib/supabase/database.types";
-import { coverImage } from "@/lib/images";
+import { coverImage, sharePhotoImage } from "@/lib/images";
 
 import type { SitePageTop } from "./types";
 
@@ -8,7 +8,12 @@ export const toSitePageTop = (row: WebSitePageRow, photosBaseUrl: string, subjec
   eyebrow: row.eyebrow.trim(),
   heading: row.heading.trim(),
   intro: row.intro.trim(),
-  seo: { title: row.seo_title.trim(), description: row.seo_description.trim(), keyword: row.seo_keyword.trim() },
+  seo: {
+    title: row.seo_title.trim(),
+    description: row.seo_description.trim(),
+    keyword: row.seo_keyword.trim(),
+    shareImage: sharePhotoImage(row, photosBaseUrl, subject),
+  },
   cover: coverImage(row, photosBaseUrl, subject),
   updatedAt: row.updated_at,
 });

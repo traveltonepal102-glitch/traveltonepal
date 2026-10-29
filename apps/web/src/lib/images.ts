@@ -1,6 +1,6 @@
 import { photoAltText, photoUrl } from "@ttn/ui/lib/photos";
 
-import type { CoverColumns } from "@/lib/supabase/database.types";
+import type { CoverColumns, ShareColumns } from "@/lib/supabase/database.types";
 
 /**
  * A picture a page shows: a file in /public (`src`), or a library photo from the admin (`src` is its folder,
@@ -31,3 +31,11 @@ export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: st
     placeholder: row.cover_placeholder || undefined,
   };
 };
+
+/** A page's chosen share photo (Google card in the admin) as a SiteImageSource; undefined when none is chosen. */
+export const sharePhotoImage = (row: ShareColumns, photosBaseUrl: string, subject: string): SiteImageSource | undefined =>
+  coverImage(
+    { cover_id: row.share_id, cover_variant_widths: row.share_variant_widths, cover_place: row.share_place, cover_placeholder: null, cover_width: null, cover_height: null },
+    photosBaseUrl,
+    subject,
+  );

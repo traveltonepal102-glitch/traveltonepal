@@ -7,6 +7,7 @@ import { getGuideArticle, listGuidePageSlugs } from "@/features/guide-article/se
 import { listTravelGuides } from "@/features/guides/services/guidesRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
+import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
 
 type GuidePageProps = PageProps<"/travel-guides/[slug]">;
 
@@ -26,7 +27,7 @@ export const instant = false;
 
 export const generateMetadata = async ({ params }: GuidePageProps): Promise<Metadata> => {
   const article = await getGuideArticle((await params).slug);
-  return article ? articleMetadata(article) : {};
+  return withSiteShareImage(article ? articleMetadata(article) : {});
 };
 
 const GuidePage = async ({ params }: GuidePageProps) => {

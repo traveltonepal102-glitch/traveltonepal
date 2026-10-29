@@ -1,6 +1,7 @@
 import { TREK_PAGE_SECTIONS, orderTrekSections } from "@ttn/config/trekPageSections";
 import { z } from "zod";
 
+import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
 import { optionalWholeNumber, readList, readText, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { richTextField } from "@/lib/richText/richText";
@@ -88,6 +89,7 @@ export const trekSchema = z
     seoKeyword: text(LIMIT.seoKeyword),
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
+    sharePhotoId: optionalPhotoId,
     similarTrekIds: z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
@@ -227,6 +229,7 @@ export const readTrekForm = (formData: FormData) => {
     seoKeyword: readText(formData, "seoKeyword"),
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
+    sharePhotoId: readText(formData, "sharePhotoId"),
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     sectionOrder: readList(formData, "sectionOrder"),

@@ -4,6 +4,7 @@ import { GuidesPage } from "@/features/guides/components/GuidesPage";
 import { listTravelGuides } from "@/features/guides/services/guidesRepository";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
@@ -15,7 +16,7 @@ const guidesTop = async () => {
   return getListPageTop("travel-guides", { regions: regions.length, treks: treks.length });
 };
 
-export const generateMetadata = async (): Promise<Metadata> => sitePageMetadata(await guidesTop(), ROUTES.guides);
+export const generateMetadata = async (): Promise<Metadata> => withSiteShareImage(sitePageMetadata(await guidesTop(), ROUTES.guides));
 
 const TravelGuides = async () => {
   const [guides, top] = await Promise.all([listTravelGuides(), guidesTop()]);

@@ -21,6 +21,7 @@ type ContactPageEditorProps = {
   action: EditorSaveAction;
   values: ContactPageValues;
   photo: Photo | null;
+  sharePhoto: Photo | null;
   libraryPhotos: Photo[];
   websiteUrl: string | null;
   lastSaved: string;
@@ -30,7 +31,7 @@ const FIXED_NOTE =
   "Fixed in the website, not edited here: the WhatsApp, email and phone boxes, the message helper, and the office address, hours and map. They come from Site settings, so they are the same on every page.";
 
 /** Pages › Contact (design: Admin-pages, "Contact"): the Contact page's sections, top to bottom. */
-export const ContactPageEditor = ({ action, values, photo, libraryPhotos, websiteUrl, lastSaved }: ContactPageEditorProps) => (
+export const ContactPageEditor = ({ action, values, photo, sharePhoto, libraryPhotos, websiteUrl, lastSaved }: ContactPageEditorProps) => (
   <PageEditorForm
     action={action}
     title="Contact"
@@ -76,7 +77,7 @@ export const ContactPageEditor = ({ action, values, photo, libraryPhotos, websit
           </FaqListEditor>
         </div>
         <div hidden={activeKey !== "seo"}>
-          <PageGoogleCard values={values} errors={errors} websitePath="/contact" />
+          <PageGoogleCard values={values} errors={errors} websitePath="/contact" sharePhoto={sharePhoto} shareFallback="the photo behind the heading, else the share image in Site settings" onEdit={onEdit} />
         </div>
       </>
     )}

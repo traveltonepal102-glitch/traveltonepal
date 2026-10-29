@@ -193,6 +193,8 @@ export type TrekValues = {
   seoKeyword: string;
   seoTitle: string;
   seoDescription: string;
+  /** The photo of the trek's shared links (its 1200×630 share picture); null: the trek's first photo. */
+  sharePhoto: Photo | null;
   /** Up to 4 treks to suggest at the bottom of the page, in order; the website fills empty places itself. */
   similarTrekIds: string[];
   /** Shared sections (written once in Site settings) this trek doesn't show. */
@@ -247,7 +249,8 @@ export type TrekValues = {
 export type TrekPhotos = PhotoSelection;
 
 /** What the editor's Save sends (checked by trekSchema). */
-export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinerary" | "groupPrices"> & {
+export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinerary" | "groupPrices" | "sharePhoto"> & {
+  sharePhotoId: string | null;
   groupPrices: (Omit<GroupPrice, "priceUsd"> & { priceUsd: number })[];
   /** From the day-by-day plan when it has days; otherwise typed in Basics. */
   days: number;

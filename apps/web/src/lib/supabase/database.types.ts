@@ -14,6 +14,13 @@ export type CoverColumns = {
   cover_place: string | null;
 };
 
+/** A page's chosen share photo (null: none chosen); every library photo has a 1200×630 share.jpg. */
+export type ShareColumns = {
+  share_id: string | null;
+  share_variant_widths: number[] | null;
+  share_place: string | null;
+};
+
 export type WebRegionRow = CoverColumns & {
   id: string;
   slug: string;
@@ -46,7 +53,7 @@ export type WebRegionRow = CoverColumns & {
  * The rest of a region's page; only regions that have one (web_regions.has_page). JSON columns are `unknown`:
  * the website checks their shape when it reads them (regionPageRows).
  */
-export type WebRegionPageRow = {
+export type WebRegionPageRow = ShareColumns & {
   id: string;
   slug: string;
   locale: Locale;
@@ -127,7 +134,7 @@ export type WebTrekRow = CoverColumns & {
  * The rest of a trek's page; only published treks that have one (web_treks.has_page). JSON columns are `unknown`:
  * the website checks their shape when it reads them (trekPageRows).
  */
-export type WebTrekPageRow = {
+export type WebTrekPageRow = ShareColumns & {
   id: string;
   slug: string;
   locale: Locale;
@@ -245,7 +252,7 @@ export type WebTravelGuideRow = CoverColumns & {
  * The rest of a published travel guide's page (web_travel_guide_pages). JSON columns are `unknown`: the website
  * checks their shape when it reads them (guidePageRows).
  */
-export type WebTravelGuidePageRow = CoverColumns & {
+export type WebTravelGuidePageRow = CoverColumns & ShareColumns & {
   id: string;
   slug: string;
   locale: Locale;
@@ -331,7 +338,7 @@ export type WebRedirectRow = { kind: "trek" | "region" | "guide"; from_slug: str
 export type SitePageSlug = "about" | "contact" | "home" | "treks" | "regions" | "travel-guides" | "terms" | "privacy" | "impressum" | "cookies";
 
 /** A fixed page from the admin's Pages: its top, Google result and `content` (what only that page has, read with zod). */
-export type WebSitePageRow = CoverColumns & {
+export type WebSitePageRow = CoverColumns & ShareColumns & {
   slug: SitePageSlug;
   eyebrow: string;
   heading: string;

@@ -166,7 +166,7 @@ export const RegionEditor = ({
             <CompareSection compareRegionIds={values.compareRegionIds} regions={otherRegions} error={errors.compareRegionIds} onEdit={markDirty} />
           </div>
           <div hidden={activeKey !== "seo"}>
-            <SeoSection values={values} errors={errors} slug={slug} />
+            <SeoSection values={values} errors={errors} slug={slug} onEdit={markDirty} />
           </div>
         </div>
       </div>

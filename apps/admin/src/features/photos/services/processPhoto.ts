@@ -1,4 +1,5 @@
 import "server-only";
+import { SHARE_IMAGE_SIZE } from "@ttn/ui/lib/photos";
 import sharp from "sharp";
 
 import { MASTER_MAX_SIDE, MAX_PHOTO_PIXELS, MIN_PHOTO_WIDTH } from "../constants";
@@ -10,8 +11,20 @@ export type ProcessedPhoto = {
   /** Cleaned full-size JPEG, kept privately. */
   master: Buffer;
   variants: { width: number; body: Buffer }[];
+  /** The picture for shared links (SHARE_IMAGE_SIZE, JPEG). */
+  share: Buffer;
   placeholder: string;
 };
+
+/**
+ * The share picture from a master: cut to 1200×630, keeping the busiest part of the photo (sharp's "attention":
+ * the summit or the people rather than plain sky). scripts/make-share-files.mjs does the same for older photos.
+ */
+export const makeShareImage = (master: Buffer) =>
+  sharp(master)
+    .resize({ ...SHARE_IMAGE_SIZE, fit: "cover", position: sharp.strategy.attention })
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toBuffer();
 
 export class PhotoRejectedError extends Error {}
 
@@ -19,8 +32,8 @@ const READABLE_FORMATS = new Set(["jpeg", "png", "webp"]);
 
 /**
  * Turns an upload into what the site serves: upright (EXIF orientation applied), without any metadata
- * (GPS location, camera, owner: sharp writes none unless asked), as a JPEG master plus WebP sizes and a
- * tiny blurred preview. The file's real format is checked, not the name or type the browser sent.
+ * (GPS location, camera, owner: sharp writes none unless asked), as a JPEG master plus WebP sizes, the share
+ * picture and a tiny blurred preview. The file's real format is checked, not the name or type the browser sent.
  */
 export const processPhoto = async (upload: Buffer): Promise<ProcessedPhoto> => {
   const options = { failOn: "error" as const, limitInputPixels: MAX_PHOTO_PIXELS };
@@ -52,7 +65,8 @@ export const processPhoto = async (upload: Buffer): Promise<ProcessedPhoto> => {
       body: await sharp(master.data).resize({ width: variantWidth }).webp({ quality: 78 }).toBuffer(),
     })),
   );
+  const share = await makeShareImage(master.data);
   const tiny = await sharp(master.data).resize({ width: 16 }).webp({ quality: 40 }).toBuffer();
 
-  return { width, height, master: master.data, variants, placeholder: `data:image/webp;base64,${tiny.toString("base64")}` };
+  return { width, height, master: master.data, variants, share, placeholder: `data:image/webp;base64,${tiny.toString("base64")}` };
 };

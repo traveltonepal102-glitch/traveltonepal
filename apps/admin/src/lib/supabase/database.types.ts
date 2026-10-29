@@ -159,6 +159,8 @@ type TrekTranslationRow = {
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
+  /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
+  share_photo_id: string | null;
   updated_at: string;
 };
 
@@ -327,6 +329,8 @@ export type SitePageRow = {
   intro: string;
   seo_title: string;
   seo_description: string;
+  /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
+  share_photo_id: string | null;
   seo_keyword: string;
   photo_id: string | null;
   founder_author_id: string | null;
@@ -401,6 +405,8 @@ type ArticleTranslationRow = {
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
+  /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
+  share_photo_id: string | null;
   /** Jan–Dec: [{ onTheTrail, crowds }], or [] */
   month_notes: Json;
   updated_at: string;
@@ -534,6 +540,8 @@ type RegionTranslationRow = {
   seo_keyword: string;
   seo_title: string;
   seo_description: string;
+  /** The photo shown when the page is shared (its 1200×630 share.jpg); null: the page's main photo. */
+  share_photo_id: string | null;
   featured_trek_label: string;
   featured_trek_pitch: string;
   custom_route_pitch: string;
@@ -653,7 +661,10 @@ export type Database = {
         Row: TrekTranslationRow;
         Insert: Partial<TrekTranslationRow> & Pick<TrekTranslationRow, "trek_id" | "locale" | "name">;
         Update: Partial<TrekTranslationRow>;
-        Relationships: [Fk<"trek_translations_trek_id_fkey", "trek_id", "treks">];
+        Relationships: [
+          Fk<"trek_translations_trek_id_fkey", "trek_id", "treks">,
+          Fk<"trek_translations_share_photo_id_fkey", "share_photo_id", "photos">,
+        ];
       };
       trek_photos: {
         Row: TrekPhotoRow;
@@ -728,7 +739,11 @@ export type Database = {
         Row: SitePageRow;
         Insert: never;
         Update: Partial<SitePageRow>;
-        Relationships: [Fk<"site_pages_photo_id_fkey", "photo_id", "photos">, Fk<"site_pages_founder_author_id_fkey", "founder_author_id", "authors">];
+        Relationships: [
+          Fk<"site_pages_photo_id_fkey", "photo_id", "photos">,
+          Fk<"site_pages_founder_author_id_fkey", "founder_author_id", "authors">,
+          Fk<"site_pages_share_photo_id_fkey", "share_photo_id", "photos">,
+        ];
       };
       site_page_photos: {
         Row: SitePagePhotoRow;
@@ -801,7 +816,10 @@ export type Database = {
         Row: ArticleTranslationRow;
         Insert: Partial<ArticleTranslationRow> & Pick<ArticleTranslationRow, "article_id" | "locale" | "title">;
         Update: Partial<ArticleTranslationRow>;
-        Relationships: [Fk<"article_translations_article_id_fkey", "article_id", "articles">];
+        Relationships: [
+          Fk<"article_translations_article_id_fkey", "article_id", "articles">,
+          Fk<"article_translations_share_photo_id_fkey", "share_photo_id", "photos">,
+        ];
       };
       article_sections: {
         Row: ArticleSectionRow;
@@ -908,6 +926,7 @@ export type Database = {
             referencedRelation: "regions";
             referencedColumns: ["id"];
           },
+          Fk<"region_translations_share_photo_id_fkey", "share_photo_id", "photos">,
         ];
       };
     };

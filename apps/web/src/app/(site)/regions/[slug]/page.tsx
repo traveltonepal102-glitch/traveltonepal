@@ -6,6 +6,7 @@ import { regionMetadata } from "@/features/region-detail/seo";
 import { getRegionDetail, listRegionPageSlugs } from "@/features/region-detail/services/regionPageRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
 import { redirectIfMoved } from "@/features/seo/services/redirectsRepository";
+import { withSiteShareImage } from "@/features/seo/withSiteShareImage";
 
 type RegionPageProps = PageProps<"/regions/[slug]">;
 
@@ -25,7 +26,7 @@ export const instant = false;
 
 export const generateMetadata = async ({ params }: RegionPageProps): Promise<Metadata> => {
   const region = await getRegionDetail((await params).slug);
-  return region ? regionMetadata(region) : {};
+  return withSiteShareImage(region ? regionMetadata(region) : {});
 };
 
 const RegionPage = async ({ params }: RegionPageProps) => {

@@ -75,6 +75,8 @@ export const matchesLength = (days: number, length: TrekLength) => {
 
 const difficultyValue = (trek: TrekSummary) => trek.difficulty.toLowerCase();
 
+const suitsSeason = (trek: TrekSummary, season: string) => trek.seasons.some((value) => value === season);
+
 const matchesShortcut = (trek: TrekSummary, shortcut: TrekShortcut) => {
   switch (shortcut) {
     case "popular":
@@ -97,7 +99,7 @@ const matchesSearch = (trek: TrekSummary, q: string) => {
 };
 
 /** A sidebar list whose option counts ignore its own selection (so options never count 0 just because another is picked). */
-export type CountedDimension = "regions" | "difficulties";
+export type CountedDimension = "regions" | "difficulties" | "seasons";
 
 export const matchesTrek = (trek: TrekSummary, filters: TrekFilters, ignore?: CountedDimension): boolean => {
   if (filters.q && !matchesSearch(trek, filters.q)) return false;
@@ -106,7 +108,7 @@ export const matchesTrek = (trek: TrekSummary, filters: TrekFilters, ignore?: Co
   if (filters.length && !matchesLength(trek.days, filters.length)) return false;
   if (ignore !== "difficulties" && filters.difficulties.length && !filters.difficulties.includes(difficultyValue(trek)))
     return false;
-  if (filters.seasons.length && !filters.seasons.some((season) => trek.seasons.some((s) => s === season))) return false;
+  if (ignore !== "seasons" && filters.seasons.length && !filters.seasons.some((season) => suitsSeason(trek, season))) return false;
   if (filters.shortcut && !matchesShortcut(trek, filters.shortcut)) return false;
   return true;
 };
@@ -129,18 +131,19 @@ export const filterAndSortTreks = (treks: readonly TrekSummary[], filters: TrekF
     filters.sort,
   );
 
+const MATCHES_OPTION: Record<CountedDimension, (trek: TrekSummary, value: string) => boolean> = {
+  regions: passesThrough,
+  difficulties: (trek, value) => difficultyValue(trek) === value,
+  seasons: suitsSeason,
+};
+
 /** How many treks an option would show, given every other active filter. */
 export const countForOption = (
   treks: readonly TrekSummary[],
   filters: TrekFilters,
   dimension: CountedDimension,
   value: string,
-): number =>
-  treks.filter(
-    (trek) =>
-      matchesTrek(trek, filters, dimension) &&
-      (dimension === "regions" ? passesThrough(trek, value) : difficultyValue(trek) === value),
-  ).length;
+): number => treks.filter((trek) => matchesTrek(trek, filters, dimension) && MATCHES_OPTION[dimension](trek, value)).length;
 
 /** Number of filters set in the sidebar or search (the shortcut and sort don't count). */
 export const activeFilterCount = (filters: TrekFilters): number =>

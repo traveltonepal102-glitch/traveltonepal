@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { imageFileUrl } from "@/lib/images";
+import { shareMetadata } from "@/features/seo/shareMetadata";
 import { SITE_NAME } from "@/lib/site";
 
 import type { SitePageTop } from "./types";
@@ -9,7 +9,8 @@ import type { SitePageTop } from "./types";
 export const TITLE_SUFFIX = ` · ${SITE_NAME}`;
 
 /**
- * A fixed page's title, description and share preview, from its Google result in Pages (the H1 when no title). The
+ * A fixed page's title, description and share preview, from its Google result in Pages (the H1 when no title; shared
+ * links show the chosen share photo, else the photo behind the heading, else Site settings'). The
  * home page is the root layout's own page, so the layout's title template doesn't reach it: its title is written out.
  */
 export const sitePageMetadata = (top: SitePageTop, path: string): Metadata => {
@@ -20,13 +21,6 @@ export const sitePageMetadata = (top: SitePageTop, path: string): Metadata => {
     title: isHome ? { absolute: `${title}${TITLE_SUFFIX}` } : title,
     description,
     alternates: { canonical: path },
-    openGraph: {
-      type: "website",
-      siteName: SITE_NAME,
-      url: path,
-      title,
-      description,
-      ...(top.cover ? { images: [{ url: imageFileUrl(top.cover, 1200), alt: top.cover.alt }] } : {}),
-    },
+    ...shareMetadata({ path, title, description, images: [top.seo.shareImage, top.cover] }),
   };
 };

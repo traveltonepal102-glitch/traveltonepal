@@ -40,7 +40,9 @@ const savedLabel = (updatedAt: string) => `Published · saved ${formatDateTime(u
 const ListPagesEditorPage = async (pageParam: unknown) => {
   const pages = await getSitePages(LIST_PAGES.map((page) => page.slug));
   const latest = pages.map((page) => page.updatedAt).sort().at(-1);
-  const topOf = (slug: ListPageSlug) => pages.find((page) => page.slug === slug)?.top;
+  const pageOf = (slug: ListPageSlug) => pages.find((page) => page.slug === slug);
+  const topOf = (slug: ListPageSlug) => pageOf(slug)?.top;
+  const sharePhotoOf = (slug: ListPageSlug) => pageOf(slug)?.sharePhoto ?? null;
   const [home, treks, regions, guides] = [topOf("home"), topOf("treks"), topOf("regions"), topOf("travel-guides")];
   if (!home || !treks || !regions || !guides || !latest) notFound();
   const initialPage = LIST_PAGES.find((page) => page.slug === pageParam)?.slug ?? "home";
@@ -48,6 +50,7 @@ const ListPagesEditorPage = async (pageParam: unknown) => {
     <ListPagesEditor
       action={saveListPages}
       values={{ home, treks, regions, "travel-guides": guides }}
+      sharePhotos={{ home: sharePhotoOf("home"), treks: sharePhotoOf("treks"), regions: sharePhotoOf("regions"), "travel-guides": sharePhotoOf("travel-guides") }}
       initialPage={initialPage}
       websiteUrl={env.WEBSITE_URL ?? null}
       lastSaved={savedLabel(latest)}
@@ -91,7 +94,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
   const websiteUrl = env.WEBSITE_URL ?? null;
 
   if (slug === "contact") {
-    return <ContactPageEditor action={saveContactPage} values={toContactValues(page)} photo={page.photo} libraryPhotos={libraryPhotos} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
+    return <ContactPageEditor action={saveContactPage} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} libraryPhotos={libraryPhotos} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
   }
 
   const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(), listRegions()]);
@@ -100,6 +103,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
       action={saveAboutPage}
       values={toAboutValues(page)}
       photo={page.photo}
+      sharePhoto={page.sharePhoto}
       photoSlots={page.photoSlots}
       libraryPhotos={libraryPhotos}
       officeAuthors={authors.filter((author) => author.kind === "office").map((author) => ({ id: author.id, name: author.name, jobTitle: author.jobTitle }))}

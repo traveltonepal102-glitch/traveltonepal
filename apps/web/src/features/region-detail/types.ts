@@ -5,6 +5,7 @@ import type { IconTone } from "@/components/shared/iconTones";
 import type { GuideSummary } from "@/features/guides/types";
 import type { MonthRating } from "@/features/regions/overviews";
 import type { RegionCard } from "@/features/regions/regionRows";
+import type { PageSeo } from "@/features/seo/shareMetadata";
 import type { TrekSummary } from "@/features/treks/types";
 import type { SiteImageSource } from "@/lib/images";
 
@@ -41,7 +42,7 @@ export type RegionFaqItem = { question: string; answer: RichTextDoc };
 
 /** Everything the region page shows: the region's card (facts, map pin, months) and the rest of its page. */
 export type RegionDetail = RegionCard & {
-  seo: { title: string; description: string };
+  seo: PageSeo;
   /** Extra hero chip, e.g. "No flights needed"; blank to leave out. */
   heroHighlight: string;
   /** e.g. "Mar–May, Oct–Nov"; blank when no month is rated best. */

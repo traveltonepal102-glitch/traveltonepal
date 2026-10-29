@@ -2,7 +2,7 @@ import { orderTrekSections } from "@ttn/config/trekPageSections";
 
 import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
-import { coverImage } from "@/lib/images";
+import { coverImage, sharePhotoImage } from "@/lib/images";
 import type { MonthRating } from "@/features/regions/overviews";
 import type { RegionCard } from "@/features/regions/regionRows";
 import { firstText } from "@/lib/rowText";
@@ -119,6 +119,7 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks, regions }: 
     seo: {
       title: firstText(page.seo_title) ?? `${summary.name}: itinerary, cost and local guides`,
       description: firstText(page.seo_description, summary.summary) ?? "",
+      shareImage: sharePhotoImage(page, photosBaseUrl, summary.name),
     },
     category: firstText(page.category) ?? (summary.tags.includes("classic") ? "Classic trek" : "Off the beaten path"),
     protectedArea: firstText(page.protected_area),

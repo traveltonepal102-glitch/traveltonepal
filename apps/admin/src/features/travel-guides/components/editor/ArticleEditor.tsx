@@ -144,6 +144,8 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
             domain={site?.domain ?? "traveltonepal.com"}
             checks={getArticleSeoChecks({ ...draft, hasCover: cover !== null, sections: sections.rows })}
             errors={errors}
+            sharePhoto={article?.sharePhoto ?? null}
+            onEdit={markDirty}
           />
           {article && <ReaderFeedbackCard feedback={feedback} />}
         </aside>

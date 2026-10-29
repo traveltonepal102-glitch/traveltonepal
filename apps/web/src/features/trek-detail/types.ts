@@ -1,5 +1,7 @@
 import type { TrekPageSection } from "@ttn/config/trekPageSections";
 import type { RichTextDoc, RichTextImage } from "@ttn/ui/lib/richText";
+
+import type { PageSeo } from "@/features/seo/shareMetadata";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { IconTone } from "@/components/shared/iconTones";
@@ -181,7 +183,7 @@ export type TrekDetailContent = {
   headline: string;
   /** How people say it, for section titles, e.g. "Langtang Trek" → "Book the Langtang Trek with us". */
   shortName: string;
-  seo: { title: string; description: string };
+  seo: PageSeo;
   /** First tag above the title, e.g. "Classic valley trek". */
   category: string;
   protectedArea?: string;

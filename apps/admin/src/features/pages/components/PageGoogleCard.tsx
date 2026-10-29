@@ -7,6 +7,8 @@ import { useState } from "react";
 import { FormSection } from "@/components/ui/FormSection";
 import { tileLabelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
+import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
+import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { PAGE_LIMITS as LIMIT, SEO_DESCRIPTION_RECOMMENDED, SEO_TITLE_RECOMMENDED } from "../constants";
@@ -21,6 +23,11 @@ type PageGoogleCardProps = {
   fieldPrefix?: string;
   /** Under the card's title, e.g. how {regions} works. */
   hint?: string;
+  /** The saved photo of the page's shared links. */
+  sharePhoto: Photo | null;
+  /** What shared links show without one, e.g. "the photo behind the heading". */
+  shareFallback: string;
+  onEdit: () => void;
 };
 
 /** What the website adds after every page's title (the root layout's title template). */
@@ -28,9 +35,9 @@ const TITLE_SUFFIX = " · Travel To Nepal";
 
 /**
  * How the page shows on Google: main keyword, title and description, with a preview and checks. A blank title or
- * description uses the main heading and the text under it.
+ * description uses the main heading and the text under it. Also the photo of the page's shared links.
  */
-export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", hint }: PageGoogleCardProps) => {
+export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", hint, sharePhoto, shareFallback, onEdit }: PageGoogleCardProps) => {
   const name = (field: string) => `${fieldPrefix}${field}`;
   const [keyword, setKeyword] = useState(values.seoKeyword);
   const [title, setTitle] = useState(values.seoTitle);
@@ -80,6 +87,7 @@ export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", 
             showCount
             error={errors[name("seoDescription")]}
           />
+          <SharePhotoField name={name("sharePhotoId")} initial={sharePhoto} fallback={shareFallback} onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-2.5">
           <div className="flex flex-col gap-0.5 rounded-xl border border-solid border-border p-3.5">

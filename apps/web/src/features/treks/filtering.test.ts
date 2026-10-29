@@ -20,10 +20,10 @@ const names = (filters: Partial<TrekFilters>) =>
 
 describe("parseTrekFilters", () => {
   it("reads lists, the shortcut and the sort", () => {
-    expect(parse("region=everest,langtang&length=9&difficulty=easy&show=quiet&sort=price&q= poon ")).toEqual({
+    expect(parse("region=everest,langtang&length=6-9&difficulty=easy&show=quiet&sort=price&q= poon ")).toEqual({
       q: "poon",
       regions: ["everest", "langtang"],
-      length: "9",
+      length: "6-9",
       difficulties: ["easy"],
       seasons: [],
       shortcut: "quiet",
@@ -38,15 +38,15 @@ describe("parseTrekFilters", () => {
   });
 
   it("reads the home finder's links", () => {
-    const filters = parse("region=langtang&length=7&season=");
+    const filters = parse("region=langtang&length=2-5&season=");
     expect(filters.regions).toEqual(["langtang"]);
-    expect(filters.length).toBe("7");
+    expect(filters.length).toBe("2-5");
     expect(filters.seasons).toEqual([]);
   });
 
   it("keeps one length: the first known one", () => {
-    expect(parse("length=forever,5,9").length).toBe("5");
-    expect(parse("length=short").length).toBeNull();
+    expect(parse("length=forever,2-5,6-9").length).toBe("2-5");
+    expect(parse("length=9").length).toBeNull();
   });
 });
 
@@ -62,9 +62,9 @@ describe("serializeTrekFilters", () => {
 });
 
 describe("matchesLength", () => {
-  it("shows treks up to the chosen number of days", () => {
-    expect([1, 3, 4].map((days) => matchesLength(days, "3"))).toEqual([true, true, false]);
-    expect([1, 15, 16].map((days) => matchesLength(days, "15"))).toEqual([true, true, false]);
+  it("shows treks inside the chosen range only", () => {
+    expect([1, 2, 5, 6].map((days) => matchesLength(days, "2-5"))).toEqual([false, true, true, false]);
+    expect([9, 10, 15, 16].map((days) => matchesLength(days, "10-15"))).toEqual([false, true, true, false]);
     expect(matchesLength(1, "1")).toBe(true);
     expect(matchesLength(2, "1")).toBe(false);
   });
@@ -86,8 +86,10 @@ describe("filterAndSortTreks", () => {
     ]);
   });
 
-  it("filters by length", () => {
-    expect(names({ length: "9" })).toEqual(TREKS.filter((trek) => trek.days <= 9).map((trek) => trek.slug));
+  it("filters by length range", () => {
+    expect(names({ length: "1" })).toEqual(TREKS.filter((trek) => trek.days === 1).map((trek) => trek.slug));
+    expect(names({ length: "6-9" })).toEqual(TREKS.filter((trek) => trek.days >= 6 && trek.days <= 9).map((trek) => trek.slug));
+    expect(names({ length: "10-15" })).toEqual(TREKS.filter((trek) => trek.days >= 10 && trek.days <= 15).map((trek) => trek.slug));
     expect(names({ length: "16plus" })).toEqual(TREKS.filter((trek) => trek.days >= 16).map((trek) => trek.slug));
   });
 
@@ -121,12 +123,18 @@ describe("countForOption", () => {
     expect(countForOption(TREKS, filters, "regions", "annapurna")).toBe(1);
     expect(countForOption(TREKS, filters, "regions", "everest")).toBe(2);
   });
+
+  it("counts a season given the other filters, ignoring the season selection itself", () => {
+    const filters = { ...EMPTY_TREK_FILTERS, seasons: ["winter"], length: "6-9" as const };
+    const expected = TREKS.filter((trek) => trek.days >= 6 && trek.days <= 9 && trek.seasons.includes("spring")).length;
+    expect(countForOption(TREKS, filters, "seasons", "spring")).toBe(expected);
+  });
 });
 
 describe("helpers", () => {
   it("counts active filters and toggles values", () => {
     expect(activeFilterCount({ ...EMPTY_TREK_FILTERS, regions: ["a", "b"], q: "x" })).toBe(3);
-    expect(activeFilterCount({ ...EMPTY_TREK_FILTERS, length: "5" })).toBe(1);
+    expect(activeFilterCount({ ...EMPTY_TREK_FILTERS, length: "2-5" })).toBe(1);
     expect(toggleValue(["a"], "b")).toEqual(["a", "b"]);
     expect(toggleValue(["a", "b"], "a")).toEqual(["b"]);
   });

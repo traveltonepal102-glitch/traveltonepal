@@ -11,7 +11,7 @@ import { createPhotoStorage } from "@/lib/storage/createPhotoStorage";
 import { deleteUnusedPhotoRow, PhotoInUseError } from "../services/photoLibraryRepository";
 
 /**
- * Deletes a library photo nothing uses, for good: its row, then its files (the sizes and the private master).
+ * Deletes a library photo nothing uses, for good: its row, then its files (the sizes, the share picture and the private master).
  * Super admins only: checked here for the message, and enforced by the database. photoId comes from the browser.
  * Nothing on the website shows an unused photo, so there is no website cache to refresh.
  */
@@ -25,7 +25,7 @@ export const deletePhoto = async (photoId: string): Promise<RemoveState> => {
     if (files) {
       const storage = await createPhotoStorage();
       // The row is gone, so the photo is deleted: a file left behind is only logged (nothing links to it).
-      const removed = await Promise.allSettled([storage.remove("public", files.variantKeys), storage.remove("private", [files.masterKey])]);
+      const removed = await Promise.allSettled([storage.remove("public", files.publicKeys), storage.remove("private", [files.masterKey])]);
       for (const result of removed) if (result.status === "rejected") console.error(`Photo ${photoId}: a file couldn't be deleted:`, result.reason);
     }
   } catch (error) {

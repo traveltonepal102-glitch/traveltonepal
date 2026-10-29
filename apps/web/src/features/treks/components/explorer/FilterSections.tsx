@@ -6,7 +6,7 @@ import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { PillRadioGroup } from "@/components/ui/PillRadioGroup";
 
 import { DIFFICULTIES } from "../../difficulty";
-import { TREK_LENGTHS } from "../../filters";
+import { TREK_LENGTHS, TREK_SEASONS } from "../../filters";
 import { countForOption, toggleValue } from "../../filtering";
 import type { TrekFilters } from "../../filtering";
 import type { TrekSummary } from "../../types";
@@ -22,7 +22,7 @@ const Section = ({ children }: { children: ReactNode }) => (
   <div className="border-b border-muted px-4.5 py-4 last:border-b-0">{children}</div>
 );
 
-/** The filter controls themselves: region, length, difficulty and dates. */
+/** The filter controls themselves: region, length, season and difficulty. */
 export const FilterSections = ({ filters, treks, regions, update }: FilterSectionsProps) => (
   <>
     <Section>
@@ -44,6 +44,18 @@ export const FilterSections = ({ filters, treks, regions, update }: FilterSectio
         options={TREK_LENGTHS}
         selected={filters.length}
         onChange={(length) => update({ length })}
+      />
+    </Section>
+    <Section>
+      <CheckboxGroup
+        legend="Season"
+        options={TREK_SEASONS.map((season) => ({
+          value: season.value,
+          label: season.label,
+          count: countForOption(treks, filters, "seasons", season.value),
+        }))}
+        selected={filters.seasons}
+        onToggle={(value) => update({ seasons: toggleValue(filters.seasons, value) })}
       />
     </Section>
     <Section>

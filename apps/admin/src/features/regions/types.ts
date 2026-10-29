@@ -66,6 +66,8 @@ export type RegionValues = {
   seoKeyword: string;
   seoTitle: string;
   seoDescription: string;
+  /** The photo of the region's shared links (its 1200×630 share picture); null: the region's cover. */
+  sharePhoto: Photo | null;
   /** One of the region's own treks, shown as its signature trek; null for none. */
   featuredTrekId: string | null;
   /** e.g. "Our signature Langtang trek" */
@@ -89,7 +91,7 @@ export type RegionPhotos = { cover: Photo | null; gallery: Photo[] };
 export type RegionPhotoSelection = { coverPhotoId: string | null; galleryPhotoIds: string[]; details: PhotoDetails[] };
 
 /** Everything the editor's Save sends (checked by regionSchema). */
-export type RegionFormValues = RegionValues & { photos: RegionPhotoSelection };
+export type RegionFormValues = Omit<RegionValues, "sharePhoto"> & { sharePhotoId: string | null; photos: RegionPhotoSelection };
 
 export type Region = RegionValues & {
   id: string;

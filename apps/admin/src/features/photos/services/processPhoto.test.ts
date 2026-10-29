@@ -24,7 +24,7 @@ describe("processPhoto", () => {
     expect((await sharp(upload).metadata()).exif).toBeDefined();
 
     const result = await processPhoto(upload);
-    for (const file of [result.master, ...result.variants.map((variant) => variant.body)]) {
+    for (const file of [result.master, result.share, ...result.variants.map((variant) => variant.body)]) {
       const metadata = await sharp(file).metadata();
       expect(metadata.exif).toBeUndefined();
       expect(metadata.xmp).toBeUndefined();
@@ -47,6 +47,17 @@ describe("processPhoto", () => {
     // Orientation 6: stored landscape, meant to be shown rotated 90° (portrait).
     const rotated = await processPhoto(await makePhoto(1200, 800, { orientation: 6 }));
     expect([rotated.width, rotated.height]).toEqual([800, 1200]);
+  });
+
+  it("makes a 1200×630 JPEG share picture, from wide, tall and small photos alike", async () => {
+    for (const [width, height] of [
+      [4000, 3000],
+      [800, 1200],
+      [700, 500],
+    ]) {
+      const { share } = await processPhoto(await makePhoto(width, height));
+      expect(await sharp(share).metadata()).toMatchObject({ format: "jpeg", width: 1200, height: 630 });
+    }
   });
 
   it("rejects files that aren't photos, other formats and tiny photos", async () => {

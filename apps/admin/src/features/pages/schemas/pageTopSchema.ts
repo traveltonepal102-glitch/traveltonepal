@@ -22,6 +22,7 @@ export const pageTopFields = {
   seoDescription: text(LIMIT.seoDescription),
   seoKeyword: text(LIMIT.seoKeyword),
   photoId: optionalId,
+  sharePhotoId: optionalId,
 };
 
 /** The top's fields; `prefix` when one form holds several pages ("home." → "home.heading"). */
@@ -33,6 +34,7 @@ export const readPageTop = (formData: FormData, prefix = "") => ({
   seoDescription: readText(formData, `${prefix}seoDescription`),
   seoKeyword: readText(formData, `${prefix}seoKeyword`),
   photoId: readText(formData, `${prefix}photoId`),
+  sharePhotoId: readText(formData, `${prefix}sharePhotoId`),
 });
 
 /** Rows sent as repeated fields (e.g. milestoneYear, milestoneTitle…), zipped back into objects. */

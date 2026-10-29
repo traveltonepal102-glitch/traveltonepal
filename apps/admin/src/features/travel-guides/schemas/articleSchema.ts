@@ -66,6 +66,7 @@ export const articleSchema = z
     seoKeyword: text(LIMIT.seoKeyword),
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
+    sharePhotoId: optionalId("The photo couldn't be read. Reload the page and try again."),
   })
   .superRefine((article, context) => {
     const issue = (path: string, message: string) => context.addIssue({ code: "custom", path: [path], message });
@@ -118,6 +119,7 @@ export const readArticleForm = (formData: FormData) => ({
     "seoKeyword",
     "seoTitle",
     "seoDescription",
+    "sharePhotoId",
     "sections",
     "months",
   ]),

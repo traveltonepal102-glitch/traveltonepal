@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FormSection } from "@/components/ui/FormSection";
 import { tileLabelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
+import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { REGION_LIMITS, SEO_DESCRIPTION_RECOMMENDED, SEO_TITLE_RECOMMENDED } from "../../constants";
@@ -17,10 +18,11 @@ type SeoSectionProps = {
   errors: FieldErrors;
   /** The web address as typed in Basics, for the preview. */
   slug: string;
+  onEdit: () => void;
 };
 
-/** Google title and description with a live preview and checks (design: section "seo"). */
-export const SeoSection = ({ values, errors, slug }: SeoSectionProps) => {
+/** Google title and description with a live preview and checks (design: section "seo"), and the shared links' photo. */
+export const SeoSection = ({ values, errors, slug, onEdit }: SeoSectionProps) => {
   const [keyword, setKeyword] = useState(values.seoKeyword);
   const [title, setTitle] = useState(values.seoTitle);
   const [description, setDescription] = useState(values.seoDescription);
@@ -73,6 +75,7 @@ export const SeoSection = ({ values, errors, slug }: SeoSectionProps) => {
             recommendedLength={SEO_DESCRIPTION_RECOMMENDED}
             showCount
           />
+          <SharePhotoField initial={values.sharePhoto} fallback="the region's cover photo" onEdit={onEdit} />
         </div>
 
         <div className="flex flex-col gap-2.5">

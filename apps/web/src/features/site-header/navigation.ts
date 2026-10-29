@@ -42,11 +42,11 @@ export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
 
 const POPULAR_TREKS_IN_MENU = 4;
 
-/** The menu's length links: a few useful lengths, not every "How long" option. */
+/** The menu's length links: the four most asked-for "How long" options. */
 const LENGTH_LINKS: readonly { length: TrekLength; name: string; icon: IconName }[] = [
   { length: "1", name: "Day hikes", icon: "hiking" },
-  { length: "9", name: "Short treks", icon: "timer" },
-  { length: "15", name: "Classic treks", icon: "calendar_month" },
+  { length: "6-9", name: "Short treks", icon: "timer" },
+  { length: "10-15", name: "Classic treks", icon: "calendar_month" },
   { length: "16plus", name: "Long and remote", icon: "route" },
 ];
 

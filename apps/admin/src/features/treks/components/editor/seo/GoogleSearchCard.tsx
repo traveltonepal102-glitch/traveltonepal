@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
 import { FormSection } from "@/components/ui/FormSection";
+import { SharePhotoField } from "@/features/photos/components/SharePhotoField";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
@@ -16,13 +17,14 @@ import { GooglePreview } from "./GooglePreview";
 type GoogleSearchCardProps = {
   values: TrekValues;
   errors: FieldErrors;
+  onEdit: () => void;
 };
 
 /**
- * How the trek shows on Google (design: "Google search result"). Not shown on the page itself. The preview and the
+ * How the trek shows on Google (design: "Google search result") and in shared links. Not shown on the page itself. The preview and the
  * checklist follow what is typed here; the web address, prices and questions are as last saved.
  */
-export const GoogleSearchCard = ({ values, errors }: GoogleSearchCardProps) => {
+export const GoogleSearchCard = ({ values, errors, onEdit }: GoogleSearchCardProps) => {
   const [seoKeyword, setKeyword] = useState(values.seoKeyword);
   const [seoTitle, setTitle] = useState(values.seoTitle);
   const [seoDescription, setDescription] = useState(values.seoDescription);
@@ -76,6 +78,7 @@ export const GoogleSearchCard = ({ values, errors }: GoogleSearchCardProps) => {
             showCount
             error={errors.seoDescription}
           />
+          <SharePhotoField initial={values.sharePhoto} fallback="the trek's first photo" onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-3">
           <GooglePreview slug={values.slug} title={seoTitle} description={seoDescription} priceFromUsd={priceFromUsd} />

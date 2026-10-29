@@ -14,6 +14,8 @@ export type PageTopValues = {
   seoKeyword: string;
   /** The photo behind the top of the page. */
   photoId: string | null;
+  /** The photo of the page's shared links (its 1200×630 share picture); null: the top photo, else Site settings'. */
+  sharePhotoId: string | null;
 };
 
 export type PromiseValues = { icon: string; title: string; text: string };
@@ -57,6 +59,7 @@ export type SitePage = {
   slug: SitePageSlug;
   top: PageTopValues;
   photo: Photo | null;
+  sharePhoto: Photo | null;
   founderAuthorId: string | null;
   /** The page's photos by place (site_page_photos.position − 1); null for an empty place. */
   photoSlots: (Photo | null)[];

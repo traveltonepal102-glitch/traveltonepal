@@ -5,6 +5,7 @@ import type { RichTextDoc } from "@ttn/ui/lib/richText";
 import type { IconTone } from "@/components/shared/iconTones";
 import type { GuideTopicId } from "@/features/guides/topics";
 import type { MonthRating } from "@/features/regions/overviews";
+import type { PageSeo } from "@/features/seo/shareMetadata";
 import type { ItineraryDay } from "@/features/trek-detail/types";
 import type { TrekSummary } from "@/features/treks/types";
 import type { SiteImageSource } from "@/lib/images";
@@ -94,5 +95,5 @@ export type GuideArticle = {
   /** "Keep reading", in order (published guides only). */
   relatedSlugs: readonly string[];
   regionSlugs: readonly string[];
-  seo: { title: string; description: string };
+  seo: PageSeo;
 };

@@ -1,5 +1,5 @@
 import type { TrekSummary } from "@/features/treks/types";
-import { coverImage } from "@/lib/images";
+import { coverImage, sharePhotoImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebTravelGuidePageRow } from "@/lib/supabase/database.types";
 import { SITE_NAME } from "@/lib/site";
@@ -62,6 +62,7 @@ export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: 
     seo: {
       title: firstText(page.seo_title) ?? title,
       description: firstText(page.seo_description, page.intro) ?? "",
+      shareImage: sharePhotoImage(page, photosBaseUrl, title),
     },
   };
 };

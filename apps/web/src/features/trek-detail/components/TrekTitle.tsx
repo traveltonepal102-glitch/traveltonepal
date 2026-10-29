@@ -66,7 +66,8 @@ export const TrekTitle = ({ trek }: { trek: TrekDetail }) => {
           {trek.headline}
         </h1>
 
-        <ul className="flex flex-wrap items-center gap-x-4.5 gap-y-2 pt-0.5 text-body-sm font-medium text-text">
+        {/* Phones show only the H1: the facts are repeated further down the page. */}
+        <ul className="hidden flex-wrap items-center md:flex gap-x-4.5 gap-y-2 pt-0.5 text-body-sm font-medium text-text">
           {facts.map((fact) => (
             <li key={fact.icon} className="inline-flex items-center gap-1.5">
               <Icon

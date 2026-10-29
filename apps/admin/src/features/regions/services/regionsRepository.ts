@@ -25,7 +25,7 @@ const RLS_VIOLATION = "42501";
 
 const REGION_COLUMNS = `id, slug, district, website_domain, latitude, longitude, month_ratings, cover_photo_id, featured_trek_id,
   max_altitude_m, difficulty, is_flight, created_at, updated_at, updated_by,
-  region_translations!inner(*),
+  region_translations!inner(*, share:photos!region_translations_share_photo_id_fkey(${PHOTO_COLUMNS})),
   cover:photos!regions_cover_photo_id_fkey(${PHOTO_COLUMNS}),
   region_photos(position, photo:photos(${PHOTO_COLUMNS})),
   region_nearby_treks(position, trek_id, region_nearby_trek_translations(locale, label, note)),
@@ -37,7 +37,7 @@ const REGION_COLUMNS = `id, slug, district, website_domain, latitude, longitude,
 type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
 type RegionQueryRow = RegionRow & {
-  region_translations: TextRow[];
+  region_translations: (TextRow & { share: PhotoFields | null })[];
   cover: PhotoFields | null;
   region_photos: { position: number; photo: PhotoFields }[];
   region_nearby_treks: { position: number; trek_id: string; region_nearby_trek_translations: { locale: string; label: string; note: string }[] }[];
@@ -116,6 +116,7 @@ const toRegion = (row: RegionQueryRow): Region => {
     seoKeyword: text.seo_keyword,
     seoTitle: text.seo_title,
     seoDescription: text.seo_description,
+    sharePhoto: text.share ? toPhoto(text.share) : null,
     featuredTrekId: row.featured_trek_id,
     featuredTrekLabel: text.featured_trek_label,
     featuredTrekPitch: text.featured_trek_pitch,
@@ -209,6 +210,7 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
       seo_keyword: values.seoKeyword,
       seo_title: values.seoTitle,
       seo_description: values.seoDescription,
+      share_photo_id: values.sharePhotoId ?? "",
       featured_trek_label: values.featuredTrekLabel,
       featured_trek_pitch: values.featuredTrekPitch,
       custom_route_pitch: values.customRoutePitch,

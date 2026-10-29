@@ -2,11 +2,28 @@ import "server-only";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import type { Photo } from "@/features/photos/types";
-import type { Json, SitePageSlug } from "@/lib/supabase/database.types";
+import type { Database, Json, SitePageSlug } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { legalContentOf } from "../lib/pageContent";
 import type { LegalPagesValues, ListPagesValues, PageTopValues, SitePage } from "../types";
+
+type PageRow = Database["public"]["Tables"]["site_pages"]["Row"];
+
+/** Selects the page's share photo with the row. */
+const SHARE_COLUMNS = `share:photos!site_pages_share_photo_id_fkey(${PHOTO_COLUMNS})` as const;
+
+/** The top of the page and its Google result, as the forms edit them. */
+const toPageTop = (row: PageRow): PageTopValues => ({
+  eyebrow: row.eyebrow,
+  heading: row.heading,
+  intro: row.intro,
+  seoTitle: row.seo_title,
+  seoDescription: row.seo_description,
+  seoKeyword: row.seo_keyword,
+  photoId: row.photo_id,
+  sharePhotoId: row.share_photo_id,
+});
 
 /** When each page was last saved, for the Pages list. Throws when the database can't be read. */
 export const listPageUpdates = async (): Promise<Partial<Record<SitePageSlug, string>>> => {
@@ -20,7 +37,7 @@ export const listPageUpdates = async (): Promise<Partial<Record<SitePageSlug, st
 export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> => {
   const supabase = await createSupabaseServerClient();
   const [page, photos] = await Promise.all([
-    supabase.from("site_pages").select(`*, photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS})`).eq("slug", slug).maybeSingle(),
+    supabase.from("site_pages").select(`*, photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS}), ${SHARE_COLUMNS}`).eq("slug", slug).maybeSingle(),
     supabase.from("site_page_photos").select(`position, photo:photos!site_page_photos_photo_id_fkey(${PHOTO_COLUMNS})`).eq("page_slug", slug).order("position"),
   ]);
   if (page.error) throw new Error(`Could not load the ${slug} page: ${page.error.message}`);
@@ -30,16 +47,9 @@ export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> 
 
   return {
     slug: row.slug,
-    top: {
-      eyebrow: row.eyebrow,
-      heading: row.heading,
-      intro: row.intro,
-      seoTitle: row.seo_title,
-      seoDescription: row.seo_description,
-      seoKeyword: row.seo_keyword,
-      photoId: row.photo_id,
-    },
+    top: toPageTop(row),
     photo: row.photo ? toPhoto(row.photo) : null,
+    sharePhoto: row.share ? toPhoto(row.share) : null,
     founderAuthorId: row.founder_author_id,
     photoSlots: photos.data.reduce<(Photo | null)[]>((slots, item) => {
       slots[item.position - 1] = item.photo ? toPhoto(item.photo) : null;
@@ -50,15 +60,16 @@ export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> 
   };
 };
 
-/** Several pages without their photos (the list pages have none), in any order. Throws when the database can't be read. */
+/** Several pages without their photos (the list pages have none) but with their share photo, in any order. Throws when the database can't be read. */
 export const getSitePages = async (slugs: readonly SitePageSlug[]): Promise<SitePage[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("site_pages").select("*").in("slug", [...slugs]);
+  const { data, error } = await supabase.from("site_pages").select(`*, ${SHARE_COLUMNS}`).in("slug", [...slugs]);
   if (error) throw new Error(`Could not load the pages: ${error.message}`);
   return data.map((row) => ({
     slug: row.slug,
-    top: { eyebrow: row.eyebrow, heading: row.heading, intro: row.intro, seoTitle: row.seo_title, seoDescription: row.seo_description, seoKeyword: row.seo_keyword, photoId: row.photo_id },
+    top: toPageTop(row),
     photo: null,
+    sharePhoto: row.share ? toPhoto(row.share) : null,
     founderAuthorId: row.founder_author_id,
     photoSlots: [],
     content: row.content,
@@ -84,6 +95,7 @@ const toPagePayload = (page: SavePageInput) => ({
   seo_description: page.seoDescription,
   seo_keyword: page.seoKeyword,
   photo_id: page.photoId ?? "",
+  share_photo_id: page.sharePhotoId ?? "",
   founder_author_id: page.founderAuthorId ?? "",
   content: page.content,
 });
@@ -116,13 +128,13 @@ const saveSitePages = async (pages: Partial<Record<SitePageSlug, SavePageInput>>
 export const saveListPages = (pages: ListPagesValues): Promise<SavePageResult> =>
   saveSitePages(Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, { ...page, photoId: null, content: {} }])));
 
-/** The four legal pages: title, intro and their text, lawyer check and date (no photo, no Google result: title and intro). */
+/** The four legal pages: title, intro and their text, lawyer check and date (no photos, no Google result: title and intro). */
 export const saveLegalPages = (pages: LegalPagesValues): Promise<SavePageResult> =>
   saveSitePages(
     Object.fromEntries(
       Object.entries(pages).map(([slug, page]) => [
         slug,
-        { eyebrow: "", heading: page.heading, intro: page.intro, seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, content: legalContentOf(page) },
+        { eyebrow: "", heading: page.heading, intro: page.intro, seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, sharePhotoId: null, content: legalContentOf(page) },
       ]),
     ),
   );

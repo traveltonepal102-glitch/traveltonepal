@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
 import { optionalWholeNumber, readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
@@ -121,6 +122,7 @@ export const regionSchema = z
     seoKeyword: text(LIMIT.seoKeyword),
     seoTitle: text(LIMIT.seoTitle),
     seoDescription: text(LIMIT.seoDescription),
+    sharePhotoId: optionalPhotoId,
     featuredTrekId: z
       .string()
       .transform((value) => value || null)
@@ -209,6 +211,7 @@ export const readRegionForm = (formData: FormData) => {
     seoKeyword: readText(formData, "seoKeyword"),
     seoTitle: readText(formData, "seoTitle"),
     seoDescription: readText(formData, "seoDescription"),
+    sharePhotoId: readText(formData, "sharePhotoId"),
     featuredTrekId: readText(formData, "featuredTrekId"),
     featuredTrekLabel: readText(formData, "featuredTrekLabel"),
     featuredTrekPitch: readText(formData, "featuredTrekPitch"),

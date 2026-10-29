@@ -14,6 +14,9 @@ const ROW: WebSitePageRow = {
   seo_title: "About us",
   seo_description: "Meet the team.",
   seo_keyword: "Nepali trekking company",
+  share_id: null,
+  share_variant_widths: null,
+  share_place: null,
   content: {
     trekkersGuided: "50+",
     statValue: "All",
