@@ -1,6 +1,7 @@
 "use client";
 
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
+import { Icon } from "@ttn/ui/icon";
 
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { formatTripDate, formatUsd } from "@/features/treks/format";
@@ -9,13 +10,16 @@ import { buildDateCheckMessage } from "../../requestMessage";
 import type { GroupPrice } from "../../types";
 import { useBookingSelection } from "../booking/BookingSelection";
 
+const ACTION =
+  "inline-flex min-h-11 items-center gap-2 rounded-md px-4.5 text-body-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+
 type TrekChoiceBarProps = {
   trekName: string;
   days: number;
   groupPrices: readonly GroupPrice[];
 };
 
-/** Under the group rates: the visitor's group, start day and price, and a WhatsApp message asking about that date. */
+/** Under the group rates: the visitor's group, start day and price, and a message asking about that date (WhatsApp or email). */
 export const TrekChoiceBar = ({ trekName, days, groupPrices }: TrekChoiceBarProps) => {
   const { groupIndex, startDate } = useBookingSelection();
   const tier = groupPrices[groupIndex];
@@ -30,16 +34,22 @@ export const TrekChoiceBar = ({ trekName, days, groupPrices }: TrekChoiceBarProp
         Your trek: <strong className="text-ink">{tier.label}</strong> · starts <strong className="text-ink">{start}</strong> ·{" "}
         <strong className="text-brand">{formatUsd(tier.priceUsd)} per person</strong>
       </p>
-      <a
-        href={getWhatsAppUrl(message)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-11 flex-none items-center gap-2 rounded-md bg-whatsapp px-4.5 text-body-sm font-bold text-white hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      >
-        <WhatsAppLogo size={18} />
-        Check this date on WhatsApp
-        <span className="sr-only">(opens WhatsApp)</span>
-      </a>
+      <div className="flex flex-none flex-wrap gap-2">
+        <a
+          href={getWhatsAppUrl(message)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${ACTION} bg-whatsapp text-white hover:bg-whatsapp/90`}
+        >
+          <WhatsAppLogo size={18} />
+          Check this date on WhatsApp
+          <span className="sr-only">(opens WhatsApp)</span>
+        </a>
+        <a href={getEmailUrl({ subject: `${trekName} on ${start}`, body: message })} className={`${ACTION} border border-line-strong bg-surface text-ink hover:bg-page`}>
+          <Icon name="mail" size={18} className="text-brand" />
+          Email
+        </a>
+      </div>
     </div>
   );
 };

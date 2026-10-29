@@ -189,8 +189,8 @@ export const SECTION_KINDS: SectionKind[] = [
   {
     type: "cta",
     group: "engage",
-    name: "WhatsApp box",
-    description: "A green box with a WhatsApp button and a ready-made message.",
+    name: "WhatsApp and email box",
+    description: "A green box with a WhatsApp and an Email button and a ready-made message.",
     goodFor: "The end of the article, or right after a trek card.",
     youFillIn: ["Heading", "Button text", "Message"],
     icon: "chat",

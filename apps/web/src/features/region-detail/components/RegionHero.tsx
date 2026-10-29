@@ -4,7 +4,7 @@ import type { IconName } from "@ttn/ui/icon";
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
-import { regionInquiryUrl } from "@/features/regions/inquiry";
+import { regionInquiryEmailUrl, regionInquiryUrl } from "@/features/regions/inquiry";
 import { formatAltitude } from "@/features/treks/format";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
@@ -71,6 +71,10 @@ export const RegionHero = ({ region }: { region: RegionDetail }) => {
           >
             <WhatsAppLogo />
             Plan {region.name} on WhatsApp
+          </a>
+          <a href={regionInquiryEmailUrl(region.name)} className={`${PILL} border-[1.5px] border-white/55 text-white hover:bg-white/10 focus-visible:outline-white`}>
+            <Icon name="mail" />
+            Email us
           </a>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { JsonLd } from "@/components/shared/JsonLd";
-import { WhatsAppCta } from "@/components/shared/WhatsAppCta";
+import { ContactCta } from "@/components/shared/ContactCta";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
 import { REGIONS } from "@/features/regions/regions";
 import type { SitePageTop } from "@/features/site-pages/types";
@@ -36,11 +36,12 @@ export const GuidesPage = ({ top, guides }: { top: SitePageTop; guides: readonly
       <div className={`${WRAP} flex flex-col gap-5 pb-12 md:pb-16`}>
         {regions.length > 0 && <GuideRegionLinks regions={regions} />}
         <section aria-labelledby="guides-question-title">
-          <WhatsAppCta
+          <ContactCta
             titleId="guides-question-title"
             title="Have a question our guides don't answer?"
-            text="Ask a local expert on WhatsApp. We answer every question personally, free and with no obligation to book."
-            message="Hello! I have a question about trekking in Nepal that your guides don't answer:"
+            text="Ask a local expert on WhatsApp or by email. We answer every question personally, free and with no obligation to book."
+            message="Hello! I have a question about trekking in Nepal that your guides don't answer: "
+            emailSubject="A question about trekking in Nepal"
             buttonLabel="Ask on WhatsApp"
           />
         </section>

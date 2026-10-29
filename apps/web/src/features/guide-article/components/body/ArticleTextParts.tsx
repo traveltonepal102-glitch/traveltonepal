@@ -1,4 +1,4 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -43,18 +43,27 @@ export const ArticlePullQuote = ({ text }: { text: string }) => (
   <blockquote className="border-y border-line py-5 text-center font-display text-[22px] leading-snug font-bold text-ink md:text-[26px]">“{text}”</blockquote>
 );
 
-/** "WhatsApp box": a green box with a button that opens WhatsApp with the message written. */
+/** "WhatsApp and email box": a green box whose buttons open WhatsApp or an email with the message written. */
 export const ArticleCta = ({ heading, buttonText, message }: { heading: string; buttonText: string; message: string }) => (
   <section aria-label={heading} className="flex flex-col items-start gap-3 rounded-2xl bg-green-tint px-5.5 py-5 sm:flex-row sm:items-center sm:justify-between">
     <p className="font-display text-lg font-bold text-ink">{heading}</p>
-    <a
-      href={getWhatsAppUrl(message)}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`inline-flex min-h-11 flex-none items-center gap-2 rounded-full bg-whatsapp px-5 text-body-sm font-bold text-white hover:bg-whatsapp/90 ${FOCUS}`}
-    >
-      <WhatsAppLogo size={18} />
-      {buttonText}
-    </a>
+    <div className="flex flex-none flex-wrap gap-2">
+      <a
+        href={getWhatsAppUrl(message)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-5 text-body-sm font-bold text-white hover:bg-whatsapp/90 ${FOCUS}`}
+      >
+        <WhatsAppLogo size={18} />
+        {buttonText}
+      </a>
+      <a
+        href={getEmailUrl({ subject: heading, body: message })}
+        className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-green-line bg-surface px-5 text-body-sm font-bold text-ink hover:bg-page ${FOCUS}`}
+      >
+        <Icon name="mail" size={18} className="text-brand" />
+        Email us
+      </a>
+    </div>
   </section>
 );

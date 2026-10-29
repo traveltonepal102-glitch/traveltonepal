@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
-import { regionInquiryUrl } from "@/features/regions/inquiry";
+import { regionInquiryEmailUrl, regionInquiryUrl } from "@/features/regions/inquiry";
 import { formatAltitude, formatDays } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
@@ -61,14 +61,19 @@ export const RegionTreks = ({ region }: { region: RegionDetail }) => (
           <div className="flex flex-col gap-1.5">
             <h3 className="text-[19px] font-bold">Want your own route?</h3>
             <p className="text-body-sm text-text">{region.customRoutePitch}</p>
-            <a
-              href={regionInquiryUrl(region.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="self-start rounded-sm font-bold text-whatsapp hover:underline focus-visible:outline-2 focus-visible:outline-ring"
-            >
-              Plan it on WhatsApp →
-            </a>
+            <p className="flex flex-wrap gap-x-4 gap-y-1">
+              <a
+                href={regionInquiryUrl(region.name)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-sm font-bold text-whatsapp hover:underline focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                Plan it on WhatsApp →
+              </a>
+              <a href={regionInquiryEmailUrl(region.name)} className="rounded-sm font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-ring">
+                Or email us →
+              </a>
+            </p>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { isReportedByServer } from "@ttn/config/errorMonitoring";
 import { Icon } from "@ttn/ui/icon";
 import Image from "next/image";
@@ -40,7 +40,7 @@ const ErrorPage = ({ error, retry }: ErrorPageProps) => {
         </p>
         <h1 className="max-w-155 text-h1-sm md:text-h1">This page didn’t load</h1>
         <p className="max-w-155 text-body-lg">
-          Our website had a problem showing this page. Please try again in a moment. If you are planning a trek, we are still here on WhatsApp.
+          Our website had a problem showing this page. Please try again in a moment. If you are planning a trek, we are still here on WhatsApp and by email.
         </p>
         <div className="flex flex-wrap gap-2.5 pt-1.5">
           <button
@@ -53,6 +53,9 @@ const ErrorPage = ({ error, retry }: ErrorPageProps) => {
           </button>
           <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="max-md:w-full">
             Ask us on WhatsApp
+          </ButtonLink>
+          <ButtonLink href={getEmailUrl({ subject: "Planning a trek" })} variant="secondary" icon="mail" className="max-md:w-full">
+            Email us
           </ButtonLink>
         </div>
         {error.digest && <p className="pt-4 text-caption text-muted-foreground">Error reference: {error.digest}</p>}

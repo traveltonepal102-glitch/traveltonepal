@@ -1,4 +1,4 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -28,6 +28,9 @@ export const NotFoundHero = () => (
           </ButtonLink>
           <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="max-md:w-full">
             Ask us on WhatsApp
+          </ButtonLink>
+          <ButtonLink href={getEmailUrl({ subject: "Looking for a page on your website" })} variant="secondary" icon="mail" className="max-md:w-full">
+            Email us
           </ButtonLink>
         </div>
       </div>

@@ -13,7 +13,10 @@ type CtaFieldsProps = {
   onChange: (patch: { heading?: string; buttonText?: string; message?: string }) => void;
 };
 
-/** "WhatsApp box": a green box with a WhatsApp button and a ready-made message (the reply line is the same on every guide). */
+/**
+ * "WhatsApp and email box": a green box with a WhatsApp button (its text typed here), an Email button and a
+ * ready-made message for both.
+ */
 export const CtaFields = ({ heading, buttonText, message, field, errors, onChange }: CtaFieldsProps) => (
   <div className="grid gap-2.5 rounded-lg border border-solid border-green-line bg-green-tint p-3.5 tablet:grid-cols-2">
     <div className="tablet:col-span-2">

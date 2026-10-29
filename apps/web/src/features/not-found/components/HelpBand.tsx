@@ -1,9 +1,9 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
-/** Navy "Looking for something specific?" band with the WhatsApp button. */
+/** Navy "Looking for something specific?" band with a WhatsApp and an Email button. */
 export const HelpBand = () => (
   <section className="pt-10 pb-16">
     <div className="mx-auto max-w-content px-4 md:px-6">
@@ -19,9 +19,14 @@ export const HelpBand = () => (
             </p>
           </div>
         </div>
-        <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal className="flex-none">
-          Ask on WhatsApp
-        </ButtonLink>
+        <div className="flex flex-none flex-col gap-2.5 sm:flex-row">
+          <ButtonLink href={getWhatsAppUrl()} variant="whatsapp" icon="whatsapp" isExternal>
+            Ask on WhatsApp
+          </ButtonLink>
+          <ButtonLink href={getEmailUrl({ subject: "Looking for a page on your website" })} variant="outlineOnDark" icon="mail">
+            Email us
+          </ButtonLink>
+        </div>
       </div>
     </div>
   </section>
