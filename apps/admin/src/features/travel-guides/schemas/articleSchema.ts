@@ -69,6 +69,7 @@ export const articleSchema = z
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalId("The photo couldn't be read. Reload the page and try again."),
     canonicalPath: canonicalPathField,
+    hideFromGoogle: isOn,
   })
   .superRefine((article, context) => {
     const issue = (path: string, message: string) => context.addIssue({ code: "custom", path: [path], message });
@@ -123,6 +124,7 @@ export const readArticleForm = (formData: FormData) => ({
     "seoDescription",
     "sharePhotoId",
     "canonicalPath",
+    "hideFromGoogle",
     "sections",
     "months",
   ]),

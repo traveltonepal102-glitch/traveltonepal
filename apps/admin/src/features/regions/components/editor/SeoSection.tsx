@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
 import { CanonicalPathField } from "@/components/editor/CanonicalPathField";
+import { HideFromGoogleField } from "@/components/editor/HideFromGoogleField";
 import { FormSection } from "@/components/ui/FormSection";
 import { tileLabelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
@@ -77,6 +78,7 @@ export const SeoSection = ({ values, errors, slug, onEdit }: SeoSectionProps) =>
             showCount
           />
           <CanonicalPathField defaultValue={values.canonicalPath} error={errors.canonicalPath} />
+          <HideFromGoogleField defaultChecked={values.hideFromGoogle} />
           <SharePhotoField initial={values.sharePhoto} fallback="the region's cover photo" onEdit={onEdit} />
         </div>
 

@@ -197,6 +197,8 @@ export type TrekValues = {
   sharePhoto: Photo | null;
   /** Another page of the website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonicalPath: string;
+  /** "Hide from Google": noindex and not in the sitemap. */
+  hideFromGoogle: boolean;
   /** Up to 4 treks to suggest at the bottom of the page, in order; the website fills empty places itself. */
   similarTrekIds: string[];
   /** Shared sections (written once in Site settings) this trek doesn't show. */

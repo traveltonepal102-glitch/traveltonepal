@@ -154,6 +154,7 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   seoDescription: "",
   sharePhoto: null,
   canonicalPath: "",
+  hideFromGoogle: false,
   featuredTrekId: null,
   featuredTrekLabel: "",
   featuredTrekPitch: "",

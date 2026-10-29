@@ -114,4 +114,5 @@ export const EMPTY_ARTICLE_VALUES: ArticleValues = {
   seoTitle: "",
   seoDescription: "",
   canonicalPath: "",
+  hideFromGoogle: false,
 };

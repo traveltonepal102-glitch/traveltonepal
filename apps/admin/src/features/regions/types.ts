@@ -70,6 +70,8 @@ export type RegionValues = {
   sharePhoto: Photo | null;
   /** Another page of the website ("/regions/…") as the main version of this one; "" = this page itself. */
   canonicalPath: string;
+  /** "Hide from Google": noindex and not in the sitemap. */
+  hideFromGoogle: boolean;
   /** One of the region's own treks, shown as its signature trek; null for none. */
   featuredTrekId: string | null;
   /** e.g. "Our signature Langtang trek" */

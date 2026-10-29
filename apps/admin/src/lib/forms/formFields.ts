@@ -7,6 +7,9 @@ export const text = (max: number) => z.string().trim().max(max, `Use ${max} char
 
 export const requiredText = (max: number, message: string) => text(max).min(1, message);
 
+/** A Switch (or checkbox): "on" when it is on; nothing is sent when it is off. */
+export const switchField = z.string().transform((value) => value === "on");
+
 /** A web address part, e.g. "langtang-valley" (lowercased; the database checks the same pattern). */
 export const slugField = (example: string) =>
   z

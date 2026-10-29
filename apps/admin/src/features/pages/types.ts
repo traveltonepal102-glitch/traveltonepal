@@ -18,6 +18,8 @@ export type PageTopValues = {
   sharePhotoId: string | null;
   /** Another page of the website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonicalPath: string;
+  /** "Hide from Google": noindex and not in the sitemap (never Home). */
+  hideFromGoogle: boolean;
 };
 
 export type PromiseValues = { icon: string; title: string; text: string };

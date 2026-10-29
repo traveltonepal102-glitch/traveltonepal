@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
-import { optionalWholeNumber, readList, readText, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
+import { optionalWholeNumber, readList, readText, readTexts, requiredText, slugField, switchField, text } from "@/lib/forms/formFields";
 import { richTextField } from "@/lib/richText/richText";
 import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
@@ -92,6 +92,7 @@ export const trekSchema = z
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalPhotoId,
     canonicalPath: canonicalPathField,
+    hideFromGoogle: switchField,
     similarTrekIds: z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
@@ -233,6 +234,7 @@ export const readTrekForm = (formData: FormData) => {
     seoDescription: readText(formData, "seoDescription"),
     sharePhotoId: readText(formData, "sharePhotoId"),
     canonicalPath: readText(formData, "canonicalPath"),
+    hideFromGoogle: readText(formData, "hideFromGoogle"),
     similarTrekIds: readList(formData, "similarTrekId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     sectionOrder: readList(formData, "sectionOrder"),

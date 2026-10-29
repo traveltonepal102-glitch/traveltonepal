@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
 import { CanonicalPathField } from "@/components/editor/CanonicalPathField";
+import { HideFromGoogleField } from "@/components/editor/HideFromGoogleField";
 import { FormSection } from "@/components/ui/FormSection";
 import { tileLabelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
@@ -29,6 +30,8 @@ type PageGoogleCardProps = {
   /** What shared links show without one, e.g. "the photo behind the heading". */
   shareFallback: string;
   onEdit: () => void;
+  /** Home can't be hidden from Google. */
+  canHide?: boolean;
 };
 
 /** What the website adds after every page's title (the root layout's title template). */
@@ -38,7 +41,7 @@ const TITLE_SUFFIX = " · Travel To Nepal";
  * How the page shows on Google: main keyword, title and description, with a preview and checks. A blank title or
  * description uses the main heading and the text under it. Also the photo of the page's shared links.
  */
-export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", hint, sharePhoto, shareFallback, onEdit }: PageGoogleCardProps) => {
+export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", hint, sharePhoto, shareFallback, onEdit, canHide = true }: PageGoogleCardProps) => {
   const name = (field: string) => `${fieldPrefix}${field}`;
   const [keyword, setKeyword] = useState(values.seoKeyword);
   const [title, setTitle] = useState(values.seoTitle);
@@ -89,6 +92,7 @@ export const PageGoogleCard = ({ values, errors, websitePath, fieldPrefix = "", 
             error={errors[name("seoDescription")]}
           />
           <CanonicalPathField name={name("canonicalPath")} defaultValue={values.canonicalPath} error={errors[name("canonicalPath")]} />
+          {canHide && <HideFromGoogleField name={name("hideFromGoogle")} defaultChecked={values.hideFromGoogle} />}
           <SharePhotoField name={name("sharePhotoId")} initial={sharePhoto} fallback={shareFallback} onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-2.5">

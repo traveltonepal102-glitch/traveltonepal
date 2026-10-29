@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { optionalPhotoId } from "@/features/photos/schemas/optionalPhotoId";
 import { photoSelectionSchema, readPhotoSelection } from "@/features/photos/schemas/photoSelectionSchema";
-import { optionalWholeNumber, readList, readText, requiredText, slugField, text } from "@/lib/forms/formFields";
+import { optionalWholeNumber, readList, readText, requiredText, slugField, switchField, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 import { canonicalPathField } from "@/lib/seo/canonicalPath";
 
@@ -125,6 +125,7 @@ export const regionSchema = z
     seoDescription: text(LIMIT.seoDescription),
     sharePhotoId: optionalPhotoId,
     canonicalPath: canonicalPathField,
+    hideFromGoogle: switchField,
     featuredTrekId: z
       .string()
       .transform((value) => value || null)
@@ -215,6 +216,7 @@ export const readRegionForm = (formData: FormData) => {
     seoDescription: readText(formData, "seoDescription"),
     sharePhotoId: readText(formData, "sharePhotoId"),
     canonicalPath: readText(formData, "canonicalPath"),
+    hideFromGoogle: readText(formData, "hideFromGoogle"),
     featuredTrekId: readText(formData, "featuredTrekId"),
     featuredTrekLabel: readText(formData, "featuredTrekLabel"),
     featuredTrekPitch: readText(formData, "featuredTrekPitch"),

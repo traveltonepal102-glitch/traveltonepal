@@ -34,10 +34,9 @@ export const sitemapPaths = (source: SitemapSource): ReadonlySet<string> => new 
 
 /**
  * The sitemap's entries, as full URLs on `siteUrl` (a link to a page that answers 404 would only waste Google's
- * visit). Pages in `pointingElsewhere` (a canonical address the website follows) are left out: Google should list
- * the page they name instead.
+ * visit). Pages in `leftOut` (hidden from Google, or naming another page as their main version) aren't listed.
  */
-export const sitemapEntries = (source: SitemapSource, siteUrl: URL, pointingElsewhere: ReadonlySet<string> = new Set()): MetadataRoute.Sitemap =>
+export const sitemapEntries = (source: SitemapSource, siteUrl: URL, leftOut: ReadonlySet<string> = new Set()): MetadataRoute.Sitemap =>
   sitemapPages(source)
-    .filter((page) => !pointingElsewhere.has(page.path))
+    .filter((page) => !leftOut.has(page.path))
     .map(({ path, lastModified }) => ({ url: new URL(path, siteUrl).toString(), ...(lastModified ? { lastModified } : {}) }));

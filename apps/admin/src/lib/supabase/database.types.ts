@@ -163,6 +163,8 @@ type TrekTranslationRow = {
   share_photo_id: string | null;
   /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonical_path: string;
+  /** "Hide from Google": noindex, not in the sitemap. */
+  hide_from_google: boolean;
   updated_at: string;
 };
 
@@ -335,6 +337,8 @@ export type SitePageRow = {
   share_photo_id: string | null;
   /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonical_path: string;
+  /** "Hide from Google": noindex, not in the sitemap. */
+  hide_from_google: boolean;
   seo_keyword: string;
   photo_id: string | null;
   founder_author_id: string | null;
@@ -413,6 +417,8 @@ type ArticleTranslationRow = {
   share_photo_id: string | null;
   /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonical_path: string;
+  /** "Hide from Google": noindex, not in the sitemap. */
+  hide_from_google: boolean;
   /** Jan–Dec: [{ onTheTrail, crowds }], or [] */
   month_notes: Json;
   updated_at: string;
@@ -550,6 +556,8 @@ type RegionTranslationRow = {
   share_photo_id: string | null;
   /** Another page of this website ("/treks/…") as the main version of this one; "" = this page itself. */
   canonical_path: string;
+  /** "Hide from Google": noindex, not in the sitemap. */
+  hide_from_google: boolean;
   featured_trek_label: string;
   featured_trek_pitch: string;
   custom_route_pitch: string;

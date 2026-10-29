@@ -66,6 +66,7 @@ export const ListPagesEditor = ({ action, values, sharePhotos, initialPage, webs
               sharePhoto={sharePhotos[page.slug]}
               shareFallback="the share image in Site settings"
               onEdit={onEdit}
+              canHide={page.slug !== "home"}
             />
             <p className="m-0 flex items-start gap-2.5 rounded-xl border border-solid border-border bg-page px-3.5 py-3 text-caption text-text">
               <Icon name="check_circle" size={18} className="flex-none text-whatsapp" />

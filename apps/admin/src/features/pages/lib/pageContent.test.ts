@@ -10,7 +10,7 @@ const doc = (...paragraphs: string[]): RichTextDoc => ({ type: "doc", content: p
 
 const page = (content: unknown): SitePage => ({
   slug: "about",
-  top: { eyebrow: "", heading: "Heading", intro: "", seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, sharePhotoId: null, canonicalPath: "" },
+  top: { eyebrow: "", heading: "Heading", intro: "", seoTitle: "", seoDescription: "", seoKeyword: "", photoId: null, sharePhotoId: null, canonicalPath: "", hideFromGoogle: false },
   photo: null,
   sharePhoto: null,
   founderAuthorId: null,

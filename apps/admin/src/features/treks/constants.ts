@@ -475,6 +475,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   seoDescription: "",
   sharePhoto: null,
   canonicalPath: "",
+  hideFromGoogle: false,
   similarTrekIds: [],
   hiddenSharedSections: [],
   sectionOrder: orderTrekSections([]),

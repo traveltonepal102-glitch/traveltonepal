@@ -112,6 +112,8 @@ export type ArticleValues = {
   seoDescription: string;
   /** Another page of the website ("/travel-guides/…") as the main version of this one; "" = this page itself. */
   canonicalPath: string;
+  /** "Hide from Google": noindex and not in the sitemap. */
+  hideFromGoogle: boolean;
 };
 
 export type Article = ArticleValues & {

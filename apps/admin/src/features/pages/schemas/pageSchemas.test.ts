@@ -157,6 +157,23 @@ describe("listPagesSchema", () => {
     expect(result.data?.["travel-guides"].heading).toBe("Guides");
   });
 
+  it("reads each page's Google settings: canonical address and Hide from Google", () => {
+    const result = listPagesSchema.safeParse(
+      readListPagesForm(
+        form([
+          ...pageFields("home", "Walk the Himalaya"),
+          ...pageFields("treks", "Nepal treks"),
+          ["treks.canonicalPath", " /Regions/ "],
+          ["treks.hideFromGoogle", "on"],
+          ...pageFields("regions", "Regions"),
+          ...pageFields("travel-guides", "Guides"),
+        ]),
+      ),
+    );
+    expect(result.data?.treks).toMatchObject({ canonicalPath: "/regions", hideFromGoogle: true });
+    expect(result.data?.home).toMatchObject({ canonicalPath: "", hideFromGoogle: false });
+  });
+
   it("puts an error on the page it belongs to", () => {
     const result = listPagesSchema.safeParse(
       readListPagesForm(form([...pageFields("home", "Home"), ...pageFields("treks", ""), ...pageFields("regions", "Regions"), ...pageFields("travel-guides", "Guides")])),
