@@ -939,6 +939,18 @@ export type Database = {
         Args: { p_article_id?: string };
         Returns: { article_id: string; helpful_count: number; not_helpful_count: number; last_vote_at: string }[];
       };
+      photo_ids_in: {
+        Args: { p_value: Json };
+        Returns: string[];
+      };
+      photo_uses: {
+        Args: { p_photo_id?: string };
+        Returns: { photo_id: string; kind: string; item_id: string; item_label: string; detail: string }[];
+      };
+      delete_unused_photo: {
+        Args: { p_photo_id: string };
+        Returns: { master_key: string; variant_widths: number[] }[];
+      };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
         Returns: string;

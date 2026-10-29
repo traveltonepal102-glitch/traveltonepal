@@ -44,7 +44,7 @@ export const ADMIN_SECTIONS = {
     label: "Photos",
     href: "/photos",
     icon: "image",
-    summary: "Upload photos once and use them anywhere. Location data is removed.",
+    summary: "Every photo, in folders by where it is used. Upload, find and delete photos.",
   },
   settings: {
     label: "Site settings",
@@ -70,6 +70,7 @@ export const NAV_GROUPS: NavGroup[] = [
       ADMIN_SECTIONS.travelGuides,
       ADMIN_SECTIONS.pages,
       ADMIN_SECTIONS.adventures,
+      ADMIN_SECTIONS.photos,
     ],
   },
   { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },

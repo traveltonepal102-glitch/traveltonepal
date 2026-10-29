@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { SectionPlaceholder } from "@/features/shell/components/SectionPlaceholder";
+import { PhotoLibrary } from "@/features/photos/components/PhotoLibrary";
+import { buildPhotoFolders, parseFolderSelection, photosInFolder, usesByPhoto } from "@/features/photos/lib/photoFolders";
+import { listAllPhotos, listPhotoUses } from "@/features/photos/services/photoLibraryRepository";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
-const SECTION = ADMIN_SECTIONS.photos;
+export const metadata: Metadata = { title: ADMIN_SECTIONS.photos.label };
 
-export const metadata: Metadata = { title: SECTION.label };
+/** Photos: the library in folders by where each photo is used. "?folder=treks&item=<trek id>" opens a folder. */
+const PhotosPage = async ({ searchParams }: PageProps<"/photos">) => {
+  const admin = await requireAdmin();
+  const [photos, uses, params] = await Promise.all([listAllPhotos(), listPhotoUses(), searchParams]);
+  const selection = parseFolderSelection(params);
+  const now = new Date();
 
-/** Placeholder until the screen is built. */
-const PhotosPage = async () => {
-  await requireAdmin();
-  return <SectionPlaceholder section={SECTION} />;
+  return (
+    <PhotoLibrary
+      folders={buildPhotoFolders(photos, uses, now)}
+      selection={selection}
+      photos={photosInFolder(photos, uses, selection, now)}
+      usesByPhoto={usesByPhoto(uses)}
+      canDelete={admin.role === "super_admin"}
+      now={now}
+    />
+  );
 };
 
 export default PhotosPage;
