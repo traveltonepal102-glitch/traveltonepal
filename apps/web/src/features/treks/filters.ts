@@ -2,14 +2,24 @@ import { ROUTES } from "@/lib/routes";
 
 /**
  * Trek filters, shared by the home trek finder, the header Treks menu and the Treks page, so a
- * link like /treks?length=short means the same thing everywhere. Values are the URL values.
+ * link like /treks?length=9 means the same thing everywhere. Values are the URL values.
  */
 export type TrekFilterParam = "q" | "region" | "length" | "difficulty" | "season" | "show" | "sort";
 
+/**
+ * "How long": the longest trek to show, so "Up to 5 days" shows 1–5 days (one choice at a time), or the long ones.
+ * The URL value is the number of days, e.g. /treks?length=5.
+ */
 export const TREK_LENGTHS = [
-  { value: "short", label: "Up to 9 days", maxDays: 9 },
-  { value: "classic", label: "10–15 days", maxDays: 15 },
-  { value: "long", label: "16+ days", maxDays: Infinity },
+  { value: "1", label: "Up to 1 day", minDays: 1, maxDays: 1 },
+  { value: "3", label: "Up to 3 days", minDays: 1, maxDays: 3 },
+  { value: "5", label: "Up to 5 days", minDays: 1, maxDays: 5 },
+  { value: "7", label: "Up to 7 days", minDays: 1, maxDays: 7 },
+  { value: "9", label: "Up to 9 days", minDays: 1, maxDays: 9 },
+  { value: "11", label: "Up to 11 days", minDays: 1, maxDays: 11 },
+  { value: "13", label: "Up to 13 days", minDays: 1, maxDays: 13 },
+  { value: "15", label: "Up to 15 days", minDays: 1, maxDays: 15 },
+  { value: "16plus", label: "16+ days", minDays: 16, maxDays: Infinity },
 ] as const;
 
 export type TrekLength = (typeof TREK_LENGTHS)[number]["value"];
@@ -44,6 +54,6 @@ export const TREK_SORTS = [
 
 export type TrekSort = (typeof TREK_SORTS)[number]["value"];
 
-/** /treks with the given filters, e.g. { length: "short" } → "/treks?length=short". */
+/** /treks with the given filters, e.g. { length: "9" } → "/treks?length=9". */
 export const treksFilterPath = (filters: Partial<Record<TrekFilterParam, string>>) =>
   `${ROUTES.treks}?${new URLSearchParams(filters).toString()}`;

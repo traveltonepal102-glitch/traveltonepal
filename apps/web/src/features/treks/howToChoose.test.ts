@@ -10,24 +10,24 @@ describe("daysTipText", () => {
   it("names only the treks given, by the filter's lengths", () => {
     expect(daysTipText([trek("Langtang Valley Trek", 10)])).toBe("10–15 days: Langtang Valley Trek.");
     expect(daysTipText([trek("Poon Hill", 5), trek("Langtang Valley Trek", 10), trek("Manaslu Circuit", 16)])).toBe(
-      "Up to 9 days: Poon Hill. 10–15 days: Langtang Valley Trek. 16+ days: Manaslu Circuit.",
+      "2–9 days: Poon Hill. 10–15 days: Langtang Valley Trek. 16+ days: Manaslu Circuit.",
     );
   });
 
   it("joins names with “or” and names at most three per length, in the order given", () => {
     const short = ["A", "B", "C", "D"].map((name) => trek(name, 7));
-    expect(daysTipText(short.slice(0, 2))).toBe("Up to 9 days: A or B.");
-    expect(daysTipText(short)).toBe("Up to 9 days: A, B or C.");
+    expect(daysTipText(short.slice(0, 2))).toBe("2–9 days: A or B.");
+    expect(daysTipText(short)).toBe("2–9 days: A, B or C.");
   });
 
-  it("puts each trek in the right length at the edges (9, 10, 15 and 16 days)", () => {
-    expect(daysTipText([trek("Nine", 9), trek("Ten", 10), trek("Fifteen", 15), trek("Sixteen", 16)])).toBe(
-      "Up to 9 days: Nine. 10–15 days: Ten or Fifteen. 16+ days: Sixteen.",
-    );
+  it("puts each trek in the right length at the edges (1, 2, 9, 10, 15 and 16 days)", () => {
+    expect(
+      daysTipText([trek("One", 1), trek("Two", 2), trek("Nine", 9), trek("Ten", 10), trek("Fifteen", 15), trek("Sixteen", 16)]),
+    ).toBe("1 day: One. 2–9 days: Two or Nine. 10–15 days: Ten or Fifteen. 16+ days: Sixteen.");
   });
 
   it("describes the lengths without naming treks when there are none", () => {
-    expect(daysTipText([])).toBe("Short treks take up to 9 days, classic ones 10–15 days, and long, remote ones 16 days or more.");
+    expect(daysTipText([])).toBe("Day hikes take 1 day, short treks 2–9 days, classic ones 10–15 days, and long, remote ones 16 days or more.");
   });
 });
 

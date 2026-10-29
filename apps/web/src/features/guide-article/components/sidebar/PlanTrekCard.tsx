@@ -1,7 +1,7 @@
 import { getWhatsAppUrl } from "@ttn/config/contact";
 import Link from "next/link";
 
-import { formatAltitude, formatUsd } from "@/features/treks/format";
+import { formatAltitude, formatDays, formatUsd } from "@/features/treks/format";
 import type { TrekSummary } from "@/features/treks/types";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
@@ -23,7 +23,7 @@ export const PlanTrekCard = ({ trek, guideTitle }: { trek: TrekSummary; guideTit
         {trek.name}
       </h2>
       <ul className="flex flex-wrap gap-1.5 text-xs font-semibold text-text">
-        {[`${trek.days} days`, trek.difficulty, formatAltitude(trek.maxAltitudeM)].map((fact) => (
+        {[formatDays(trek.days), trek.difficulty, formatAltitude(trek.maxAltitudeM)].map((fact) => (
           <li key={fact} className="rounded-md bg-muted px-2 py-0.75">
             {fact}
           </li>

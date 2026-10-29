@@ -1,6 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
 
-import { formatAltitudeWithFeet, formatDistance } from "@/features/treks/format";
+import { formatAltitudeWithFeet, formatDays, formatDistance } from "@/features/treks/format";
 
 import type { TrekDetail } from "./types";
 
@@ -24,7 +24,7 @@ export const trekSpecs = (trek: TrekDetail): TrekSpec[] => {
   { icon: "timer", tone: "brand", label: "Daily walking", value: trek.dailyWalking },
   { icon: "groups", tone: "green", label: "Guide to trekker", value: trek.guideRatio, isHighlighted: true },
   { icon: "public", tone: "navy", label: "Country", value: "Nepal" },
-  { icon: "calendar_month", tone: "navy", label: "Duration", value: `${trek.days} days` },
+  { icon: "calendar_month", tone: "navy", label: "Duration", value: formatDays(trek.days) },
   { icon: "speed", tone: "danger", label: "Difficulty", value: trek.difficulty },
   { icon: "altitude", tone: "navy", label: "Max. altitude", value: formatAltitudeWithFeet(trek.maxAltitudeM) },
   { icon: "wb_sunny", tone: "saffron", label: "Best season", value: trek.seasonLabel },

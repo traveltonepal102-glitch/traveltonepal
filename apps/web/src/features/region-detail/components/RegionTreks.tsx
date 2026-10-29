@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
 import { regionInquiryUrl } from "@/features/regions/inquiry";
-import { formatAltitude } from "@/features/treks/format";
+import { formatAltitude, formatDays } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
 
@@ -26,7 +26,7 @@ const NearbyTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick 
         <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">{label}</span>
         <span className="font-display text-[19px] font-bold text-ink">{trek.name}</span>
         <span className="text-body-sm text-muted-foreground">
-          {trek.days} days · {trek.difficulty} · max {formatAltitude(trek.maxAltitudeM)}
+          {formatDays(trek.days)} · {trek.difficulty} · max {formatAltitude(trek.maxAltitudeM)}
         </span>
         {note && <span className="text-body-sm text-text">{note}</span>}
       </span>

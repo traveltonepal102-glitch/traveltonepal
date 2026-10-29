@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
 
-import { formatAltitude } from "@/features/treks/format";
+import { formatAltitude, formatDays } from "@/features/treks/format";
 
 import type { TrekDetail } from "../types";
 
@@ -26,8 +26,8 @@ export const TrekTitle = ({ trek }: { trek: TrekDetail }) => {
     {
       icon: "calendar_month",
       text: trek.daysNote
-        ? `${trek.days} days (${trek.daysNote})`
-        : `${trek.days} days`,
+        ? `${formatDays(trek.days)} (${trek.daysNote})`
+        : formatDays(trek.days),
       iconClassName: "text-brand",
     },
     {

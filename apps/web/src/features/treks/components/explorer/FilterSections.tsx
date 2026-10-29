@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
-import { PillCheckboxGroup } from "@/components/ui/PillCheckboxGroup";
+import { PillRadioGroup } from "@/components/ui/PillRadioGroup";
 
 import { DIFFICULTIES } from "../../difficulty";
 import { TREK_LENGTHS } from "../../filters";
@@ -38,11 +38,12 @@ export const FilterSections = ({ filters, treks, regions, update }: FilterSectio
       />
     </Section>
     <Section>
-      <PillCheckboxGroup
+      <PillRadioGroup
         legend="Trek length"
+        anyLabel="Any length"
         options={TREK_LENGTHS}
-        selected={filters.lengths}
-        onToggle={(value) => update({ lengths: toggleValue(filters.lengths, value) })}
+        selected={filters.length}
+        onChange={(length) => update({ length })}
       />
     </Section>
     <Section>

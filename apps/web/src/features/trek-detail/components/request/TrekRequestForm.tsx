@@ -6,6 +6,7 @@ import { useTrekRequest } from "./useTrekRequest";
 import type { TrekRequestOptions } from "./useTrekRequest";
 
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+import { formatDays } from "@/features/treks/format";
 
 /** In-page request form ("Book your … Trek"): trek, group size, name, timing and special requests. */
 export const TrekRequestForm = (options: TrekRequestOptions) => {
@@ -16,7 +17,7 @@ export const TrekRequestForm = (options: TrekRequestOptions) => {
     <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="grid gap-3.5 md:grid-cols-2">
         <StaticField label="Trek">
-          {options.trekName} — {options.days} days
+          {options.trekName} — {formatDays(options.days)}
         </StaticField>
         <SelectField label="Group size" {...group} />
         <TextField

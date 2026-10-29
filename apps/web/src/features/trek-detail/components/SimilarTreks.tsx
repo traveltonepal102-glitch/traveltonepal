@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
-import { formatUsd } from "@/features/treks/format";
+import { formatDays, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import type { TrekSummary } from "@/features/treks/types";
 import { trekPath } from "@/lib/routes";
@@ -48,7 +48,7 @@ export const SimilarTreks = ({ treks }: { treks: readonly TrekSummary[] }) => (
         <li key={other.slug} className="flex flex-col justify-between gap-3 rounded-lg border border-line bg-page p-4 shadow-card">
           <div className="flex flex-col gap-2">
             <p className={`self-start rounded-xs px-2 py-0.5 text-[10px] font-bold uppercase ${TAG_TONES[index % TAG_TONES.length]}`}>
-              {other.days} days · {other.difficulty}
+              {formatDays(other.days)} · {other.difficulty}
             </p>
             <h3 className="text-base font-bold">{other.name}</h3>
             <p className="text-xs text-text">{other.summary}</p>

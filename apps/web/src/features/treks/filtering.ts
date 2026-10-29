@@ -7,7 +7,8 @@ import type { TrekSummary } from "./types";
 export type TrekFilters = {
   q: string;
   regions: readonly string[];
-  lengths: readonly TrekLength[];
+  /** One at a time: "Up to 5 days" already holds the shorter ones. */
+  length: TrekLength | null;
   difficulties: readonly string[];
   seasons: readonly string[];
   shortcut: TrekShortcut | null;
@@ -17,7 +18,7 @@ export type TrekFilters = {
 export const EMPTY_TREK_FILTERS: TrekFilters = {
   q: "",
   regions: [],
-  lengths: [],
+  length: null,
   difficulties: [],
   seasons: [],
   shortcut: null,
@@ -44,7 +45,7 @@ export const parseTrekFilters = (params: URLSearchParams, regionSlugs: readonly 
   return {
     q: (params.get("q") ?? "").trim(),
     regions: readList(params, "region").filter((value) => regionSlugs.includes(value)),
-    lengths: readList(params, "length").filter((value) => isOneOf(LENGTH_VALUES, value)),
+    length: readList(params, "length").find((value) => isOneOf(LENGTH_VALUES, value)) ?? null,
     difficulties: readList(params, "difficulty").filter((value) => DIFFICULTY_VALUES.includes(value)),
     seasons: readList(params, "season").filter((value) => TREK_SEASONS.some((season) => season.value === value)),
     shortcut: isOneOf(TREK_SHORTCUTS.map((item) => item.value), shortcut) ? shortcut : null,
@@ -57,7 +58,7 @@ export const serializeTrekFilters = (filters: TrekFilters): string => {
   const params = new URLSearchParams();
   if (filters.q) params.set("q", filters.q);
   if (filters.regions.length) params.set("region", filters.regions.join(","));
-  if (filters.lengths.length) params.set("length", filters.lengths.join(","));
+  if (filters.length) params.set("length", filters.length);
   if (filters.difficulties.length) params.set("difficulty", filters.difficulties.join(","));
   if (filters.seasons.length) params.set("season", filters.seasons.join(","));
   if (filters.shortcut) params.set("show", filters.shortcut);
@@ -65,8 +66,11 @@ export const serializeTrekFilters = (filters: TrekFilters): string => {
   return params.toString();
 };
 
-export const lengthOf = (days: number): TrekLength =>
-  TREK_LENGTHS.find((length) => days <= length.maxDays)?.value ?? "long";
+/** Whether a trek of this many days is in the chosen length ("Up to 5 days": 1–5; "16+ days": 16 or more). */
+export const matchesLength = (days: number, length: TrekLength) => {
+  const option = TREK_LENGTHS.find((item) => item.value === length);
+  return option !== undefined && days >= option.minDays && days <= option.maxDays;
+};
 
 const difficultyValue = (trek: TrekSummary) => trek.difficulty.toLowerCase();
 
@@ -75,7 +79,8 @@ const matchesShortcut = (trek: TrekSummary, shortcut: TrekShortcut) => {
     case "popular":
       return trek.isPopular;
     case "short":
-      return lengthOf(trek.days) === "short";
+      // "Under 10 days": day hikes too.
+      return trek.days < 10;
     case "easy":
       return trek.difficulty === "Easy";
     case "quiet":
@@ -96,7 +101,7 @@ export type CountedDimension = "regions" | "difficulties";
 export const matchesTrek = (trek: TrekSummary, filters: TrekFilters, ignore?: CountedDimension): boolean => {
   if (filters.q && !matchesSearch(trek, filters.q)) return false;
   if (ignore !== "regions" && filters.regions.length && !filters.regions.includes(trek.regionSlug)) return false;
-  if (filters.lengths.length && !filters.lengths.includes(lengthOf(trek.days))) return false;
+  if (filters.length && !matchesLength(trek.days, filters.length)) return false;
   if (ignore !== "difficulties" && filters.difficulties.length && !filters.difficulties.includes(difficultyValue(trek)))
     return false;
   if (filters.seasons.length && !filters.seasons.some((season) => trek.seasons.some((s) => s === season))) return false;
@@ -138,7 +143,7 @@ export const countForOption = (
 /** Number of filters set in the sidebar or search (the shortcut and sort don't count). */
 export const activeFilterCount = (filters: TrekFilters): number =>
   filters.regions.length +
-  filters.lengths.length +
+  Number(filters.length !== null) +
   filters.difficulties.length +
   filters.seasons.length +
   Number(Boolean(filters.q));

@@ -6,7 +6,7 @@ import { useEffect, useId, useRef } from "react";
 
 import { MONTH_NAMES, RATING_LOOK, RATINGS } from "@/features/guide-article/components/body/monthRatings";
 import type { MonthRating } from "@/features/regions/overviews";
-import { formatTripDate } from "@/features/treks/format";
+import { formatDays, formatTripDate } from "@/features/treks/format";
 
 import { dateInMonth, endDate, isCalendarDate, lastDayOf, monthIndexOf } from "../../startDate";
 import { useBookingSelection } from "../booking/BookingSelection";
@@ -123,7 +123,7 @@ export const StartDatePicker = ({ days, regionName }: StartDatePickerProps) => {
               {startDate ? `${formatTripDate(startDate)} – ${formatTripDate(endDate(startDate, days))}` : "Pick a month"}
             </span>
             <span className="text-caption text-text">
-              {days} days{rating && ` · ${MONTH_NOTES[rating]}`}
+              {formatDays(days)}{rating && ` · ${MONTH_NOTES[rating]}`}
             </span>
           </span>
         </p>

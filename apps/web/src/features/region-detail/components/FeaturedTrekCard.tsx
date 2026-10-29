@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RegionTileArt } from "@/features/regions/components/RegionTileArt";
-import { formatAltitude, formatUsd } from "@/features/treks/format";
+import { formatAltitude, formatDays, formatUsd } from "@/features/treks/format";
 import { trekInquiryUrl } from "@/features/treks/inquiry";
 import { trekPath } from "@/lib/routes";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
@@ -20,7 +20,7 @@ export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
   const { trek, label, note } = pick;
   const { hasPage } = trek;
   const meta: readonly { icon: IconName; text: string }[] = [
-    { icon: "calendar_month", text: `${trek.days} days` },
+    { icon: "calendar_month", text: formatDays(trek.days) },
     { icon: "speed", text: trek.difficulty },
     { icon: "altitude", text: `Max ${formatAltitude(trek.maxAltitudeM)}` },
     { icon: "groups", text: "Private group" },

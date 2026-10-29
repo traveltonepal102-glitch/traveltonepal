@@ -42,11 +42,13 @@ export const NAV_TABS: readonly NavTab[] = MAIN_SECTIONS.map((section) =>
 
 const POPULAR_TREKS_IN_MENU = 4;
 
-const LENGTH_LINKS: Record<TrekLength, { name: string; icon: IconName }> = {
-  short: { name: "Short treks", icon: "timer" },
-  classic: { name: "Classic treks", icon: "calendar_month" },
-  long: { name: "Long and remote", icon: "route" },
-};
+/** The menu's length links: a few useful lengths, not every "How long" option. */
+const LENGTH_LINKS: readonly { length: TrekLength; name: string; icon: IconName }[] = [
+  { length: "1", name: "Day hikes", icon: "hiking" },
+  { length: "9", name: "Short treks", icon: "timer" },
+  { length: "15", name: "Classic treks", icon: "calendar_month" },
+  { length: "16plus", name: "Long and remote", icon: "route" },
+];
 
 const popularColumn = (treks: readonly TrekSummary[]): TrekColumn => ({
   title: "Popular treks",
@@ -63,10 +65,11 @@ const popularColumn = (treks: readonly TrekSummary[]): TrekColumn => ({
 const FIXED_TREK_COLUMNS: readonly TrekColumn[] = [
   {
     title: "By length",
-    links: TREK_LENGTHS.map((length) => ({
-      ...LENGTH_LINKS[length.value],
-      meta: length.label,
-      href: treksFilterPath({ length: length.value }),
+    links: LENGTH_LINKS.map(({ length, name, icon }) => ({
+      name,
+      icon,
+      meta: TREK_LENGTHS.find((option) => option.value === length)?.label ?? "",
+      href: treksFilterPath({ length }),
     })),
   },
   {

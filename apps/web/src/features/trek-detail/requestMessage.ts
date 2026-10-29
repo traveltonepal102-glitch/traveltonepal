@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { formatDays } from "@/features/treks/format";
+
 /** Seasons offered instead of the chosen start day (no years: they never go stale). */
 export const SEASON_OPTIONS = [
   "Spring (March – May)",
@@ -32,13 +34,13 @@ export type TrekRequest = TrekRequestFields & {
 
 /** "Check this date on WhatsApp": the trek, the chosen start day and group size, before any form is filled in. */
 export const buildDateCheckMessage = ({ trekName, days, groupSize, startDate }: Pick<TrekRequest, "trekName" | "days" | "groupSize"> & { startDate: string }) =>
-  [`Hello! Can I start the ${trekName} (${days} days) on ${startDate}?`, "", `Group size: ${groupSize}`].join("\n");
+  [`Hello! Can I start the ${trekName} (${formatDays(days)}) on ${startDate}?`, "", `Group size: ${groupSize}`].join("\n");
 
 /** The booking request as the message the visitor sends us on WhatsApp or by email. */
 export const buildTrekRequestMessage = ({ trekName, days, name, country, groupSize, timing, requests }: TrekRequest): string => {
   const extra = requests.trim().slice(0, MAX_REQUESTS_LENGTH);
   return [
-    `Hello! I would like to book the ${trekName} (${days} days).`,
+    `Hello! I would like to book the ${trekName} (${formatDays(days)}).`,
     "",
     `Name: ${name.trim()}`,
     ...(country.trim() ? [`Country: ${country.trim()}`] : []),

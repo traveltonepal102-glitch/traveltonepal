@@ -20,11 +20,7 @@ const buildChips = (filters: TrekFilters, regions: readonly RegionOption[]): Chi
     label: regions.find((region) => region.slug === slug)?.name ?? slug,
     remove: { regions: filters.regions.filter((value) => value !== slug) },
   })),
-  ...filters.lengths.map((value) => ({
-    key: `length-${value}`,
-    label: labelOf(TREK_LENGTHS, value),
-    remove: { lengths: filters.lengths.filter((existing) => existing !== value) },
-  })),
+  ...(filters.length ? [{ key: "length", label: labelOf(TREK_LENGTHS, filters.length), remove: { length: null } }] : []),
   ...filters.difficulties.map((value) => ({
     key: `difficulty-${value}`,
     label: DIFFICULTIES.find((level) => level.value === value)?.label ?? value,

@@ -2,8 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { guideListHref } from "@/features/guides/guideFiltering";
 
-import { lengthOf } from "./filtering";
-import { TREK_LENGTHS, TREK_RESULTS_ID } from "./filters";
+import { TREK_RESULTS_ID } from "./filters";
 import type { TrekSummary } from "./types";
 
 export type ChooseTip = { icon: IconName; tile: string; title: string; text: string; linkLabel: string; href: string };
@@ -11,19 +10,29 @@ export type ChooseTip = { icon: IconName; tile: string; title: string; text: str
 /** Trek names named per length, at most. */
 const EXAMPLES_PER_LENGTH = 3;
 
+/** The tip's own ranges: the filter's "Up to …" options overlap, so they can't group treks. */
+const TIP_LENGTHS = [
+  { label: "1 day", maxDays: 1 },
+  { label: "2–9 days", maxDays: 9 },
+  { label: "10–15 days", maxDays: 15 },
+  { label: "16+ days", maxDays: Infinity },
+] as const;
+
+const tipLengthOf = (days: number) => TIP_LENGTHS.find((length) => days <= length.maxDays);
+
 /** ["A"] → "A", ["A", "B", "C"] → "A, B or C" */
 const orList = (names: readonly string[]) => (names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} or ${names.at(-1)}`);
 
 /**
- * The days tip, naming only treks on the page (published), by the filter's lengths:
- * "Up to 9 days: Poon Hill. 10–15 days: Langtang Valley Trek." Without treks, the lengths alone.
+ * The days tip, naming only treks on the page (published), by length:
+ * "2–9 days: Poon Hill. 10–15 days: Langtang Valley Trek." Without treks, the lengths alone.
  */
 export const daysTipText = (treks: readonly TrekSummary[]) => {
-  const parts = TREK_LENGTHS.flatMap((length) => {
-    const names = treks.filter((trek) => lengthOf(trek.days) === length.value).slice(0, EXAMPLES_PER_LENGTH).map((trek) => trek.name);
+  const parts = TIP_LENGTHS.flatMap((length) => {
+    const names = treks.filter((trek) => tipLengthOf(trek.days) === length).slice(0, EXAMPLES_PER_LENGTH).map((trek) => trek.name);
     return names.length > 0 ? [`${length.label}: ${orList(names)}.`] : [];
   });
-  return parts.length > 0 ? parts.join(" ") : "Short treks take up to 9 days, classic ones 10–15 days, and long, remote ones 16 days or more.";
+  return parts.length > 0 ? parts.join(" ") : "Day hikes take 1 day, short treks 2–9 days, classic ones 10–15 days, and long, remote ones 16 days or more.";
 };
 
 /** "How to choose the right Nepal trek" (design: Treks.dc.html). TRD: list-page intros live in code. */

@@ -1,7 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
-import { formatAltitude, formatUsd } from "@/features/treks/format";
+import { formatAltitude, formatDays, formatUsd } from "@/features/treks/format";
 import type { TrekSummary } from "@/features/treks/types";
 
 import { FOCUS, KICKER } from "../styles";
@@ -18,7 +18,7 @@ export const ArticleTrekCard = ({ trek }: { trek: TrekSummary }) => (
       <p className={`${KICKER} text-brand`}>Trek mentioned in this guide</p>
       <p className="font-display text-[19px] font-bold text-ink">{trek.name}</p>
       <p className="text-caption font-normal text-text">
-        {trek.days} days · {trek.difficulty} · max {formatAltitude(trek.maxAltitudeM)}
+        {formatDays(trek.days)} · {trek.difficulty} · max {formatAltitude(trek.maxAltitudeM)}
         {trek.priceFromUsd !== undefined && (
           <>
             {" "}
