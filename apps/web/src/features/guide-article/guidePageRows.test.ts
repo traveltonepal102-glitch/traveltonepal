@@ -1,3 +1,4 @@
+import { DEFAULT_GUIDE_HELP_BOX } from "@ttn/config/guideHelpBox";
 import { describe, expect, it } from "vitest";
 
 import type { TrekSummary } from "@/features/treks/types";
@@ -52,6 +53,9 @@ const page = (overrides: Partial<WebTravelGuidePageRow> = {}): WebTravelGuidePag
   share_id: null,
   share_variant_widths: null,
   share_place: null,
+  help_heading: "",
+  help_text: "",
+  help_message: "",
   published_on: "2026-10-25",
   updated_on: null,
   topic: "best-time",
@@ -104,6 +108,20 @@ describe("toGuideArticle", () => {
       { icon: "wb_sunny", tone: "green", label: "Highest", value: "4,773 m" },
     ]);
     expect(article?.months?.notes[9]).toEqual({ onTheTrail: "Month 10", crowds: "Busiest" });
+  });
+
+  it("words the help box with the default until the guide has its own, field by field", () => {
+    expect(article?.helpBox).toEqual(DEFAULT_GUIDE_HELP_BOX);
+
+    const permits = toGuideArticle(
+      { page: page({ help_heading: "Questions about permits?", help_text: "  ", help_message: "Hello! A question about permits: " }), treks },
+      BASE,
+    );
+    expect(permits?.helpBox).toEqual({
+      heading: "Questions about permits?",
+      text: DEFAULT_GUIDE_HELP_BOX.text,
+      message: "Hello! A question about permits: ",
+    });
   });
 
   it("keeps the sections that can show, in order, and drops the rest", () => {

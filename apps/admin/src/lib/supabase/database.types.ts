@@ -419,6 +419,10 @@ type ArticleTranslationRow = {
   canonical_path: string;
   /** "Hide from Google": noindex, not in the sitemap. */
   hide_from_google: boolean;
+  /** The help box beside the guide; "" = the default wording (@ttn/config/guideHelpBox). */
+  help_heading: string;
+  help_text: string;
+  help_message: string;
   /** Jan–Dec: [{ onTheTrail, crowds }], or [] */
   month_notes: Json;
   updated_at: string;

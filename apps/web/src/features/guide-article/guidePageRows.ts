@@ -1,3 +1,5 @@
+import { DEFAULT_GUIDE_HELP_BOX as DEFAULT_HELP_BOX } from "@ttn/config/guideHelpBox";
+
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage, sharePhotoImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
@@ -63,6 +65,12 @@ export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: 
       title: firstText(page.seo_title) ?? title,
       description: firstText(page.seo_description, page.intro) ?? "",
       shareImage: sharePhotoImage(page, photosBaseUrl, title),
+    },
+    helpBox: {
+      heading: firstText(page.help_heading) ?? DEFAULT_HELP_BOX.heading,
+      text: firstText(page.help_text) ?? DEFAULT_HELP_BOX.text,
+      // Kept as typed (a final space lets the visitor carry on writing).
+      message: page.help_message.trim() ? page.help_message : DEFAULT_HELP_BOX.message,
     },
   };
 };

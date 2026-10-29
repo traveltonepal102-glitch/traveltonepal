@@ -10,7 +10,7 @@ import { ArticleBody } from "./body/ArticleBody";
 import { ArticleHero } from "./hero/ArticleHero";
 import { RelatedGuides } from "./RelatedGuides";
 import { PlanTrekCard } from "./sidebar/PlanTrekCard";
-import { WhenToGoCard } from "./sidebar/WhenToGoCard";
+import { GuideHelpCard } from "./sidebar/GuideHelpCard";
 import { WRAP } from "./styles";
 import { ArticleToc } from "./toc/ArticleToc";
 
@@ -37,7 +37,7 @@ export const GuideArticlePage = ({ article, guides }: { article: GuideArticle; g
           <ArticleBody article={article} toc={toc} />
           <aside aria-label="Plan your trek" className="flex flex-col gap-4 lg:sticky lg:top-5 print:hidden">
             {article.trek && <PlanTrekCard trek={article.trek} guideTitle={article.title} />}
-            <WhenToGoCard />
+            <GuideHelpCard box={article.helpBox} guideTitle={article.title} />
           </aside>
         </div>
       </div>

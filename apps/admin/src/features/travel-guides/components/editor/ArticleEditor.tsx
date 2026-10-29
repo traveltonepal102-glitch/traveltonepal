@@ -22,6 +22,7 @@ import type { GuideFeedbackTotals } from "../../lib/guideFeedback";
 import type { Article, ArticleOptions, ArticleValues } from "../../types";
 import { ArticleBody } from "./body/ArticleBody";
 import { ArticleSeoCard } from "./settings/ArticleSeoCard";
+import { HelpBoxCard } from "./settings/HelpBoxCard";
 import { GuidesPageCard } from "./settings/GuidesPageCard";
 import { LinksCard } from "./settings/LinksCard";
 import { PeopleCard } from "./settings/PeopleCard";
@@ -129,13 +130,14 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
           <GuidesPageCard values={values} errors={errors} />
           <PeopleCard values={values} authors={options.authors} checkers={options.checkers} errors={errors} />
           <LinksCard values={values} options={options} errors={errors} onEdit={markDirty} />
+          <HelpBoxCard values={values} errors={errors} />
           <section className="flex flex-col gap-1.5 rounded-lg border border-solid border-border bg-page p-4">
             <span className="flex items-center gap-1.5 text-caption font-bold text-ink">
               <Icon name="info" size={18} className="text-brand" />
               Added to every guide by itself
             </span>
             <span className="text-xs text-muted-foreground">
-              “In this guide” contents, read time, share buttons, Save as PDF, author box with “Checked by”, “Was this guide helpful?”, and the “Plan this trek” box from the main trek.
+              “In this guide” contents, read time, share buttons, Save as PDF, author box with “Checked by”, “Was this guide helpful?”, the “Plan this trek” box from the main trek, and the help box (worded above).
             </span>
           </section>
           <ArticleSeoCard

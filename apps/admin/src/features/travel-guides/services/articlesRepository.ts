@@ -91,6 +91,9 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
     seoDescription: text?.seo_description ?? "",
     canonicalPath: text?.canonical_path ?? "",
     hideFromGoogle: text?.hide_from_google ?? false,
+    helpHeading: text?.help_heading ?? "",
+    helpText: text?.help_text ?? "",
+    helpMessage: text?.help_message ?? "",
     months: storedMonths(row.month_ratings, text?.month_notes),
   };
 };
@@ -139,6 +142,9 @@ export const saveArticle = async (values: ArticleFormValues, articleId: string |
       share_photo_id: values.sharePhotoId ?? "",
       canonical_path: values.canonicalPath,
       hide_from_google: values.hideFromGoogle,
+      help_heading: values.helpHeading,
+      help_text: values.helpText,
+      help_message: values.helpMessage,
       month_notes: values.months.map(({ onTheTrail, crowds }) => ({ onTheTrail, crowds })),
     },
     p_region_ids: values.regionIds,

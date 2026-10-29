@@ -114,6 +114,10 @@ export type ArticleValues = {
   canonicalPath: string;
   /** "Hide from Google": noindex and not in the sitemap. */
   hideFromGoogle: boolean;
+  // Help box in the sidebar ("" = the default wording, @ttn/config/guideHelpBox)
+  helpHeading: string;
+  helpText: string;
+  helpMessage: string;
 };
 
 export type Article = ArticleValues & {

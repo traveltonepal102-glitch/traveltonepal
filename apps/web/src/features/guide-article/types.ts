@@ -1,4 +1,5 @@
 import type { EmbedProvider } from "@ttn/config/embeds";
+import type { GuideHelpBox } from "@ttn/config/guideHelpBox";
 import type { IconName } from "@ttn/ui/icon";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -96,4 +97,6 @@ export type GuideArticle = {
   relatedSlugs: readonly string[];
   regionSlugs: readonly string[];
   seo: PageSeo;
+  /** The navy box beside the guide (a local expert on WhatsApp or by email), worded for this guide or the default. */
+  helpBox: GuideHelpBox;
 };

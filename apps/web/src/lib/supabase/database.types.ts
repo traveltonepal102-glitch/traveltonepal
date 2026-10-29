@@ -264,6 +264,10 @@ export type WebTravelGuidePageRow = CoverColumns & ShareColumns & {
   facts: unknown;
   seo_title: string;
   seo_description: string;
+  /** The help box beside the guide; "" = the default wording (@ttn/config/guideHelpBox). */
+  help_heading: string;
+  help_text: string;
+  help_message: string;
   published_on: string;
   updated_on: string | null;
   topic: WebTravelGuideRow["topic"];

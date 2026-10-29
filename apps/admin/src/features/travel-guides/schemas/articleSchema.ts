@@ -1,3 +1,4 @@
+import { GUIDE_HELP_BOX_LIMITS as HELP_LIMIT } from "@ttn/config/guideHelpBox";
 import { z } from "zod";
 
 import { calendarDate, readList, readTexts, requiredText, slugField, text } from "@/lib/forms/formFields";
@@ -70,6 +71,9 @@ export const articleSchema = z
     sharePhotoId: optionalId("The photo couldn't be read. Reload the page and try again."),
     canonicalPath: canonicalPathField,
     hideFromGoogle: isOn,
+    helpHeading: text(HELP_LIMIT.heading),
+    helpText: text(HELP_LIMIT.text),
+    helpMessage: text(HELP_LIMIT.message),
   })
   .superRefine((article, context) => {
     const issue = (path: string, message: string) => context.addIssue({ code: "custom", path: [path], message });
@@ -125,6 +129,9 @@ export const readArticleForm = (formData: FormData) => ({
     "sharePhotoId",
     "canonicalPath",
     "hideFromGoogle",
+    "helpHeading",
+    "helpText",
+    "helpMessage",
     "sections",
     "months",
   ]),
