@@ -1,16 +1,23 @@
 import { formatAltitude } from "@/features/treks/format";
 
 import { ELEVATION_CHART } from "../../elevation";
-import type { ElevationPointRole, ElevationProfile } from "../../elevation";
+import type { ElevationPoint, ElevationPointRole, ElevationProfile } from "../../elevation";
 
-/** Marker per point role; descent days have none (the way down repeats the way up). */
-const MARKERS: Record<ElevationPointRole, { r: number; className: string } | null> = {
+type Marker = { r: number; className: string };
+
+/** Marker per point role: every point is drawn, as in the admin's chart. */
+const MARKERS: Record<ElevationPointRole, Marker> = {
   start: { r: 5, className: "fill-muted-foreground" },
   climb: { r: 6, className: "fill-brand" },
   highestNight: { r: 7, className: "fill-whatsapp" },
   summit: { r: 8, className: "fill-saffron stroke-navy stroke-2" },
-  descent: null,
+  descent: { r: 6, className: "fill-brand" },
 };
+
+/** A day's high point below the peak (a lower pass or day hike) is hollow, so it reads apart from the nights. */
+const HIGH_MARKER: Marker = { r: 6, className: "fill-surface stroke-brand stroke-3" };
+
+const markerOf = (point: ElevationPoint) => (point.kind === "high" && point.role !== "summit" ? HIGH_MARKER : MARKERS[point.role]);
 
 // Sizes are in chart units: the chart is drawn about 70% of its 1080-unit width, so 14 reads as ~10px.
 const LABELS: Record<ElevationPointRole, string> = {
@@ -49,10 +56,10 @@ export const ElevationChart = ({ profile }: { profile: ElevationProfile }) => {
       <path d={profile.linePath} fill="none" strokeWidth={3} strokeLinejoin="round" strokeLinecap="round" className="stroke-brand" />
 
       {profile.points.map((point) => {
-        const marker = MARKERS[point.role];
+        const marker = markerOf(point);
         return (
           <g key={`${point.day}-${point.kind}`}>
-            {marker && <circle cx={point.x} cy={point.y} r={marker.r} className={marker.className} />}
+            <circle cx={point.x} cy={point.y} r={marker.r} className={marker.className} />
             {point.label && (
               <text
                 x={point.label.x}

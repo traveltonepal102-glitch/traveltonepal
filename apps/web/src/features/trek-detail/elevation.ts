@@ -1,3 +1,5 @@
+import { buildAltitudeChart } from "@ttn/config/altitudeChart";
+
 import { formatAltitude } from "@/features/treks/format";
 
 import type { ItineraryDay } from "./types";
@@ -5,9 +7,6 @@ import type { ItineraryDay } from "./types";
 /** Chart box in SVG units, from the design: plot from x 60 to 1020 and from y 30 (top) to 210 (bottom). */
 export const ELEVATION_CHART = { width: 1080, height: 250, left: 60, right: 1020, top: 30, bottom: 210 } as const;
 
-const GRID_STEP_M = 1500;
-/** Treks start from Kathmandu (1,400 m), so the axis starts at 1,000 m unless a day goes lower. */
-const AXIS_FLOOR_M = 1000;
 /** Points this close to the chart floor get their label above, not below. */
 const NEAR_FLOOR = 30;
 
@@ -24,7 +23,7 @@ export type ElevationPoint = {
   x: number;
   y: number;
   role: ElevationPointRole;
-  /** Only the way up is labelled; the way down repeats the same places. */
+  /** Only the way up is labelled; the way down repeats the same places (its points are still drawn). */
   label?: ElevationLabel;
 };
 
@@ -39,20 +38,9 @@ export type ElevationProfile = {
   description: string;
 };
 
-const round = (value: number) => Math.round(value * 10) / 10;
-
 /** Where a day tops out: its highest point's name when it sleeps lower ("" on days saved before it had one), else where it sleeps. */
 export const topPlaceOf = <Day extends Pick<ItineraryDay, "place" | "highPlace" | "sleepAltitudeM">>(day: Day | undefined) =>
   day && (day.sleepAltitudeM === undefined ? day.place : (day.highPlace ?? ""));
-
-type Stop = Pick<ElevationPoint, "day" | "kind" | "place" | "altitudeM"> & { position: number };
-
-/** A day's points in order: its high point when it goes higher than the night, then the night (on the day itself). */
-const stopsOf = (day: ItineraryDay, index: number): Stop[] => {
-  const night: Stop = { day: index + 1, kind: "night", place: day.place, altitudeM: day.sleepAltitudeM ?? day.altitudeM, position: index };
-  if (night.altitudeM >= day.altitudeM) return [night];
-  return [{ day: index + 1, kind: "high", place: day.highPlace ?? "", altitudeM: day.altitudeM, position: index - 0.5 }, night];
-};
 
 const withAltitude = (place: string, altitudeM: number) => [place, formatAltitude(altitudeM)].filter(Boolean).join(" ");
 
@@ -74,40 +62,37 @@ const labelOf = (point: Omit<ElevationPoint, "label">): ElevationLabel | undefin
 };
 
 /**
- * Daily altitude curve for the itinerary: points, grid, SVG paths and the peak and highest night. Each night sits on
- * its day; a day that goes higher than where you sleep adds its high point halfway into the day (Dharmasala →
- * Larkya La → Bhimthang).
+ * Daily altitude curve for the itinerary: the same points and axis as the admin's chart (@ttn/config/altitudeChart:
+ * each night on its day, and a day's high point halfway into it when the day goes higher than where you sleep),
+ * scaled to the design's chart box, with the website's labels, the peak and the highest night.
  */
 export const buildElevationProfile = (days: readonly ItineraryDay[]): ElevationProfile | null => {
-  if (days.length < 2) return null;
+  const chart = buildAltitudeChart(days);
+  if (!chart) return null;
 
-  const stops = days.flatMap(stopsOf);
-  const altitudes = stops.map((stop) => stop.altitudeM);
-  const peakIndex = altitudes.indexOf(Math.max(...altitudes));
-  const nightIndex = stops.reduce((best, stop, index) => (stop.kind === "night" && (best < 0 || stop.altitudeM > stops[best].altitudeM) ? index : best), -1);
-
-  const floorM = Math.min(...altitudes) >= AXIS_FLOOR_M ? AXIS_FLOOR_M : 0;
-  const ceilingM = floorM + GRID_STEP_M * Math.max(1, Math.ceil((altitudes[peakIndex] - floorM) / GRID_STEP_M));
   const { left, right, top, bottom } = ELEVATION_CHART;
-  // Day 1 going higher puts its high point half a day before it.
-  const first = Math.min(0, stops[0].position);
-  const xAt = (position: number) => round(left + ((position - first) * (right - left)) / (days.length - 1 - first));
-  const yAt = (meters: number) => round(bottom - ((meters - floorM) / (ceilingM - floorM)) * (bottom - top));
+  const xAt = (percent: number) => Math.round((left + (percent / 100) * (right - left)) * 10) / 10;
+  const yAt = (percent: number) => Math.round((top + (percent / 100) * (bottom - top)) * 10) / 10;
+  const { peakIndex, highestNightIndex } = chart;
 
-  const points = stops.map(({ position, ...stop }, index): ElevationPoint => {
-    const point = { ...stop, x: xAt(position), y: yAt(stop.altitudeM), role: roleOf(index, peakIndex, nightIndex) };
+  const points = chart.stops.map((stop, index): ElevationPoint => {
+    const day = days[stop.day - 1];
+    const point = {
+      ...stop,
+      place: stop.kind === "high" ? (day.highPlace ?? "") : day.place,
+      x: xAt(stop.x),
+      y: yAt(stop.y),
+      role: roleOf(index, peakIndex, highestNightIndex),
+    };
     return { ...point, label: index <= peakIndex ? labelOf(point) : undefined };
   });
 
-  const gridLines = Array.from({ length: (ceilingM - floorM) / GRID_STEP_M + 1 }, (_, step) => {
-    const altitudeM = floorM + step * GRID_STEP_M;
-    return { altitudeM, y: yAt(altitudeM) };
-  });
-
+  const gridLines = chart.gridLines.map((line) => ({ altitudeM: line.altitudeM, y: yAt(line.y) }));
   const linePath = points.map((point, index) => `${index === 0 ? "M" : "L"}${point.x} ${point.y}`).join(" ");
   const firstPoint = points[0];
   const last = points[points.length - 1];
   const peak = points[peakIndex];
+  const highestNight = points[highestNightIndex];
   const goesBackDown = last.altitudeM < peak.altitudeM ? ", then back down" : "";
 
   return {
@@ -116,7 +101,7 @@ export const buildElevationProfile = (days: readonly ItineraryDay[]): ElevationP
     linePath,
     areaPath: `${linePath} L${last.x} ${bottom} L${firstPoint.x} ${bottom} Z`,
     peak,
-    highestNight: { place: stops[nightIndex].place, altitudeM: stops[nightIndex].altitudeM },
+    highestNight: { place: highestNight.place, altitudeM: highestNight.altitudeM },
     description: `Altitude profile: from ${formatAltitude(firstPoint.altitudeM)}${firstPoint.place ? ` in ${firstPoint.place}` : ""} up to ${formatAltitude(peak.altitudeM)}${peak.place ? ` on ${peak.place}` : ""} on day ${peak.day}${goesBackDown}.`,
   };
 };

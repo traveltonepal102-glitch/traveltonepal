@@ -19,13 +19,14 @@ const day = (place: string, altitudeM: number, sleepAltitudeM?: number, highPlac
 describe("buildElevationProfile", () => {
   const langtang = buildElevationProfile(toTrekDetail(langtangSource(), PHOTOS_BASE, TREK_FILES_BASE).itinerary.days);
 
-  it("places the Langtang days where the design draws them", () => {
-    expect(langtang?.points[0]).toMatchObject({ x: 60, y: 194, role: "start" });
+  it("places the Langtang days on the admin chart's points and axis, scaled to the design's box", () => {
+    expect(langtang?.points[0]).toMatchObject({ x: 60, y: 195.6, role: "start" });
     // Day 6 hikes up Kyanjin Ri and back: its top halfway into the day, its night on day 6 itself.
-    expect(langtang?.points[5]).toMatchObject({ day: 6, kind: "high", x: 540, y: 59.1, role: "summit" });
-    expect(langtang?.points[6]).toMatchObject({ day: 6, kind: "night", place: "Kyanjin Gompa", x: 593.3, y: 95.2 });
-    expect(langtang?.points[4]).toMatchObject({ y: 95.2, role: "highestNight" });
-    expect(langtang?.gridLines.map((line) => line.altitudeM)).toEqual([1000, 2500, 4000, 5500]);
+    expect(langtang?.points[5]).toMatchObject({ day: 6, kind: "high", x: 540, y: 74.1, role: "summit" });
+    expect(langtang?.points[6]).toMatchObject({ day: 6, kind: "night", place: "Kyanjin Gompa", x: 593.8, y: 106.7, role: "descent" });
+    expect(langtang?.points[4]).toMatchObject({ y: 106.7, role: "highestNight" });
+    expect(langtang?.gridLines.map((line) => line.altitudeM)).toEqual([1500, 3000, 4500, 6000]);
+    expect(langtang?.gridLines.at(-1)?.y).toBe(30);
   });
 
   it("finds the peak and the highest night, which can differ on a day hike", () => {
@@ -67,7 +68,7 @@ describe("buildElevationProfile", () => {
 
   it("raises the axis for higher treks and returns null without enough days", () => {
     const high = buildElevationProfile([day("Lukla", 2860), day("Kala Patthar", 5545)]);
-    expect(high?.gridLines.at(-1)?.altitudeM).toBe(7000);
+    expect(high?.gridLines.at(-1)?.altitudeM).toBe(6000);
     expect(buildElevationProfile([day("Kathmandu", 1400)])).toBeNull();
   });
 });
