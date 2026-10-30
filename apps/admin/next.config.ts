@@ -39,4 +39,12 @@ export default withSentryConfig(nextConfig, {
   telemetry: false,
   // Only needed for performance tracing, which is off.
   suppressOnRouterTransitionStartWarning: true,
+  // Errors only: leave Sentry's tracing, replay and debug-log code out of the bundles.
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeTracing: true,
+    excludeReplayIframe: true,
+    excludeReplayShadowDom: true,
+    excludeReplayWorker: true,
+  },
 });

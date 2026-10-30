@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { formatCount } from "@/lib/format";
+import { HERO_PHOTO_QUALITY } from "@/lib/images";
 import { ROUTES } from "@/lib/routes";
 import type { SitePageTop } from "@/features/site-pages/types";
 
@@ -35,6 +36,7 @@ export const TreksHero = ({ top, trekCount, regionCount }: TreksHeroProps) => {
         fill
         preload
         fetchPriority="high"
+        quality={HERO_PHOTO_QUALITY}
         sizes="100vw"
         className="object-cover object-[50%_40%]"
       />

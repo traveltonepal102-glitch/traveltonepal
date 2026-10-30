@@ -22,6 +22,9 @@ export const CAROUSEL_ITEM = "w-[85%] flex-none snap-start sm:w-[calc((100%-1.12
 /** A card's width with `isGridOnDesktop`: as CAROUSEL_ITEM on phones and tablets, a grid cell on desktop. */
 export const CAROUSEL_GRID_ITEM = "w-[85%] flex-none snap-start sm:w-[calc((100%-1.125rem)/2)] lg:w-auto";
 
+/** How close (px) to an end counts as there: snapping stops at the row's 2px padding (p-0.5), plus rounding. */
+const EDGE_TOLERANCE = 4;
+
 /** Round button on the row's side, centred on the cards; gone at the end it can't scroll towards. */
 const ARROW =
   "absolute top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface text-ink shadow-popover transition-[opacity,background-color] hover:bg-page disabled:pointer-events-none disabled:opacity-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex";
@@ -38,16 +41,20 @@ export const CardCarousel = ({ label, count, children, isGridOnDesktop = false }
   const readEdges = useCallback(() => {
     const row = rowRef.current;
     if (!row) return;
-    const atStart = row.scrollLeft <= 1;
-    const atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 1;
+    const atStart = row.scrollLeft <= EDGE_TOLERANCE;
+    const atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - EDGE_TOLERANCE;
     setEdges((current) => (current.atStart === atStart && current.atEnd === atEnd ? current : { atStart, atEnd }));
   }, []);
 
-  // The arrows depend on the row's width (cards per screen), known only in the browser and after a resize.
+  // The arrows depend on the row's width (cards per screen), known only in the browser and after a resize. A
+  // ResizeObserver reports once the browser has laid the row out (first on observe), so reading its sizes then forces
+  // no extra layout while the page starts (Lighthouse's "forced reflow").
   useEffect(() => {
-    readEdges();
-    window.addEventListener("resize", readEdges);
-    return () => window.removeEventListener("resize", readEdges);
+    const row = rowRef.current;
+    if (!row) return;
+    const observer = new ResizeObserver(readEdges);
+    observer.observe(row);
+    return () => observer.disconnect();
   }, [readEdges, count]);
 
   const scrollBy = (direction: 1 | -1) => {

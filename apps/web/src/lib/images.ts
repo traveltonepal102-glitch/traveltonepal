@@ -15,6 +15,12 @@ export type SiteImageSource = {
 };
 
 /**
+ * next/image quality for a hero photo under a navy overlay (Home, Treks, Regions): the overlay hides the difference
+ * and the smaller file is the page's Largest Contentful Paint. Listed in next.config's images.qualities.
+ */
+export const HERO_PHOTO_QUALITY = 60;
+
+/**
  * One file of the picture, about `width` px wide, for links and structured data (share previews, Google): a library
  * photo's prepared size, or the /public file itself.
  */

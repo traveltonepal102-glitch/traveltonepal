@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { HERO_PHOTO_QUALITY } from "@/lib/images";
+
 /**
  * Hero photo (design: Main.dc.html, Gokyo Lake) with navy shading from the top and bottom so white text stays
  * readable, and the white wave at the bottom.
@@ -12,6 +14,7 @@ export const HeroBackdrop = () => (
       fill
       preload
       fetchPriority="high"
+      quality={HERO_PHOTO_QUALITY}
       sizes="100vw"
       className="object-cover object-[50%_55%]"
     />

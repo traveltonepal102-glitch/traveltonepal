@@ -26,7 +26,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // next/image widths are the widths library photos are stored in, so each srcset entry names a real file at its real
   // width (with Next's defaults a 400px card picked "640w", which the photo loader turned into the 800px file).
-  images: { deviceSizes: VARIANT_WIDTHS, imageSizes: [] },
+  // 60: hero photos under a navy overlay (HERO_PHOTO_QUALITY), where the smaller file shows no difference.
+  images: { deviceSizes: VARIANT_WIDTHS, imageSizes: [], qualities: [60, 75] },
   headers: async () => [{ source: "/:path*", headers: SECURITY_HEADERS }],
   // The build prerenders every page from Supabase. The database's small compute plan answers about 4 heavy reads at
   // once (more and the website's 3 s statement limit cancels them; measured 2026-10-30), and each page makes a few:
@@ -59,4 +60,12 @@ export default withSentryConfig(nextConfig, {
   telemetry: false,
   // Only needed for performance tracing, which is off.
   suppressOnRouterTransitionStartWarning: true,
+  // Errors only: leave Sentry's tracing, replay and debug-log code out of the bundles (Lighthouse: unused JavaScript).
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeTracing: true,
+    excludeReplayIframe: true,
+    excludeReplayShadowDom: true,
+    excludeReplayWorker: true,
+  },
 });
