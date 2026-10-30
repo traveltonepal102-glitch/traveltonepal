@@ -1,3 +1,4 @@
+import { isContactRedirect } from "@ttn/config/contact";
 import { isSafeHref } from "@ttn/ui/lib/richText";
 import type { RichTextBlock, RichTextDoc, RichTextInline } from "@ttn/ui/lib/richText";
 import Link from "next/link";
@@ -20,7 +21,7 @@ const InlineText = ({ inline }: { inline: RichTextInline }) => {
   const link = marks.find((mark) => mark.type === "link");
   if (!link || !isSafeHref(link.attrs.href)) return node;
   const { href } = link.attrs;
-  return href.startsWith("/") ? (
+  return href.startsWith("/") && !isContactRedirect(href) ? (
     <Link href={href} className={LINK}>
       {node}
     </Link>

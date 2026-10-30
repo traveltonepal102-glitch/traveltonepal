@@ -1,4 +1,4 @@
-import { getEmailUrl, getWhatsAppUrl, mailtoUrl, whatsAppChatUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl, isContactRedirect, mailtoUrl, whatsAppChatUrl } from "@ttn/config/contact";
 import { describe, expect, it } from "vitest";
 
 import { MAX_REQUESTS_LENGTH, buildDateCheckMessage, buildTrekRequestMessage, trekRequestSchema } from "./requestMessage";
@@ -84,6 +84,15 @@ describe("contact links", () => {
   it("open a WhatsApp chat with the saved number", () => {
     expect(whatsAppChatUrl("9779843197197")).toBe("https://wa.me/9779843197197");
     expect(whatsAppChatUrl("9779843197197", "Hi there")).toBe("https://wa.me/9779843197197?text=Hi%20there");
+  });
+
+  it("know the links that leave the site (plain <a>, never a prefetching <Link>)", () => {
+    expect(isContactRedirect(getEmailUrl({ subject: "Planning a trek" }))).toBe(true);
+    expect(isContactRedirect(getWhatsAppUrl("Hi"))).toBe(true);
+    expect(isContactRedirect("/email")).toBe(true);
+    expect(isContactRedirect("/emails")).toBe(false);
+    expect(isContactRedirect("/whatsapp-groups")).toBe(false);
+    expect(isContactRedirect("/contact")).toBe(false);
   });
 });
 

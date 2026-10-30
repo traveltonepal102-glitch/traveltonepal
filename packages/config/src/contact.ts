@@ -37,6 +37,12 @@ export type ContactDetails = {
 export const WHATSAPP_PATH = "/whatsapp";
 export const EMAIL_PATH = "/email";
 
+/**
+ * True for a /whatsapp or /email link. They redirect to wa.me and mailto:, so they must be plain <a> links: Next's
+ * <Link> prefetches the redirect (a console error, and Lighthouse's "Does not use HTTPS" for the mailto:).
+ */
+export const isContactRedirect = (href: string): boolean => [EMAIL_PATH, WHATSAPP_PATH].some((path) => href === path || href.startsWith(`${path}?`));
+
 /** Link that opens a WhatsApp chat with the office, with an optional first message. */
 export const getWhatsAppUrl = (message?: string): string => (message ? `${WHATSAPP_PATH}?${new URLSearchParams({ text: message })}` : WHATSAPP_PATH);
 
