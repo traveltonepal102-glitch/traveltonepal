@@ -56,8 +56,10 @@ export type TrekPoint = {
 };
 
 export type ItineraryDay = {
-  /** Short place name for the elevation chart, e.g. "Lama Hotel". */
+  /** Where you sleep, a short name for the elevation chart, e.g. "Lama Hotel". */
   place: string;
+  /** The day's highest point when it is higher than where you sleep, e.g. "Larkya La" (left out on older days). */
+  highPlace?: string;
   title: string;
   /** One line under the title, e.g. "River gorge · Bamboo and rhododendron forest". */
   subtitle: string;

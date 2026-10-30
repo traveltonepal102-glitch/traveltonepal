@@ -47,6 +47,7 @@ const personSchema = z.object({ name: z.string().trim().min(1), role: text, quot
 
 const dayRowSchema = z.object({
   place: text,
+  high_place: text,
   title: z.string().trim().min(1),
   subtitle: text,
   duration: text,

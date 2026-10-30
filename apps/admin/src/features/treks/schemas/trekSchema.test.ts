@@ -108,6 +108,7 @@ describe("trekSchema", () => {
   const day = (title: string, sleep: string, extra: Record<string, string> = {}) => ({
     dayId: "",
     dayPlace: "",
+    dayHighPlace: "",
     dayTitle: title,
     daySubtitle: "",
     dayDuration: "",
@@ -127,23 +128,29 @@ describe("trekSchema", () => {
     const result = parse({
       days: "3",
       maxAltitudeM: "9000",
-      ...days(day("Arrive", "1,400"), day("Kyanjin Ri", "3870", { dayTopAltitude: "4773", dayHighPoint: "true", dayMeals: "dinner,breakfast" }), day("Back", "1400")),
+      ...days(day("Arrive", "1,400"), day("Kyanjin Ri", "3870", { dayTopAltitude: "4773", dayHighPlace: " Kyanjin Ri ", dayHighPoint: "true", dayMeals: "dinner,breakfast" }), day("Back", "1400")),
     });
     expect(result.data).toMatchObject({ days: 3, maxAltitudeM: 4773 });
-    expect(result.data?.itinerary[1]).toMatchObject({ id: null, title: "Kyanjin Ri", altitudeM: 4773, sleepAltitudeM: 3870, isHighPoint: true, photoId: null, meals: ["breakfast", "dinner"] });
+    expect(result.data?.itinerary[1]).toMatchObject({ id: null, title: "Kyanjin Ri", highPlace: "Kyanjin Ri", altitudeM: 4773, sleepAltitudeM: 3870, isHighPoint: true, photoId: null, meals: ["breakfast", "dinner"] });
     expect(result.data?.itinerary[0]).toMatchObject({ altitudeM: 1400, sleepAltitudeM: null, meals: [] });
+  });
+
+  it("keeps the highest point's name only when the day goes higher than where you sleep", () => {
+    const result = parse(days(day("Arrive", "1400", { dayHighPlace: "Thamel" }), day("Pass", "3720", { dayTopAltitude: "5106", dayHighPlace: "Larkya La" })));
+    expect(result.data?.itinerary.map((item) => item.highPlace)).toEqual(["", "Larkya La"]);
   });
 
   it("doesn't need days in Basics once there is a plan", () => {
     expect(parse({ days: "", maxAltitudeM: "", ...days(day("Arrive", "1400")) }).data).toMatchObject({ days: 1, maxAltitudeM: 1400 });
   });
 
-  it("checks each day: a title, where you sleep, a highest point only above it, and known meals", () => {
-    const errors = errorsOf(days(day("Fine", "2000", { dayMeals: "snack" }), day("", ""), day("Hike", "3500", { dayTopAltitude: "3000" })));
+  it("checks each day: a title, where you sleep, a highest point only above it and with its name, and known meals", () => {
+    const errors = errorsOf(days(day("Fine", "2000", { dayMeals: "snack" }), day("", ""), day("Hike", "3500", { dayTopAltitude: "3000" }), day("Pass", "3720", { dayTopAltitude: "5106" })));
     expect(errors).toMatchObject({
       "itinerary.1.title": "Write the day's title, or delete the day.",
       "itinerary.1.sleepAltitude": "Enter the sleep altitude.",
       "itinerary.2.topAltitude": "Only fill this in when the day goes higher than where you sleep.",
+      "itinerary.3.highPlace": "Name the highest point, e.g. Larkya La.",
       "itinerary.0.meals.0": "Pick the meals from the list.",
     });
   });

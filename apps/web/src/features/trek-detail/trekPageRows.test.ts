@@ -25,7 +25,7 @@ describe("toTrekDetail", () => {
     });
     expect(trek.intro.content).toHaveLength(2);
     expect(trek.itinerary.days).toHaveLength(trek.days);
-    expect(trek.itinerary.days.filter((day) => day.isHighPoint).map((day) => day.place)).toEqual(["Kyanjin Ri"]);
+    expect(trek.itinerary.days.filter((day) => day.isHighPoint).map((day) => [day.highPlace, day.place])).toEqual([["Kyanjin Ri", "Kyanjin Gompa"]]);
     expect(trek.itinerary.days[5]).toMatchObject({ altitudeM: 4773, sleepAltitudeM: 3870, duration: "5–7 hrs" });
     expect(trek.itinerary.days[9].duration).toBeUndefined();
     expect(trek.groupPrices.filter((price) => price.isDefault)).toEqual([expect.objectContaining({ shortLabel: "3–5 Pax", priceUsd: 890 })]);

@@ -37,6 +37,7 @@ const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
 const toDays = (rows: readonly unknown[]): ArticleDay[] =>
   readDays(rows).map((day) => ({
     place: day.place,
+    highPlace: day.high_place || undefined,
     title: day.title,
     subtitle: day.subtitle,
     duration: day.duration || undefined,

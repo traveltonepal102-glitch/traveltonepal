@@ -9,8 +9,8 @@ import type { DayAltitude } from "../lib/elevationSummary";
 import type { ItineraryDay } from "../types";
 
 /**
- * A day as the editor holds it (as the design asks): the sleep altitude, the highest point only when the day
- * goes higher, both as typed (e.g. "4,773"), plus a key that never changes.
+ * A day as the editor holds it (as the design asks): the sleep altitude, the highest point and its name only when
+ * the day goes higher, the altitudes as typed (e.g. "4,773"), plus a key that never changes.
  */
 export type DayRow = Omit<ItineraryDay, "altitudeM" | "sleepAltitudeM"> & {
   key: string;
@@ -34,6 +34,7 @@ export const dayPeak = (day: Pick<DayRow, "topAltitude" | "sleepAltitude">) => p
 /** A day's altitudes as typed, for the altitude chart and its boxes. */
 export const toDayAltitude = (day: DayRow): DayAltitude => ({
   place: day.place,
+  highPlace: day.highPlace,
   duration: day.duration,
   altitudeM: dayPeak(day),
   sleepAltitudeM: parseAltitude(day.sleepAltitude),
@@ -46,6 +47,7 @@ const emptyRow = (): DayRow => ({
   key: crypto.randomUUID(),
   id: null,
   place: "",
+  highPlace: "",
   title: "",
   subtitle: "",
   duration: "",

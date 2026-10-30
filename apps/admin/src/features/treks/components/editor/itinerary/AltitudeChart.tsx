@@ -6,7 +6,7 @@ import type { AltitudePoint } from "../../../lib/altitudeProfile";
 import type { DayAltitude } from "../../../lib/elevationSummary";
 
 type AltitudeChartProps = {
-  /** One per day, in order (a day without an altitude yet has no point). */
+  /** One per day, in order (a day without an altitude yet has no point; a day that goes higher has two). */
   days: DayAltitude[];
   /** Opens the day (by its index) to change its altitude. */
   onSelectDay: (index: number) => void;
@@ -22,7 +22,7 @@ const at = (point: Pick<AltitudePoint, "x" | "y">): CSSProperties => ({ left: `$
  * and the top label is never cut off. Each point opens its day.
  */
 export const AltitudeChart = ({ days, onSelectDay }: AltitudeChartProps) => {
-  const profile = buildAltitudeProfile(days.map((day) => day.altitudeM));
+  const profile = buildAltitudeProfile(days);
   if (!profile) {
     return (
       <p className="m-0 rounded-md border border-dashed border-line-strong bg-page px-4 py-6 text-center text-caption text-muted-foreground">
@@ -55,20 +55,29 @@ export const AltitudeChart = ({ days, onSelectDay }: AltitudeChartProps) => {
         </span>
 
         {profile.points.map((point) => {
-          const { place } = days[point.day - 1];
+          const day = days[point.day - 1];
+          const isHigh = point.kind === "high";
+          const place = isHigh ? day.highPlace : day.place;
+          const what = isHigh ? `Day ${point.day} highest point` : `Day ${point.day}`;
           const isPeak = point === peak;
           return (
             <button
-              key={point.day}
+              key={`${point.day}-${point.kind}`}
               type="button"
               style={at(point)}
               onClick={() => onSelectDay(point.day - 1)}
-              aria-label={`Day ${point.day}${place ? `, ${place}` : ""}: ${metres(point.altitudeM)}. Change it in Day-by-day itinerary.`}
+              aria-label={`${what}${place ? `, ${place}` : ""}: ${metres(point.altitudeM)}. Change it in Day-by-day itinerary.`}
               className="group absolute z-10 m-0 flex size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-ring"
             >
-              <span className={cn("block rounded-full border-2 border-solid border-surface shadow-card transition-transform group-hover:scale-125", isPeak ? "size-4 bg-saffron" : "size-3 bg-brand")} />
+              {/* A day's high point is hollow, so it reads apart from the nights. */}
+              <span
+                className={cn(
+                  "block rounded-full border-2 border-solid shadow-card transition-transform group-hover:scale-125",
+                  isPeak ? "size-4 border-surface bg-saffron" : isHigh ? "size-3 border-brand bg-surface" : "size-3 border-surface bg-brand",
+                )}
+              />
               <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 rounded-md bg-navy px-2 py-1 text-[11px] font-semibold whitespace-nowrap text-white group-hover:block group-focus-visible:block">
-                Day {point.day}
+                {what}
                 {place && ` · ${place}`} · {metres(point.altitudeM)} · click to change
               </span>
             </button>

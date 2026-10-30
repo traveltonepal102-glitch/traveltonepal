@@ -12,23 +12,30 @@ export type RouteStop = {
 
 const samePlace = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
-/** The route's stops from the day-by-day plan (days without a place are left out). */
+/** Adds a place reached on a day, or extends the last stop when it is the same place. */
+const addStop = (stops: RouteStop[], place: string, altitudeM: number, dayNumber: number, isSummit: boolean) => {
+  if (!place) return;
+  const last = stops.at(-1);
+  if (last && samePlace(last.place, place)) {
+    last.lastDay = dayNumber;
+    last.altitudeM = Math.max(last.altitudeM, altitudeM);
+    if (isSummit) last.kind = "summit";
+    return;
+  }
+  const kind = isSummit ? "summit" : stops.length === 0 ? "start" : "stop";
+  stops.push({ place, altitudeM, firstDay: dayNumber, lastDay: dayNumber, kind });
+};
+
+/**
+ * The route's stops from the day-by-day plan (days without a place are left out). A day that goes higher than where
+ * you sleep adds its highest point (e.g. Larkya La) before the night; a day saved without that name stays one stop.
+ */
 export const routeStops = (days: readonly ItineraryDay[]): RouteStop[] =>
   days.reduce<RouteStop[]>((stops, day, index) => {
-    const place = day.place.trim();
-    if (!place) return stops;
-
     const dayNumber = index + 1;
-    const last = stops.at(-1);
-    if (last && samePlace(last.place, place)) {
-      last.lastDay = dayNumber;
-      last.altitudeM = Math.max(last.altitudeM, day.altitudeM);
-      if (day.isHighPoint) last.kind = "summit";
-      return stops;
-    }
-
-    const kind = day.isHighPoint ? "summit" : stops.length === 0 ? "start" : "stop";
-    stops.push({ place, altitudeM: day.altitudeM, firstDay: dayNumber, lastDay: dayNumber, kind });
+    const top = day.sleepAltitudeM === undefined ? "" : (day.highPlace?.trim() ?? "");
+    if (top) addStop(stops, top, day.altitudeM, dayNumber, Boolean(day.isHighPoint));
+    addStop(stops, day.place.trim(), top ? (day.sleepAltitudeM ?? day.altitudeM) : day.altitudeM, dayNumber, Boolean(day.isHighPoint) && !top);
     return stops;
   }, []);
 

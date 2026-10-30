@@ -6,8 +6,9 @@ import { PHOTOS_BASE, TREK_FILES_BASE, langtangSource } from "./trekPage.testDat
 import { toTrekDetail } from "./trekPageRows";
 import type { ItineraryDay } from "./types";
 
-const day = (place: string, altitudeM: number, sleepAltitudeM?: number): ItineraryDay => ({
+const day = (place: string, altitudeM: number, sleepAltitudeM?: number, highPlace?: string): ItineraryDay => ({
   place,
+  highPlace,
   altitudeM,
   sleepAltitudeM,
   title: place,
@@ -20,7 +21,9 @@ describe("buildElevationProfile", () => {
 
   it("places the Langtang days where the design draws them", () => {
     expect(langtang?.points[0]).toMatchObject({ x: 60, y: 194, role: "start" });
-    expect(langtang?.points[5]).toMatchObject({ day: 6, x: 593.3, y: 59.1, role: "summit" });
+    // Day 6 hikes up Kyanjin Ri and back: its top halfway into the day, its night on day 6 itself.
+    expect(langtang?.points[5]).toMatchObject({ day: 6, kind: "high", x: 540, y: 59.1, role: "summit" });
+    expect(langtang?.points[6]).toMatchObject({ day: 6, kind: "night", place: "Kyanjin Gompa", x: 593.3, y: 95.2 });
     expect(langtang?.points[4]).toMatchObject({ y: 95.2, role: "highestNight" });
     expect(langtang?.gridLines.map((line) => line.altitudeM)).toEqual([1000, 2500, 4000, 5500]);
   });
@@ -36,6 +39,24 @@ describe("buildElevationProfile", () => {
     expect(labels?.slice(6).every((label) => label === undefined)).toBe(true);
     expect(langtang?.points[0].label?.y).toBeLessThan(langtang?.points[0].y ?? 0);
     expect(langtang?.points[2].label?.y).toBeGreaterThan(langtang?.points[2].y ?? 0);
+  });
+
+  it("draws a pass day as its high point, then the night lower down", () => {
+    const profile = buildElevationProfile([day("Dharmasala", 4460), day("Bhimthang", 5106, 3720, "Larkya La"), day("Tilije", 2300)]);
+    expect(profile?.points.map(({ kind, place, altitudeM, x }) => ({ kind, place, altitudeM, x }))).toEqual([
+      { kind: "night", place: "Dharmasala", altitudeM: 4460, x: 60 },
+      { kind: "high", place: "Larkya La", altitudeM: 5106, x: 300 },
+      { kind: "night", place: "Bhimthang", altitudeM: 3720, x: 540 },
+      { kind: "night", place: "Tilije", altitudeM: 2300, x: 1020 },
+    ]);
+    expect(profile?.peak).toMatchObject({ day: 2, place: "Larkya La", label: { text: "Larkya La 5,106 m" } });
+    expect(profile?.highestNight).toEqual({ place: "Dharmasala", altitudeM: 4460 });
+  });
+
+  it("labels a high point saved without its name by its altitude only", () => {
+    const profile = buildElevationProfile([day("Dharmasala", 4460), day("Bhimthang", 5106, 3720)]);
+    expect(profile?.peak.label?.text).toBe("5,106 m");
+    expect(profile?.description).toBe("Altitude profile: from 4,460 m in Dharmasala up to 5,106 m on day 2, then back down.");
   });
 
   it("describes the curve for screen readers", () => {

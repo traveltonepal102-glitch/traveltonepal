@@ -26,6 +26,8 @@ export type ItineraryDay = {
   id: string | null;
   /** "Sleep at", e.g. "Teahouse, Lama Hotel"; also names the stop on the altitude chart and the route map. */
   place: string;
+  /** The day's highest point, e.g. "Larkya La"; required when it is higher than where you sleep, else empty. */
+  highPlace: string;
   title: string;
   /** One line under the title, e.g. "River gorge · Bamboo and rhododendron forest". */
   subtitle: string;

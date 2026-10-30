@@ -74,6 +74,7 @@ const toItinerary = (days: DayQueryRow[]): ItineraryDay[] =>
         {
           id: day.id,
           place: text.place,
+          highPlace: text.high_place,
           title: text.title,
           subtitle: text.subtitle,
           duration: text.duration,
@@ -407,6 +408,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
       meals: day.meals,
       region_id: day.regionId ?? "",
       place: day.place,
+      high_place: day.highPlace,
       title: day.title,
       subtitle: day.subtitle,
       duration: day.duration,

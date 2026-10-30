@@ -12,7 +12,7 @@ export const RouteStopList = ({ stops }: { stops: readonly RouteStop[] }) => (
     <h4 className="text-[13px] font-bold text-ink">Stops on the route</h4>
     <ol className="mt-1 grid sm:grid-cols-2 sm:gap-x-6">
       {stops.map((stop) => (
-        <li key={stop.firstDay} className="flex items-center gap-2.5 border-b border-line py-2 text-[13px]">
+        <li key={`${stop.firstDay}-${stop.place}`} className="flex items-center gap-2.5 border-b border-line py-2 text-[13px]">
           <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 flex-none">
             <path d={PIN_PATH} strokeWidth={1} className={`${PIN_STYLES[stop.kind].fill} ${PIN_STYLES[stop.kind].stroke}`} />
             <circle cx={12} cy={9} r={2.6} fill="#fff" fillOpacity={0.85} />

@@ -16,7 +16,7 @@ const day = (place: string, altitudeM: number, isHighPoint = false): ItineraryDa
 });
 
 describe("routeStops", () => {
-  it("lists the Langtang stops in walking order, the last two Kathmandu days as one stop", () => {
+  it("lists the Langtang stops in walking order, the Kyanjin Ri hike as its own stop, the last two Kathmandu days as one", () => {
     const stops = routeStops(toTrekDetail(langtangSource(), PHOTOS_BASE, TREK_FILES_BASE).itinerary.days);
     expect(stops.map((stop) => `${stop.place} ${stopDays(stop)}`)).toEqual([
       "Kathmandu Day 1",
@@ -25,17 +25,27 @@ describe("routeStops", () => {
       "Langtang Day 4",
       "Kyanjin Gompa Day 5",
       "Kyanjin Ri Day 6",
+      "Kyanjin Gompa Day 6",
       "Lama Hotel Day 7",
       "Syabrubesi Day 8",
       "Kathmandu Days 9–10",
     ]);
-    expect(stops.map((stop) => stop.kind)).toEqual(["start", "stop", "stop", "stop", "stop", "summit", "stop", "stop", "stop"]);
+    expect(stops.map((stop) => stop.kind)).toEqual(["start", "stop", "stop", "stop", "stop", "summit", "stop", "stop", "stop", "stop"]);
   });
 
   it("keeps the highest altitude and the high point of a stop that lasts several days", () => {
     const stops = routeStops([day("Base", 3000), day("base ", 3600, true), day("Camp", 3200)]);
     expect(stops[0]).toEqual({ place: "Base", altitudeM: 3600, firstDay: 1, lastDay: 2, kind: "summit" });
     expect(stops[1]).toMatchObject({ place: "Camp", firstDay: 3, kind: "stop" });
+  });
+
+  it("adds a day's named highest point before the night, at their own altitudes", () => {
+    const pass = { ...day("Bhimthang", 5106, true), sleepAltitudeM: 3720, highPlace: "Larkya La" };
+    expect(routeStops([day("Dharmasala", 4460), pass])).toEqual([
+      { place: "Dharmasala", altitudeM: 4460, firstDay: 1, lastDay: 1, kind: "start" },
+      { place: "Larkya La", altitudeM: 5106, firstDay: 2, lastDay: 2, kind: "summit" },
+      { place: "Bhimthang", altitudeM: 3720, firstDay: 2, lastDay: 2, kind: "stop" },
+    ]);
   });
 
   it("leaves out days without a place, still counting them", () => {

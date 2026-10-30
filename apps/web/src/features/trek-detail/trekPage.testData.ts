@@ -279,7 +279,8 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
       "photo": null
     },
     {
-      "place": "Kyanjin Ri",
+      "place": "Kyanjin Gompa",
+      "high_place": "Kyanjin Ri",
       "title": "Sunrise hike up Kyanjin Ri (4,773 m), or Tserko Ri (4,984 m)",
       "subtitle": "The high point of the trek · Langtang Lirung up close",
       "duration": "5–7 hrs",

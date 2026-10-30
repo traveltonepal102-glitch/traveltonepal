@@ -517,6 +517,8 @@ type TrekDayTranslationRow = {
   day_id: string;
   locale: "en" | "de";
   place: string;
+  /** The day's highest point, e.g. "Larkya La"; set only when it is higher than where you sleep. */
+  high_place: string;
   title: string;
   subtitle: string;
   duration: string;

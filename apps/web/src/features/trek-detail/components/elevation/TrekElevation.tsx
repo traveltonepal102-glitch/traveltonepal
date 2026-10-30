@@ -22,7 +22,7 @@ export const TrekElevation = ({ itinerary, trailhead }: TrekElevationProps) => {
   const stats = [
     { label: `Trek start · ${trailhead.name}`, value: formatAltitudeWithFeet(trailhead.altitudeM), className: "text-ink" },
     { label: `Highest night · ${highestNight.place}`, value: formatAltitudeWithFeet(highestNight.altitudeM), className: "text-whatsapp" },
-    { label: `High point · ${peak.place}`, value: formatAltitudeWithFeet(peak.altitudeM), className: "text-brand" },
+    { label: peak.place ? `High point · ${peak.place}` : "High point", value: formatAltitudeWithFeet(peak.altitudeM), className: "text-brand" },
   ];
 
   return (

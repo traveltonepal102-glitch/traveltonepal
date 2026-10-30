@@ -69,6 +69,7 @@ const coverSchema = z.object({
 
 const daySchema = z.object({
   place: optionalText,
+  high_place: optionalText,
   title: text.min(1),
   subtitle: optionalText,
   duration: optionalText,

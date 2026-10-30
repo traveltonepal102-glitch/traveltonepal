@@ -25,7 +25,7 @@ const AXIS_TEXT = "fill-muted-foreground text-[14px]";
 /** Room left of the plot for the metre labels ("5,500 m"). */
 const AXIS_GUTTER = 30;
 
-/** The daily altitude curve: grid with metre ticks, filled area, line, markers, place and day labels. */
+/** The daily altitude curve: grid with metre ticks, filled area, line, markers, place and day labels (one per night). */
 export const ElevationChart = ({ profile }: { profile: ElevationProfile }) => {
   const { width, height, left, right, bottom } = ELEVATION_CHART;
 
@@ -51,7 +51,7 @@ export const ElevationChart = ({ profile }: { profile: ElevationProfile }) => {
       {profile.points.map((point) => {
         const marker = MARKERS[point.role];
         return (
-          <g key={point.day}>
+          <g key={`${point.day}-${point.kind}`}>
             {marker && <circle cx={point.x} cy={point.y} r={marker.r} className={marker.className} />}
             {point.label && (
               <text
@@ -64,9 +64,11 @@ export const ElevationChart = ({ profile }: { profile: ElevationProfile }) => {
                 {point.label.text}
               </text>
             )}
-            <text x={point.x} y={bottom + 24} textAnchor="middle" className={AXIS_TEXT}>
-              D{point.day}
-            </text>
+            {point.kind === "night" && (
+              <text x={point.x} y={bottom + 24} textAnchor="middle" className={AXIS_TEXT}>
+                D{point.day}
+              </text>
+            )}
           </g>
         );
       })}

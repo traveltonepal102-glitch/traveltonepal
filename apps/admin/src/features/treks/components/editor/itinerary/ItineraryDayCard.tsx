@@ -46,11 +46,12 @@ type ItineraryDayCardProps = {
 
 const metres = (value: string) => parseAltitude(value)?.toLocaleString("en");
 
-/** The line under a closed day's title: "5–7 hrs · up to 4,773 m · sleep 3,870 m · Teahouse, Kyanjin Gompa". */
+/** The line under a closed day's title: "8–10 hrs · up to 5,106 m at Larkya La · sleep 3,720 m · Bhimthang". */
 const summaryOf = (day: DayRow) => {
   const top = metres(day.topAltitude);
   const sleep = metres(day.sleepAltitude);
-  return [day.duration, top && `up to ${top} m`, sleep && `sleep ${sleep} m`, day.place].filter(Boolean).join(" · ");
+  const upTo = top && `up to ${top} m${day.highPlace ? ` at ${day.highPlace}` : ""}`;
+  return [day.duration, upTo, sleep && `sleep ${sleep} m`, day.place].filter(Boolean).join(" · ");
 };
 
 /** One day (design: the day card): a header that opens and closes it, then its fields. Closed days still send theirs. */
@@ -133,10 +134,16 @@ export const ItineraryDayCard = ({
         )}
         <TextField name="dayTitle" label="Day title · H3" value={day.title} onValueChange={(title) => onChange({ title })} error={errors.title} maxLength={LIMIT.dayTitle} placeholder="e.g. Syabrubesi to Lama Hotel (2,470 m)" inputClassName="font-bold" />
         <TextField name="daySubtitle" label="Small line under the title" value={day.subtitle} onValueChange={(subtitle) => onChange({ subtitle })} error={errors.subtitle} maxLength={LIMIT.daySubtitle} placeholder="e.g. River gorge · Bamboo and rhododendron forest" />
-        <div id={dayAltitudesId(day.key)} className="grid scroll-mt-40 gap-3 tablet:grid-cols-2 desktop:grid-cols-4">
-          <TextField name="dayDuration" label="Walking or drive time" value={day.duration} onValueChange={(duration) => onChange({ duration })} error={errors.duration} maxLength={LIMIT.dayDuration} placeholder="6–7 hrs" />
+        {/* The day's top (altitude and its name) above the night (altitude and place), so each pair lines up. */}
+        <div id={dayAltitudesId(day.key)} className="grid scroll-mt-40 gap-3 tablet:grid-cols-2 desktop:grid-cols-3">
+          <div className="tablet:col-span-2 desktop:col-span-1">
+            <TextField name="dayDuration" label="Walking or drive time" value={day.duration} onValueChange={(duration) => onChange({ duration })} error={errors.duration} maxLength={LIMIT.dayDuration} placeholder="6–7 hrs" />
+          </div>
           <TextField name="dayTopAltitude" label="Highest point today (m)" inputMode="numeric" value={day.topAltitude} onValueChange={(topAltitude) => onChange({ topAltitude })} error={errors.topAltitude} placeholder="Only if higher than tonight" />
-          <TextField name="daySleepAltitude" label="Sleep altitude (m)" inputMode="numeric" value={day.sleepAltitude} onValueChange={(sleepAltitude) => onChange({ sleepAltitude })} error={errors.sleepAltitude} placeholder="2,470" />
+          <TextField name="dayHighPlace" label="Highest point name" value={day.highPlace} onValueChange={(highPlace) => onChange({ highPlace })} error={errors.highPlace} maxLength={LIMIT.dayPlace} placeholder="e.g. Larkya La (with a highest point)" />
+          <div className="desktop:col-start-2">
+            <TextField name="daySleepAltitude" label="Sleep altitude (m)" inputMode="numeric" value={day.sleepAltitude} onValueChange={(sleepAltitude) => onChange({ sleepAltitude })} error={errors.sleepAltitude} placeholder="2,470" />
+          </div>
           <TextField name="dayPlace" label="Sleep at" value={day.place} onValueChange={(place) => onChange({ place })} error={errors.place} maxLength={LIMIT.dayPlace} placeholder="Teahouse, Lama Hotel" />
         </div>
         <DayMealsField meals={day.meals} onChange={(meals) => onChange({ meals })} />

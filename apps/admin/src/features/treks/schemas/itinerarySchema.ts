@@ -12,13 +12,15 @@ const optionalId = (message: string) =>
     .pipe(z.uuid(message).nullable());
 
 /**
- * A day as the design asks for it: the sleep altitude, and the highest point only when the day goes higher
- * (a day hike up and back). Saved as before: altitudeM is the day's highest point, sleepAltitudeM only when lower.
+ * A day as the design asks for it: the sleep altitude, and the highest point with its name only when the day goes
+ * higher (a pass, or a day hike up and back). Saved as before: altitudeM is the day's highest point, sleepAltitudeM
+ * only when lower; the name is kept only then.
  */
 const daySchema = z
   .object({
     id: optionalId("A day couldn't be read. Reload the page and try again."),
     place: text(LIMIT.dayPlace),
+    highPlace: text(LIMIT.dayPlace),
     title: requiredText(LIMIT.dayTitle, "Write the day's title, or delete the day."),
     subtitle: text(LIMIT.daySubtitle),
     duration: text(LIMIT.dayDuration),
@@ -35,11 +37,16 @@ const daySchema = z
     regionId: optionalId("Pick the day's region from the list."),
   })
   .superRefine((day, context) => {
-    if (day.topAltitude === null || day.topAltitude > day.sleepAltitude) return;
-    context.addIssue({ code: "custom", path: ["topAltitude"], message: "Only fill this in when the day goes higher than where you sleep." });
+    if (day.topAltitude === null) return;
+    if (day.topAltitude <= day.sleepAltitude) {
+      context.addIssue({ code: "custom", path: ["topAltitude"], message: "Only fill this in when the day goes higher than where you sleep." });
+      return;
+    }
+    if (!day.highPlace) context.addIssue({ code: "custom", path: ["highPlace"], message: "Name the highest point, e.g. Larkya La." });
   })
-  .transform(({ topAltitude, sleepAltitude, ...day }) => ({
+  .transform(({ topAltitude, sleepAltitude, highPlace, ...day }) => ({
     ...day,
+    highPlace: topAltitude === null ? "" : highPlace,
     altitudeM: topAltitude ?? sleepAltitude,
     sleepAltitudeM: topAltitude === null ? null : sleepAltitude,
   }));
@@ -53,8 +60,9 @@ export const itinerarySchema = z
 /** The days in the editor's FormData: one value per day for each day field, in order (meals: "breakfast,dinner"). */
 export const readItinerary = (formData: FormData) => {
   const field = (name: string) => readList(formData, name);
-  const [places, titles, subtitles, durations, tops, sleeps, meals, highPoints, descriptions, photoIds, regionIds] = [
+  const [places, highPlaces, titles, subtitles, durations, tops, sleeps, meals, highPoints, descriptions, photoIds, regionIds] = [
     "dayPlace",
+    "dayHighPlace",
     "dayTitle",
     "daySubtitle",
     "dayDuration",
@@ -70,6 +78,7 @@ export const readItinerary = (formData: FormData) => {
   return field("dayId").map((id, index) => ({
     id,
     place: places[index] ?? "",
+    highPlace: highPlaces[index] ?? "",
     title: titles[index] ?? "",
     subtitle: subtitles[index] ?? "",
     duration: durations[index] ?? "",

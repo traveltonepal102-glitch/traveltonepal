@@ -2,6 +2,7 @@ import { RichText } from "@/components/shared/RichText";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitude } from "@/features/treks/format";
 
+import { topPlaceOf } from "../../elevation";
 import type { ItineraryDay } from "../../types";
 
 /** Colors of a normal day and of the high-point day (saffron, as in the design). */
@@ -24,9 +25,15 @@ const LOOKS = {
   },
 } as const;
 
+/** Where the day tops out, then where you sleep when that is lower ("up to 5,106 m at Larkya La · sleep 3,720 m"). */
+const altitudeStats = (day: ItineraryDay) => {
+  if (day.sleepAltitudeM === undefined) return [formatAltitude(day.altitudeM)];
+  const topPlace = topPlaceOf(day);
+  return [`up to ${formatAltitude(day.altitudeM)}${topPlace ? ` at ${topPlace}` : ""}`, `sleep ${formatAltitude(day.sleepAltitudeM)}`];
+};
+
 /** "6–7 hrs · 2,470 m", with "high point" on the trek's highest day. */
-const dayStats = (day: ItineraryDay) =>
-  [day.duration, formatAltitude(day.altitudeM), day.isHighPoint ? "High point" : undefined].filter(Boolean).join(" · ");
+const dayStats = (day: ItineraryDay) => [day.duration, ...altitudeStats(day), day.isHighPoint ? "High point" : undefined].filter(Boolean).join(" · ");
 
 type ItineraryDayCardProps = { day: ItineraryDay; dayNumber: number };
 
@@ -49,7 +56,7 @@ export const ItineraryDayCard = ({ day, dayNumber }: ItineraryDayCardProps) => {
             <p className={`text-xs font-semibold ${look.subtitle}`}>{day.subtitle}</p>
           </div>
         </div>
-        <p className={`flex-none self-start rounded-sm border px-2.5 py-1 text-xs ${look.chip}`}>{dayStats(day)}</p>
+        <p className={`flex-none self-start rounded-sm border px-2.5 py-1 text-xs sm:max-w-1/2 ${look.chip}`}>{dayStats(day)}</p>
       </div>
 
       <div className={`flex flex-wrap gap-4 border-t px-5 pt-4 pb-5 ${look.divider}`}>
