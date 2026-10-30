@@ -25,7 +25,7 @@ const LABELS: Record<ElevationPointRole, string> = {
   climb: "fill-text text-[14px] font-bold",
   highestNight: "fill-whatsapp text-[15px] font-bold",
   summit: "fill-navy text-[16px] font-bold",
-  descent: "",
+  descent: "fill-text text-[14px] font-bold",
 };
 
 const AXIS_TEXT = "fill-muted-foreground text-[14px]";

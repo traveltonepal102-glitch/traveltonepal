@@ -23,7 +23,7 @@ export type ElevationPoint = {
   x: number;
   y: number;
   role: ElevationPointRole;
-  /** Only the way up is labelled; the way down repeats the same places (its points are still drawn). */
+  /** Every point with a place is labelled, on the way down too (a circuit comes down through new places). */
   label?: ElevationLabel;
 };
 
@@ -53,7 +53,6 @@ const roleOf = (index: number, peakIndex: number, nightIndex: number): Elevation
 
 const labelOf = (point: Omit<ElevationPoint, "label">): ElevationLabel | undefined => {
   const { role, place, altitudeM, x, y } = point;
-  if (role === "descent") return undefined;
   if (role === "summit") return { text: withAltitude(place, altitudeM), x, y: y - 17, anchor: "middle" };
   if (role === "highestNight") return { text: withAltitude(place, altitudeM), x: x - 17, y: y - 15, anchor: "end" };
   if (!place) return undefined;
@@ -84,7 +83,7 @@ export const buildElevationProfile = (days: readonly ItineraryDay[]): ElevationP
       y: yAt(stop.y),
       role: roleOf(index, peakIndex, highestNightIndex),
     };
-    return { ...point, label: index <= peakIndex ? labelOf(point) : undefined };
+    return { ...point, label: labelOf(point) };
   });
 
   const gridLines = chart.gridLines.map((line) => ({ altitudeM: line.altitudeM, y: yAt(line.y) }));

@@ -34,10 +34,21 @@ describe("buildElevationProfile", () => {
     expect(langtang?.highestNight).toEqual({ place: "Kyanjin Gompa", altitudeM: 3870 });
   });
 
-  it("labels only the way up, above points near the floor and below the others", () => {
+  it("labels every point, the way down too, above points near the floor and below the others", () => {
     const labels = langtang?.points.map((point) => point.label?.text);
-    expect(labels?.slice(0, 6)).toEqual(["Kathmandu", "Syabrubesi", "Lama Hotel", "Langtang", "Kyanjin Gompa 3,870 m", "Kyanjin Ri 4,773 m"]);
-    expect(labels?.slice(6).every((label) => label === undefined)).toBe(true);
+    expect(labels).toEqual([
+      "Kathmandu",
+      "Syabrubesi",
+      "Lama Hotel",
+      "Langtang",
+      "Kyanjin Gompa 3,870 m",
+      "Kyanjin Ri 4,773 m",
+      "Kyanjin Gompa",
+      "Lama Hotel",
+      "Syabrubesi",
+      "Kathmandu",
+      "Kathmandu",
+    ]);
     expect(langtang?.points[0].label?.y).toBeLessThan(langtang?.points[0].y ?? 0);
     expect(langtang?.points[2].label?.y).toBeGreaterThan(langtang?.points[2].y ?? 0);
   });
