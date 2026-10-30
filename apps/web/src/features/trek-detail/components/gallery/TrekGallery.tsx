@@ -57,13 +57,14 @@ export const TrekGallery = ({ photos, badges, title }: TrekGalleryProps) => {
         />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-linear-to-t from-ink/60 to-transparent to-45%" />
 
-        <ul className="absolute inset-x-3.5 top-3.5 flex flex-wrap gap-2">
+        {/* Smaller on phones, so the badges stay above the arrows instead of stacking over the photo. */}
+        <ul className="absolute inset-x-2.5 top-2.5 flex flex-wrap gap-1.5 sm:inset-x-3.5 sm:top-3.5 sm:gap-2">
           {badges.map((badge) => (
             <li
               key={badge.label}
-              className={`inline-flex items-center gap-1.5 rounded-sm border border-line bg-white/95 px-2.5 py-1 text-[11px] font-bold tracking-[0.06em] uppercase shadow-card ${BADGE_TONES[badge.tone].text}`}
+              className={`inline-flex items-center gap-1 rounded-sm border border-line bg-white/95 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.03em] uppercase shadow-card sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[11px] sm:tracking-[0.06em] ${BADGE_TONES[badge.tone].text}`}
             >
-              <Icon name={badge.icon} size={15} className={BADGE_TONES[badge.tone].icon} />
+              <Icon name={badge.icon} size={15} className={`max-sm:size-3.5 ${BADGE_TONES[badge.tone].icon}`} />
               {badge.label}
             </li>
           ))}

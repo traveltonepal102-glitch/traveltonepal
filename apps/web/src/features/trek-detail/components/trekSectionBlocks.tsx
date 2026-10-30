@@ -42,7 +42,7 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
   const requestProps = { name: trek.name, days: trek.days, groupPrices: trek.groupPrices };
 
   return {
-    intro: <TrekIntroduction paragraphs={trek.intro} photos={trek.introPhotos} />,
+    intro: <TrekIntroduction body={trek.intro} />,
     overview: <TrekOverview trek={trek} />,
     founder: shows("founder") && <FounderStoryCard />,
     consultation: shows("consultation") && <DirectConsultationCard trekName={trek.name} />,

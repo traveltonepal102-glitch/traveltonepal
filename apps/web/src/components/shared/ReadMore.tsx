@@ -1,33 +1,32 @@
 "use client";
 
 import { useId, useState } from "react";
+import type { ReactNode } from "react";
 
 type ReadMoreProps = {
-  paragraphs: readonly string[];
+  /** Always shown, e.g. the first paragraph. */
+  children: ReactNode;
+  /** Shown after "Read more"; nothing means no button. */
+  more?: ReactNode;
   /** Classes for the "Read more" button. */
   buttonClassName: string;
 };
 
 /**
- * Shows the first paragraph and a "Read more" button for the rest. Every paragraph is in the HTML
- * from the start (only hidden), so search engines read the whole text.
+ * Shows the start of a text and a "Read more" button for the rest. The rest is in the HTML from the start (only
+ * hidden), so search engines read the whole text.
  */
-export const ReadMore = ({ paragraphs, buttonClassName }: ReadMoreProps) => {
+export const ReadMore = ({ children, more, buttonClassName }: ReadMoreProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const contentId = useId();
-  const [first, ...rest] = paragraphs;
 
   return (
     <>
       <div id={contentId} className="flex flex-col gap-3">
-        <p>{first}</p>
-        {rest.map((paragraph) => (
-          <p key={paragraph} hidden={!isExpanded}>
-            {paragraph}
-          </p>
-        ))}
+        {children}
+        {more && <div hidden={!isExpanded}>{more}</div>}
       </div>
-      {rest.length > 0 && (
+      {more && (
         <button
           type="button"
           aria-expanded={isExpanded}

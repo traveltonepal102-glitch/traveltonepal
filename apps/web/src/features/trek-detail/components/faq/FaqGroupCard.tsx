@@ -12,15 +12,15 @@ type FaqGroupCardProps = {
   id: string;
   /** Opens the first question when the page loads (the first group only). */
   isFirstOpen?: boolean;
-  /** Each answer's photos, drawn on the server (in the order of the questions). */
-  answerPhotos?: readonly ReactNode[];
+  /** Each answer as written in the admin (photos where they were put), drawn on the server, in the questions' order. */
+  answers: readonly ReactNode[];
 };
 
 /**
  * One FAQ topic. Each answer is a native <details>, so it works without JavaScript and every answer is
  * in the HTML for search engines; "Expand all" opens or closes the whole topic.
  */
-export const FaqGroupCard = ({ group, id, isFirstOpen = false, answerPhotos }: FaqGroupCardProps) => {
+export const FaqGroupCard = ({ group, id, isFirstOpen = false, answers }: FaqGroupCardProps) => {
   const [openItems, setOpenItems] = useState<ReadonlySet<number>>(() => new Set(isFirstOpen ? [0] : []));
   const isAllOpen = openItems.size === group.items.length;
 
@@ -64,8 +64,7 @@ export const FaqGroupCard = ({ group, id, isFirstOpen = false, answerPhotos }: F
             </span>
           </summary>
           <div className="flex flex-col gap-3 border-t border-muted bg-[#fbfcfe] px-4.5 pt-1 pb-5 text-body-sm text-text md:px-6">
-            <p>{item.answer}</p>
-            {answerPhotos?.[index]}
+            {answers[index]}
           </div>
         </details>
       ))}

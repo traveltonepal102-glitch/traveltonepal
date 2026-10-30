@@ -1,3 +1,4 @@
+import { EMPTY_RICH_TEXT } from "@ttn/ui/lib/richText";
 import { describe, expect, it } from "vitest";
 
 import { buildElevationProfile } from "./elevation";
@@ -11,7 +12,7 @@ const day = (place: string, altitudeM: number, sleepAltitudeM?: number): Itinera
   sleepAltitudeM,
   title: place,
   subtitle: "",
-  text: "",
+  body: EMPTY_RICH_TEXT,
 });
 
 describe("buildElevationProfile", () => {

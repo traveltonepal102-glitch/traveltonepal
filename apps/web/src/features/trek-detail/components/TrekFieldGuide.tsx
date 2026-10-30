@@ -1,7 +1,6 @@
 import { Icon } from "@ttn/ui/icon";
 
 import { RichText } from "@/components/shared/RichText";
-import { RichTextPhoto } from "@/components/shared/RichTextPhoto";
 import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { TrekDetail } from "../types";
@@ -27,9 +26,6 @@ export const TrekFieldGuide = ({ fieldGuide }: Pick<TrekDetail, "fieldGuide">) =
           <div className="flex flex-col gap-4 md:flex-row md:items-start">
             <div className="flex min-w-0 flex-1 flex-col gap-2.5 text-body-sm text-text">
               <RichText doc={topic.body} headingLevel="h4" className="flex flex-col gap-2.5" />
-              {topic.textPhotos.map((photo) => (
-                <RichTextPhoto key={photo.attrs.photoId} image={photo} />
-              ))}
               {topic.note && <p className="text-xs text-muted-foreground italic">*{topic.note}</p>}
             </div>
             {topic.photo && (

@@ -1,4 +1,5 @@
 import { orderTrekSections } from "@ttn/config/trekPageSections";
+import { toRichTextDoc } from "@ttn/ui/lib/richText";
 
 import { similarTreks } from "@/features/treks/similar";
 import type { TrekSummary } from "@/features/treks/types";
@@ -14,8 +15,6 @@ import { customizationFor, differentiatorsFor } from "./content/sharedContent";
 import { toTrekGuides } from "./trekGuideRows";
 import type { TrekDayRow } from "./trekPageJson";
 import {
-  paragraphsOf,
-  photosOf,
   readDays,
   readFaqGroups,
   readGroupPrices,
@@ -74,8 +73,7 @@ const toDay = (day: TrekDayRow, photosBaseUrl: string): ItineraryDay => ({
   altitudeM: day.altitude_m,
   sleepAltitudeM: day.sleep_altitude_m ?? undefined,
   isHighPoint: day.is_high_point,
-  text: paragraphsOf(day.description).join(" "),
-  textPhotos: photosOf(day.description),
+  body: toRichTextDoc(day.description),
   photo: day.photo ? coverImage(day.photo, photosBaseUrl, day.place || day.title) : undefined,
 });
 
@@ -128,14 +126,13 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks, regions }: 
     grade: toGrade(page.grade),
     highPoint: firstText(page.high_point) ?? days.find((day) => day.isHighPoint)?.place ?? "",
     optionalHighPoint: sideTrip && page.optional_high_point_m ? { name: sideTrip, altitudeM: page.optional_high_point_m } : undefined,
-    intro: paragraphsOf(page.introduction),
-    introPhotos: photosOf(page.introduction),
+    intro: toRichTextDoc(page.introduction),
     photos: toPhotos(summary, photos, photosBaseUrl),
     photoBadges: readPhotoBadges(page.photo_badges),
     highlightsHeading: firstText(page.highlights_heading) ?? `${shortName} highlights`,
     highlights: readPoints(page.highlights),
     suitability: { intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
-    itinerary: { intro: paragraphsOf(page.itinerary_intro).join(" "), days },
+    itinerary: { intro: toRichTextDoc(page.itinerary_intro), days },
     routeStops: toRouteStops(summary.route, regions, daySlugs),
     routeSketch: ROUTE_SKETCHES[summary.slug],
     customization: customizationFor(shortName, sideTrip),

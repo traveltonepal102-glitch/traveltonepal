@@ -56,7 +56,8 @@ const Block = ({ block, headingLevel }: { block: RichTextBlock; headingLevel: He
   return (
     <List className={`flex flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
       {block.content.map((item, index) => (
-        <li key={index} className="flex flex-col gap-1.5">
+        // space-y, not flex: a flex <li> is no longer a list item, so the browser draws no bullet or number.
+        <li key={index} className="space-y-1.5">
           {item.content.map((child, childIndex) => (
             <Block key={childIndex} block={child} headingLevel={headingLevel} />
           ))}

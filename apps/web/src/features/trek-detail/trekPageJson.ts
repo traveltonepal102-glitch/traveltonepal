@@ -1,6 +1,6 @@
 import type { IconName } from "@ttn/ui/icon";
-import { EMPTY_RICH_TEXT, isRichTextEmpty, richTextDocSchema, richTextImages, richTextToPlainText } from "@ttn/ui/lib/richText";
-import type { RichTextBlock, RichTextImage } from "@ttn/ui/lib/richText";
+import { isRichTextEmpty, richTextDocSchema, richTextImages, richTextToPlainText, toRichTextDoc } from "@ttn/ui/lib/richText";
+import type { RichTextDoc } from "@ttn/ui/lib/richText";
 import { z } from "zod";
 
 /** Icons each list may use (the admin's choices); anything else shows the list's first icon. */
@@ -48,9 +48,6 @@ const listOf = <T>(value: unknown, item: z.ZodType<T>): T[] =>
   Array.isArray(value) ? value.flatMap((entry) => item.safeParse(entry).data ?? []) : [];
 
 /** Rich text as plain paragraphs (one per paragraph, heading or list), blank ones left out. */
-/** The photos added in a text (they show under it). */
-export const photosOf = (value: unknown): RichTextImage[] => richTextImages(richTextDocSchema.safeParse(value).data?.content ?? []);
-
 export const paragraphsOf = (value: unknown): string[] => {
   const doc = richTextDocSchema.safeParse(value).data;
   if (!doc) return [];
@@ -119,30 +116,19 @@ export const readPackingGroups = (value: unknown) =>
     return items.length ? [{ title: group.title, icon: group.icon, items }] : [];
   });
 
-/** A text without its photos, also inside lists (they show under it). */
-const withoutPhotos = (blocks: readonly RichTextBlock[]): RichTextBlock[] =>
-  blocks.flatMap((block): RichTextBlock[] => {
-    if (block.type === "image") return [];
-    if (block.type !== "bulletList" && block.type !== "orderedList") return [block];
-    const items = block.content.flatMap((item) => {
-      const content = withoutPhotos(item.content);
-      return content.length ? [{ ...item, content }] : [];
-    });
-    return items.length ? [{ ...block, content: items }] : [];
-  });
+/** True when a text has words or a photo. */
+export const hasRichTextContent = (doc: RichTextDoc) => !isRichTextEmpty(doc) || richTextImages(doc.content).length > 0;
 
 /**
- * Field guide topics with their photo row: the text as written (its photos apart, shown under it); a note's own
+ * Field guide topics with their photo row: the text as written (its photos where they were put); a note's own
  * leading "*" is dropped (the page adds one).
  */
 export const readKnowTopics = (value: unknown) =>
   listOf(value, knowTopicSchema).flatMap((topic) => {
-    const { content } = richTextDocSchema.safeParse(topic.body).data ?? EMPTY_RICH_TEXT;
-    const body = { type: "doc" as const, content: withoutPhotos(content) };
-    const textPhotos = richTextImages(content);
+    const body = toRichTextDoc(topic.body);
     const note = topic.note.replace(/^\*+\s*/, "");
-    if (isRichTextEmpty(body) && !textPhotos.length && !note) return [];
-    return [{ title: topic.title, icon: topic.icon, body, textPhotos, ...(note ? { note } : {}), photo: topic.photo }];
+    if (!hasRichTextContent(body) && !note) return [];
+    return [{ title: topic.title, icon: topic.icon, body, ...(note ? { note } : {}), photo: topic.photo }];
   });
 
 /** Question topics; a question shows only with an answer. */
@@ -150,7 +136,7 @@ export const readFaqGroups = (value: unknown) =>
   listOf(value, faqGroupSchema).flatMap((group) => {
     const items = listOf(group.items, faqItemSchema).flatMap((item) => {
       const answer = paragraphsOf(item.answer).join("\n\n");
-      return answer ? [{ question: item.question, answer, photos: photosOf(item.answer) }] : [];
+      return answer ? [{ question: item.question, answer, body: toRichTextDoc(item.answer) }] : [];
     });
     return items.length ? [{ title: group.title, icon: group.icon, items }] : [];
   });

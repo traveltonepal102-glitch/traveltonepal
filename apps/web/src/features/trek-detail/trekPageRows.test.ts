@@ -23,7 +23,7 @@ describe("toTrekDetail", () => {
       distanceKm: 75,
       meals: { dailyBudgetUsd: { min: 20, max: 30 } },
     });
-    expect(trek.intro).toHaveLength(2);
+    expect(trek.intro.content).toHaveLength(2);
     expect(trek.itinerary.days).toHaveLength(trek.days);
     expect(trek.itinerary.days.filter((day) => day.isHighPoint).map((day) => day.place)).toEqual(["Kyanjin Ri"]);
     expect(trek.itinerary.days[5]).toMatchObject({ altitudeM: 4773, sleepAltitudeM: 3870, duration: "5–7 hrs" });
@@ -93,7 +93,7 @@ describe("toTrekDetail", () => {
     expect(teahouses).not.toHaveProperty("note");
   });
 
-  it("keeps a field guide topic's text as written, with its photos apart, and drops a topic without text", () => {
+  it("keeps a field guide topic's text as written, its photos where they were put, and drops a topic without text", () => {
     const image = { type: "image", attrs: { photoId: "00000000-0000-4000-8000-000000000041", alt: "Kyanjin", width: 800, height: 600, variantWidths: [400, 800] } };
     const list = { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Rescue", marks: [{ type: "bold" }] }] }] }, { type: "listItem", content: [image] }] };
     const body = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Two paragraphs." }] }, image, list] };
@@ -104,8 +104,17 @@ describe("toTrekDetail", () => {
     ];
     const topics = detail({ know_topics }).fieldGuide.topics;
     expect(topics.map((topic) => topic.title)).toEqual(["Emergencies"]);
-    expect(topics[0].body.content).toEqual([body.content[0], { type: "bulletList", content: [list.content[0]] }]);
-    expect(topics[0].textPhotos).toEqual([image, image]);
+    expect(topics[0].body).toEqual(body);
+  });
+
+  it("keeps a day's text as written (lists, bold, italic), its photos where they were put", () => {
+    const image = { type: "image", attrs: { photoId: "00000000-0000-4000-8000-000000000042", alt: "Larkya La", width: 800, height: 600, variantWidths: [400, 800] } };
+    const intro = { type: "paragraph", content: [{ type: "text", text: "The day includes:", marks: [{ type: "italic" }] }] };
+    const list = { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Larkya La (5,106 m)", marks: [{ type: "bold" }] }] }] }] };
+    const [firstDay] = langtangSource().page.days as Record<string, unknown>[];
+    const days = [{ ...firstDay, description: { type: "doc", content: [intro, image, list] } }];
+    const [day] = detail({ days }).itinerary.days;
+    expect(day?.body.content).toEqual([intro, image, list]);
   });
 
   it("skips broken list items instead of emptying the section", () => {
@@ -113,18 +122,17 @@ describe("toTrekDetail", () => {
     const faqs = [{ title: "General", icon: "nope", items: [{ question: "Why?", answer: { type: "doc", content: [] } }, { question: "How?", answer: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Slowly." }] }] } }] }];
     const trek = detail({ highlights, faqs, days: "not a list" });
     expect(trek.highlights).toEqual([{ title: "Kyanjin Ri sunrise", text: "Early start." }]);
-    expect(trek.faqs).toEqual([{ title: "General", icon: "info", items: [{ question: "How?", answer: "Slowly.", photos: [] }] }]);
+    expect(trek.faqs).toEqual([{ title: "General", icon: "info", items: [{ question: "How?", answer: "Slowly.", body: faqs[0].items[1].answer }] }]);
     expect(trek.itinerary.days).toEqual([]);
   });
 
-  it("shows the photos added in a text under it, and keeps the text's words", () => {
+  it("keeps the photos added in a text where they were put, and the text's words for Google", () => {
     const photo = { type: "image", attrs: { photoId: "0b8a2c4e-1f3d-4a5b-9c6d-7e8f9a0b1c2d", alt: "Kyanjin Gompa at dawn", width: 1600, height: 1067, variantWidths: [400, 800, 1600] } };
     const introduction = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "A short valley trek." }] }, photo] };
     const faqs = [{ title: "General", icon: "info", items: [{ question: "Is it hard?", answer: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "No." }] }, photo] } }] }];
     const trek = detail({ introduction, faqs });
-    expect(trek.intro).toEqual(["A short valley trek."]);
-    expect(trek.introPhotos).toEqual([photo]);
-    expect(trek.faqs[0]?.items[0]).toMatchObject({ answer: "No.", photos: [photo] });
+    expect(trek.intro).toEqual(introduction);
+    expect(trek.faqs[0]?.items[0]).toEqual({ question: "Is it hard?", answer: "No.", body: faqs[0].items[0].answer });
   });
 });
 

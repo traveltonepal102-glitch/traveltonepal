@@ -1,5 +1,5 @@
 import type { TrekPageSection } from "@ttn/config/trekPageSections";
-import type { RichTextDoc, RichTextImage } from "@ttn/ui/lib/richText";
+import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import type { PageSeo } from "@/features/seo/shareMetadata";
 import type { IconName } from "@ttn/ui/icon";
@@ -58,8 +58,6 @@ export type TrekPoint = {
 export type ItineraryDay = {
   /** Short place name for the elevation chart, e.g. "Lama Hotel". */
   place: string;
-  /** Photos added in the day's description, shown under its text. */
-  textPhotos?: readonly RichTextImage[];
   title: string;
   /** One line under the title, e.g. "River gorge · Bamboo and rhododendron forest". */
   subtitle: string;
@@ -71,7 +69,8 @@ export type ItineraryDay = {
   sleepAltitudeM?: number;
   /** The trek's high point: the day card is highlighted. */
   isHighPoint?: boolean;
-  text: string;
+  /** The day's text as written in the admin (paragraphs, lists, bold, italic, photos where they were put). */
+  body: RichTextDoc;
   photo?: SiteImageSource;
   /** On a trek across several regions: the region this day is in (when the admin set the days' regions). */
   regionSlug?: string;
@@ -159,10 +158,8 @@ export type PackingGroup = { title: string; icon: IconName; items: readonly Trek
 export type FieldGuideTopic = {
   title: string;
   icon: IconName;
-  /** The text as written in the admin (paragraphs, lists, bold lead-ins), without its photos. */
+  /** The text as written in the admin (paragraphs, lists, bold lead-ins, photos where they were put). */
   body: RichTextDoc;
-  /** Photos added in the text, shown under it. */
-  textPhotos: readonly RichTextImage[];
   /** Smaller italic line after the text, e.g. a word on winter and the monsoon. */
   note?: string;
   /** Shown beside the text (the admin's photo for the topic). */
@@ -172,8 +169,11 @@ export type FieldGuideTopic = {
 export type FaqGroup = {
   title: string;
   icon: IconName;
-  /** `photos`: added in the answer in the admin, shown under it. */
-  items: readonly { question: string; answer: string; photos: readonly RichTextImage[] }[];
+  /**
+   * `body`: the answer as written in the admin (photos where they were put); `answer`: its words as plain text, for
+   * Google's FAQ data.
+   */
+  items: readonly { question: string; answer: string; body: RichTextDoc }[];
 };
 
 /** Everything the trek page shows beyond the summary the cards already use (trekPageRows, from the database). */
@@ -197,10 +197,8 @@ export type TrekDetailContent = {
   highPoint: string;
   /** Higher side trip some trekkers add, e.g. Tserko Ri. */
   optionalHighPoint?: { name: string; altitudeM: number };
-  /** Introduction paragraphs; the first is shown until "Read more". */
-  intro: readonly string[];
-  /** Photos added in the introduction, shown under it. */
-  introPhotos: readonly RichTextImage[];
+  /** The introduction as written in the admin (photos where they were put); its first block is shown until "Read more". */
+  intro: RichTextDoc;
   /** Gallery photos; the first is the main photo and the page's share image. */
   photos: readonly TrekPhoto[];
   photoBadges: readonly TrekPhotoBadge[];
@@ -209,8 +207,8 @@ export type TrekDetailContent = {
   highlights: readonly TrekPoint[];
   /** "Is this trek for you?": one line of intro and an honest checklist (fitness, altitude, skill...). */
   suitability: { intro: string; points: readonly TrekPoint[] };
-  /** Day-by-day plan: one entry per day of the trek. */
-  itinerary: { intro: string; days: readonly ItineraryDay[] };
+  /** Day-by-day plan: the text under its heading as written in the admin, and one entry per day. */
+  itinerary: { intro: RichTextDoc; days: readonly ItineraryDay[] };
   /** "Regions on this route", in route order; empty for a trek in one region (the section is left out). */
   routeStops: readonly TrekRouteStop[];
   routeSketch?: RouteSketch;

@@ -1,7 +1,7 @@
 import { EMBED_HEIGHTS, toEmbed } from "@ttn/config/embeds";
 import { cleanCustomHtml, customHtmlText } from "@ttn/ui/lib/customHtml";
+import { toRichTextDoc } from "@ttn/ui/lib/richText";
 
-import { paragraphsOf } from "@/features/trek-detail/trekPageJson";
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage } from "@/lib/images";
 
@@ -43,7 +43,7 @@ const toDays = (rows: readonly unknown[]): ArticleDay[] =>
     altitudeM: day.altitude_m,
     sleepAltitudeM: day.sleep_altitude_m ?? undefined,
     isHighPoint: day.is_high_point,
-    text: paragraphsOf(day.description).join(" "),
+    body: toRichTextDoc(day.description),
     dayNumber: day.day_number,
   }));
 

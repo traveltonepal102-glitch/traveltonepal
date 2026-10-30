@@ -1,3 +1,4 @@
+import { EMPTY_RICH_TEXT } from "@ttn/ui/lib/richText";
 import { describe, expect, it } from "vitest";
 
 import { routeStops, stopDays } from "./routeStops";
@@ -11,7 +12,7 @@ const day = (place: string, altitudeM: number, isHighPoint = false): ItineraryDa
   isHighPoint,
   title: place,
   subtitle: "",
-  text: "",
+  body: EMPTY_RICH_TEXT,
 });
 
 describe("routeStops", () => {
