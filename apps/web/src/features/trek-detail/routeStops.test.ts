@@ -2,7 +2,7 @@ import { EMPTY_RICH_TEXT } from "@ttn/ui/lib/richText";
 import { describe, expect, it } from "vitest";
 
 import { routeStops, stopDays } from "./routeStops";
-import { PHOTOS_BASE, langtangSource } from "./trekPage.testData";
+import { PHOTOS_BASE, TREK_FILES_BASE, langtangSource } from "./trekPage.testData";
 import { toTrekDetail } from "./trekPageRows";
 import type { ItineraryDay } from "./types";
 
@@ -17,7 +17,7 @@ const day = (place: string, altitudeM: number, isHighPoint = false): ItineraryDa
 
 describe("routeStops", () => {
   it("lists the Langtang stops in walking order, the last two Kathmandu days as one stop", () => {
-    const stops = routeStops(toTrekDetail(langtangSource(), PHOTOS_BASE).itinerary.days);
+    const stops = routeStops(toTrekDetail(langtangSource(), PHOTOS_BASE, TREK_FILES_BASE).itinerary.days);
     expect(stops.map((stop) => `${stop.place} ${stopDays(stop)}`)).toEqual([
       "Kathmandu Day 1",
       "Syabrubesi Day 2",

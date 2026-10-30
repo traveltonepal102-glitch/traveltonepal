@@ -199,6 +199,8 @@ export type WebTrekPageRow = ShareColumns & {
   region_month_ratings: string[] | null;
   /** The trek's own order of its page sections (TREK_PAGE_SECTIONS keys); empty = the default order. */
   section_order: string[];
+  /** The printable map in the trek-files bucket (pdf-maps/<uuid>.pdf), or null without one. */
+  pdf_map_path: string | null;
 };
 
 /** A trek's gallery photo (the photo columns named as in the other views). */

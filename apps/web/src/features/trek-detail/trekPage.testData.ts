@@ -8,6 +8,7 @@ import type { TrekPageSource } from "./trekPageRows";
  * so the page's mapping, elevation chart and SEO are tested on a real trek. Not used by the website itself.
  */
 export const PHOTOS_BASE = "https://photos.example/photos";
+export const TREK_FILES_BASE = "https://photos.example/trek-files";
 
 export const LANGTANG_SUMMARY: TrekSummary = {
   slug: "langtang-valley",
@@ -1081,7 +1082,8 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
   ],
   "similar_slugs": [],
   "hidden_shared_sections": [],
-  "section_order": []
+  "section_order": [],
+  "pdf_map_path": null
 };
 
 export const LANGTANG_PHOTOS: WebTrekPhotoRow[] = [

@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { serializeJsonLd } from "@/lib/jsonLd";
 
 import { trekJsonLd, trekMetadata } from "./seo";
-import { PHOTOS_BASE, langtangSource } from "./trekPage.testData";
+import { PHOTOS_BASE, TREK_FILES_BASE, langtangSource } from "./trekPage.testData";
 import { toTrekDetail } from "./trekPageRows";
 
-const trek = toTrekDetail(langtangSource(), PHOTOS_BASE);
+const trek = toTrekDetail(langtangSource(), PHOTOS_BASE, TREK_FILES_BASE);
 const graph = trekJsonLd(trek)["@graph"] as Record<string, unknown>[];
 const byType = (type: string) => graph.find((node) => node["@type"] === type);
 
@@ -21,7 +21,7 @@ describe("trek page SEO", () => {
     const [firstPhoto] = trek.photos;
     expect(trekMetadata(trek).openGraph).toMatchObject({ images: [{ url: `${firstPhoto.src}/share.jpg`, width: 1200, height: 630 }] });
 
-    const chosen = toTrekDetail(langtangSource({ share_id: "share-photo", share_variant_widths: [400, 800], share_place: "Kyanjin Ri" }), PHOTOS_BASE);
+    const chosen = toTrekDetail(langtangSource({ share_id: "share-photo", share_variant_widths: [400, 800], share_place: "Kyanjin Ri" }), PHOTOS_BASE, TREK_FILES_BASE);
     expect(trekMetadata(chosen).openGraph).toMatchObject({
       images: [{ url: `${PHOTOS_BASE}/share-photo/share.jpg`, alt: "Kyanjin Ri, Langtang Valley Trek" }],
     });

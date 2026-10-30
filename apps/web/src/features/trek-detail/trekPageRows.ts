@@ -101,8 +101,15 @@ const toSimilarTreks = (summary: TrekSummary, slugs: readonly string[], treks: r
   return picks.length ? picks : similarTreks(summary, 4, treks);
 };
 
-/** The trek page's content from its database rows. Blank texts fall back or are left out, never shown empty. */
-export const toTrekDetail = ({ summary, page, photos, guides, treks, regions }: TrekPageSource, photosBaseUrl: string): TrekDetail => {
+/**
+ * The trek page's content from its database rows. Blank texts fall back or are left out, never shown empty.
+ * Photos and trek files (the printable map) are served from the two base URLs.
+ */
+export const toTrekDetail = (
+  { summary, page, photos, guides, treks, regions }: TrekPageSource,
+  photosBaseUrl: string,
+  trekFilesBaseUrl: string,
+): TrekDetail => {
   const shortName = firstText(page.short_name) ?? summary.name;
   const dayRows = readDays(page.days);
   const daySlugs = dayRegionSlugs(dayRows.map((day) => day.region_slug), summary.route);
@@ -148,7 +155,12 @@ export const toTrekDetail = ({ summary, page, photos, guides, treks, regions }: 
     },
     differentiators: differentiatorsFor(summary.region),
     trailhead: toTrailhead(page.trek_start, days),
-    routeMap: { place: firstText(page.map_place) ?? `${summary.name}, Nepal`, myMapsId: page.my_maps_id ?? undefined },
+    routeMap: {
+      place: firstText(page.map_place) ?? `${summary.name}, Nepal`,
+      myMapsId: page.my_maps_id ?? undefined,
+      // The database only takes pdf-maps/<uuid>.pdf, so the path is safe to add to the address.
+      pdfUrl: page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined,
+    },
     packing: { intro: page.packing_intro.trim(), groups: readPackingGroups(page.packing_groups) },
     fieldGuide: {
       heading: firstText(page.know_heading) ?? `${summary.name} guide: best season, facilities and safety`,

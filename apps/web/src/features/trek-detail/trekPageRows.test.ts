@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { toTrekGuides } from "./trekGuideRows";
-import { LANGTANG_GUIDES, PHOTOS_BASE, langtangSource } from "./trekPage.testData";
+import { LANGTANG_GUIDES, PHOTOS_BASE, TREK_FILES_BASE, langtangSource } from "./trekPage.testData";
 import { toTrekDetail } from "./trekPageRows";
 
-const detail = (page: Parameters<typeof langtangSource>[0] = {}) => toTrekDetail(langtangSource(page), PHOTOS_BASE);
+const detail = (page: Parameters<typeof langtangSource>[0] = {}) => toTrekDetail(langtangSource(page), PHOTOS_BASE, TREK_FILES_BASE);
 const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 
 describe("toTrekDetail", () => {
@@ -79,6 +79,12 @@ describe("toTrekDetail", () => {
     expect(trek.distanceKm).toBeUndefined();
     expect(trek.meals.dailyBudgetUsd).toBeUndefined();
     expect(trek.optionalHighPoint).toBeUndefined();
+  });
+
+  it("links the printable map from the trek files address, and leaves it out without one", () => {
+    const path = "pdf-maps/236645ef-00d2-4eb7-8d03-78c117be5477.pdf";
+    expect(detail({ pdf_map_path: path }).routeMap.pdfUrl).toBe(`${TREK_FILES_BASE}/${path}`);
+    expect(detail().routeMap.pdfUrl).toBeUndefined();
   });
 
   it("shows a field guide topic's photo, and drops a note's own leading asterisk (the page adds one)", () => {
@@ -176,7 +182,7 @@ describe("toTrekDetail for a trek across several regions", () => {
   it("lists the regions on the route with their days, and each day's region", () => {
     const base = langtangSource();
     const days = (base.page.days as Record<string, unknown>[]).map((day, index, all) => ({ ...day, region_slug: index === all.length - 2 ? "manaslu" : null }));
-    const trek = toTrekDetail(langtangSource({ days }, { summary: { ...base.summary, route }, regions: [manaslu] }), PHOTOS_BASE);
+    const trek = toTrekDetail(langtangSource({ days }, { summary: { ...base.summary, route }, regions: [manaslu] }), PHOTOS_BASE, TREK_FILES_BASE);
     const count = trek.itinerary.days.length;
     expect(trek.routeStops.map((stop) => [stop.slug, stop.place, stop.days])).toEqual([
       ["langtang", "start", `Days 1–${count - 2}`],
@@ -187,6 +193,6 @@ describe("toTrekDetail for a trek across several regions", () => {
   });
 
   it("has no route section for a trek in one region", () => {
-    expect(toTrekDetail(langtangSource(), PHOTOS_BASE).routeStops).toEqual([]);
+    expect(toTrekDetail(langtangSource(), PHOTOS_BASE, TREK_FILES_BASE).routeStops).toEqual([]);
   });
 });

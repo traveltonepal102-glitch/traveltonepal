@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 
-import { photosPublicBaseUrl } from "@/env";
+import { photosPublicBaseUrl, trekFilesPublicBaseUrl } from "@/env";
 import { listRegionCards } from "@/features/regions/services/regionsRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE, WEBSITE_LOCALE } from "@/lib/cacheTags";
@@ -75,5 +75,5 @@ export const getTrekDetail = async (slug: string): Promise<TrekDetail | undefine
     summary.route.length > 1 ? listRegionCards() : [],
   ]);
   if (!page) return undefined;
-  return toTrekDetail({ summary, page, photos, guides, treks, regions }, photosPublicBaseUrl);
+  return toTrekDetail({ summary, page, photos, guides, treks, regions }, photosPublicBaseUrl, trekFilesPublicBaseUrl);
 };

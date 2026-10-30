@@ -141,6 +141,8 @@ export type TrekRouteMap = {
   place: string;
   /** Id from a My Maps share link (…/maps/d/viewer?mid=THIS_PART). */
   myMapsId?: string;
+  /** The printable map's public address ("Download PDF map"); left out without one. */
+  pdfUrl?: string;
 };
 
 /** "Why don't we include meals": the food budget and the trek's practical tips. */
