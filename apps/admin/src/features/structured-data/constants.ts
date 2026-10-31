@@ -37,6 +37,7 @@ const BREADCRUMBS: AutomaticSchema = { type: "BreadcrumbList" };
 const faq = (where: string): AutomaticSchema => ({ type: "FAQPage", when: `when ${where} has questions` });
 
 const FIXED_PAGE_SCHEMAS: Partial<Record<SitePageSlug, AutomaticSchema[]>> = {
+  home: [{ type: "WebSite", when: "the site's name and its other spellings" }],
   about: [{ type: "AboutPage" }, BREADCRUMBS],
   contact: [{ type: "ContactPage" }, BREADCRUMBS, faq("the page")],
   regions: [BREADCRUMBS, { type: "ItemList", when: "the regions" }],

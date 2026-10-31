@@ -4,6 +4,9 @@ export const HAS_GERMAN_SITE = false;
 /** The brand name, as search results and shared links show it. */
 export const SITE_NAME = "Travel To Nepal";
 
+/** Other ways people write the brand, so Google ties those searches to this site (WebSite structured data). */
+export const SITE_ALTERNATE_NAMES = ["TravelToNepal", "Travel to Nepal Treks"];
+
 /**
  * Public address of this site, for canonical links and structured data (they need full URLs).
  * Set SITE_URL for each site's build; local development falls back to the dev server.

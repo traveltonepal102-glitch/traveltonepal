@@ -86,6 +86,6 @@ describe("automaticSchemas", () => {
     const types = (kind: "page" | "trek", key: string) => automaticSchemas({ kind, key }).map((schema) => schema.type);
     expect(types("trek", "id")).toEqual(["BreadcrumbList", "TouristTrip", "FAQPage", "TravelAgency"]);
     expect(types("page", "contact")).toEqual(["ContactPage", "BreadcrumbList", "FAQPage", "TravelAgency"]);
-    expect(types("page", "home")).toEqual(["TravelAgency"]);
+    expect(types("page", "home")).toEqual(["WebSite", "TravelAgency"]);
   });
 });

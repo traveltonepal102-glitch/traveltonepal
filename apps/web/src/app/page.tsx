@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { JsonLd } from "@/components/shared/JsonLd";
 import { CustomAdventuresSection } from "@/features/adventures/components/CustomAdventuresSection";
 import { listGuideCards } from "@/features/guides/services/guidesRepository";
 import { GuidesSection } from "@/features/home/components/GuidesSection";
@@ -14,6 +15,7 @@ import { WhyUsSection } from "@/features/home/components/WhyUsSection";
 import { homeGuides, homeTreks } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { websiteJsonLd } from "@/features/seo/website";
 import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
 import { sitePageMetadata } from "@/features/site-pages/seo";
@@ -43,6 +45,7 @@ const HomePage = async () => {
         <SiteHeader variant="overlay" />
       </div>
       <main className="flex-1 bg-surface">
+        <JsonLd data={{ "@context": "https://schema.org", ...websiteJsonLd() }} />
         <PageSchemasJsonLd kind="page" slug="home" />
         <HomeHero top={top} />
         <TrekFinder regions={regions} />

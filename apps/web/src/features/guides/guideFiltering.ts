@@ -14,17 +14,26 @@ export type GuideFilters = {
   page: number;
 };
 
-export const EMPTY_GUIDE_FILTERS: GuideFilters = { q: "", topic: null, region: null, page: 1 };
+export const EMPTY_GUIDE_FILTERS: GuideFilters = {
+  q: "",
+  topic: null,
+  region: null,
+  page: 1,
+};
 
-export const GUIDES_PER_PAGE = 6;
+export const GUIDES_PER_PAGE = 15;
 
 /** Id of the "All guides" section, so links and the search can jump to it. */
 export const ALL_GUIDES_ID = "all-guides";
 
-const isTopicId = (value: string): value is GuideTopicId => GUIDE_TOPICS.some((topic) => topic.id === value);
+const isTopicId = (value: string): value is GuideTopicId =>
+  GUIDE_TOPICS.some((topic) => topic.id === value);
 
 /** Reads the list state from the URL. Unknown values are dropped, so a bad link shows all guides. */
-export const parseGuideFilters = (params: URLSearchParams, regionSlugs: readonly string[]): GuideFilters => {
+export const parseGuideFilters = (
+  params: URLSearchParams,
+  regionSlugs: readonly string[],
+): GuideFilters => {
   const topic = params.get("topic") ?? "";
   const region = params.get("region") ?? "";
   const page = Number(params.get("page"));
@@ -53,10 +62,15 @@ export const guideListHref = (filters: Partial<GuideFilters>) => {
 };
 
 const searchableText = (guide: TravelGuide) =>
-  [guide.title, guide.excerpt, getGuideTopic(guide.topic).title].join(" ").toLowerCase();
+  [guide.title, guide.excerpt, getGuideTopic(guide.topic).title]
+    .join(" ")
+    .toLowerCase();
 
 /** Guides in the topic and region whose text has every word of the search, newest first. */
-export const filterGuides = (guides: readonly TravelGuide[], { q, topic, region }: Omit<GuideFilters, "page">) => {
+export const filterGuides = (
+  guides: readonly TravelGuide[],
+  { q, topic, region }: Omit<GuideFilters, "page">,
+) => {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
   return sortNewestFirst(
     guides.filter(
