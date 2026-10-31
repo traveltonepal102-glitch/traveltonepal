@@ -27,6 +27,15 @@ export const TREK_SECTION_IDS = {
   book: "book",
 } as const;
 
+/**
+ * Sections taken off every trek page for now, whatever the trek's order; remove one here to bring it back.
+ * "pricing" (decided 2026-10-31): the booking card already shows the group rates. With it go the start date
+ * picker, the "Dates" link and the booking card's "Start: … Change" line, which only pointed there.
+ */
+export const HIDDEN_TREK_SECTIONS: readonly TrekPageSection[] = ["pricing"];
+
+export const isTrekSectionHidden = (section: TrekPageSection) => HIDDEN_TREK_SECTIONS.includes(section);
+
 /** Links in the sticky "On this page" bar, with the section each one jumps to. */
 const SECTION_LINKS: { section: TrekPageSection; id: string; label: string }[] = [
   { section: "itinerary", id: TREK_SECTION_IDS.itinerary, label: "Itinerary" },
@@ -42,7 +51,7 @@ type SectionLinksOptions = { hasReviews: boolean; order: readonly TrekPageSectio
 
 /** The "On this page" links in the trek's order of sections. "Reviews" only when the page shows them. */
 export const trekSectionLinks = ({ hasReviews, order }: SectionLinksOptions) =>
-  SECTION_LINKS.filter((link) => hasReviews || link.section !== "reviews")
+  SECTION_LINKS.filter((link) => (hasReviews || link.section !== "reviews") && !isTrekSectionHidden(link.section))
     .toSorted((a, b) => order.indexOf(a.section) - order.indexOf(b.section))
     .map(({ id, label }) => ({ id, label }));
 

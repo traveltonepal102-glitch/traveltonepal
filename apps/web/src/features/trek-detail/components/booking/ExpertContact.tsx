@@ -3,17 +3,19 @@ import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { getAboutPage } from "@/features/about/services/aboutRepository";
+import { SiteImage } from "@/components/ui/SiteImage";
+import type { SiteImageSource } from "@/lib/images";
 
 const SIDE_AVATAR = "inline-flex size-10 items-center justify-center rounded-full border-2 border-white bg-[#d3e3f1] text-[#5e86ad]";
 
-/** Decorative: the team as three avatars, the expert in the middle. */
-const TeamAvatars = () => (
+/** Decorative: the team as three avatars, the expert in the middle (the founder's photo, else an icon; the name is beside it). */
+const TeamAvatars = ({ photo }: { photo?: SiteImageSource }) => (
   <span aria-hidden="true" className="flex flex-none items-center">
     <span className={SIDE_AVATAR}>
       <Icon name="person" />
     </span>
-    <span className="relative z-1 -ml-3 inline-flex size-12 items-center justify-center rounded-full border-2 border-brand bg-brand-tint text-brand shadow-[0_0_0_2px_#fff]">
-      <Icon name="support_agent" size={26} />
+    <span className="relative z-1 -ml-3 inline-flex size-14 items-center justify-center overflow-hidden rounded-full border-2 border-brand bg-brand-tint text-brand shadow-[0_0_0_2px_#fff]">
+      {photo ? <SiteImage image={{ ...photo, alt: "" }} sizes="56px" className="object-cover" /> : <Icon name="support_agent" size={26} />}
     </span>
     <span className={`${SIDE_AVATAR} -ml-3`}>
       <Icon name="person" />
@@ -28,7 +30,7 @@ export const ExpertContact = async () => {
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-page p-4">
       <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Speak to an expert</p>
       <div className="flex items-center gap-3.5">
-        <TeamAvatars />
+        <TeamAvatars photo={founder?.photo} />
         <div className="flex min-w-0 flex-col">
           <p className="flex flex-wrap items-baseline gap-x-1.5">
             <span className="font-display text-body-sm font-bold text-ink">{founder?.shortName ?? "Our team"}</span>

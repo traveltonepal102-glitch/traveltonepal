@@ -50,7 +50,12 @@ describe("trekSectionLinks", () => {
   it("follows the page's order", () => {
     const order = orderTrekSections(["faq", "packing", "pricing", "route_map", "inclusions", "itinerary"]);
     const ids = trekSectionLinks({ hasReviews: false, order }).map((link) => link.id);
-    expect(ids).toEqual(["useful-info", "pricing", "route-map", "inclusions", "itinerary", "faq"]);
+    expect(ids).toEqual(["useful-info", "route-map", "inclusions", "itinerary", "faq"]);
+  });
+
+  it("leaves out the sections hidden on every trek page", () => {
+    const ids = trekSectionLinks({ hasReviews: true, order: orderTrekSections([]) }).map((link) => link.id);
+    expect(ids).not.toContain("pricing");
   });
 
   it("links to the reviews only when the page shows them", () => {

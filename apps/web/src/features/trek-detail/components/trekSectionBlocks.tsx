@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
 import type { RatingSummary, Review } from "@/features/reviews/types";
 
+import { isTrekSectionHidden } from "../sections";
 import type { SharedSection, TrekDetail } from "../types";
 import { DirectConsultationCard } from "./DirectConsultationCard";
 import { TrekElevation } from "./elevation/TrekElevation";
@@ -55,7 +56,7 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
     elevation: <TrekElevation heading={trek.headings.elevation} itinerary={trek.itinerary} trailhead={trek.trailhead} />,
     route_map: <TrekRouteMap heading={trek.headings.routeMap} name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} itinerary={trek.itinerary} />,
     why_book: shows("why_book") && <WhyBookWithUs />,
-    pricing: <TrekPricing heading={trek.headings.pricing} intro={trek.pricingIntro} name={trek.name} days={trek.days} route={trek.route} groupPrices={trek.groupPrices} />,
+    pricing: !isTrekSectionHidden("pricing") && <TrekPricing heading={trek.headings.pricing} intro={trek.pricingIntro} name={trek.name} days={trek.days} route={trek.route} groupPrices={trek.groupPrices} />,
     credentials: shows("credentials") && <TrekCredentials />,
     reviews: reviews.length > 0 && <TrekReviews reviews={reviews} rating={rating} />,
     differentiators: shows("differentiators") && <TrekDifferentiators differentiators={trek.differentiators} />,
