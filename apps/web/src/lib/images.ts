@@ -10,6 +10,8 @@ export type SiteImageSource = {
   src: string;
   alt: string;
   variantWidths?: readonly number[];
+  /** A library photo's file name (PhotoFiles), e.g. "tilicho-lake"; missing for photos without one. */
+  fileName?: string;
   /** Tiny blurred preview shown while the photo loads. */
   placeholder?: string;
 };
@@ -25,7 +27,7 @@ export const HERO_PHOTO_QUALITY = 60;
  * photo's prepared size, or the /public file itself.
  */
 export const imageFileUrl = (image: SiteImageSource, width: number) =>
-  image.variantWidths?.length ? photoUrl({ baseUrl: image.src, variantWidths: image.variantWidths }, width) : image.src;
+  image.variantWidths?.length ? photoUrl({ baseUrl: image.src, variantWidths: image.variantWidths, fileName: image.fileName }, width) : image.src;
 
 /** A row's cover photo as a SiteImageSource; `subject` names what it shows, for its image text. */
 export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: string, alt?: string): SiteImageSource | undefined => {
@@ -34,6 +36,7 @@ export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: st
     src: `${photosBaseUrl}/${row.cover_id}`,
     alt: alt?.trim() || photoAltText({ place: row.cover_place ?? "" }, subject),
     variantWidths: row.cover_variant_widths,
+    fileName: row.cover_file_name || undefined,
     placeholder: row.cover_placeholder || undefined,
   };
 };
@@ -41,7 +44,15 @@ export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: st
 /** A page's chosen share photo (Google card in the admin) as a SiteImageSource; undefined when none is chosen. */
 export const sharePhotoImage = (row: ShareColumns, photosBaseUrl: string, subject: string): SiteImageSource | undefined =>
   coverImage(
-    { cover_id: row.share_id, cover_variant_widths: row.share_variant_widths, cover_place: row.share_place, cover_placeholder: null, cover_width: null, cover_height: null },
+    {
+      cover_id: row.share_id,
+      cover_variant_widths: row.share_variant_widths,
+      cover_file_name: row.share_file_name,
+      cover_place: row.share_place,
+      cover_placeholder: null,
+      cover_width: null,
+      cover_height: null,
+    },
     photosBaseUrl,
     subject,
   );

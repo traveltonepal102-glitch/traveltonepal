@@ -18,6 +18,7 @@ const promiseSchema = z.object({ icon: z.string().catch(""), title: z.string().t
 const pagePhotoSchema = z.object({
   id: z.string().min(1),
   variant_widths: z.array(z.number()).min(1),
+  file_name: z.string().nullable().catch(null),
   placeholder: z.string().nullable().catch(null),
   place: z.string().nullable().catch(null),
   position: z.number().int(),
@@ -34,7 +35,13 @@ const founderOf = (row: WebSitePageRow, photosBaseUrl: string): Founder | undefi
   const name = row.founder_name?.trim();
   if (!name) return undefined;
   const photo = row.founder_photo_id && row.founder_photo_variant_widths?.length
-    ? { src: `${photosBaseUrl}/${row.founder_photo_id}`, alt: name, variantWidths: row.founder_photo_variant_widths, placeholder: row.founder_photo_placeholder || undefined }
+    ? {
+        src: `${photosBaseUrl}/${row.founder_photo_id}`,
+        alt: name,
+        variantWidths: row.founder_photo_variant_widths,
+        fileName: row.founder_photo_file_name || undefined,
+        placeholder: row.founder_photo_placeholder || undefined,
+      }
     : undefined;
   return { name, shortName: name.split(/\s+/)[0] ?? name, role: row.founder_role?.trim() ?? "", photo };
 };
@@ -49,6 +56,7 @@ const photosByPlace = (value: unknown, photosBaseUrl: string) => {
       src: `${photosBaseUrl}/${photo.id}`,
       alt: alt || photoAltText({ place: photo.place ?? "" }, SITE_NAME),
       variantWidths: photo.variant_widths,
+      fileName: photo.file_name || undefined,
       placeholder: photo.placeholder || undefined,
     };
   };

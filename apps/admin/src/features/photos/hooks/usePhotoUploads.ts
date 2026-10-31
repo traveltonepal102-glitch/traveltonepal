@@ -4,8 +4,8 @@ import { useState } from "react";
 
 import { finishPhotoUpload } from "../actions/finishPhotoUpload";
 import { startPhotoUpload } from "../actions/startPhotoUpload";
-import { ACCEPTED_PHOTO_TYPES, MAX_PHOTO_BYTES } from "../constants";
 import { putFile } from "../lib/putFile";
+import { checkPhotoFile } from "../lib/uploadErrors";
 import type { Photo } from "../types";
 
 export type UploadItem = {
@@ -21,11 +21,11 @@ type UsePhotoUploadsOptions<Target> = {
   onUploaded: (photo: Photo, target: Target) => void;
 };
 
-/** A quick check before sending; the server checks the real file again. */
-const checkFile = (file: File) => {
-  if (!ACCEPTED_PHOTO_TYPES.includes(file.type)) return "Use a JPEG, PNG or WebP photo.";
-  if (file.size > MAX_PHOTO_BYTES) return "This photo is over 20 MB.";
-  return undefined;
+/** When a step throws instead of answering (the server or the connection), what the editor reads for it. */
+const STEP_FAILED = {
+  start: "The admin server couldn't be reached. Check your internet connection and try again.",
+  // The server may still have finished: the photo can already be in the library.
+  finish: "The photo was sent, but the connection dropped while it was being prepared. Reload the page: if the photo isn't in the library, add it again.",
 };
 
 /**
@@ -41,22 +41,27 @@ export const usePhotoUploads = <Target>({ regionId, onUploaded }: UsePhotoUpload
 
   const uploadOne = async (file: File, target: Target) => {
     const id = crypto.randomUUID();
-    setItems((current) => [...current, { id, fileName: file.name, progress: 0, error: checkFile(file) }]);
-    if (checkFile(file)) return;
+    const fileError = checkPhotoFile(file);
+    setItems((current) => [...current, { id, fileName: file.name, progress: 0, error: fileError }]);
+    if (fileError) return;
+
+    const started = await startPhotoUpload({ contentType: file.type, byteSize: file.size }).catch(() => ({ ok: false as const, message: STEP_FAILED.start }));
+    if (!started.ok) return update(id, { error: started.message });
 
     try {
-      const started = await startPhotoUpload({ contentType: file.type, byteSize: file.size });
-      if (!started.ok) return update(id, { error: started.message });
-
       await putFile(started.uploadUrl, file, (progress) => update(id, { progress }));
-      const finished = await finishPhotoUpload({ uploadKey: started.uploadKey, regionId, originalName: file.name });
-      if (!finished.ok) return update(id, { error: finished.message });
-
-      dismiss(id);
-      onUploaded(finished.photo, target);
-    } catch {
-      update(id, { error: "The upload stopped. Check your connection and try again." });
+    } catch (error) {
+      return update(id, { error: error instanceof Error ? error.message : String(error) });
     }
+
+    const finished = await finishPhotoUpload({ uploadKey: started.uploadKey, regionId, originalName: file.name }).catch(() => ({
+      ok: false as const,
+      message: STEP_FAILED.finish,
+    }));
+    if (!finished.ok) return update(id, { error: finished.message });
+
+    dismiss(id);
+    onUploaded(finished.photo, target);
   };
 
   const upload = async (files: File[], target: Target) => {

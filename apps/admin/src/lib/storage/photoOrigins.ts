@@ -4,7 +4,7 @@ import { env } from "@/env";
 
 import { s3BucketOrigin } from "./s3BucketOrigin";
 
-/** Base URL of the public sized photos: <base>/<photo id>/<width>.webp. */
+/** Base URL of the public sized photos: <base>/<photo id>/<file name>-<width>.webp. */
 export const photosPublicBaseUrl = env.PHOTOS_PUBLIC_URL ?? `${env.SUPABASE_URL}/storage/v1/object/public/photos`;
 
 /**

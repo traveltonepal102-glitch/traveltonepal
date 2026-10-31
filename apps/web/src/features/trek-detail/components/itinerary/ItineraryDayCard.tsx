@@ -1,9 +1,11 @@
+import { ClampedText } from "@/components/shared/ClampedText";
 import { RichText } from "@/components/shared/RichText";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitude } from "@/features/treks/format";
 
 import { topPlaceOf } from "../../elevation";
 import type { ItineraryDay } from "../../types";
+import { TEXT_ACTION } from "../styles";
 
 /** Colors of a normal day and of the high-point day (saffron, as in the design). */
 const LOOKS = {
@@ -65,8 +67,10 @@ export const ItineraryDayCard = ({ day, dayNumber }: ItineraryDayCardProps) => {
             <SiteImage image={day.photo} sizes="(min-width: 640px) 160px, 100vw" className="object-cover" />
           </div>
         )}
-        {/* Photos added in the text stay where they were put, as wide as the text column. */}
-        <RichText doc={day.body} headingLevel="h4" className="flex min-w-0 flex-[1_1_260px] flex-col gap-2.5 text-body-sm text-text" />
+        {/* Photos added in the text stay where they were put, as wide as the text column. Long days show 7 lines. */}
+        <ClampedText className="min-w-0 flex-[1_1_260px] text-body-sm" buttonClassName={TEXT_ACTION}>
+          <RichText doc={day.body} headingLevel="h4" className="flex flex-col gap-2.5 text-text" />
+        </ClampedText>
       </div>
     </article>
   );

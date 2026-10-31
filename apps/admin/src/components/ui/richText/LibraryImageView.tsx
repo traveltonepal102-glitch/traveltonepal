@@ -13,8 +13,15 @@ import { usePhotosBaseUrl } from "./PhotosBaseUrl";
 /** A photo inside the text, as the editor shows it: the photo, its description (required) and Remove. */
 export const LibraryImageView = ({ node, updateAttributes, deleteNode, selected }: NodeViewProps) => {
   const baseUrl = usePhotosBaseUrl();
-  const { photoId, alt, width, height, variantWidths } = node.attrs as { photoId: string; alt: string; width: number; height: number; variantWidths: number[] };
-  const photo = { id: photoId, width, height, baseUrl: `${baseUrl}/${photoId}`, variantWidths, placeholder: "", place: "" };
+  const { photoId, alt, width, height, variantWidths, fileName } = node.attrs as {
+    photoId: string;
+    alt: string;
+    width: number;
+    height: number;
+    variantWidths: number[];
+    fileName: string | null;
+  };
+  const photo = { id: photoId, width, height, baseUrl: `${baseUrl}/${photoId}`, variantWidths, fileName, placeholder: "", place: "" };
 
   return (
     <NodeViewWrapper as="figure" contentEditable={false} data-drag-handle className={cn("my-3 flex flex-col gap-1.5 rounded-lg border border-solid p-2", selected ? "border-brand ring-3 ring-brand/15" : "border-border")}>

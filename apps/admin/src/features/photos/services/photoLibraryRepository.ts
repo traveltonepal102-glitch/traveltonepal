@@ -44,5 +44,5 @@ export const deleteUnusedPhotoRow = async (photoId: string) => {
   if (error?.hint === "photo_in_use" || error?.code === "23503") throw new PhotoInUseError("This photo is still used.");
   if (error) throw new Error(`Could not delete photo ${photoId}: ${error.code} ${error.message}`);
   const [row] = data;
-  return row ? { masterKey: row.master_key, publicKeys: publicPhotoKeys(photoId, row.variant_widths) } : null;
+  return row ? { masterKey: row.master_key, publicKeys: publicPhotoKeys(photoId, row.file_name, row.variant_widths) } : null;
 };

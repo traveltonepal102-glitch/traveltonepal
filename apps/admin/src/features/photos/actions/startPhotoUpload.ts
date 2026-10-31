@@ -7,9 +7,10 @@ import { createPhotoStorage } from "@/lib/storage/createPhotoStorage";
 
 import { ACCEPTED_PHOTO_TYPES, MAX_PHOTO_BYTES } from "../constants";
 
+// The messages say which check failed (the browser checks the same first: lib/uploadErrors).
 const inputSchema = z.object({
-  contentType: z.string().refine((type) => ACCEPTED_PHOTO_TYPES.includes(type)),
-  byteSize: z.number().int().positive().max(MAX_PHOTO_BYTES),
+  contentType: z.string().refine((type) => ACCEPTED_PHOTO_TYPES.includes(type), "This file type can't be used. Use a JPEG, PNG or WebP photo."),
+  byteSize: z.number().int().positive("This file is empty. Choose the photo again.").max(MAX_PHOTO_BYTES, "This photo is over 20 MB. Save a smaller copy and add it again."),
 });
 
 export type StartPhotoUploadInput = z.input<typeof inputSchema>;
@@ -23,9 +24,7 @@ export type StartPhotoUploadResult = { ok: true; uploadKey: string; uploadUrl: s
 export const startPhotoUpload = async (input: StartPhotoUploadInput): Promise<StartPhotoUploadResult> => {
   await requireAdmin();
   const parsed = inputSchema.safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, message: "Use a JPEG, PNG or WebP photo of up to 20 MB." };
-  }
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "This file can't be used." };
 
   const uploadKey = `uploads/${crypto.randomUUID()}`;
   try {

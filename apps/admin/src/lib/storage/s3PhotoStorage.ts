@@ -7,7 +7,7 @@ import { s3Bucket } from "./s3Bucket";
 
 /**
  * Where each area lives in the one bucket. CloudFront serves the bucket at PHOTOS_PUBLIC_URL, so the sized
- * photos sit at its root (<photo id>/<width>.webp); the bucket policy denies CloudFront the private/ folder
+ * photos sit at its root (<photo id>/<file name>-<width>.webp); the bucket policy denies CloudFront the private/ folder
  * (raw uploads, which may still carry GPS data, and masters), and a lifecycle rule empties private/uploads/
  * after a day.
  */

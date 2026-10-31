@@ -35,4 +35,10 @@ describe("imageFileUrl", () => {
     expect(photo && imageFileUrl(photo, 1200)).toBe(`${BASE}/p1/1200.webp`);
     expect(imageFileUrl({ src: "/images/langtang-peaks.jpg", alt: "Langtang" }, 1200)).toBe("/images/langtang-peaks.jpg");
   });
+
+  it("names the file after the photo when it has a file name (for Google)", () => {
+    const photo = coverImage({ ...row, cover_file_name: "kyanjin-gompa-langtang" }, BASE, "Langtang region");
+    expect(photo?.fileName).toBe("kyanjin-gompa-langtang");
+    expect(photo && imageFileUrl(photo, 1200)).toBe(`${BASE}/p1/kyanjin-gompa-langtang-1200.webp`);
+  });
 });

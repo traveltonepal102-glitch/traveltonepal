@@ -4,6 +4,7 @@ import { cache } from "react";
 import { z } from "zod";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
+import type { PhotoColumnsRow } from "@/features/photos/services/photosRepository";
 import { videoTitleMap } from "@/features/videos/services/videosRepository";
 import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
@@ -14,12 +15,10 @@ import type { GroupPrice, ItineraryDay, Meal, RegionOption, SimilarTrekOption, T
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
 type TextRow = Database["public"]["Tables"]["trek_translations"]["Row"];
-type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 type DayRow = Database["public"]["Tables"]["trek_days"]["Row"];
 type PriceRow = Database["public"]["Tables"]["trek_group_prices"]["Row"];
 type PriceTextRow = Database["public"]["Tables"]["trek_group_price_translations"]["Row"];
 type DayTextRow = Database["public"]["Tables"]["trek_day_translations"]["Row"];
-type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
 /** Postgres error codes save_trek can raise. */
 const FOREIGN_KEY_VIOLATION = "23503";
@@ -37,12 +36,12 @@ const TREK_COLUMNS = `*,
   trek_guides(position, guide_id),
   trek_regions(position, region_id)` as const;
 
-type DayQueryRow = DayRow & { photo: PhotoFields | null; trek_day_translations: DayTextRow[] };
+type DayQueryRow = DayRow & { photo: PhotoColumnsRow | null; trek_day_translations: DayTextRow[] };
 
 type TrekQueryRow = TrekRow & {
-  trek_translations: (TextRow & { share: PhotoFields | null })[];
-  cover: PhotoFields | null;
-  trek_photos: { position: number; photo: PhotoFields }[];
+  trek_translations: (TextRow & { share: PhotoColumnsRow | null })[];
+  cover: PhotoColumnsRow | null;
+  trek_photos: { position: number; photo: PhotoColumnsRow }[];
   trek_days: DayQueryRow[];
   trek_group_prices: (PriceRow & { trek_group_price_translations: PriceTextRow[] })[];
   trek_similar: { position: number; similar_trek_id: string }[];

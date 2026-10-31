@@ -16,7 +16,7 @@ type PhotoImageProps = {
 /** A library photo at the right size: the browser picks the smallest prepared WebP that fills the space. */
 export const PhotoImage = ({ photo, alt, sizes, className }: PhotoImageProps) => (
   <Image
-    // The photo's folder; the loader turns it into the file for each width (`${baseUrl}/<width>.webp`).
+    // The photo's folder; the loader turns it into the file for each width (`${baseUrl}/<file name>-<width>.webp`).
     src={photo.baseUrl}
     loader={({ width }) => photoUrl(photo, width)}
     width={photo.width}

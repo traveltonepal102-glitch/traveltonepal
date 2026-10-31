@@ -63,6 +63,7 @@ const coverSchema = z.object({
   cover_width: z.number(),
   cover_height: z.number(),
   cover_variant_widths: z.array(z.number()),
+  cover_file_name: z.string().nullable().catch(null),
   cover_placeholder: z.string().catch(""),
   cover_place: z.string().catch(""),
 });

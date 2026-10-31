@@ -9,6 +9,7 @@ const photo = (id: string, createdAt: string): LibraryPhoto => ({
   height: 1200,
   baseUrl: "",
   variantWidths: [400],
+  fileName: null,
   placeholder: "",
   place: "",
   originalName: "",

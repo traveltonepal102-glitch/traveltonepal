@@ -8,11 +8,11 @@ import { photosPublicBaseUrl } from "@/env";
  * column is at most about 760px wide, so larger sizes are never downloaded for it.
  */
 export const RichTextPhoto = ({ image }: { image: RichTextImage }) => {
-  const { photoId, alt, width, height, variantWidths } = image.attrs;
+  const { photoId, alt, width, height, variantWidths, fileName } = image.attrs;
   return (
     <figure className="m-0">
       <div className="relative w-full overflow-hidden rounded-xl bg-muted" style={{ aspectRatio: `${width} / ${height}` }}>
-        <SiteImage image={{ src: `${photosPublicBaseUrl}/${photoId}`, alt, variantWidths }} sizes="(min-width: 1024px) 760px, 100vw" className="object-cover" />
+        <SiteImage image={{ src: `${photosPublicBaseUrl}/${photoId}`, alt, variantWidths, fileName }} sizes="(min-width: 1024px) 760px, 100vw" className="object-cover" />
       </div>
     </figure>
   );

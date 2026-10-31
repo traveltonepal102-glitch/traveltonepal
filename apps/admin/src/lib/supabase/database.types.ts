@@ -36,6 +36,8 @@ type PhotoRow = {
   region_id: string | null;
   master_key: string;
   variant_widths: number[];
+  /** The words in the files' names (<id>/<file_name>-<width>.webp); null for photos uploaded before it existed. */
+  file_name: string | null;
   width: number;
   height: number;
   placeholder: string;
@@ -1060,7 +1062,7 @@ export type Database = {
       };
       delete_unused_photo: {
         Args: { p_photo_id: string };
-        Returns: { master_key: string; variant_widths: number[] }[];
+        Returns: { master_key: string; variant_widths: number[]; file_name: string | null }[];
       };
       save_video: {
         Args: { p_video_id: string | null; p_video: Json };

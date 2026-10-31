@@ -4,12 +4,16 @@
  */
 type Locale = "en" | "de";
 
-/** A view's photo columns (null without a photo). */
+/**
+ * A view's photo columns (null without a photo). `cover_file_name`: the words in its files' names (PhotoFiles in
+ * @ttn/ui/lib/photos), null for a photo without one; optional because photo lists inside jsonb are read leniently.
+ */
 export type CoverColumns = {
   cover_id: string | null;
   cover_width: number | null;
   cover_height: number | null;
   cover_variant_widths: number[] | null;
+  cover_file_name?: string | null;
   cover_placeholder: string | null;
   cover_place: string | null;
 };
@@ -18,6 +22,7 @@ export type CoverColumns = {
 export type ShareColumns = {
   share_id: string | null;
   share_variant_widths: number[] | null;
+  share_file_name?: string | null;
   share_place: string | null;
 };
 
@@ -340,8 +345,10 @@ export type WebSiteSettingsRow = {
   certificate_width: number | null;
   certificate_height: number | null;
   certificate_variant_widths: number[] | null;
+  certificate_file_name?: string | null;
   share_id: string | null;
   share_variant_widths: number[] | null;
+  share_file_name?: string | null;
   updated_at: string;
   linkedin_url: string;
   google_review_url: string;
@@ -350,6 +357,7 @@ export type WebSiteSettingsRow = {
   pan_certificate_width: number | null;
   pan_certificate_height: number | null;
   pan_certificate_variant_widths: number[] | null;
+  pan_certificate_file_name?: string | null;
   /** The office on Google Maps: its share link and the address from Google's "Embed a map" code ("" when not set). */
   google_maps_url: string;
   google_maps_embed_url: string;
@@ -376,8 +384,9 @@ export type WebSitePageRow = CoverColumns & ShareColumns & {
   founder_role: string | null;
   founder_photo_id: string | null;
   founder_photo_variant_widths: number[] | null;
+  founder_photo_file_name?: string | null;
   founder_photo_placeholder: string | null;
-  /** The page's photos by place: [{ id, width, height, variant_widths, placeholder, place, position }] (About: 1 the founder, 2 "flexible", 3–5 the villages). */
+  /** The page's photos by place: [{ id, width, height, variant_widths, file_name, placeholder, place, position }] (About: 1 the founder, 2 "flexible", 3–5 the villages). */
   story_photos: unknown;
 };
 
@@ -415,6 +424,7 @@ export type WebReviewRow = {
   /** The reviewer's photo (photo library), or null: the card shows their initial. */
   photo_id: string | null;
   photo_variant_widths: number[] | null;
+  photo_file_name?: string | null;
   photo_placeholder: string | null;
 };
 

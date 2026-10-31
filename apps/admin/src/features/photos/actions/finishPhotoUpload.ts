@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 
 import { PHOTO_LIMITS } from "../constants";
-import { importPhoto } from "../services/importPhoto";
+import { importPhoto, PhotoImportError } from "../services/importPhoto";
 import { PhotoRejectedError } from "../services/processPhoto";
 import type { Photo } from "../types";
 
@@ -30,7 +30,8 @@ export const finishPhotoUpload = async (input: FinishPhotoUploadInput): Promise<
     return { ok: true, photo: await importPhoto({ ...parsed.data, createdBy: admin.id }) };
   } catch (error) {
     if (error instanceof PhotoRejectedError) return { ok: false, message: error.message };
-    console.error("finishPhotoUpload failed:", error);
+    console.error("finishPhotoUpload failed:", error instanceof PhotoImportError ? error.cause : error);
+    if (error instanceof PhotoImportError) return { ok: false, message: error.message };
     return { ok: false, message: "The photo couldn't be saved. Try again in a moment." };
   }
 };

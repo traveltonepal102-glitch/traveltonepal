@@ -35,6 +35,8 @@ export const LibraryImage = Node.create({
       width: dataAttribute<number>("width", "width", 0, (text) => Number(JSON.parse(text))),
       height: dataAttribute<number>("height", "height", 0, (text) => Number(JSON.parse(text))),
       variantWidths: dataAttribute<number[]>("variantWidths", "variant-widths", [], (text) => JSON.parse(text)),
+      // null for photos put in before photos had a file name (the shared format then leaves it out).
+      fileName: dataAttribute<string | null>("fileName", "file-name", null, (text) => JSON.parse(text)),
     };
   },
   parseHTML() {
@@ -51,5 +53,5 @@ export const LibraryImage = Node.create({
 /** A library photo as the image to insert; its place is the first description. */
 export const libraryImageContent = (photo: Photo) => ({
   type: "image",
-  attrs: { photoId: photo.id, alt: photo.place, width: photo.width, height: photo.height, variantWidths: photo.variantWidths },
+  attrs: { photoId: photo.id, alt: photo.place, width: photo.width, height: photo.height, variantWidths: photo.variantWidths, fileName: photo.fileName },
 });

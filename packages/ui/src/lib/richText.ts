@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { PHOTO_FILE_NAME_MAX_LENGTH, PHOTO_FILE_NAME_PATTERN } from "./photos";
+
 /**
  * Rich text as the admin saves it and the website shows it: a Tiptap (ProseMirror) JSON document limited to
  * paragraphs, small headings, bold, italic, links, lists and photos from the photo library. Stored as JSON, never HTML. Both apps check it with
@@ -16,7 +18,11 @@ export type RichTextHeading = { type: "heading"; attrs: { level: 3 }; content?: 
  * A photo from the admin's photo library, by its id (never a pasted address): its size and the widths made for it,
  * so the website shows the right size, and its description for Google and screen readers.
  */
-export type RichTextImage = { type: "image"; attrs: { photoId: string; alt: string; width: number; height: number; variantWidths: number[] } };
+export type RichTextImage = {
+  type: "image";
+  /** fileName: the photo's file name (PhotoFiles), missing for photos put in before photos had one. */
+  attrs: { photoId: string; alt: string; width: number; height: number; variantWidths: number[]; fileName?: string };
+};
 export type RichTextBlock = RichTextParagraph | RichTextHeading | RichTextList | RichTextImage;
 export type RichTextDoc = { type: "doc"; content: RichTextBlock[] };
 
@@ -64,6 +70,7 @@ const imageSchema = z.object({
     width: z.number().int().positive().max(20000),
     height: z.number().int().positive().max(20000),
     variantWidths: z.array(z.number().int().positive().max(20000)).min(1).max(12),
+    fileName: z.string().max(PHOTO_FILE_NAME_MAX_LENGTH).regex(PHOTO_FILE_NAME_PATTERN).optional().catch(undefined),
   }),
 });
 

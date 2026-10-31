@@ -9,14 +9,18 @@ import type { Photo } from "../types";
 type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 
 /** The columns a Photo needs (for embedding in other queries too). */
-export const PHOTO_COLUMNS = "id, width, height, variant_widths, placeholder, place";
+export const PHOTO_COLUMNS = "id, width, height, variant_widths, file_name, placeholder, place";
 
-export const toPhoto = (row: Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">): Photo => ({
+/** A row with PHOTO_COLUMNS, as a query embedding them returns it. */
+export type PhotoColumnsRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place">;
+
+export const toPhoto = (row: PhotoColumnsRow): Photo => ({
   id: row.id,
   width: row.width,
   height: row.height,
   baseUrl: `${photosPublicBaseUrl}/${row.id}`,
   variantWidths: row.variant_widths,
+  fileName: row.file_name,
   placeholder: row.placeholder,
   place: row.place,
 });
@@ -26,6 +30,7 @@ type NewPhoto = {
   regionId: string | null;
   masterKey: string;
   variantWidths: number[];
+  fileName: string;
   width: number;
   height: number;
   placeholder: string;
@@ -44,6 +49,7 @@ export const insertPhoto = async (photo: NewPhoto): Promise<Photo> => {
       region_id: photo.regionId,
       master_key: photo.masterKey,
       variant_widths: photo.variantWidths,
+      file_name: photo.fileName,
       width: photo.width,
       height: photo.height,
       placeholder: photo.placeholder,
@@ -55,6 +61,15 @@ export const insertPhoto = async (photo: NewPhoto): Promise<Photo> => {
     .single();
   if (error) throw new Error(`Could not add photo ${photo.id}: ${error.code} ${error.message}`);
   return toPhoto(data);
+};
+
+/** The region's slug, for naming a photo whose file name says nothing (photoFileNameFrom); null without a region. */
+export const findRegionSlug = async (regionId: string | null) => {
+  if (!regionId) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("regions").select("slug").eq("id", regionId).maybeSingle();
+  if (error) throw new Error(`Could not read region ${regionId}: ${error.message}`);
+  return data?.slug ?? null;
 };
 
 /** How many photos a "Choose from the library" window offers (the newest first). */

@@ -3,7 +3,7 @@
  * and production (S3 + CloudFront) differ only in configuration.
  *
  * - "private": raw uploads (uploads/…, may still carry GPS data) and cleaned masters (masters/…).
- * - "public": the sized WebP files (<photo id>/<width>.webp), served to visitors.
+ * - "public": the sized WebP files (<photo id>/<file name>-<width>.webp), served to visitors.
  */
 export type StorageArea = "private" | "public";
 

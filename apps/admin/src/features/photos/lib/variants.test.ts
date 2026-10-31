@@ -27,5 +27,8 @@ describe("pickVariant", () => {
     expect(photoUrl({ baseUrl: "https://images.example.com/abc", variantWidths: [400, 1000] }, 600)).toBe(
       "https://images.example.com/abc/1000.webp",
     );
+    expect(photoUrl({ baseUrl: "https://images.example.com/abc", variantWidths: [400, 1000], fileName: "tilicho-lake" }, 600)).toBe(
+      "https://images.example.com/abc/tilicho-lake-1000.webp",
+    );
   });
 });

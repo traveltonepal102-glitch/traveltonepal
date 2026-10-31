@@ -19,6 +19,7 @@ const reviewerPhoto = (row: WebReviewRow, photosBaseUrl: string) =>
       cover_width: null,
       cover_height: null,
       cover_variant_widths: row.photo_variant_widths,
+      cover_file_name: row.photo_file_name,
       cover_placeholder: row.photo_placeholder,
       cover_place: null,
     },

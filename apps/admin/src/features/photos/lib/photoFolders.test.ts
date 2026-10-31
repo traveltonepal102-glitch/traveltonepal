@@ -9,6 +9,7 @@ const photo = (id: string, createdAt = "2026-10-29T07:02:00Z"): LibraryPhoto => 
   height: 1200,
   baseUrl: `https://photos.example/${id}`,
   variantWidths: [400, 800],
+  fileName: null,
   placeholder: "",
   place: "",
   originalName: `${id}.jpg`,

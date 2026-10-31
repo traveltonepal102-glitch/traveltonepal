@@ -22,6 +22,7 @@ const photo = (id: string, place = ""): Photo => ({
   height: 1200,
   baseUrl: `https://images.example.com/${id}`,
   variantWidths: [400, 800, 1200, 1600],
+  fileName: null,
   placeholder: "",
   place,
 });

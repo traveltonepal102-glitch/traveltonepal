@@ -3,6 +3,7 @@ import { cache } from "react";
 import { z } from "zod";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
+import type { PhotoColumnsRow } from "@/features/photos/services/photosRepository";
 import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -12,7 +13,6 @@ import type { Region, RegionFormValues, RegionUsageItem } from "../types";
 
 type RegionRow = Database["public"]["Tables"]["regions"]["Row"];
 type TextRow = Database["public"]["Tables"]["region_translations"]["Row"];
-type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 
 /** Postgres error codes save_region and delete_region can raise. */
 const FOREIGN_KEY_VIOLATION = "23503";
@@ -34,12 +34,11 @@ const REGION_COLUMNS = `id, slug, district, website_domain, latitude, longitude,
   region_compare!region_compare_region_id_fkey(position, other_region_id),
   article_regions(article_id, pin_position)` as const;
 
-type PhotoFields = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "placeholder" | "place">;
 
 type RegionQueryRow = RegionRow & {
-  region_translations: (TextRow & { share: PhotoFields | null })[];
-  cover: PhotoFields | null;
-  region_photos: { position: number; photo: PhotoFields }[];
+  region_translations: (TextRow & { share: PhotoColumnsRow | null })[];
+  cover: PhotoColumnsRow | null;
+  region_photos: { position: number; photo: PhotoColumnsRow }[];
   region_nearby_treks: { position: number; trek_id: string; region_nearby_trek_translations: { locale: string; label: string; note: string }[] }[];
   region_hidden_guides: { guide_id: string }[];
   trekking_guide_regions: { guide_id: string }[];

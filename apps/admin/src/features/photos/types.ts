@@ -3,9 +3,11 @@ export type Photo = {
   id: string;
   width: number;
   height: number;
-  /** Sized files are at `${baseUrl}/${width}.webp`, one per variant width. */
+  /** Sized files are in this folder, one per variant width (PhotoFiles: `${baseUrl}/${fileName}-${width}.webp`). */
   baseUrl: string;
   variantWidths: number[];
+  /** The words in the files' names, e.g. "tilicho-lake"; null for photos uploaded before photos had one. */
+  fileName: string | null;
   /** Tiny blurred preview (data URL) shown while loading; "" if none. */
   placeholder: string;
   /** Optional "taken at", e.g. "Kyanjin Gompa". Also used in the image text (photoAltText). */

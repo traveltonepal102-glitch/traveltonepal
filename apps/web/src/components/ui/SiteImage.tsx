@@ -21,7 +21,7 @@ type SiteImageProps = {
  * A client component: next/image needs the size picker (a function) in the browser.
  */
 export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteImageProps) => {
-  const { variantWidths } = image;
+  const { variantWidths, fileName } = image;
   return (
     <Image
       src={image.src}
@@ -30,8 +30,8 @@ export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteIm
       sizes={sizes}
       preload={priority}
       fetchPriority={priority ? "high" : undefined}
-      // Library photos: their own files for each width (`${src}/<width>.webp`), not Next's image service.
-      loader={variantWidths?.length ? ({ width }) => photoUrl({ baseUrl: image.src, variantWidths }, width) : undefined}
+      // Library photos: their own files for each width (`${src}/<file name>-<width>.webp`), not Next's image service.
+      loader={variantWidths?.length ? ({ width }) => photoUrl({ baseUrl: image.src, variantWidths, fileName }, width) : undefined}
       placeholder={image.placeholder ? "blur" : "empty"}
       blurDataURL={image.placeholder}
       onClick={onClick}
