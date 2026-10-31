@@ -134,7 +134,7 @@ describe("heading sections", () => {
       { type: "heading", id: "", level: "h3", heading: "Day one", tocLabel: "Day one" },
       { type: "heading", id: "", level: "h2", heading: "Walking times", tocLabel: "Times" },
     ]);
-    expect(articleToc({ blocks, faqs: [] })).toEqual([
+    expect(articleToc({ blocks })).toEqual([
       { id: "walking-times", label: "Times" },
       { id: "walking-times-2", label: "Times" },
     ]);

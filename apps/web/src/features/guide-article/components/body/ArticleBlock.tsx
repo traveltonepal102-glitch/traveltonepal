@@ -4,6 +4,7 @@ import type { ArticleBlock as Block, GuideArticle } from "../../types";
 import { PROSE, SECTION_TITLE } from "../styles";
 import { ArticleAltitude } from "./ArticleAltitude";
 import { ArticleEmbed } from "./ArticleEmbed";
+import { ArticleFaq } from "./ArticleFaq";
 import { ArticleHtml } from "./ArticleHtml";
 import { ArticleFigure, ArticleGallery, ArticleMap } from "./ArticleMediaParts";
 import { GuideTip, GuideWords, MeetGuides } from "./ArticlePeopleParts";
@@ -13,6 +14,7 @@ import { ArticleTable } from "./ArticleTable";
 import { ArticleCompare, ArticleCostTable, ArticleDays } from "./ArticleTrekParts";
 import { ArticleVideo } from "./ArticleVideo";
 import { MonthTable } from "./MonthTable";
+import { QuickAnswer } from "./QuickAnswer";
 import { SeasonStrip } from "./SeasonStrip";
 
 type ArticleBlockProps = {
@@ -23,11 +25,13 @@ type ArticleBlockProps = {
 
 const BODY = `flex flex-col gap-4 ${PROSE}`;
 
-/** One piece of the article body (the quick answer is shown on its own, at the top). */
+/** One piece of the article body, where the admin put it. */
 export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
   switch (block.type) {
     case "quick":
-      return null;
+      return <QuickAnswer body={block.body} />;
+    case "faq":
+      return <ArticleFaq faqs={article.faqs} />;
     case "paragraph":
       return <RichText doc={block.body} className={BODY} />;
     case "text":

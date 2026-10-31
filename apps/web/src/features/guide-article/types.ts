@@ -23,6 +23,8 @@ export type ArticleDay = ItineraryDay & { dayNumber: number };
 /** A piece of the article body, top to bottom (the admin's section kinds). */
 export type ArticleBlock =
   | { type: "quick"; body: RichTextDoc }
+  /** Where the questions sit (they are the article's faqs, also given to Google). */
+  | { type: "faq" }
   | { type: "paragraph"; body: RichTextDoc }
   /** A section with its heading: a stop in the contents list. */
   | { type: "text"; id: string; heading: string; tocLabel: string; body: RichTextDoc }
@@ -93,7 +95,7 @@ export type GuideArticle = {
   trek?: TrekSummary;
   months?: { ratings: readonly MonthRating[]; notes: readonly MonthNote[] };
   blocks: readonly ArticleBlock[];
-  /** "Questions and answers" (shown after the body, and as FAQ data for Google). */
+  /** "Questions and answers" (shown where the faq block is, and as FAQ data for Google). */
   faqs: readonly GuideFaq[];
   /** "Keep reading", in order (published guides only). */
   relatedSlugs: readonly string[];

@@ -87,6 +87,8 @@ export const toBlock = (section: SectionRow, context: BlockContext): ArticleBloc
       const body = field.doc(content, "body");
       return body && { type: section.type, body };
     }
+    case "faq":
+      return field.faqItems(content).length ? { type: "faq" } : undefined;
     case "text": {
       const heading = field.text(content, "heading");
       const body = field.doc(content, "body");

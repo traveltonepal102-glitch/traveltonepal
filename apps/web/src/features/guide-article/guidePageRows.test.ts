@@ -125,9 +125,16 @@ describe("toGuideArticle", () => {
   });
 
   it("keeps the sections that can show, in order, and drops the rest", () => {
-    expect(article?.blocks.map((block) => block.type)).toEqual(["quick", "text", "text", "trek", "months", "tip", "image", "video", "cta"]);
+    expect(article?.blocks.map((block) => block.type)).toEqual(["quick", "text", "text", "trek", "months", "tip", "image", "video", "faq", "cta"]);
     expect(article?.blocks.find((block) => block.type === "video")).toEqual({ type: "video", youtubeId: "dQw4w9WgXcQ", title: "A video" });
     expect(article?.faqs.map((faq) => faq.question)).toEqual(["When?"]);
+  });
+
+  it("puts the quick answer and the questions where the admin put them", () => {
+    const { sections } = page();
+    const moved = toGuideArticle({ page: page({ sections: Array.isArray(sections) ? [...sections].reverse() : [] }), treks }, BASE);
+    expect(moved?.blocks.map((block) => block.type)).toEqual(["cta", "faq", "video", "image", "tip", "months", "trek", "text", "text", "quick"]);
+    expect(articleToc(moved!).map((link) => link.id)).toEqual(["faq", "autumn-the-clearest-views", "autumn-the-clearest-views-2", "quick-answer"]);
   });
 
   it("gives every headed section its own anchor for the contents list", () => {

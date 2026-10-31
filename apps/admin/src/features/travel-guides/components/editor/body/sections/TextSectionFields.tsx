@@ -16,11 +16,16 @@ type TextSectionFieldsProps = {
 };
 
 /** "Heading and text": an H2, its short name in the "In this guide" contents, and the text. */
-export const TextSectionFields = ({ section, field, errors, onChange }: TextSectionFieldsProps) => (
+export const TextSectionFields = ({
+  section,
+  field,
+  errors,
+  onChange,
+}: TextSectionFieldsProps) => (
   <>
     <TextField
       name="sectionHeading"
-      label="Heading · H2"
+      label="Heading"
       value={section.heading}
       onValueChange={(heading) => onChange({ heading })}
       placeholder="Autumn (October to November): the clearest views"

@@ -5,7 +5,7 @@ import { RichText } from "@/components/shared/RichText";
 
 import { QUICK_ANSWER_ID } from "../../guideArticles";
 
-/** Blue "Quick answer" box at the top of the article (the contents list's first stop). */
+/** Blue "Quick answer" box, where the admin put it (a stop in the contents list). */
 export const QuickAnswer = ({ body }: { body: RichTextDoc }) => (
   <section
     id={QUICK_ANSWER_ID}
