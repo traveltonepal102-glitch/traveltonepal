@@ -1,21 +1,21 @@
 "use client";
 
 import { Icon } from "@ttn/ui/icon";
-import { cn } from "@ttn/ui/lib/utils";
-import Image from "next/image";
-import { useId, useState } from "react";
-import type { KeyboardEvent } from "react";
+import Link from "next/link";
+import { useState } from "react";
 
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
-import { inputClass } from "@/components/ui/formStyles";
-import { TextField } from "@/components/ui/TextField";
+import { LibraryVideoDialog } from "@/features/videos/components/LibraryVideoDialog";
+import { VideoThumbnail } from "@/features/videos/components/VideoThumbnail";
+import { VIDEOS_PATH } from "@/features/videos/constants";
+import { youtubeWatchUrl } from "@/features/videos/lib/youtube";
+import type { LibraryVideo } from "@/features/videos/types";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_VIDEOS, TREK_LIMITS as LIMIT } from "../../../constants";
-import { youtubeIdFrom, youtubeThumbnail, youtubeWatchUrl } from "../../../lib/youtube";
+import { MAX_VIDEOS } from "../../../constants";
 import type { TrekVideo } from "../../../types";
 
 type VideosCardProps = {
@@ -25,59 +25,38 @@ type VideosCardProps = {
 };
 
 /**
- * "YouTube videos" (design): paste a link, give it a title, choose where it shows. Only the video's id is saved;
- * the trek page plays it only after the visitor clicks Play (privacy rules). Sent as videoId / videoTitle /
- * videoInGallery / videoInGuide, one of each per video.
+ * "YouTube videos" (design): videos chosen from the video library (Photos and videos), each with where it shows.
+ * The trek saves only the video's id; its title comes from the library. Sent as videoId / videoInGallery /
+ * videoInGuide, one of each per video.
  */
 export const VideosCard = ({ videos, errors, onEdit }: VideosCardProps) => {
-  const id = useId();
   const list = useRowList<TrekVideo>(videos, onEdit);
-  const [link, setLink] = useState("");
-  const [linkError, setLinkError] = useState("");
+  const [isChoosing, setIsChoosing] = useState(false);
   const isFull = list.rows.length >= MAX_VIDEOS;
 
-  const add = () => {
-    const youtubeId = youtubeIdFrom(link);
-    if (!youtubeId) return setLinkError("Paste a YouTube video link, e.g. https://www.youtube.com/watch?v=…");
-    if (list.rows.some((row) => row.youtubeId === youtubeId)) return setLinkError("This video is already on the trek.");
-    list.add({ youtubeId, title: "", inGallery: true, inGuide: false });
-    setLink("");
-    setLinkError("");
-  };
-  // Enter adds the video instead of saving the whole form.
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== "Enter") return;
-    event.preventDefault();
-    add();
+  const addVideo = (video: LibraryVideo) => {
+    if (list.rows.some((row) => row.youtubeId === video.youtubeId)) return;
+    list.add({ youtubeId: video.youtubeId, title: video.title, inGallery: true, inGuide: false });
   };
 
   return (
     <FormSection
       title="YouTube videos"
-      hint="Paste a YouTube link and give it a title. Videos play only after the visitor clicks Play (privacy rules). Only the link is saved, so videos don't slow down the site."
+      hint="Choose videos from the video library, or add a new YouTube link there. Videos play only after the visitor clicks Play (privacy rules). Only the link is saved, so videos don't slow down the site."
       aside={<span className="rounded-full bg-page px-2.5 py-0.5 text-xs font-bold whitespace-nowrap text-muted-foreground">{list.rows.length} videos</span>}
     >
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${id}-link`} className="sr-only">
-          YouTube link
-        </label>
-        <div className="flex gap-2">
-          <input
-            id={`${id}-link`}
-            value={link}
-            onChange={(event) => setLink(event.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isFull}
-            placeholder="Paste a YouTube link, e.g. https://www.youtube.com/watch?v=…"
-            aria-describedby={linkError ? `${id}-link-error` : undefined}
-            className={inputClass}
-          />
-          <button type="button" onClick={add} disabled={isFull || !link.trim()} className={cn(secondaryButton, "flex-none")}>
-            <Icon name="add" size={18} />
-            Add video
-          </button>
-        </div>
-        <FieldError id={`${id}-link-error`} message={linkError} />
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={() => setIsChoosing(true)} disabled={isFull} className={secondaryButton}>
+          <Icon name="add" size={18} />
+          Add a video
+        </button>
+        <span className="text-caption text-muted-foreground">
+          {isFull ? `Up to ${MAX_VIDEOS} videos. ` : ""}Titles are changed in{" "}
+          <Link href={VIDEOS_PATH} className="font-semibold text-brand">
+            Photos and videos
+          </Link>
+          .
+        </span>
       </div>
 
       {list.rows.map((row, index) => (
@@ -85,21 +64,12 @@ export const VideosCard = ({ videos, errors, onEdit }: VideosCardProps) => {
           <input type="hidden" name="videoId" value={row.youtubeId} />
           <input type="hidden" name="videoInGallery" value={String(row.inGallery)} />
           <input type="hidden" name="videoInGuide" value={String(row.inGuide)} />
-          <a href={youtubeWatchUrl(row.youtubeId)} target="_blank" rel="noopener noreferrer" className="relative block overflow-hidden rounded-md bg-navy">
-            {/* YouTube's own small picture, shown as it is (nothing is uploaded or resized). */}
-            <Image src={youtubeThumbnail(row.youtubeId)} alt="" width={320} height={180} unoptimized className="block aspect-video h-auto w-full object-cover" />
-            <Icon name="play_circle" size={34} className="absolute inset-0 m-auto text-white drop-shadow" />
+          <a href={youtubeWatchUrl(row.youtubeId)} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-md">
+            <VideoThumbnail youtubeId={row.youtubeId} hasPlayIcon />
             <span className="sr-only">Watch on YouTube (opens a new tab)</span>
           </a>
           <div className="flex min-w-0 flex-col gap-2">
-            <TextField
-              name="videoTitle"
-              label="Title on the trek page"
-              defaultValue={row.title}
-              placeholder="Walking from Langtang Village to Kyanjin Gompa"
-              maxLength={LIMIT.videoTitle}
-              error={errors[`videos.${index}.title`] ?? errors[`videos.${index}.youtubeId`]}
-            />
+            <p className="m-0 text-body-sm font-bold text-ink">{row.title || "This video is no longer in the library"}</p>
             <fieldset className="m-0 flex flex-wrap items-center gap-3 border-0 p-0 text-caption">
               <legend className="float-left mr-1 p-0 font-bold text-ink">Show in:</legend>
               <label className="inline-flex cursor-pointer items-center gap-1.5">
@@ -111,6 +81,7 @@ export const VideosCard = ({ videos, errors, onEdit }: VideosCardProps) => {
                 Trek guide topics
               </label>
             </fieldset>
+            <FieldError id={`videos-${index}-error`} message={errors[`videos.${index}.youtubeId`]} />
           </div>
           <span className="flex gap-0.5">
             <button type="button" className={ghostIconButton} aria-label={`Move video ${index + 1} up`} disabled={index === 0} onClick={() => list.move(index, index - 1)}>
@@ -123,6 +94,9 @@ export const VideosCard = ({ videos, errors, onEdit }: VideosCardProps) => {
         </div>
       ))}
       <FieldError id="videos-error" message={errors.videos} />
+      {isChoosing && (
+        <LibraryVideoDialog title="Add a video to this trek" selectedIds={list.rows.map((row) => row.youtubeId)} onChoose={addVideo} onClose={() => setIsChoosing(false)} />
+      )}
     </FormSection>
   );
 };

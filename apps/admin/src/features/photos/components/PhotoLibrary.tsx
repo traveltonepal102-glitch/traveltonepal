@@ -1,12 +1,11 @@
-import { Icon } from "@ttn/ui/icon";
-
-import { isTimeFolder } from "../lib/photoFolders";
+import { isTimeFolder, photoFolderHref } from "../lib/photoFolders";
 import type { FolderSelection, PhotoFolder } from "../lib/photoFolders";
 import { groupByUploadTime } from "../lib/uploadTimeGroups";
 import type { LibraryPhoto, PhotoUse } from "../types";
+import { LibraryFolderNav } from "./LibraryFolderNav";
 import { LibraryPhotoCard } from "./LibraryPhotoCard";
 import { LibraryUploadButton } from "./LibraryUploadButton";
-import { PhotoFolderNav } from "./PhotoFolderNav";
+import { MediaLibraryHeader } from "./MediaLibraryHeader";
 
 type PhotoLibraryProps = {
   folders: readonly PhotoFolder[];
@@ -38,28 +37,22 @@ const folderTitle = (folders: readonly PhotoFolder[], { folder, item }: FolderSe
   return openItem ? `${open?.label} › ${openItem.label}` : (open?.label ?? "All photos");
 };
 
-/** The Photos screen: every library photo in folders by where it is used, to upload, find and delete photos. */
+/** The Photos tab of Photos and videos: every library photo in folders by where it is used, to upload, find and delete photos. */
 export const PhotoLibrary = ({ folders, selection, photos, usesByPhoto, canDelete, now }: PhotoLibraryProps) => (
   <>
-    <div className="flex flex-wrap items-start gap-3.5">
-      <span className="inline-flex size-12 flex-none items-center justify-center rounded-lg bg-brand-tint text-brand">
-        <Icon name="photo_library" size={26} />
-      </span>
-      <div className="min-w-60 flex-1">
-        <h1 className="m-0 flex items-center gap-2.5 font-display text-[28px] leading-tight font-extrabold text-ink max-tablet:text-[22px]">
-          Photos
-          <span className="rounded-full bg-muted px-2.5 py-0.5 font-sans text-caption font-bold text-text">{folders[0]?.count ?? 0} photos</span>
-        </h1>
-        <p className="m-0 mt-1 max-w-195 text-muted-foreground">
-          Every photo in the library, sorted into folders by where it is used. Click where a photo is used to change it there. A photo can be
-          deleted once nothing uses it{canDelete ? "" : " (by a Super admin)"}. Location data is removed from every upload.
-        </p>
-      </div>
-      <LibraryUploadButton />
-    </div>
+    <MediaLibraryHeader
+      tab="photos"
+      description={
+        <>
+          Every photo in the library ({folders[0]?.count ?? 0}), sorted into folders by where it is used. Click where a photo is used to change it there. A
+          photo can be deleted once nothing uses it{canDelete ? "" : " (by a Super admin)"}. Location data is removed from every upload.
+        </>
+      }
+      action={<LibraryUploadButton />}
+    />
 
     <div className="grid items-start gap-5 desktop:grid-cols-[240px_minmax(0,1fr)]">
-      <PhotoFolderNav folders={folders} selection={selection} />
+      <LibraryFolderNav label="Photo folders" folders={folders} selection={selection} hrefOf={photoFolderHref} />
       <section aria-labelledby="photo-folder-title" className="flex min-w-0 flex-col gap-3">
         <h2 id="photo-folder-title" className="m-0 font-display text-h4 text-ink">
           {folderTitle(folders, selection)} <span className="font-sans text-caption font-bold text-muted-foreground">({photos.length})</span>

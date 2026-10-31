@@ -106,16 +106,17 @@ export type SharedSectionKey =
   | "booking_cta"
   | "newsletter";
 
-/** A YouTube video on the trek: only the video's id is saved, nothing is uploaded. */
-export type TrekVideo = {
-  /** From the YouTube link, e.g. "dQw4w9WgXcQ". */
+/** A video from the video library on the trek: the trek saves its YouTube id and where it shows. */
+export type TrekVideoChoice = {
+  /** A library video's YouTube id, e.g. "dQw4w9WgXcQ". */
   youtubeId: string;
-  /** Shown on the trek page. */
-  title: string;
   /** "Show in": the photo gallery, and/or offered for the trek guide topics. */
   inGallery: boolean;
   inGuide: boolean;
 };
+
+/** A trek video with its title from the library (changed on the Photos and videos screen). */
+export type TrekVideo = TrekVideoChoice & { title: string };
 
 /** One topic of the trek guide ("Practical field knowledge"), e.g. "Best season and weather windows". */
 export type KnowTopic = {
@@ -259,7 +260,9 @@ export type TrekValues = {
 export type TrekPhotos = PhotoSelection;
 
 /** What the editor's Save sends (checked by trekSchema). */
-export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinerary" | "groupPrices" | "sharePhoto"> & {
+export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinerary" | "groupPrices" | "sharePhoto" | "videos"> & {
+  /** Saved without the titles (they belong to the library). */
+  videos: TrekVideoChoice[];
   sharePhotoId: string | null;
   groupPrices: (Omit<GroupPrice, "priceUsd"> & { priceUsd: number })[];
   /** From the day-by-day plan when it has days; otherwise typed in Basics. */

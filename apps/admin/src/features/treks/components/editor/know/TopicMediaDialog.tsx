@@ -3,16 +3,12 @@
 import { Dialog } from "@base-ui/react/dialog";
 import { Tabs } from "@base-ui/react/tabs";
 import { Icon } from "@ttn/ui/icon";
-import { cn } from "@ttn/ui/lib/utils";
-import Image from "next/image";
-import { useState } from "react";
 
-import { iconButton, primaryButton } from "@/components/ui/buttonStyles";
-import { TextField } from "@/components/ui/TextField";
+import { iconButton } from "@/components/ui/buttonStyles";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
+import { VideoThumbnail } from "@/features/videos/components/VideoThumbnail";
 
-import { youtubeIdFrom, youtubeThumbnail } from "../../../lib/youtube";
 import type { TrekVideo } from "../../../types";
 
 type TopicMediaDialogProps = {
@@ -31,18 +27,11 @@ const TAB =
 const TILE =
   "m-0 cursor-pointer overflow-hidden rounded-md border-2 border-solid border-transparent bg-navy p-0 text-left aria-pressed:border-brand focus-visible:outline-2 focus-visible:outline-ring";
 
-/** YouTube's own small picture, shown as it is (nothing is uploaded or resized). */
-const VideoPicture = ({ youtubeId, className }: { youtubeId: string; className?: string }) => (
-  <Image src={youtubeThumbnail(youtubeId)} alt="" width={320} height={180} unoptimized className={cn("block aspect-video h-auto w-full object-cover", className)} />
-);
-
 /**
  * "Photo or video" for a trek guide topic, in a window: a photo from the trek's photos (click to choose), or a
- * YouTube video (paste any YouTube link, or pick one of the trek's videos). Only the choice goes back to the form.
+ * YouTube video (one of the trek's videos, from the library). Only the choice goes back to the form.
  */
 export const TopicMediaDialog = ({ topicLabel, value, photos, videos, onChoose, onClose }: TopicMediaDialogProps) => {
-  const [link, setLink] = useState(value.startsWith("video:") ? value.slice(6) : "");
-  const linkedId = link.trim() ? youtubeIdFrom(link) : null;
   const choose = (next: string) => {
     onChoose(next);
     onClose();
@@ -94,37 +83,20 @@ export const TopicMediaDialog = ({ topicLabel, value, photos, videos, onChoose, 
               )}
             </Tabs.Panel>
 
-            <Tabs.Panel value="video" className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5 outline-none">
-              <div className="grid items-start gap-3 tablet:grid-cols-[minmax(0,1fr)_200px]">
-                <div className="flex flex-col gap-2">
-                  <TextField name="topicVideoLink" label="YouTube link" value={link} onValueChange={setLink} placeholder="https://www.youtube.com/watch?v=…" />
-                  {link.trim() && (
-                    <p className={cn("m-0 inline-flex items-center gap-1 text-caption font-semibold", linkedId ? "text-whatsapp" : "text-danger")}>
-                      <Icon name={linkedId ? "check_circle" : "error"} size={16} />
-                      {linkedId ? "Video found." : "That isn’t a YouTube video link."}
-                    </p>
-                  )}
-                  <button type="button" disabled={!linkedId} onClick={() => linkedId && choose(`video:${linkedId}`)} className={cn(primaryButton, "min-h-9 self-start px-4 text-caption")}>
-                    Use this video
-                  </button>
+            <Tabs.Panel value="video" className="min-h-0 flex-1 overflow-y-auto p-5 outline-none">
+              {videos.length ? (
+                <div className="grid grid-cols-3 gap-2.5 max-tablet:grid-cols-2">
+                  {videos.map((video) => (
+                    <button key={video.youtubeId} type="button" aria-pressed={value === `video:${video.youtubeId}`} onClick={() => choose(`video:${video.youtubeId}`)} className={TILE}>
+                      <VideoThumbnail youtubeId={video.youtubeId} />
+                      <span className="block truncate bg-surface px-2 py-1 text-[11px] font-semibold text-text">{video.title}</span>
+                    </button>
+                  ))}
                 </div>
-                <span className="flex aspect-video items-center justify-center overflow-hidden rounded-md bg-navy text-white/50">
-                  {linkedId ? <VideoPicture youtubeId={linkedId} /> : <Icon name="smart_display" size={36} />}
-                </span>
-              </div>
-
-              {videos.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase">This trek’s videos</span>
-                  <div className="grid grid-cols-3 gap-2.5 max-tablet:grid-cols-2">
-                    {videos.map((video) => (
-                      <button key={video.youtubeId} type="button" aria-pressed={value === `video:${video.youtubeId}`} onClick={() => choose(`video:${video.youtubeId}`)} className={TILE}>
-                        <VideoPicture youtubeId={video.youtubeId} />
-                        <span className="block truncate bg-surface px-2 py-1 text-[11px] font-semibold text-text">{video.title}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              ) : (
+                <p className="m-0 text-body-sm text-muted-foreground">
+                  This trek has no videos yet. Add them from the video library under “Photo gallery and videos”, save, then come back here.
+                </p>
               )}
             </Tabs.Panel>
           </Tabs.Root>

@@ -81,7 +81,6 @@ export const TREK_LIMITS = {
   knowText: 3000,
   knowNote: 300,
   similarIntro: 200,
-  videoTitle: 100,
 } as const;
 
 export const MAX_KNOW_TOPICS = 8;

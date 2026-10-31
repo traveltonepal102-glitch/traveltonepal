@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { youtubeIdFrom } from "@/features/treks/lib/youtube";
+import { libraryVideoId } from "@/features/videos/schemas/videoSchema";
 import { requiredText, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty } from "@/lib/richText/richText";
 
@@ -139,12 +139,7 @@ const sectionSchema = z.discriminatedUnion(
     z.object({
       id: sectionId,
       type: z.literal("video"),
-      youtubeId: z.string().transform((value, context) => {
-        const id = youtubeIdFrom(value);
-        if (id) return id;
-        context.addIssue({ code: "custom", message: "Paste a YouTube video link, e.g. https://www.youtube.com/watch?v=…" });
-        return z.NEVER;
-      }),
+      youtubeId: libraryVideoId,
       title: requiredText(LIMIT.videoTitle, "Write the video's title."),
     }),
     z.object({

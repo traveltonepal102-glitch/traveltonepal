@@ -31,7 +31,7 @@ const FAILURES: Record<FailureReason, { message: string; field?: [string, string
   },
   date_needed: { message: "Pick the date it goes live.", field: ["publishedOn", "Pick the date it goes live."] },
   section_guide_not_agreed: { message: "A guide in the article body hasn't agreed to be shown. Tick their consent in Trekking guides, or pick another guide." },
-  missing_link: { message: "The photo, a trek, a region or a person no longer exists. Reload the page and try again." },
+  missing_link: { message: "The photo, a video, a trek, a region or a person no longer exists. Reload the page and try again." },
   not_found: { message: "This travel guide no longer exists. Go back to Travel guides and open it again." },
   forbidden: { message: "Your account can't make this change." },
   failed: { message: "The travel guide couldn't be saved. Nothing was lost on this page: try Save again in a moment." },

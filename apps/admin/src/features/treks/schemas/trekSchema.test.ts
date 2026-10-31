@@ -345,12 +345,11 @@ describe("trekSchema", () => {
     expect(errorsOf({ pdfMapPath: "../photos/secret.pdf" }).pdfMapPath).toBe("Upload the PDF map again.");
   });
 
-  it("reads videos as YouTube ids, with where each one shows", () => {
-    const videos = { videoId: ["https://youtu.be/dQw4w9WgXcQ"], videoTitle: [" Kyanjin at sunrise "], videoInGallery: ["true"], videoInGuide: ["false"] };
-    expect(parse(videos).data?.videos).toEqual([{ youtubeId: "dQw4w9WgXcQ", title: "Kyanjin at sunrise", inGallery: true, inGuide: false }]);
-    expect(errorsOf({ ...videos, videoId: ["https://vimeo.com/1"] })["videos.0.youtubeId"]).toMatch(/Paste a YouTube video link/);
-    expect(errorsOf({ ...videos, videoTitle: [""] })["videos.0.title"]).toBe("Write the title shown on the trek page.");
-    const twice = { videoId: ["dQw4w9WgXcQ", "dQw4w9WgXcQ"], videoTitle: ["A", "B"], videoInGallery: ["true", "true"], videoInGuide: ["false", "false"] };
+  it("reads videos as library YouTube ids, with where each one shows", () => {
+    const videos = { videoId: ["dQw4w9WgXcQ"], videoInGallery: ["true"], videoInGuide: ["false"] };
+    expect(parse(videos).data?.videos).toEqual([{ youtubeId: "dQw4w9WgXcQ", inGallery: true, inGuide: false }]);
+    expect(errorsOf({ ...videos, videoId: ["https://vimeo.com/1"] })["videos.0.youtubeId"]).toBe("Choose a video from the library.");
+    const twice = { videoId: ["dQw4w9WgXcQ", "dQw4w9WgXcQ"], videoInGallery: ["true", "true"], videoInGuide: ["false", "false"] };
     expect(errorsOf(twice).videos).toBe("A video is in the list twice.");
   });
 

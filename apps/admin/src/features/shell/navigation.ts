@@ -47,10 +47,10 @@ export const ADMIN_SECTIONS = {
     summary: "Your own schema.org JSON-LD for any page, added to what the website writes by itself.",
   },
   photos: {
-    label: "Photos",
+    label: "Photos and videos",
     href: "/photos",
-    icon: "image",
-    summary: "Every photo, in folders by where it is used. Upload, find and delete photos.",
+    icon: "photo_library",
+    summary: "Every photo and YouTube video, in folders by where it is used. Upload photos, add video links, find and delete them.",
   },
   settings: {
     label: "Site settings",

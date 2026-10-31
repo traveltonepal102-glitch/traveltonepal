@@ -19,7 +19,7 @@ import { getTrekPdfMapPath, saveTrek as saveTrekToDatabase } from "../services/t
 const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveState => ({ status: "error", message, fieldErrors });
 
 const FAILURE_MESSAGES = {
-  missing_link: "The region or a photo no longer exists. Reload the page and try again.",
+  missing_link: "The region, a photo or a video no longer exists. Reload the page and try again.",
   not_found: "This trek no longer exists. Go back to Treks and open it again.",
   forbidden: "Your account can't make this change.",
   failed: "The trek couldn't be saved. Nothing was lost on this page: try Save again in a moment.",

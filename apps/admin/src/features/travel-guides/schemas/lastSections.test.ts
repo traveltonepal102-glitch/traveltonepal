@@ -72,7 +72,7 @@ describe("the last eleven kinds of section", () => {
       "sections.6.alt": "Describe the photo for Google and screen readers.",
       "sections.7.photoIds": "Choose 2 to 20 photos.",
       "sections.8.place": "Write the place for the map.",
-      "sections.9.youtubeId": "Paste a YouTube video link, e.g. https://www.youtube.com/watch?v=…",
+      "sections.9.youtubeId": "Choose a video from the library.",
       "sections.9.title": "Write the video's title.",
     });
   });

@@ -4,6 +4,7 @@ import { NEW_ADVENTURE_PATH } from "@/features/adventures/constants";
 import { NEW_REGION_PATH } from "@/features/regions/constants";
 import { NEW_GUIDE_PATH } from "@/features/trekking-guides/constants";
 import { NEW_TREK_PATH } from "@/features/treks/constants";
+import { NEW_VIDEO_PATH } from "@/features/videos/constants";
 import type { AdminRole } from "@/lib/supabase/database.types";
 
 import { ADMIN_SECTIONS } from "./navigation";
@@ -35,6 +36,7 @@ export const NEW_ITEMS: NewItem[] = [
     href: NEW_GUIDE_PATH,
   },
   { label: "Upload photos", hint: "Location data is removed", icon: "image", tone: "green", href: ADMIN_SECTIONS.photos.href },
+  { label: "YouTube video", hint: "Paste the link once, use it anywhere", icon: "smart_display", tone: "green", href: NEW_VIDEO_PATH },
 ];
 
 /** The "New" menu for this admin: without what only a Super admin can add, for an editor. */

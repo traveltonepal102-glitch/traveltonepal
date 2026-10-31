@@ -28,10 +28,16 @@ export const isTimeFolder = (folder: PhotoFolderKey) => folder === ALL.key || fo
 /** A sub-folder: one trek, region, guide or page. */
 export type PhotoFolderItem = { id: string; label: string; count: number };
 
-export type PhotoFolder = { key: PhotoFolderKey; label: string; icon: IconName; count: number; items: PhotoFolderItem[] };
+/** A folder of the Photos and videos screen (photos or videos), with its sub-folders. */
+export type LibraryFolder<Key extends string = string> = { key: Key; label: string; icon: IconName; count: number; items: PhotoFolderItem[] };
 
-/** The folder the screen opens, from ?folder=…&item=…; unknown values open all photos. */
-export type FolderSelection = { folder: PhotoFolderKey; item: string | null };
+/** The open folder (and sub-folder), from ?folder=…&item=…. */
+export type LibrarySelection<Key extends string = string> = { folder: Key; item: string | null };
+
+export type PhotoFolder = LibraryFolder<PhotoFolderKey>;
+
+/** The folder the screen opens; unknown values open all photos. */
+export type FolderSelection = LibrarySelection<PhotoFolderKey>;
 
 const FOLDER_KEYS: readonly string[] = [ALL.key, RECENT.key, ...USE_FOLDERS.map((folder) => folder.key), UNUSED.key];
 

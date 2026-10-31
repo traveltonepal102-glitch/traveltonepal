@@ -8,7 +8,7 @@ import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
 export const metadata: Metadata = { title: ADMIN_SECTIONS.photos.label };
 
-/** Photos: the library in folders by where each photo is used. "?folder=treks&item=<trek id>" opens a folder. */
+/** Photos and videos › Photos: the library in folders by where each photo is used. "?folder=treks&item=<trek id>" opens a folder. */
 const PhotosPage = async ({ searchParams }: PageProps<"/photos">) => {
   const admin = await requireAdmin();
   const [photos, uses, params] = await Promise.all([listAllPhotos(), listPhotoUses(), searchParams]);

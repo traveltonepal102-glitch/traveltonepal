@@ -4,6 +4,7 @@ import { cache } from "react";
 import { z } from "zod";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
+import { videoTitleMap } from "@/features/videos/services/videosRepository";
 import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -116,9 +117,10 @@ const knowTopicsSchema = z
     }),
   )
   .catch([]);
-const videosSchema = z.array(z.object({ youtubeId: z.string(), title: z.string(), inGallery: z.boolean(), inGuide: z.boolean() })).catch([]);
+const videosSchema = z.array(z.object({ youtubeId: z.string(), inGallery: z.boolean(), inGuide: z.boolean() })).catch([]);
 
-const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
+/** videoTitles: the library's titles by YouTube id (a trek keeps only the id). */
+const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>, videoTitles: Map<string, string>): Trek => {
   const [text] = row.trek_translations;
   return {
     id: row.id,
@@ -211,7 +213,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>): Trek => {
     faqHeading: text.faq_heading,
     similarHeading: text.similar_heading,
     similarIntro: text.similar_intro,
-    videos: videosSchema.parse(text.videos),
+    videos: videosSchema.parse(text.videos).map((video) => ({ ...video, title: videoTitles.get(video.youtubeId) ?? "" })),
     pdfMapPath: row.pdf_map_path,
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     routeRegionIds: toRouteRegionIds(row.trek_regions),
@@ -265,7 +267,7 @@ export const listSimilarTrekOptions = async (exceptId: string | null): Promise<S
 /** All treks with their English text, most recently edited first. Throws when the database can't be read. */
 export const listTreks = async (): Promise<Trek[]> => {
   const supabase = await createSupabaseServerClient();
-  const [{ data, error }, regionNames] = await Promise.all([
+  const [{ data, error }, regionNames, videoTitles] = await Promise.all([
     supabase
       .from("treks")
       .select(TREK_COLUMNS)
@@ -274,15 +276,16 @@ export const listTreks = async (): Promise<Trek[]> => {
       .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
       .order("updated_at", { ascending: false }),
     regionNameMap(),
+    videoTitleMap(),
   ]);
   if (error) throw new Error(`Could not load treks: ${error.message}`);
-  return data.map((row) => toTrek(row, regionNames));
+  return data.map((row) => toTrek(row, regionNames, videoTitles));
 };
 
 /** One trek, or null when there is none with this id. Throws when the database can't be read. Once per request. */
 export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
   const supabase = await createSupabaseServerClient();
-  const [{ data, error }, regionNames] = await Promise.all([
+  const [{ data, error }, regionNames, videoTitles] = await Promise.all([
     supabase
       .from("treks")
       .select(TREK_COLUMNS)
@@ -292,9 +295,10 @@ export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
       .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
       .maybeSingle(),
     regionNameMap(),
+    videoTitleMap(),
   ]);
   if (error) throw new Error(`Could not load trek ${trekId}: ${error.message}`);
-  return data ? toTrek(data, regionNames) : null;
+  return data ? toTrek(data, regionNames, videoTitles) : null;
 });
 
 /** The trek's saved printable map (null without one), to delete it once a save replaces or removes it. */

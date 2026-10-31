@@ -10,7 +10,7 @@ import { FieldError } from "@/components/ui/FieldError";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
 
-import { youtubeThumbnail } from "../../../lib/youtube";
+import { youtubeThumbnail } from "@/features/videos/lib/youtube";
 import type { TrekVideo } from "../../../types";
 import { TopicMediaDialog } from "./TopicMediaDialog";
 

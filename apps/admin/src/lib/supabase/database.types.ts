@@ -261,6 +261,17 @@ export type AdventureRow = {
   updated_by: string | null;
 };
 
+/** One YouTube video in the library (supabase/migrations/20261031100000_video_library.sql). */
+export type VideoRow = {
+  id: string;
+  youtube_id: string;
+  title: string;
+  created_at: string;
+  created_by: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 /** One custom JSON-LD block on a page (supabase/migrations/20261029155000_page_schemas.sql): exactly one page column is set. */
 export type PageSchemaRow = {
   id: string;
@@ -794,6 +805,12 @@ export type Database = {
         Update: Partial<AdventureRow>;
         Relationships: [Fk<"adventures_photo_id_fkey", "photo_id", "photos">];
       };
+      videos: {
+        Row: VideoRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       page_schemas: {
         Row: PageSchemaRow;
         Insert: never;
@@ -1043,6 +1060,18 @@ export type Database = {
       delete_unused_photo: {
         Args: { p_photo_id: string };
         Returns: { master_key: string; variant_widths: number[] }[];
+      };
+      save_video: {
+        Args: { p_video_id: string | null; p_video: Json };
+        Returns: string;
+      };
+      video_uses: {
+        Args: { p_youtube_id?: string };
+        Returns: { youtube_id: string; kind: string; item_id: string; item_label: string; detail: string }[];
+      };
+      delete_unused_video: {
+        Args: { p_video_id: string };
+        Returns: boolean;
       };
       save_author: {
         Args: { p_author_id: string | null; p_locale: string; p_author: Json; p_text: Json };
