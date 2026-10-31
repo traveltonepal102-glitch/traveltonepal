@@ -39,6 +39,16 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
           <RichText doc={block.body} className={BODY} />
         </section>
       );
+    case "heading":
+      return block.level === "h2" ? (
+        <h2 id={block.id} className={`${SECTION_TITLE} pt-3`}>
+          {block.heading}
+        </h2>
+      ) : (
+        <h3 id={block.id} className="scroll-mt-5 font-display text-lg font-bold text-ink md:text-xl">
+          {block.heading}
+        </h3>
+      );
     case "callout":
       return <ArticleCallout tone={block.tone} body={block.body} />;
     case "check":

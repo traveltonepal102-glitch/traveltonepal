@@ -12,6 +12,7 @@ import { EmbedFields } from "./sections/EmbedFields";
 import { FaqSectionFields } from "./sections/FaqSectionFields";
 import { GalleryFields } from "./sections/GalleryFields";
 import { GuideWordsFields } from "./sections/GuideWordsFields";
+import { HeadingFields } from "./sections/HeadingFields";
 import { HtmlFields } from "./sections/HtmlFields";
 import { ItineraryDaysFields } from "./sections/ItineraryDaysFields";
 import { MapFields } from "./sections/MapFields";
@@ -44,6 +45,8 @@ export const SectionFields = ({ section, index, context, errors, onChange }: Sec
       return <TextSectionFields section={section} {...shared} onChange={(patch) => onChange({ ...section, ...patch })} />;
     case "paragraph":
       return <ParagraphFields body={section.body} error={errors[`${field}.body`]} onChange={(body) => onChange({ ...section, body })} />;
+    case "heading":
+      return <HeadingFields section={section} {...shared} onChange={(patch) => onChange({ ...section, ...patch })} />;
     case "quick":
       return <QuickAnswerFields body={section.body} error={errors[`${field}.body`]} onChange={(body) => onChange({ ...section, body })} />;
     case "callout":

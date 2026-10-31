@@ -26,6 +26,8 @@ export const newSection = (type: SectionType): EditorSection => {
     case "paragraph":
     case "quick":
       return { id: null, type, body: EMPTY_RICH_TEXT };
+    case "heading":
+      return { id: null, type, level: "h2", heading: "", tocLabel: "" };
     case "callout":
       return { id: null, type, tone: "warning", body: EMPTY_RICH_TEXT };
     case "check":

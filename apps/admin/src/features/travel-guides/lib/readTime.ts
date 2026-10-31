@@ -12,7 +12,7 @@ const sectionText = (section: ArticleSection) => {
   if (section.type === "text") return `${section.heading} ${richTextToPlainText(section.body)}`;
   if (section.type === "paragraph" || section.type === "quick" || section.type === "callout") return richTextToPlainText(section.body);
   if (section.type === "check") return [section.heading, ...section.items].join(" ");
-  if (section.type === "months" || section.type === "cta" || section.type === "meet") return section.heading;
+  if (section.type === "heading" || section.type === "months" || section.type === "cta" || section.type === "meet") return section.heading;
   if (section.type === "quote" || section.type === "tip" || section.type === "gquote") return section.text;
   if (section.type === "cost") return [section.heading, ...section.rows.map((row) => row.item)].join(" ");
   if (section.type === "table") return [section.heading, ...(section.hasHeader ? section.header : []), ...section.rows.flat()].join(" ");

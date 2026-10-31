@@ -445,6 +445,7 @@ type ArticleTranslationRow = {
 export type ArticleSectionTypeValue =
   | "text"
   | "paragraph"
+  | "heading"
   | "quick"
   | "callout"
   | "check"

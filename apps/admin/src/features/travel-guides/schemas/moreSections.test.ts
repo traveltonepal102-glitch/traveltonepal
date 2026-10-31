@@ -6,7 +6,7 @@ import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 import type { MonthRating } from "@/lib/supabase/database.types";
 
 import { emptyMonths } from "../constants";
-import { storedMonths, storedSection } from "../services/storedSections";
+import { storedMonths, storedSection, toStoredSection } from "../services/storedSections";
 import { monthsField } from "./monthsSchema";
 import { sectionsField } from "./sectionsSchema";
 
@@ -79,5 +79,19 @@ describe("the guide's months", () => {
   it("reads a section's settings, with a safe choice when they are missing", () => {
     expect(storedSection({ id: "s1", type: "months", trek_id: null, settings: { view: "table" } }, { heading: "Months" })).toEqual({ id: "s1", type: "months", heading: "Months", view: "table" });
     expect(storedSection({ id: "s2", type: "callout", trek_id: null, settings: {} }, { body: doc("Note.") })).toMatchObject({ tone: "warning" });
+  });
+});
+
+describe("heading sections", () => {
+  it("needs the heading and a known level", () => {
+    const heading = { id: null, type: "heading", level: "h2", heading: " Walking times ", tocLabel: " Times " };
+    expect(parse([heading]).data?.sections).toEqual([{ id: null, type: "heading", level: "h2", heading: "Walking times", tocLabel: "Times" }]);
+    expect(errorsOf([{ ...heading, heading: "", level: "h4" }])).toMatchObject({ "sections.0.heading": "Write the heading.", "sections.0.level": "Pick H2 or H3." });
+  });
+
+  it("saves the level as a setting, and no short name for an H3", () => {
+    const h3 = { id: null, type: "heading", level: "h3", heading: "Day one", tocLabel: "Day" } as const;
+    expect(toStoredSection(h3)).toMatchObject({ settings: { level: "h3" }, content: { heading: "Day one", tocLabel: "" } });
+    expect(storedSection({ id: "s1", type: "heading", trek_id: null, settings: {} }, { heading: "Walking times" })).toEqual({ id: "s1", type: "heading", level: "h2", heading: "Walking times", tocLabel: "" });
   });
 });

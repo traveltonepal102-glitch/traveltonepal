@@ -26,6 +26,8 @@ export type ArticleBlock =
   | { type: "paragraph"; body: RichTextDoc }
   /** A section with its heading: a stop in the contents list. */
   | { type: "text"; id: string; heading: string; tocLabel: string; body: RichTextDoc }
+  /** A heading with nothing under it; an H2 is a stop in the contents list too. */
+  | { type: "heading"; id: string; level: "h2" | "h3"; heading: string; tocLabel: string }
   | { type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
   | { type: "check"; heading: string; items: readonly string[] }
   /** Every row as wide as the widest; no header or footer: []. */

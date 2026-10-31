@@ -46,6 +46,13 @@ const sectionSchema = z.discriminatedUnion(
       body: richText(LIMIT.text, "Write the text, or remove this section."),
     }),
     z.object({ id: sectionId, type: z.literal("paragraph"), body: richText(LIMIT.text, "Write the text, or remove this section.") }),
+    z.object({
+      id: sectionId,
+      type: z.literal("heading"),
+      level: z.enum(["h2", "h3"], "Pick H2 or H3."),
+      heading: requiredText(LIMIT.heading, "Write the heading."),
+      tocLabel: text(LIMIT.tocLabel),
+    }),
     z.object({ id: sectionId, type: z.literal("quick"), body: richText(LIMIT.quickAnswer, "Write the answer, or remove this section.") }),
     z.object({
       id: sectionId,

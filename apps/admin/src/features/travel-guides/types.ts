@@ -25,7 +25,10 @@ export type KeyFact = { icon: FactIcon; label: string; value: string };
 /** The kinds of section built so far (the catalog lists the rest as coming soon). */
 export type SectionType = ArticleSectionTypeValue;
 
-export type FaqItem = { question: string; answer: RichTextDoc };
+/** A "Heading" section's level: H2 (in the contents list) or H3 (under an H2). */
+export type HeadingLevel = "h2" | "h3";
+
+export type FaqItem ={ question: string; answer: RichTextDoc };
 
 /** How busy the trail is in a month (the month table's "Crowds"); "" when not set. */
 export type Crowds = "very-low" | "low" | "medium" | "busy" | "busiest";
@@ -40,6 +43,8 @@ export type MonthEntry = { rating: MonthRating; onTheTrail: string; crowds: Crow
 export type ArticleSection =
   | { id: string | null; type: "text"; heading: string; tocLabel: string; body: RichTextDoc }
   | { id: string | null; type: "paragraph"; body: RichTextDoc }
+  /** A heading with nothing under it; an H2 is a stop in "In this guide" (its short name: `tocLabel`). */
+  | { id: string | null; type: "heading"; level: HeadingLevel; heading: string; tocLabel: string }
   | { id: string | null; type: "quick"; body: RichTextDoc }
   | { id: string | null; type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
   | { id: string | null; type: "check"; heading: string; items: string[] }

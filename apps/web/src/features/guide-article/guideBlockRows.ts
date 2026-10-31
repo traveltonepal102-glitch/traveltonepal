@@ -92,6 +92,11 @@ export const toBlock = (section: SectionRow, context: BlockContext): ArticleBloc
       const body = field.doc(content, "body");
       return heading && body ? { type: "text", id: "", heading, tocLabel: field.text(content, "tocLabel") || heading, body } : undefined;
     }
+    case "heading": {
+      const heading = field.text(content, "heading");
+      const level = settings.level === "h3" ? "h3" : "h2";
+      return heading ? { type: "heading", id: "", level, heading, tocLabel: field.text(content, "tocLabel") || heading } : undefined;
+    }
     case "callout": {
       const body = field.doc(content, "body");
       return body && { type: "callout", tone: settings.tone === "warning" ? "warning" : "note", body };
@@ -173,11 +178,11 @@ export const toBlock = (section: SectionRow, context: BlockContext): ArticleBloc
   }
 };
 
-/** Each "text" section gets its own anchor for the contents list (a repeated heading gets "-2", "-3"…). */
+/** Each "text" and "heading" section gets its own anchor for the contents list (a repeated heading gets "-2", "-3"…). */
 export const withAnchors = (blocks: readonly ArticleBlock[]): ArticleBlock[] => {
   const used = new Set<string>();
   return blocks.map((block, index) => {
-    if (block.type !== "text") return block;
+    if (block.type !== "text" && block.type !== "heading") return block;
     const base = anchorOf(block.heading) || `section-${index + 1}`;
     let id = base;
     for (let number = 2; used.has(id); number += 1) id = `${base}-${number}`;

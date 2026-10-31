@@ -4,7 +4,8 @@ import { describe, expect, it } from "vitest";
 
 import type { TrekSummary } from "@/features/treks/types";
 
-import { toBlock } from "./guideBlockRows";
+import { articleToc } from "./guideArticles";
+import { toBlock, withAnchors } from "./guideBlockRows";
 import { readSections } from "./guidePageJson";
 
 const trek: TrekSummary = {
@@ -116,5 +117,26 @@ describe("altitude chart sections", () => {
     expect(block?.type === "altitude" && block.days.map((item) => item.place)).toEqual(["Syabrubesi", "Lama Hotel", "Langtang"]);
     expect(blockOf("altitude", {}, { trek_slug: "langtang-valley", days: days.slice(0, 1) })).toBeUndefined();
     expect(blockOf("altitude", {}, { trek_slug: "not-published", days })).toBeUndefined();
+  });
+});
+
+describe("heading sections", () => {
+  it("shows a heading with its level, the heading as its short name when none is written", () => {
+    expect(blockOf("heading", { heading: "Walking times", tocLabel: "" }, { settings: { level: "h2" } })).toEqual({ type: "heading", id: "", level: "h2", heading: "Walking times", tocLabel: "Walking times" });
+    expect(blockOf("heading", { heading: "Day one", tocLabel: "" }, { settings: { level: "h3" } })).toMatchObject({ level: "h3" });
+    expect(blockOf("heading", { heading: "Day one" }, { settings: { level: "h9" } })).toMatchObject({ level: "h2" });
+    expect(blockOf("heading", { heading: "" }, { settings: { level: "h2" } })).toBeUndefined();
+  });
+
+  it("lists H2 headings in the contents with their anchors, not H3 ones", () => {
+    const blocks = withAnchors([
+      { type: "heading", id: "", level: "h2", heading: "Walking times", tocLabel: "Times" },
+      { type: "heading", id: "", level: "h3", heading: "Day one", tocLabel: "Day one" },
+      { type: "heading", id: "", level: "h2", heading: "Walking times", tocLabel: "Times" },
+    ]);
+    expect(articleToc({ blocks, faqs: [] })).toEqual([
+      { id: "walking-times", label: "Times" },
+      { id: "walking-times-2", label: "Times" },
+    ]);
   });
 });

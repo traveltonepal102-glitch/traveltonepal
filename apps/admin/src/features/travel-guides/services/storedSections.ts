@@ -14,6 +14,7 @@ const words = z.string().catch("");
 /** Each kind's stored words, read leniently: anything missing or malformed comes back empty to fix in the editor. */
 const CONTENT = {
   text: z.object({ heading: words, tocLabel: words, body: doc }).catch({ heading: "", tocLabel: "", body: EMPTY_RICH_TEXT }),
+  headingOnly: z.object({ heading: words, tocLabel: words }).catch({ heading: "", tocLabel: "" }),
   body: z.object({ body: doc }).catch({ body: EMPTY_RICH_TEXT }),
   faq: z.object({ items: z.array(z.object({ question: words, answer: doc })).catch([]) }).catch({ items: [] }),
   check: z.object({ heading: words, items: z.array(words).catch([]) }).catch({ heading: "", items: [] }),
@@ -36,6 +37,7 @@ const CONTENT = {
 /** Each kind's choices that are the same in every language (article_sections.settings). */
 const SETTINGS = {
   callout: z.object({ tone: z.enum(["note", "warning"]).catch("warning") }).catch({ tone: "warning" }),
+  heading: z.object({ level: z.enum(["h2", "h3"]).catch("h2") }).catch({ level: "h2" }),
   months: z.object({ view: z.enum(["strip", "table"]).catch("strip") }).catch({ view: "strip" }),
   days: z.object({ dayIds: z.array(z.string()).catch([]) }).catch({ dayIds: [] }),
   compare: z.object({ trekIds: z.array(z.string()).catch([]) }).catch({ trekIds: [] }),
@@ -68,6 +70,7 @@ export const storedSection = (row: StoredSectionRow, content: Json | undefined):
   if (row.type === "trek") return { id: row.id, type: "trek", trekId: row.trek_id };
   if (row.type === "text") return { id: row.id, type: "text", ...CONTENT.text.parse(content) };
   if (row.type === "paragraph") return { id: row.id, type: "paragraph", ...CONTENT.body.parse(content) };
+  if (row.type === "heading") return { id: row.id, type: "heading", ...SETTINGS.heading.parse(row.settings), ...CONTENT.headingOnly.parse(content) };
   if (row.type === "quick") return { id: row.id, type: "quick", ...CONTENT.body.parse(content) };
   if (row.type === "callout") return { id: row.id, type: "callout", ...SETTINGS.callout.parse(row.settings), ...CONTENT.body.parse(content) };
   if (row.type === "check") return { id: row.id, type: "check", ...CONTENT.check.parse(content) };
@@ -115,6 +118,8 @@ export const toStoredSection = (section: ArticleSection) => {
   const shared = { id: section.id ?? "", type: section.type, trek_id: trekId, settings: {}, guide_ids: none, photo_ids: none };
   if (section.type === "text") return { ...shared, content: { heading: section.heading, tocLabel: section.tocLabel, body: section.body } };
   if (section.type === "paragraph" || section.type === "quick") return { ...shared, content: { body: section.body } };
+  // An H3 isn't in the contents list, so it keeps no short name.
+  if (section.type === "heading") return { ...shared, settings: { level: section.level }, content: { heading: section.heading, tocLabel: section.level === "h2" ? section.tocLabel : "" } };
   if (section.type === "callout") return { ...shared, settings: { tone: section.tone }, content: { body: section.body } };
   if (section.type === "check") return { ...shared, content: { heading: section.heading, items: section.items } };
   if (section.type === "table") {

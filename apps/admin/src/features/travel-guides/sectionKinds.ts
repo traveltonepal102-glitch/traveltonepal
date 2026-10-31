@@ -101,6 +101,15 @@ export const SECTION_KINDS: SectionKind[] = [
     icon: "description",
   },
   {
+    type: "heading",
+    group: "text",
+    name: "Heading",
+    description: "A heading on its own, with no text under it. An H2 shows in “In this guide”.",
+    goodFor: "A heading over a table, photo, trek card or checklist.",
+    youFillIn: ["H2 or H3", "Heading"],
+    icon: "title",
+  },
+  {
     type: "quick",
     group: "text",
     name: "Quick answer",
