@@ -180,6 +180,24 @@ export type FaqGroup = {
   items: readonly { question: string; answer: string; body: RichTextDoc }[];
 };
 
+/** Each section's H2 as written in the trek editor, else the page's own words (sectionHeadings). */
+export type TrekSectionHeadings = {
+  intro: string;
+  overview: string;
+  suitability: string;
+  regions: string;
+  /** With the number of days first, e.g. "10-day day-by-day itinerary". */
+  itinerary: string;
+  guides: string;
+  inclusions: string;
+  elevation: string;
+  routeMap: string;
+  pricing: string;
+  packing: string;
+  faq: string;
+  similar: string;
+};
+
 /** Everything the trek page shows beyond the summary the cards already use (trekPageRows, from the database). */
 export type TrekDetailContent = {
   slug: string;
@@ -208,6 +226,8 @@ export type TrekDetailContent = {
   photoBadges: readonly TrekPhotoBadge[];
   /** Title of the highlights section, written for search, e.g. "Langtang Trek highlights and why you will love this trek". */
   highlightsHeading: string;
+  /** The other sections' headings (the field guide's is in fieldGuide). */
+  headings: TrekSectionHeadings;
   highlights: readonly TrekPoint[];
   /** "Is this trek for you?": one line of intro and an honest checklist (fitness, altitude, skill...). */
   suitability: { intro: string; points: readonly TrekPoint[] };
@@ -230,8 +250,8 @@ export type TrekDetailContent = {
   routeMap: TrekRouteMap;
   /** "Gear and essentials": one line about the conditions and the packing cards. */
   packing: { intro: string; groups: readonly PackingGroup[] };
-  /** "Practical field knowledge": an SEO title (best season, facilities, safety) and the topics. */
-  fieldGuide: { heading: string; topics: readonly FieldGuideTopic[] };
+  /** "Practical field knowledge": an SEO title (best season, facilities, safety), the line under it and the topics. */
+  fieldGuide: { heading: string; intro: string; topics: readonly FieldGuideTopic[] };
   faqs: readonly FaqGroup[];
   startFinish: string;
   /** Left out of the overview until it is known. */
@@ -241,10 +261,14 @@ export type TrekDetailContent = {
   accommodation: string;
   transport: string;
   groupPrices: readonly GroupPrice[];
+  /** The line under the group rates heading ("" = none). */
+  pricingIntro: string;
   /** The region's best months, Jan–Dec: they colour the start months (null when unknown). */
   monthRatings: readonly MonthRating[] | null;
   /** "Explore more of the Himalaya": the admin's picks in order, else four treks like this one. */
   similarTreks: readonly TrekSummary[];
+  /** The line under the similar treks heading ("" = none). */
+  similarIntro: string;
   /** Shared sections this trek leaves out. */
   hiddenSections: readonly SharedSection[];
   /** Every section with a heading, in the trek's own order (full-width ones last). */

@@ -7,10 +7,10 @@ import { SectionHeading } from "../SectionHeading";
 import { PANEL } from "../styles";
 import { ElevationChart } from "./ElevationChart";
 
-type TrekElevationProps = Pick<TrekDetail, "itinerary" | "trailhead">;
+type TrekElevationProps = Pick<TrekDetail, "itinerary" | "trailhead"> & { heading: string };
 
 /** "Acclimatization map": the altitude of every itinerary day, the peak and the highest night. */
-export const TrekElevation = ({ itinerary, trailhead }: TrekElevationProps) => {
+export const TrekElevation = ({ heading, itinerary, trailhead }: TrekElevationProps) => {
   const profile = buildElevationProfile(itinerary.days);
   if (!profile) return null;
 
@@ -27,7 +27,7 @@ export const TrekElevation = ({ itinerary, trailhead }: TrekElevationProps) => {
 
   return (
     <section id={TREK_SECTION_IDS.elevation} aria-labelledby="trek-elevation-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
-      <SectionHeading id="trek-elevation-title" eyebrow="Acclimatization map" title="Route and elevation profile" />
+      <SectionHeading id="trek-elevation-title" eyebrow="Acclimatization map" title={heading} />
 
       <div className={`${PANEL} p-4.5 md:p-6`}>
         <div className="flex items-center justify-between gap-2.5 border-b border-line pb-3">

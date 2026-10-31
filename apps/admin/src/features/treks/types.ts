@@ -224,7 +224,11 @@ export type TrekValues = {
   optionalHighPointM: number | null;
   /** The 12th box of the trip overview, e.g. "Trekking / hiking". */
   activity: string;
-  /** Section headings and the lines under them, as on the page. */
+  /** Section headings and the lines under them, as on the page; an empty heading uses the page's own words. */
+  introHeading: string;
+  overviewHeading: string;
+  /** "Regions on this route" (only on a trek across several regions). */
+  regionsHeading: string;
   suitabilityHeading: string;
   /** After the number of days, e.g. "day-by-day itinerary" → "10-day day-by-day itinerary". */
   itineraryHeading: string;

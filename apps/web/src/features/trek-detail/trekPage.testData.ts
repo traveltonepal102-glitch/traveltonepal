@@ -1084,7 +1084,23 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
   "similar_slugs": [],
   "hidden_shared_sections": [],
   "section_order": [],
-  "pdf_map_path": null
+  "pdf_map_path": null,
+  "intro_heading": "",
+  "overview_heading": "",
+  "regions_heading": "",
+  "suitability_heading": "Is this trek for you?",
+  "itinerary_heading": "day-by-day itinerary",
+  "inclusions_heading": "What’s covered · What’s not included",
+  "guides_heading": "Meet your trek guide",
+  "elevation_heading": "Route and elevation profile",
+  "route_map_heading": "",
+  "pricing_heading": "Group rates by team size",
+  "pricing_intro": "Book directly with our Kathmandu team, with no middlemen. Every trek is private, so you choose your own start date.",
+  "packing_heading": "",
+  "know_intro": "Essential insights from our local trek leaders.",
+  "faq_heading": "",
+  "similar_heading": "Similar trekking options in Nepal",
+  "similar_intro": "Treks planned with you and led by local guides."
 };
 
 export const LANGTANG_PHOTOS: WebTrekPhotoRow[] = [

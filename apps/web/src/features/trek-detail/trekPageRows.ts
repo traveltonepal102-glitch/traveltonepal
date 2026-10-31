@@ -12,6 +12,7 @@ import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow } from "@/lib/sup
 import { ROUTE_SKETCHES } from "./content/routeSketches";
 import { topPlaceOf } from "./elevation";
 import { dayRegionSlugs, toRouteStops } from "./routeRegions";
+import { toSectionHeadings } from "./sectionHeadings";
 import { customizationFor, differentiatorsFor } from "./content/sharedContent";
 import { toTrekGuides } from "./trekGuideRows";
 import type { TrekDayRow } from "./trekPageJson";
@@ -139,6 +140,7 @@ export const toTrekDetail = (
     photos: toPhotos(summary, photos, photosBaseUrl),
     photoBadges: readPhotoBadges(page.photo_badges),
     highlightsHeading: firstText(page.highlights_heading) ?? `${shortName} highlights`,
+    headings: toSectionHeadings(page, { name: summary.name, shortName, days: days.length }),
     highlights: readPoints(page.highlights),
     suitability: { intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
     itinerary: { intro: toRichTextDoc(page.itinerary_intro), days },
@@ -166,6 +168,7 @@ export const toTrekDetail = (
     packing: { intro: page.packing_intro.trim(), groups: readPackingGroups(page.packing_groups) },
     fieldGuide: {
       heading: firstText(page.know_heading) ?? `${summary.name} guide: best season, facilities and safety`,
+      intro: page.know_intro.trim(),
       topics: readKnowTopics(page.know_topics).map(({ photo, ...topic }) => ({
         ...topic,
         photo: photo ? coverImage(photo, photosBaseUrl, `${topic.title}, ${summary.name}`) : undefined,
@@ -185,8 +188,10 @@ export const toTrekDetail = (
       team: price.team,
       isDefault: price.is_default,
     })),
+    pricingIntro: page.pricing_intro.trim(),
     monthRatings: toMonthRatings(page.region_month_ratings),
     similarTreks: toSimilarTreks(summary, page.similar_slugs, treks),
+    similarIntro: page.similar_intro.trim(),
     hiddenSections: SHARED_SECTIONS.filter((section) => page.hidden_shared_sections.includes(section)),
     sectionOrder: orderTrekSections(page.section_order ?? []),
   };

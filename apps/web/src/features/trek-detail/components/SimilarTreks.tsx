@@ -35,15 +35,17 @@ const TrekAction = ({ trek }: { trek: TrekSummary }) =>
     </a>
   );
 
+type SimilarTreksProps = {
+  heading: string;
+  /** The line under the heading ("" = none). */
+  intro: string;
+  treks: readonly TrekSummary[];
+};
+
 /** "Explore more of the Himalaya": the treks picked for this one (trekPageRows). */
-export const SimilarTreks = ({ treks }: { treks: readonly TrekSummary[] }) => (
+export const SimilarTreks = ({ heading, intro, treks }: SimilarTreksProps) => (
   <section aria-labelledby="similar-treks-title" className="flex flex-col gap-4">
-    <SectionHeading
-      id="similar-treks-title"
-      eyebrow="Explore more of the Himalaya"
-      title="Similar trekking options in Nepal"
-      description="Treks planned with you and led by local guides."
-    />
+    <SectionHeading id="similar-treks-title" eyebrow="Explore more of the Himalaya" title={heading} description={intro} />
     <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {treks.map((other, index) => (
         <li key={other.slug} className="flex flex-col overflow-hidden rounded-lg border border-line bg-page shadow-card">

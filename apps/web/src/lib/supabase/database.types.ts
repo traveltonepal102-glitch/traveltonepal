@@ -201,6 +201,23 @@ export type WebTrekPageRow = ShareColumns & {
   section_order: string[];
   /** The printable map in the trek-files bucket (pdf-maps/<uuid>.pdf), or null without one. */
   pdf_map_path: string | null;
+  /** Section headings as written in the trek editor ("" = the page's own words); itinerary_heading follows "10-day". */
+  intro_heading: string;
+  overview_heading: string;
+  regions_heading: string;
+  suitability_heading: string;
+  itinerary_heading: string;
+  inclusions_heading: string;
+  guides_heading: string;
+  elevation_heading: string;
+  route_map_heading: string;
+  pricing_heading: string;
+  pricing_intro: string;
+  packing_heading: string;
+  know_intro: string;
+  faq_heading: string;
+  similar_heading: string;
+  similar_intro: string;
 };
 
 /** A trek's gallery photo (the photo columns named as in the other views). */

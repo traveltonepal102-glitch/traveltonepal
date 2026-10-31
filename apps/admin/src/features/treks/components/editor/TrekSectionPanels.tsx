@@ -100,6 +100,14 @@ export const TrekSectionPanels = ({
     <>
       <div {...panel("top")}>
         <TrekNameCard values={values} errors={errors} regions={regions} isNew={isNew} routeIds={routeIds} onRouteIdsChange={handleRouteIdsChange} />
+        {/* Hidden, not removed, for a trek in one region: the page leaves the section out, and the words stay saved. */}
+        <div hidden={routeIds.length < 2}>
+          <PageHeadingFields
+            title="Heading of “Regions on this route”"
+            level="H2"
+            heading={{ name: "regionsHeading", defaultValue: values.regionsHeading, placeholder: "Regions on this route", error: errors.regionsHeading }}
+          />
+        </div>
         <LinesAboveHeadingCard values={values} errors={errors} />
         <LinesUnderHeadingCard values={values} errors={errors} />
         <TrekDifficultyCard values={values} errors={errors} />
@@ -114,6 +122,10 @@ export const TrekSectionPanels = ({
         <IntroductionSection values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("facts")}>
+        <PageHeadingFields
+          level="H2"
+          heading={{ name: "overviewHeading", defaultValue: values.overviewHeading, placeholder: "Trip overview and key specifications", error: errors.overviewHeading }}
+        />
         <TrekFactsCard values={values} errors={errors} />
       </div>
       <div {...panel("highlights")}>

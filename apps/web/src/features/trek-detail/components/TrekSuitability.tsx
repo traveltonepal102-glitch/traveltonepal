@@ -14,7 +14,7 @@ export const TrekSuitability = ({ trek }: { trek: TrekDetail }) => (
           Trekker suitability guide
         </p>
         <h2 id="trek-suitability-title" className={CARD_TITLE}>
-          Is this trek for you?
+          {trek.headings.suitability}
         </h2>
         <p className="text-body-sm text-text">{trek.suitability.intro}</p>
       </div>

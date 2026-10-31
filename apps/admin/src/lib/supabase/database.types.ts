@@ -134,6 +134,9 @@ type TrekTranslationRow = {
   high_point: string;
   optional_high_point: string;
   activity: string;
+  intro_heading: string;
+  overview_heading: string;
+  regions_heading: string;
   suitability_heading: string;
   itinerary_heading: string;
   route_line: string;

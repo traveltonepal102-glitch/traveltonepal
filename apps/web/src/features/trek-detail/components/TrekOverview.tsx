@@ -18,7 +18,7 @@ export const TrekOverview = ({ trek }: { trek: TrekDetail }) => (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-brand/15 pb-3.5">
       <h2 id="trek-overview-title" className="inline-flex items-center gap-2 text-sm font-extrabold tracking-wide uppercase">
         <Icon name="info" className="text-brand" />
-        Trip overview and key specifications
+        {trek.headings.overview}
       </h2>
       <p className="rounded-full border border-green-line bg-green-tint px-2.5 py-0.5 text-[11px] font-bold text-whatsapp">
         Verified route {trek.currentSeason}

@@ -81,6 +81,40 @@ describe("toTrekDetail", () => {
     expect(trek.optionalHighPoint).toBeUndefined();
   });
 
+  it("shows each section heading as written in the editor, after the days for the itinerary", () => {
+    const trek = detail({
+      intro_heading: " About this trek ",
+      overview_heading: "Langtang at a glance",
+      itinerary_heading: "Langtang trek itinerary",
+      faq_heading: "Langtang questions",
+      pricing_intro: "",
+      similar_intro: "More treks near Kathmandu",
+    });
+    expect(trek.headings).toMatchObject({
+      intro: "About this trek",
+      overview: "Langtang at a glance",
+      itinerary: "10-day Langtang trek itinerary",
+      guides: "Meet your trek guide",
+      faq: "Langtang questions",
+    });
+    expect(trek.pricingIntro).toBe("");
+    expect(trek.similarIntro).toBe("More treks near Kathmandu");
+    expect(trek.fieldGuide.intro).toBe("Essential insights from our local trek leaders.");
+  });
+
+  it("uses the page's own words for a blank section heading", () => {
+    const blank = { intro_heading: "", overview_heading: "", regions_heading: "", itinerary_heading: " ", route_map_heading: "", packing_heading: "", faq_heading: "" };
+    expect(detail(blank).headings).toMatchObject({
+      intro: "Introduction",
+      overview: "Trip overview and key specifications",
+      regions: "Regions on this route",
+      itinerary: "10-day day-by-day itinerary",
+      routeMap: "Langtang Valley Trek route map",
+      packing: "Langtang Trek packing list",
+      faq: "Frequently asked questions for the Langtang Valley Trek",
+    });
+  });
+
   it("links the printable map from the trek files address, and leaves it out without one", () => {
     const path = "pdf-maps/236645ef-00d2-4eb7-8d03-78c117be5477.pdf";
     expect(detail({ pdf_map_path: path }).routeMap.pdfUrl).toBe(`${TREK_FILES_BASE}/${path}`);

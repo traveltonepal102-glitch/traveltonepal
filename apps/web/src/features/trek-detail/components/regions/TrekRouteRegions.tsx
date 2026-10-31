@@ -15,13 +15,13 @@ const routeSentence = (stops: readonly TrekRouteStop[]) => {
   return `This trek starts in ${first.name}${through} and ends in ${last?.name}. Each region has its own landscape, permits and best season.`;
 };
 
-type TrekRouteRegionsProps = Pick<TrekDetail, "routeStops" | "monthRatings">;
+type TrekRouteRegionsProps = Pick<TrekDetail, "routeStops" | "monthRatings"> & { heading: string };
 
 /**
  * "Regions on this route" (a trek across several regions only): the regions in route order with their days, each
  * region's details from its own page, and the best months of each region and of the whole route.
  */
-export const TrekRouteRegions = ({ routeStops, monthRatings }: TrekRouteRegionsProps) => {
+export const TrekRouteRegions = ({ heading, routeStops, monthRatings }: TrekRouteRegionsProps) => {
   if (routeStops.length < 2) return null;
 
   return (
@@ -29,7 +29,7 @@ export const TrekRouteRegions = ({ routeStops, monthRatings }: TrekRouteRegionsP
       <SectionHeading
         id="trek-regions-title"
         eyebrow={`Route through ${routeStops.length} regions`}
-        title="Regions on this route"
+        title={heading}
         description={routeSentence(routeStops)}
       />
       <ol aria-label="Route" className="flex flex-wrap items-center gap-x-1.5 gap-y-2">

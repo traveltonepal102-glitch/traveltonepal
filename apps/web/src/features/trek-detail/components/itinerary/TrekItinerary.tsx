@@ -32,7 +32,7 @@ const enteredRegion = (trek: TrekDetail, index: number) => {
  */
 export const TrekItinerary = ({ trek }: { trek: TrekDetail }) => (
   <section id={TREK_SECTION_IDS.itinerary} aria-labelledby="trek-itinerary-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
-    <SectionHeading id="trek-itinerary-title" eyebrow="Step-by-step route" title={`${trek.itinerary.days.length}-day day-by-day itinerary`}>
+    <SectionHeading id="trek-itinerary-title" eyebrow="Step-by-step route" title={trek.headings.itinerary}>
       {hasRichTextContent(trek.itinerary.intro) && <RichText doc={trek.itinerary.intro} headingLevel="h3" className="flex flex-col gap-2.5" />}
     </SectionHeading>
     {trek.routeSketch && (

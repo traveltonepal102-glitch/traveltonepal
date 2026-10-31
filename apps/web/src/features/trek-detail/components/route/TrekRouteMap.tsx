@@ -13,7 +13,7 @@ import { GoogleMapEmbed } from "./GoogleMapEmbed";
 import { RouteMapPreview } from "./RouteMapPreview";
 import { RouteStopList } from "./RouteStopList";
 
-type TrekRouteMapProps = Pick<TrekDetail, "name" | "routeMap" | "routeSketch" | "itinerary">;
+type TrekRouteMapProps = Pick<TrekDetail, "name" | "routeMap" | "routeSketch" | "itinerary"> & { heading: string };
 
 const MAP_LINK =
   "inline-flex items-center gap-2 rounded-md border border-line-strong bg-surface px-4 py-2 text-xs font-bold text-ink hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -22,14 +22,14 @@ const MAP_LINK =
  * "Route and GPS waypoints": the Google map (click to load) with the drawn route map before it, and the stops.
  * "Download PDF map" shows when the admin uploaded a printable map.
  */
-export const TrekRouteMap = ({ name, routeMap, routeSketch, itinerary }: TrekRouteMapProps) => {
+export const TrekRouteMap = ({ heading, name, routeMap, routeSketch, itinerary }: TrekRouteMapProps) => {
   const links = googleMapLinks(routeMap);
   const stops = routeStops(itinerary.days);
 
   return (
     <section id={TREK_SECTION_IDS.routeMap} aria-labelledby="trek-route-map-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SectionHeading id="trek-route-map-title" eyebrow="Route and GPS waypoints" title={`${name} route map`} />
+        <SectionHeading id="trek-route-map-title" eyebrow="Route and GPS waypoints" title={heading} />
         <div className="flex flex-none flex-wrap gap-2 self-start">
           <a href={links.openUrl} target="_blank" rel="noopener noreferrer" className={MAP_LINK}>
             <Icon name="open_in_new" size={16} className="text-brand" />

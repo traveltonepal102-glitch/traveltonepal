@@ -6,7 +6,7 @@ import { CARD_TITLE, EYEBROW, PANEL } from "../styles";
 import { GuideCard } from "./GuideCard";
 
 /** "Meet your trek guide": the guides who lead this trek, in a row that scrolls sideways. */
-export const TrekGuides = ({ guides }: Pick<TrekDetail, "guides">) => {
+export const TrekGuides = ({ heading, guides }: Pick<TrekDetail, "guides"> & { heading: string }) => {
   const { team } = guides;
   if (team.length === 0) return null;
 
@@ -23,7 +23,7 @@ export const TrekGuides = ({ guides }: Pick<TrekDetail, "guides">) => {
             Local expertise and safety first
           </p>
           <h2 id="trek-guides-title" className={CARD_TITLE}>
-            Meet your trek guide
+            {heading}
           </h2>
           <p className="max-w-160 text-body-sm text-text">{guides.intro}</p>
         </div>

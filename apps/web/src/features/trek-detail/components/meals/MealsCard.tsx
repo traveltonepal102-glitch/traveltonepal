@@ -79,7 +79,8 @@ export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
         <Icon name="lightbulb" className="text-brand" />
         Pro tips and important notes
       </h4>
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Pro tips first, the important notes below them (one column at every width). */}
+      <div className="grid gap-4">
         <MealTipList title="Trail pro tips" icon="check_circle" tone="green" points={meals.trailTips} />
         <MealTipList title="Essential teahouse notes" icon="warning" tone="saffron" points={meals.teahouseNotes} />
       </div>

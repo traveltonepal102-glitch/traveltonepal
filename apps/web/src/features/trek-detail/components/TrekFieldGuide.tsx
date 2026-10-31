@@ -14,7 +14,7 @@ export const TrekFieldGuide = ({ fieldGuide }: Pick<TrekDetail, "fieldGuide">) =
       id="trek-field-guide-title"
       eyebrow="Practical field knowledge"
       title={fieldGuide.heading}
-      description="Essential insights from our local trek leaders."
+      description={fieldGuide.intro}
     />
     <div className="flex flex-col gap-4">
       {fieldGuide.topics.map((topic) => (

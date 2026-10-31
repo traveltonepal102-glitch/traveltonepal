@@ -5,12 +5,12 @@ import type { TrekDetail } from "../types";
 import { SectionHeading } from "./SectionHeading";
 import { PANEL } from "./styles";
 
-type TrekPackingProps = Pick<TrekDetail, "shortName" | "packing">;
+type TrekPackingProps = Pick<TrekDetail, "packing"> & { heading: string };
 
 /** "Gear and essentials": what to pack, in four cards. */
-export const TrekPacking = ({ shortName, packing }: TrekPackingProps) => (
+export const TrekPacking = ({ heading, packing }: TrekPackingProps) => (
   <section id={TREK_SECTION_IDS.usefulInfo} aria-labelledby="trek-packing-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
-    <SectionHeading id="trek-packing-title" eyebrow="Gear and essentials" title={`${shortName} packing list`} description={packing.intro} />
+    <SectionHeading id="trek-packing-title" eyebrow="Gear and essentials" title={heading} description={packing.intro} />
     <div className="grid gap-4 md:grid-cols-2">
       {packing.groups.map((group) => (
         <div key={group.title} className={`${PANEL} flex flex-col gap-3 p-5`}>

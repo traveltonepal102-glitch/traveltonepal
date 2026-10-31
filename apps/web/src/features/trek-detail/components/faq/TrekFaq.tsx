@@ -9,10 +9,10 @@ import { FaqGroupCard } from "./FaqGroupCard";
 /** "Itinerary and duration" → "faq-itinerary-and-duration" */
 const groupAnchor = (title: string) => `faq-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
 
-type TrekFaqProps = Pick<TrekDetail, "name" | "faqs">;
+type TrekFaqProps = Pick<TrekDetail, "faqs"> & { heading: string };
 
 /** FAQ: topic links (sticky on desktop, a sideways row on phones) and the questions by topic. */
-export const TrekFaq = ({ name, faqs }: TrekFaqProps) => {
+export const TrekFaq = ({ heading, faqs }: TrekFaqProps) => {
   if (faqs.length === 0) return null;
 
   return (
@@ -21,7 +21,7 @@ export const TrekFaq = ({ name, faqs }: TrekFaqProps) => {
         <div className="flex items-center gap-3">
           <span aria-hidden="true" className="h-8 w-1.5 flex-none rounded-full bg-brand" />
           <h2 id="trek-faq-title" className="text-[24px] leading-tight font-extrabold tracking-tight md:text-[32px]">
-            Frequently asked questions for the {name}
+            {heading}
           </h2>
         </div>
 
