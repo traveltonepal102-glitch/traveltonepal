@@ -12,7 +12,6 @@ import { Switch } from "@/components/ui/Switch";
 import { hintClass, inputClass, labelClass } from "@/components/ui/formStyles";
 import { TextField } from "@/components/ui/TextField";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
-import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { TREK_LIMITS as LIMIT } from "../../../constants";
@@ -29,7 +28,8 @@ type ItineraryDayCardProps = {
   isOpen: boolean;
   /** Errors for this day: "title", "sleepAltitude"… (from "itinerary.<index>.…"). */
   errors: FieldErrors;
-  photoChoices: Photo[];
+  /** The saved trek's id: a day's photo window shows this trek's photos first (null for a new trek). */
+  trekId: string | null;
   /** The regions on the route (main first); a day picks one only when there are several. */
   routeRegions: RegionOption[];
   /** The region this day is in (its own pick, else the day before's), and the day before's. */
@@ -60,7 +60,7 @@ export const ItineraryDayCard = ({
   index,
   isOpen,
   errors,
-  photoChoices,
+  trekId,
   routeRegions,
   regionName,
   previousRegionName,
@@ -148,7 +148,7 @@ export const ItineraryDayCard = ({
         </div>
         <DayMealsField meals={day.meals} onChange={(meals) => onChange({ meals })} />
         <div className="grid items-start gap-3 tablet:grid-cols-[minmax(0,220px)_minmax(0,1fr)]">
-          <DayPhotoPicker photo={day.photo} choices={photoChoices} onChange={(photo) => onChange({ photo })} />
+          <DayPhotoPicker photo={day.photo} trekId={trekId} onChange={(photo) => onChange({ photo })} />
           <RichTextEditor
             name="dayDescription"
             label="What happens on this day"

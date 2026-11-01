@@ -2,13 +2,12 @@
 
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
+import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
+import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
-import { PhotoUploadButton } from "@/features/photos/components/PhotoUploadButton";
-import { UploadProgressList } from "@/features/photos/components/UploadProgressList";
-import { usePhotoUploads } from "@/features/photos/hooks/usePhotoUploads";
 import type { Photo } from "@/features/photos/types";
 
 type ArticleCoverFieldProps = {
@@ -30,11 +29,12 @@ const TAG_STYLES = {
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 
 /**
- * The photo at the top of the guide (design: "Top of the page"), with its tags as on the website. Uploads go
- * to the photo library right away (location data removed); the photo is sent with Save as coverPhotoId.
+ * The photo at the top of the guide (design: "Top of the page"), with its tags as on the website. Chosen in the
+ * photo library window (an upload goes to the library right away, location data removed); sent with Save as
+ * coverPhotoId.
  */
 export const ArticleCoverField = ({ cover, regionId, tags, error, onChange }: ArticleCoverFieldProps) => {
-  const uploads = usePhotoUploads<"cover">({ regionId, onUploaded: (photo) => onChange(photo) });
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-2">
@@ -56,7 +56,10 @@ export const ArticleCoverField = ({ cover, regionId, tags, error, onChange }: Ar
           ))}
         </span>
         <span className="absolute top-3 right-3 flex gap-2">
-          <PhotoUploadButton label={cover ? "Change photo" : "Add photo"} isDisabled={uploads.isUploading} onFiles={(files) => uploads.upload(files.slice(0, 1), "cover")} />
+          <button type="button" onClick={() => setIsOpen(true)} className={smallButton}>
+            <Icon name={cover ? "image" : "add_photo_alternate"} size={16} />
+            {cover ? "Change photo" : "Add photo"}
+          </button>
           {cover && (
             <button type="button" onClick={() => onChange(null)} className={smallButton}>
               <Icon name="delete" size={16} />
@@ -65,9 +68,17 @@ export const ArticleCoverField = ({ cover, regionId, tags, error, onChange }: Ar
           )}
         </span>
       </div>
-      <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} />
       <span className="text-xs text-muted-foreground">Tags with a dashed border fill in by themselves: the topic and the main trek’s highest point.</span>
       <FieldError id="cover-photo-error" message={error} />
+      {isOpen && (
+        <LibraryPhotoDialog
+          title="Photo at the top of the guide"
+          selected={cover ? [cover] : []}
+          pick={{ kind: "one", onChoose: onChange }}
+          regionId={regionId}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </div>
   );
 };

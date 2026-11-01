@@ -6,9 +6,6 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ARTICLE_LOCALE } from "../constants";
 import type { ArticleOptions } from "../types";
 
-/** How many library photos the editor offers at once (newest first). */
-const LIBRARY_LIMIT = 300;
-
 /** Every trekking guide, A–Z, for the guide sections (with the regions they lead, to suggest them first). */
 export const listSectionGuides = async (): Promise<ArticleOptions["guides"]> => {
   const supabase = await createSupabaseServerClient();
@@ -28,12 +25,4 @@ export const listSectionGuides = async (): Promise<ArticleOptions["guides"]> => 
       hasConsent: guide.photo_consent,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
-};
-
-/** The photo library, newest first, for "Photo" and "Photo gallery". */
-export const listLibraryPhotos = async (): Promise<ArticleOptions["photos"]> => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("photos").select(PHOTO_COLUMNS).order("created_at", { ascending: false }).limit(LIBRARY_LIMIT);
-  if (error) throw new Error(`Could not load the photo library: ${error.message}`);
-  return data.map(toPhoto);
 };

@@ -10,7 +10,6 @@ import { useEditorForm } from "@/components/editor/useEditorForm";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
-import type { Photo } from "@/features/photos/types";
 
 import { removeAdventure } from "../actions/removeAdventure";
 import { ADVENTURES_PATH } from "../constants";
@@ -23,14 +22,13 @@ type AdventurePanelProps = {
   /** The saved adventure; null for a new one. */
   adventure: Adventure | null;
   values: AdventureValues;
-  libraryPhotos: Photo[];
   canRemove: boolean;
 };
 
 const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutral: "text-muted-foreground" } as const;
 
 /** Add or edit one adventure in a drawer over the list. One Save sends everything and closes the drawer. */
-export const AdventurePanel = ({ action, adventure, values, libraryPhotos, canRemove }: AdventurePanelProps) => {
+export const AdventurePanel = ({ action, adventure, values, canRemove }: AdventurePanelProps) => {
   const form = useEditorForm<"adventure">({
     action,
     firstKey: "adventure",
@@ -60,7 +58,7 @@ export const AdventurePanel = ({ action, adventure, values, libraryPhotos, canRe
       <form noValidate onSubmit={form.handleSubmit} onChange={form.markDirty} className="flex min-h-0 flex-1 flex-col">
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 py-5 max-tablet:px-5">
           {form.state.status === "error" && <FormAlert message={form.state.message} />}
-          <AdventureFields values={values} photo={adventure?.photo ?? null} libraryPhotos={libraryPhotos} errors={form.errors} onEdit={form.markDirty} />
+          <AdventureFields values={values} photo={adventure?.photo ?? null} errors={form.errors} onEdit={form.markDirty} />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">

@@ -71,18 +71,3 @@ export const findRegionSlug = async (regionId: string | null) => {
   if (error) throw new Error(`Could not read region ${regionId}: ${error.message}`);
   return data?.slug ?? null;
 };
-
-/** How many photos a "Choose from the library" window offers (the newest first). */
-const LIBRARY_PICK_LIMIT = 120;
-
-/** The newest library photos with their sizes ready, to choose from. Throws when the database can't be read. */
-export const listLibraryPhotos = async (): Promise<Photo[]> => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("photos")
-    .select(PHOTO_COLUMNS)
-    .order("created_at", { ascending: false })
-    .limit(LIBRARY_PICK_LIMIT);
-  if (error) throw new Error(`Could not load the photo library: ${error.message}`);
-  return data.filter((row) => row.variant_widths.length > 0).map(toPhoto);
-};

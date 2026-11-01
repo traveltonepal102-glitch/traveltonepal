@@ -22,6 +22,8 @@ const NewTrekPage = async () => {
       action={saveTrek.bind(null, null)}
       values={EMPTY_TREK_VALUES}
       photos={NO_TREK_PHOTOS}
+      trekId={null}
+      topicPhotos={[]}
       regions={regions}
       similarOptions={similarOptions}
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}

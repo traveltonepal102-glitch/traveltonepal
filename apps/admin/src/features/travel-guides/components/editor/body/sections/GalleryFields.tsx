@@ -48,12 +48,11 @@ export const GalleryFields = ({ photoIds, context, field, errors, onChange }: Ga
       )}
       <LibraryPhotoPicker
         label="Choose from library"
-        photos={context.photos}
-        pickedIds={photoIds}
+        picked={picked.map(({ photo }) => photo)}
         max={MAX_GALLERY_PHOTOS}
         regionId={context.region?.id ?? null}
         onChange={onChange}
-        onUploaded={context.addPhoto}
+        onChosen={context.addPhoto}
       />
       <span className="text-xs text-muted-foreground">2 to {MAX_GALLERY_PHOTOS} photos. Drag a photo by its handle to change the order.</span>
       <FieldError id={`${field}-photos-error`} message={errors[`${field}.photoIds`]} />

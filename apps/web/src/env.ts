@@ -1,5 +1,6 @@
 import "server-only";
 import { APP_ENVIRONMENTS } from "@ttn/config/appEnvironment";
+import { SITE_ID_PATTERN } from "@ttn/config/sites";
 import { REVALIDATE_SECRET_MIN_LENGTH } from "@ttn/config/websiteCache";
 import { z } from "zod";
 
@@ -28,6 +29,8 @@ const envSchema = z.object({
   BREVO_API_KEY: optional(z.string().startsWith("xkeysib-", "BREVO_API_KEY must be a Brevo API key (xkeysib-…).")),
   BREVO_NEWSLETTER_LIST_ID: optional(z.coerce.number().int().positive("BREVO_NEWSLETTER_LIST_ID must be the list's number, e.g. 3.")),
   BREVO_CONFIRM_TEMPLATE_ID: optional(z.coerce.number().int().positive("BREVO_CONFIRM_TEMPLATE_ID must be the template's number, e.g. 1.")),
+  // Which site of the network this build is (read by lib/site.ts). Not set: the main site.
+  SITE_ID: optional(z.string().regex(SITE_ID_PATTERN, "SITE_ID must be a site's id from the admin's Sites, e.g. ttn or everest.")),
   // The site's public address (read by lib/site.ts). Not set: the dev server's.
   SITE_URL: optional(z.url("SITE_URL must be a URL, e.g. https://www.traveltonepal.com.")),
 }).refine(

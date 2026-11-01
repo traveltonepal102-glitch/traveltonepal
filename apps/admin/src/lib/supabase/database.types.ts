@@ -49,6 +49,9 @@ type PhotoRow = {
   updated_at: string;
 };
 
+/** What search_library_photos and photos_named return about a photo. */
+type PickerPhotoRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place" | "original_name">;
+
 type RegionPhotoRow = { region_id: string; photo_id: string; position: number };
 
 export type TrekStatusValue = "draft" | "published" | "hidden";
@@ -1059,6 +1062,14 @@ export type Database = {
       photo_uses: {
         Args: { p_photo_id?: string };
         Returns: { photo_id: string; kind: string; item_id: string; item_label: string; detail: string }[];
+      };
+      search_library_photos: {
+        Args: { p_query?: string; p_region_id?: string; p_trek_id?: string; p_limit?: number; p_offset?: number };
+        Returns: (PickerPhotoRow & { use_count: number })[];
+      };
+      photos_named: {
+        Args: { p_names: string[] };
+        Returns: PickerPhotoRow[];
       };
       delete_unused_photo: {
         Args: { p_photo_id: string };

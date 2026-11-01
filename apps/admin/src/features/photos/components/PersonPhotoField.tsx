@@ -5,10 +5,8 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
+import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
-import { PhotoUploadButton } from "@/features/photos/components/PhotoUploadButton";
-import { UploadProgressList } from "@/features/photos/components/UploadProgressList";
-import { usePhotoUploads } from "@/features/photos/hooks/usePhotoUploads";
 import type { Photo } from "@/features/photos/types";
 
 type PersonPhotoFieldProps = {
@@ -24,18 +22,20 @@ type PersonPhotoFieldProps = {
   fieldName?: string;
 };
 
+const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
+
 /**
- * A person's photo (a trekking guide, an author). Uploads go to the photo library right away (location data
- * removed); which photo the person uses is sent with Save as photoId.
+ * A person's photo (a trekking guide, an author), chosen in the photo library window (an upload goes to the
+ * library right away, location data removed); which photo the person uses is sent with Save as photoId.
  */
 export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldName = "photoId" }: PersonPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
+  const [isOpen, setIsOpen] = useState(false);
   const choose = (next: Photo | null) => {
     setPhoto(next);
     onChange?.(next);
     onEdit();
   };
-  const uploads = usePhotoUploads<"portrait">({ regionId: null, onUploaded: (uploaded) => choose(uploaded) });
 
   return (
     <div className="flex flex-col gap-2">
@@ -49,9 +49,12 @@ export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldN
         </span>
         <div className="flex flex-col gap-1.5">
           <div className="flex flex-wrap gap-2">
-            <PhotoUploadButton label={photo ? "Replace photo" : "Upload photo"} isDisabled={uploads.isUploading} onFiles={(files) => uploads.upload(files.slice(0, 1), "portrait")} />
+            <button type="button" onClick={() => setIsOpen(true)} className={smallButton}>
+              <Icon name={photo ? "image" : "add_photo_alternate"} size={16} />
+              {photo ? "Change photo" : "Choose photo"}
+            </button>
             {photo && (
-              <button type="button" onClick={() => choose(null)} className={cn(secondaryButton, "min-h-8 px-3 text-caption")}>
+              <button type="button" onClick={() => choose(null)} className={smallButton}>
                 <Icon name="delete" size={16} />
                 Remove
               </button>
@@ -60,8 +63,15 @@ export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldN
           <span className="text-xs text-muted-foreground">{hint}</span>
         </div>
       </div>
-      <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} />
       <input type="hidden" name={fieldName} value={photo?.id ?? ""} />
+      {isOpen && (
+        <LibraryPhotoDialog
+          title={name.trim() || "Photo"}
+          selected={photo ? [photo] : []}
+          pick={{ kind: "one", onChoose: choose }}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </div>
   );
 };

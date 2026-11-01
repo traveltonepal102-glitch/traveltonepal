@@ -10,16 +10,16 @@ import { BeliefCardFields, BeliefTextFields, FieldGroup, TitledRows } from "./Ab
 
 const BASE = "flexible";
 
-type AboutFlexibleCardProps = { values: AboutFlexible; photo: Photo | null; libraryPhotos: Photo[]; errors: FieldErrors; onEdit: () => void };
+type AboutFlexibleCardProps = { values: AboutFlexible; photo: Photo | null; errors: FieldErrors; onEdit: () => void };
 
 /** 03 "Private and flexible": its card, its text and quote, the photo, how the trek stays flexible and where it stops. */
-export const AboutFlexibleCard = ({ values, photo, libraryPhotos, errors, onEdit }: AboutFlexibleCardProps) => (
+export const AboutFlexibleCard = ({ values, photo, errors, onEdit }: AboutFlexibleCardProps) => (
   <FormSection title="03 · Private and flexible">
     <BeliefCardFields base={BASE} values={values} errors={errors} />
     <BeliefTextFields base={BASE} values={values} errors={errors} />
     <TextField name={`${BASE}.quoteNote`} label="Line under the quote" labelNote="(optional)" defaultValue={values.quoteNote} maxLength={LIMIT.quoteNote} error={errors[`${BASE}.quoteNote`]} />
     <FieldGroup title="Photo beside the text">
-      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.flexible}`} label="Photo" hint="A tall photo works best." emptyText="No photo: the text uses the full width." initial={photo} photos={libraryPhotos} onEdit={onEdit} />
+      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.flexible}`} label="Photo" hint="A tall photo works best." emptyText="No photo: the text uses the full width." initial={photo} onEdit={onEdit} />
       <TextField
         name={`${BASE}.photoCaption`}
         label="Caption on the photo"

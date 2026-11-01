@@ -10,10 +10,10 @@ import { BeliefCardFields, BeliefTextFields, FieldGroup, TitledRows } from "./Ab
 
 const BASE = "openMind";
 
-type AboutOpenMindCardProps = { values: AboutOpenMind; photos: (Photo | null)[]; libraryPhotos: Photo[]; errors: FieldErrors; onEdit: () => void };
+type AboutOpenMindCardProps = { values: AboutOpenMind; photos: (Photo | null)[]; errors: FieldErrors; onEdit: () => void };
 
 /** 04 "An open mind": its card, its text, three villages with photos, how we invite you in and the closing quote. */
-export const AboutOpenMindCard = ({ values, photos, libraryPhotos, errors, onEdit }: AboutOpenMindCardProps) => (
+export const AboutOpenMindCard = ({ values, photos, errors, onEdit }: AboutOpenMindCardProps) => (
   <FormSection title="04 · An open mind">
     <BeliefCardFields base={BASE} values={values} errors={errors} />
     <BeliefTextFields base={BASE} values={values} errors={errors} />
@@ -36,7 +36,7 @@ export const AboutOpenMindCard = ({ values, photos, libraryPhotos, errors, onEdi
               label={`Photo ${index + 1}`}
               emptyText="No photo: the village is left out."
               initial={photos[index] ?? null}
-              photos={libraryPhotos}
+             
               onEdit={onEdit}
             />
             <TextField name={`${BASE}.places.${index}.title`} label="Place" placeholder="Ghandruk, Annapurna" defaultValue={place.title} maxLength={LIMIT.itemTitle} error={errors[`${BASE}.places.${index}.title`]} />

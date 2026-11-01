@@ -16,3 +16,6 @@ export { VARIANT_WIDTHS } from "@ttn/ui/lib/photos";
 export const MAX_GALLERY_PHOTOS = 30;
 
 export const PHOTO_LIMITS = { place: 80, originalName: 200 } as const;
+
+/** How many file names one same-name check looks up (a bigger upload asks in several goes). */
+export const SAME_NAME_BATCH = 50;

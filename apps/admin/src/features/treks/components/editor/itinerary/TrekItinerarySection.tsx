@@ -9,7 +9,6 @@ import { FormSection } from "@/components/ui/FormSection";
 import { RichTextEditor } from "@/components/ui/richText/RichTextEditor";
 import { SortableList } from "@/components/ui/SortableList";
 import { TextField } from "@/components/ui/TextField";
-import type { Photo } from "@/features/photos/types";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { MAX_DAYS, TREK_LIMITS as LIMIT } from "../../../constants";
@@ -27,8 +26,8 @@ type TrekItinerarySectionProps = {
   /** The regions on the route as edited, main first: each day picks one when there are several. */
   routeRegions: RegionOption[];
   errors: FieldErrors;
-  /** The trek's saved photos, to pick a photo for a day. */
-  photoChoices: Photo[];
+  /** The saved trek's id: a day's photo window shows this trek's photos first (null for a new trek). */
+  trekId: string | null;
   onEdit: () => void;
 };
 
@@ -39,7 +38,7 @@ const dayErrors = (errors: FieldErrors, index: number): FieldErrors => {
 };
 
 /** "Day-by-day itinerary": the heading, the text and route line above the days, and the days. */
-export const TrekItinerarySection = ({ values, plan, routeRegions, errors, photoChoices, onEdit }: TrekItinerarySectionProps) => {
+export const TrekItinerarySection = ({ values, plan, routeRegions, errors, trekId, onEdit }: TrekItinerarySectionProps) => {
   const dayRegions = dayRegionIds(plan.days.map((day) => day.regionId), routeRegions.map((region) => region.id));
   const regionName = (index: number) => routeRegions.find((region) => region.id === dayRegions[index])?.name ?? "";
   const altitudes = plan.days.map(dayPeak);
@@ -95,7 +94,7 @@ export const TrekItinerarySection = ({ values, plan, routeRegions, errors, photo
                 index={index}
                 isOpen={plan.openKey === day.key || Object.keys(ownErrors).length > 0}
                 errors={ownErrors}
-                photoChoices={photoChoices}
+                trekId={trekId}
                 routeRegions={routeRegions}
                 regionName={regionName(index)}
                 previousRegionName={index > 0 ? regionName(index - 1) : ""}

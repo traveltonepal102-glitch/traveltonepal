@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { saveTrek } from "@/features/treks/actions/saveTrek";
@@ -37,6 +38,8 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
     listSimilarTrekOptions(trekId),
     listTrekkingGuides(),
   ]);
+  // A topic's photo can be any library photo, not only the trek's: loaded for its preview.
+  const topicPhotos = await listPhotosByIds(trek.knowTopics.flatMap((topic) => (topic.photoId ? [topic.photoId] : [])));
   const today = todayInNepal();
   const { added } = await searchParams;
 
@@ -45,6 +48,8 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       action={saveTrek.bind(null, trek.id)}
       values={trek}
       photos={trek.photos}
+      trekId={trek.id}
+      topicPhotos={topicPhotos}
       regions={regions}
       similarOptions={similarOptions}
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}

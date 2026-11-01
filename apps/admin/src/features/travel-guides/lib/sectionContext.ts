@@ -6,8 +6,9 @@ import type { ArticleOptions, MonthEntry } from "../types";
 export type SectionContext = {
   treks: ArticleOptions["treks"];
   guides: ArticleOptions["guides"];
-  /** The photo library, with photos uploaded in this editor first. */
+  /** The photos the sections show (saved, and chosen in this editor), for their previews. */
   photos: Photo[];
+  /** Keeps a photo chosen in a photo window, so its section can preview it. */
   addPhoto: (photo: Photo) => void;
   /** The guide's website region (null: the main site), to suggest its guides first. */
   region: { id: string; name: string } | null;

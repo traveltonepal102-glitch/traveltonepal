@@ -26,3 +26,9 @@ export type PhotoUseKind = (typeof PHOTO_USE_KINDS)[number];
 
 /** One place a photo is used, e.g. the trek "Mardi Himal Trek", "Day 3". */
 export type PhotoUse = { photoId: string; kind: PhotoUseKind; itemId: string; itemLabel: string; detail: string };
+
+/** A library photo with the name of the file it was uploaded from (to spot the same file uploaded again). */
+export type NamedPhoto = Photo & { originalName: string };
+
+/** A photo in the "Choose a photo" window: how many places use it, for its badge (null: not known, no badge). */
+export type PickerPhoto = NamedPhoto & { useCount: number | null };

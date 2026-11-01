@@ -9,6 +9,7 @@ import { EditorSectionNav } from "@/components/editor/EditorSectionNav";
 import type { EditorSaveAction } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { FormAlert } from "@/components/ui/FormAlert";
+import type { Photo } from "@/features/photos/types";
 import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 
 import { TREKS_PATH } from "../../constants";
@@ -23,6 +24,10 @@ type TrekEditorProps = {
   action: EditorSaveAction;
   values: TrekValues;
   photos: TrekPhotos;
+  /** The saved trek's id (null for a new trek): photo windows offer this trek's photos. */
+  trekId: string | null;
+  /** The library photos the guide topics show, for their previews. */
+  topicPhotos: Photo[];
   regions: RegionOption[];
   /** Every other trek, to pick similar treks from. */
   similarOptions: SimilarTrekOption[];
@@ -41,7 +46,7 @@ type TrekEditorProps = {
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
@@ -94,6 +99,8 @@ export const TrekEditor = ({ action, values, photos, regions, similarOptions, gu
               activeKey={activeKey}
               values={values}
               photos={photos}
+              trekId={trekId}
+              topicPhotos={topicPhotos}
               errors={errors}
               onEdit={markDirty}
               regions={regions}

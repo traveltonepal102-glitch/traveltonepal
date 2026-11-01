@@ -63,8 +63,10 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
   const [initialSections] = useState(() => values.sections.map(toEditorSection));
   const sections = useRowList<EditorSection>(initialSections, markDirty);
   const [months, setMonths] = useState(values.months);
-  /** Photos uploaded in this editor, shown first in the library. */
-  const [uploadedPhotos, setUploadedPhotos] = useState<Photo[]>([]);
+  /** Photos chosen in this editor's photo windows, for the sections' previews. */
+  const [chosenPhotos, setChosenPhotos] = useState<Photo[]>([]);
+  const knownPhotos = [...chosenPhotos, ...options.photos];
+  const addPhoto = (photo: Photo) => setChosenPhotos((current) => (current.some((other) => other.id === photo.id) ? current : [photo, ...current]));
   const site = options.sites.find((item) => item.id === draft.siteRegionId);
 
   const changeCover = (next: typeof cover) => {
@@ -112,8 +114,8 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
             context={{
               treks: options.treks,
               guides: options.guides,
-              photos: [...uploadedPhotos, ...options.photos],
-              addPhoto: (photo) => setUploadedPhotos((current) => [photo, ...current]),
+              photos: knownPhotos,
+              addPhoto,
               region: site ? { id: site.id, name: site.name } : null,
               months,
               onMonthsChange: (next) => {

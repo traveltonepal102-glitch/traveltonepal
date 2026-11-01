@@ -30,12 +30,11 @@ export const PhotoFields = ({ photoId, caption, alt, context, field, errors, onC
       </div>
       <LibraryPhotoPicker
         label={photo ? "Change photo" : "Choose from library"}
-        photos={context.photos}
-        pickedIds={photoId ? [photoId] : []}
+        picked={photo ? [photo] : []}
         max={1}
         regionId={context.region?.id ?? null}
         onChange={(ids) => onChange({ photoId: ids[0] ?? null })}
-        onUploaded={context.addPhoto}
+        onChosen={context.addPhoto}
       />
       <FieldError id={`${field}-photo-error`} message={errors[`${field}.photoId`]} />
       <TextField name="sectionPhotoCaption" label="Caption" labelNote="(optional)" value={caption} onValueChange={(next) => onChange({ caption: next })} placeholder="The trail above Langtang village in late October." maxLength={LIMIT.caption} error={errors[`${field}.caption`]} />

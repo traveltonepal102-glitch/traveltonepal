@@ -16,8 +16,11 @@ import { TopicMediaField } from "./TopicMediaField";
 type KnowTopicCardProps = {
   topic: KnowTopic;
   index: number;
-  /** The trek's photos (cover first) and videos, to show one with the topic. */
+  /** The photos the topics may already show (the trek's and the topics' own), for the previews. */
   photos: Photo[];
+  /** The saved trek's id: the photo window shows this trek's photos first (null for a new trek). */
+  trekId: string | null;
+  /** The trek's videos ticked for the guide topics. */
   videos: TrekVideo[];
   errors: FieldErrors;
   onMoveUp?: () => void;
@@ -30,7 +33,7 @@ type KnowTopicCardProps = {
  * "Rooms: simple twin rooms…"), an optional smaller note, and an optional photo or video. Sent as
  * knowIcon / knowTitle / knowBody / knowNote / knowMedia.
  */
-export const KnowTopicCard = ({ topic, index, photos, videos, errors, onMoveUp, onRemove, onEdit }: KnowTopicCardProps) => {
+export const KnowTopicCard = ({ topic, index, photos, trekId, videos, errors, onMoveUp, onRemove, onEdit }: KnowTopicCardProps) => {
   const number = index + 1;
   const field = `knowTopics.${index}`;
   const media = topic.photoId ? `photo:${topic.photoId}` : topic.videoId ? `video:${topic.videoId}` : "";
@@ -81,6 +84,7 @@ export const KnowTopicCard = ({ topic, index, photos, videos, errors, onMoveUp, 
           defaultValue={media}
           topicLabel={`topic ${number}`}
           photos={photos}
+          trekId={trekId}
           videos={videos}
           errorId={`know-topic-${index}-media-error`}
           error={errors[`${field}.media`]}

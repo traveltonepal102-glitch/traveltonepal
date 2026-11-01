@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { MAX_GALLERY_PHOTOS } from "../constants";
+import { replaceGallery } from "../lib/gallerySelection";
 import type { Photo } from "../types";
 
 export type PhotoSelection = { cover: Photo | null; gallery: Photo[] };
@@ -46,6 +47,9 @@ export const usePhotoSelection = (initial: PhotoSelection, onEdit: () => void) =
       gallery: gallery.length < MAX_GALLERY_PHOTOS ? [...gallery, photo] : gallery,
     }));
 
+  /** The gallery chosen in the photo library window (Done), in its order. */
+  const setGallery = (photos: Photo[]) => change((current) => replaceGallery(current, photos));
+
   const removeFromGallery = (id: string) => change(({ cover, gallery }) => ({ cover, gallery: withoutPhoto(gallery, id) }));
 
   const moveInGallery = (from: number, to: number) =>
@@ -71,6 +75,7 @@ export const usePhotoSelection = (initial: PhotoSelection, onEdit: () => void) =
     moveCoverToGallery,
     removeCover,
     addToGallery,
+    setGallery,
     removeFromGallery,
     moveInGallery,
     updatePlace,

@@ -156,7 +156,7 @@ export type ArticleOptions = {
   }[];
   /** Trekking guides, for the guide sections (only guides who agreed to be shown can be picked). */
   guides: { id: string; name: string; role: string; photo: Photo | null; regionIds: string[]; hasConsent: boolean }[];
-  /** The photo library, for "Photo" and "Photo gallery" (newest first). */
+  /** The library photos the "Photo" and "Photo gallery" sections show, for their previews (others are chosen in the photo window). */
   photos: Photo[];
   authors: { id: string; name: string; jobTitle: string; isVerified: boolean; isGuest: boolean; writesEnglish: boolean }[];
   /** Trekking guides who can check travel guides and agreed to be shown. */

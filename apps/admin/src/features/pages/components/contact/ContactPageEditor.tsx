@@ -22,7 +22,6 @@ type ContactPageEditorProps = {
   values: ContactPageValues;
   photo: Photo | null;
   sharePhoto: Photo | null;
-  libraryPhotos: Photo[];
   websiteUrl: string | null;
   lastSaved: string;
 };
@@ -31,7 +30,7 @@ const FIXED_NOTE =
   "Fixed in the website, not edited here: the WhatsApp, email and phone boxes, the message helper, and the office address, hours and map. They come from Site settings, so they are the same on every page.";
 
 /** Pages › Contact (design: Admin-pages, "Contact"): the Contact page's sections, top to bottom. */
-export const ContactPageEditor = ({ action, values, photo, sharePhoto, libraryPhotos, websiteUrl, lastSaved }: ContactPageEditorProps) => (
+export const ContactPageEditor = ({ action, values, photo, sharePhoto, websiteUrl, lastSaved }: ContactPageEditorProps) => (
   <PageEditorForm
     action={action}
     title="Contact"
@@ -51,7 +50,7 @@ export const ContactPageEditor = ({ action, values, photo, sharePhoto, libraryPh
             errors={errors}
             eyebrow={{ label: "Green line above the heading", placeholder: "Our team is online · Kathmandu", hint: "Shown while the office is open. Outside office hours it says “Office closed now · we reply first thing in the morning” by itself." }}
           >
-            <LibraryPhotoField name="photoId" label="Photo behind the heading" hint="A wide landscape photo works best." initial={photo} photos={libraryPhotos} onEdit={onEdit} />
+            <LibraryPhotoField name="photoId" label="Photo behind the heading" hint="A wide landscape photo works best." initial={photo} onEdit={onEdit} />
           </PageTopCard>
         </div>
         <div hidden={activeKey !== "ways"}>

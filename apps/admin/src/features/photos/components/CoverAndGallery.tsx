@@ -1,16 +1,20 @@
 "use client";
 
+import { Icon } from "@ttn/ui/icon";
+import { cn } from "@ttn/ui/lib/utils";
+import { useState } from "react";
+
+import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
 
 import { MAX_GALLERY_PHOTOS } from "../constants";
 import { usePhotoSelection } from "../hooks/usePhotoSelection";
 import type { PhotoSelection } from "../hooks/usePhotoSelection";
-import { usePhotoUploads } from "../hooks/usePhotoUploads";
+import type { Photo } from "../types";
 import { CoverPhotoSlot } from "./CoverPhotoSlot";
 import { GalleryPhotoCard } from "./GalleryPhotoCard";
-import { PhotoUploadButton } from "./PhotoUploadButton";
-import { UploadProgressList } from "./UploadProgressList";
+import { LibraryPhotoDialog } from "./LibraryPhotoDialog";
 
 type CoverAndGalleryProps = {
   initial: PhotoSelection;
@@ -18,23 +22,24 @@ type CoverAndGalleryProps = {
   regionId: string | null;
   /** What the photos show, e.g. "Langtang region": with "taken at" it becomes their image text. */
   subject: string;
+  /** The trek being edited (saved): the photo window offers "This trek's photos". */
+  trekId?: string | null;
   onEdit: () => void;
   error?: string;
 };
 
 /**
- * Cover slot + ordered gallery for an editor form. Uploads are saved to the photo library right away; which
- * photos the page uses, their order and "taken at" are sent with the form's Save (coverPhotoId,
- * galleryPhotoId, photoPlace.<id>).
+ * Cover slot + ordered gallery for an editor form. Photos are chosen in the photo library window (uploads are
+ * saved to the library right away); which photos the page uses, their order and "taken at" are sent with the
+ * form's Save (coverPhotoId, galleryPhotoId, photoPlace.<id>).
  */
-export const CoverAndGallery = ({ initial, regionId, subject, onEdit, error }: CoverAndGalleryProps) => {
+export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onEdit, error }: CoverAndGalleryProps) => {
   const selection = usePhotoSelection(initial, onEdit);
-  const uploads = usePhotoUploads<"cover" | "gallery">({
-    regionId,
-    onUploaded: (photo, target) => (target === "cover" ? selection.setCover(photo) : selection.addToGallery(photo)),
-  });
+  const [openFor, setOpenFor] = useState<"cover" | "gallery" | null>(null);
   const { cover, gallery } = selection;
-  const freeSlots = MAX_GALLERY_PHOTOS - gallery.length;
+  // A photo is in one place at a time: a gallery photo chosen as the cover swaps places with the old cover.
+  const chooseCover = (photo: Photo) =>
+    gallery.some((other) => other.id === photo.id) ? selection.makeCover(photo.id) : selection.setCover(photo);
 
   return (
     <>
@@ -42,9 +47,8 @@ export const CoverAndGallery = ({ initial, regionId, subject, onEdit, error }: C
         <CoverPhotoSlot
           cover={cover}
           subject={subject}
-          isUploading={uploads.isUploading}
           isGalleryFull={selection.isGalleryFull}
-          onUpload={(files) => uploads.upload(files, "cover")}
+          onChoose={() => setOpenFor("cover")}
           onMoveToGallery={selection.moveCoverToGallery}
           onRemove={selection.removeCover}
           onChangePlace={(place) => cover && selection.updatePlace(cover.id, place)}
@@ -55,15 +59,12 @@ export const CoverAndGallery = ({ initial, regionId, subject, onEdit, error }: C
         title="Gallery"
         hint={`Up to ${MAX_GALLERY_PHOTOS} photos, shown in this order. Location data is removed on upload.`}
         aside={
-          <PhotoUploadButton
-            label="Add photos"
-            isMultiple
-            isDisabled={selection.isGalleryFull}
-            onFiles={(files) => uploads.upload(files.slice(0, freeSlots), "gallery")}
-          />
+          <button type="button" onClick={() => setOpenFor("gallery")} className={cn(secondaryButton, "min-h-8 px-3 text-caption")}>
+            <Icon name="add_photo_alternate" size={16} />
+            Add photos
+          </button>
         }
       >
-        <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} />
         {gallery.length ? (
           <ul className="m-0 grid list-none gap-3 p-0 tablet:grid-cols-2 desktop:grid-cols-3">
             {gallery.map((photo, index) => (
@@ -88,6 +89,29 @@ export const CoverAndGallery = ({ initial, regionId, subject, onEdit, error }: C
         )}
         <FieldError id="photos-error" message={error} />
       </FormSection>
+
+      {openFor === "cover" && (
+        <LibraryPhotoDialog
+          title="Cover photo"
+          selected={cover ? [cover] : []}
+          pick={{ kind: "one", onChoose: chooseCover }}
+          regionId={regionId}
+          trekId={trekId}
+          onClose={() => setOpenFor(null)}
+        />
+      )}
+      {openFor === "gallery" && (
+        <LibraryPhotoDialog
+          title="Gallery photos"
+          selected={gallery}
+          pick={{ kind: "many", max: MAX_GALLERY_PHOTOS, onDone: selection.setGallery }}
+          regionId={regionId}
+          trekId={trekId}
+          // The cover can't be in the gallery too.
+          excludedIds={cover ? [cover.id] : []}
+          onClose={() => setOpenFor(null)}
+        />
+      )}
 
       <input type="hidden" name="coverPhotoId" value={cover?.id ?? ""} />
       {gallery.map((photo) => (

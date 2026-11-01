@@ -16,13 +16,12 @@ type AdventureFieldsProps = {
   /** The saved photo; null for none. */
   photo: Photo | null;
   /** The library photos to choose from. */
-  libraryPhotos: Photo[];
   errors: FieldErrors;
   onEdit: () => void;
 };
 
 /** The adventure form: the card as the website shows it, then its place in the carousel and whether it shows. */
-export const AdventureFields = ({ values, photo, libraryPhotos, errors, onEdit }: AdventureFieldsProps) => (
+export const AdventureFields = ({ values, photo, errors, onEdit }: AdventureFieldsProps) => (
   <>
     <FormGroup title="The card" where="Home page, custom adventures">
       <TextField name="title" label="Name" placeholder="Wild honey hunting" defaultValue={values.title} maxLength={LIMIT.title} error={errors.title} />
@@ -38,7 +37,7 @@ export const AdventureFields = ({ values, photo, libraryPhotos, errors, onEdit }
       />
       <TextField name="summary" label="Text" multiline rows={4} defaultValue={values.summary} maxLength={LIMIT.summary} showCount hint="One or two sentences: what they'll do and why it's special." error={errors.summary} />
       <div className="flex flex-col gap-1">
-        <LibraryPhotoField name="photoId" label="Photo" initial={photo} photos={libraryPhotos} hint="A wide photo works best. Needed before the card can show on the website." emptyText="No photo yet." onEdit={onEdit} />
+        <LibraryPhotoField name="photoId" label="Photo" initial={photo} hint="A wide photo works best. Needed before the card can show on the website." emptyText="No photo yet." onEdit={onEdit} />
         <FieldError id="adventure-photo-error" message={errors.photoId} />
       </div>
       <TextField

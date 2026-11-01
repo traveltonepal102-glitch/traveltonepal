@@ -6,7 +6,6 @@ import { AdventuresOverview } from "@/features/adventures/components/AdventuresO
 import { ADVENTURE_LIMITS, EMPTY_ADVENTURE_VALUES, SAVED_NOTICES } from "@/features/adventures/constants";
 import { getAdventureSection, listAdventures } from "@/features/adventures/services/adventuresRepository";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { listLibraryPhotos } from "@/features/photos/services/photosRepository";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 
 export const metadata: Metadata = { title: ADMIN_SECTIONS.adventures.label };
@@ -22,8 +21,6 @@ const AdventuresPage = async ({ searchParams }: PageProps<"/adventures">) => {
   const openId = typeof openParam === "string" ? openParam : null;
   const open = adventures.find((adventure) => adventure.id === openId) ?? null;
   const isAdding = openId === "new";
-  // The library is only needed with the panel open.
-  const libraryPhotos = open || isAdding ? await listLibraryPhotos() : [];
   // A new card goes last in the carousel.
   const nextPosition = Math.min(Math.max(0, ...adventures.map((adventure) => adventure.position)) + 1, ADVENTURE_LIMITS.position);
 
@@ -34,7 +31,6 @@ const AdventuresPage = async ({ searchParams }: PageProps<"/adventures">) => {
       action={saveAdventure.bind(null, open?.id ?? null)}
       adventure={open}
       values={open ?? { ...EMPTY_ADVENTURE_VALUES, position: nextPosition }}
-      libraryPhotos={libraryPhotos}
       canRemove={admin.role === "super_admin"}
     />
   );

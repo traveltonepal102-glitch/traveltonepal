@@ -1,5 +1,6 @@
 import "server-only";
 
+import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -7,7 +8,7 @@ import { ARTICLE_LOCALE } from "../constants";
 import type { ArticleListItem, RegionArticleItem } from "../lib/articleListItem";
 import type { ArticleOptions } from "../types";
 import { listFeedbackTotals } from "./guideFeedbackRepository";
-import { listLibraryPhotos, listSectionGuides } from "./sectionOptions";
+import { listSectionGuides } from "./sectionOptions";
 
 const byName = <Item extends { name: string }>(items: Item[]) => items.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -147,14 +148,17 @@ export const listRegionArticles = async (regionId: string): Promise<RegionArticl
   }));
 };
 
-/** Everything the editor offers, in one go (`exceptArticleId`: the guide being edited, left out of "Keep reading"). */
-export const getArticleOptions = async (exceptArticleId: string | null): Promise<ArticleOptions> => {
+/**
+ * Everything the editor offers, in one go (`exceptArticleId`: the guide being edited, left out of "Keep reading";
+ * `photoIds`: the photos its sections show, for their previews).
+ */
+export const getArticleOptions = async (exceptArticleId: string | null, photoIds: string[] = []): Promise<ArticleOptions> => {
   const [sites, authors, rest, guides, photos] = await Promise.all([
     listSiteOptions(),
     listAuthorOptions(),
     listArticleOptions(exceptArticleId),
     listSectionGuides(),
-    listLibraryPhotos(),
+    listPhotosByIds(photoIds),
   ]);
   return { ...rest, sites, authors, guides, photos, regions: sites.map(({ id, name }) => ({ id, name })) };
 };

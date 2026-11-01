@@ -9,15 +9,14 @@ import type { Photo } from "../types";
 import { photoAltText } from "../lib/altText";
 import { PhotoPlaceField } from "./PhotoPlaceField";
 import { PhotoImage } from "./PhotoImage";
-import { PhotoUploadButton } from "./PhotoUploadButton";
 
 type CoverPhotoSlotProps = {
   cover: Photo | null;
   /** What the photos show, e.g. "Langtang region": the base of the image text. */
   subject: string;
-  isUploading: boolean;
   isGalleryFull: boolean;
-  onUpload: (files: File[]) => void;
+  /** Opens the photo library window. */
+  onChoose: () => void;
   onMoveToGallery: () => void;
   onRemove: () => void;
   onChangePlace: (place: string) => void;
@@ -25,13 +24,12 @@ type CoverPhotoSlotProps = {
 
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 
-/** The one cover photo: region card and page header. Empty, it invites an upload. */
+/** The one cover photo: region card and page header. Empty, it invites a choice from the photo library. */
 export const CoverPhotoSlot = ({
   cover,
   subject,
-  isUploading,
   isGalleryFull,
-  onUpload,
+  onChoose,
   onMoveToGallery,
   onRemove,
   onChangePlace,
@@ -45,7 +43,10 @@ export const CoverPhotoSlot = ({
         <p className="m-0 max-w-105 text-caption text-muted-foreground">
           No cover photo yet. A wide landscape photo works best: it fills the region card and the top of the region page.
         </p>
-        <PhotoUploadButton label="Upload a cover photo" isDisabled={isUploading} onFiles={(files) => onUpload(files.slice(0, 1))} />
+        <button type="button" onClick={onChoose} className={smallButton}>
+          <Icon name="add_photo_alternate" size={16} />
+          Choose a cover photo
+        </button>
       </div>
     );
   }
@@ -66,7 +67,10 @@ export const CoverPhotoSlot = ({
       <div className="flex flex-col gap-3">
         <PhotoPlaceField photo={cover} onChange={onChangePlace} />
         <div className="mt-auto flex flex-wrap gap-2">
-          <PhotoUploadButton label="Replace" isDisabled={isUploading} onFiles={(files) => onUpload(files.slice(0, 1))} />
+          <button type="button" onClick={onChoose} className={smallButton}>
+            <Icon name="image" size={16} />
+            Change
+          </button>
           <button type="button" onClick={onMoveToGallery} disabled={isGalleryFull} className={smallButton}>
             <Icon name="photo_library" size={16} />
             Move to gallery

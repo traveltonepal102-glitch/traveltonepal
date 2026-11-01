@@ -20,7 +20,6 @@ import { aboutTeamPeople } from "@/features/pages/lib/aboutTeamPeople";
 import { toAboutValues } from "@/features/pages/lib/aboutContent";
 import { toContactValues, toLegalValues } from "@/features/pages/lib/pageContent";
 import { getSitePage, getSitePages } from "@/features/pages/services/pagesRepository";
-import { listLibraryPhotos } from "@/features/photos/services/photosRepository";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { getSiteSettings } from "@/features/settings/services/settingsRepository";
 import { guidePath } from "@/features/trekking-guides/constants";
@@ -88,13 +87,13 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
   if (slug === LIST_PAGES_ROUTE) return ListPagesEditorPage((await searchParams).page);
   if (slug === LEGAL_PAGES_ROUTE) return LegalPagesEditorPage((await searchParams).page);
 
-  const [page, libraryPhotos] = await Promise.all([getSitePage(slug), listLibraryPhotos()]);
+  const page = await getSitePage(slug);
   if (!page) notFound();
   const lastSaved = savedLabel(page.updatedAt);
   const websiteUrl = env.WEBSITE_URL ?? null;
 
   if (slug === "contact") {
-    return <ContactPageEditor action={saveContactPage} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} libraryPhotos={libraryPhotos} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
+    return <ContactPageEditor action={saveContactPage} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
   }
 
   const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(), listRegions()]);
@@ -105,7 +104,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
       photo={page.photo}
       sharePhoto={page.sharePhoto}
       photoSlots={page.photoSlots}
-      libraryPhotos={libraryPhotos}
+     
       officeAuthors={authors.filter((author) => author.kind === "office").map((author) => ({ id: author.id, name: author.name, jobTitle: author.jobTitle }))}
       team={aboutTeamPeople(authors, guides, { authorHref: authorPath, guideHref: guidePath })}
       facts={aboutFactsFrom(settings, regions.length)}

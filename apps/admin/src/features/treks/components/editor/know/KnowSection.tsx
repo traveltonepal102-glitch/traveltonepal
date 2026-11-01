@@ -18,8 +18,10 @@ import { KnowTopicCard } from "./KnowTopicCard";
 
 type KnowSectionProps = {
   values: TrekValues;
-  /** The trek's photos (cover first), to show with a topic. */
+  /** The photos the topics may already show (the trek's and the topics' own), for the previews. */
   photos: Photo[];
+  /** The saved trek's id: the photo window shows this trek's photos first (null for a new trek). */
+  trekId: string | null;
   errors: FieldErrors;
   onEdit: () => void;
 };
@@ -30,7 +32,7 @@ const NEW_TOPIC: KnowTopic = { icon: "wb_twilight", title: "", body: EMPTY_RICH_
  * "Trek guide: season, facilities and safety" (the page's "Practical field knowledge"): heading, line and topics,
  * usually best season, accommodation, food and water, and emergencies. Each can show a photo or a video.
  */
-export const KnowSection = ({ values, photos, errors, onEdit }: KnowSectionProps) => {
+export const KnowSection = ({ values, photos, trekId, errors, onEdit }: KnowSectionProps) => {
   const list = useRowList<KnowTopic>(values.knowTopics, onEdit);
   const guideVideos = values.videos.filter((video) => video.inGuide);
 
@@ -44,7 +46,7 @@ export const KnowSection = ({ values, photos, errors, onEdit }: KnowSectionProps
       />
       <FormSection
         title="Topics"
-        hint="Usually 4: best season, accommodation, food and water, and emergencies. Each topic can show a photo from this trek’s photos or a YouTube video: paste any link, or pick a video ticked for “Trek guide topics” in Photo gallery and videos."
+        hint="Usually 4: best season, accommodation, food and water, and emergencies. Each topic can show a photo from the photo library (this trek’s photos first) or a YouTube video: paste any link, or pick a video ticked for “Trek guide topics” in Photo gallery and videos."
       >
         {list.rows.map((topic, index) => (
           <KnowTopicCard
@@ -52,6 +54,7 @@ export const KnowSection = ({ values, photos, errors, onEdit }: KnowSectionProps
             topic={topic}
             index={index}
             photos={photos}
+            trekId={trekId}
             videos={guideVideos}
             errors={errors}
             onMoveUp={index > 0 ? () => list.move(index, index - 1) : undefined}

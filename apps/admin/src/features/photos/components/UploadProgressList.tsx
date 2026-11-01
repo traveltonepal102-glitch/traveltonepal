@@ -1,19 +1,32 @@
 import { Icon } from "@ttn/ui/icon";
 
 import type { UploadItem } from "../hooks/usePhotoUploads";
+import type { SameNameAnswer } from "../hooks/useSameNameQuestions";
+import { SameNameQuestion } from "./SameNameQuestion";
 
 type UploadProgressListProps = {
   items: UploadItem[];
   onDismiss: (id: string) => void;
+  onAnswer: (id: string, answer: SameNameAnswer) => void;
+  /** Offer "Use the library photo" for a file already in the library. */
+  canUseLibraryPhoto?: boolean;
 };
 
-/** Photos being uploaded (progress, then "Preparing…" while the server makes the sizes) or that failed. */
-export const UploadProgressList = ({ items, onDismiss }: UploadProgressListProps) => {
+/**
+ * Photos being uploaded (progress, then "Preparing…" while the server makes the sizes), waiting for an answer
+ * (same name as a library photo) or that failed.
+ */
+export const UploadProgressList = ({ items, onDismiss, onAnswer, canUseLibraryPhoto = false }: UploadProgressListProps) => {
   if (!items.length) return null;
 
   return (
     <ul aria-label="Uploads" className="m-0 flex list-none flex-col gap-2 p-0">
-      {items.map((item) => (
+      {items.map((item) =>
+        item.sameName ? (
+          <li key={item.id} className="rounded-md border border-solid border-saffron-line bg-saffron-tint px-3 py-2">
+            <SameNameQuestion fileName={item.fileName} photo={item.sameName} canUseLibraryPhoto={canUseLibraryPhoto} onAnswer={(answer) => onAnswer(item.id, answer)} />
+          </li>
+        ) : (
         <li key={item.id} className="flex items-center gap-3 rounded-md border border-solid border-border bg-page px-3 py-2">
           <Icon name={item.error ? "error" : "upload"} size={18} className={item.error ? "flex-none text-danger" : "flex-none text-brand"} />
           <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -40,7 +53,8 @@ export const UploadProgressList = ({ items, onDismiss }: UploadProgressListProps
             </button>
           )}
         </li>
-      ))}
+        ),
+      )}
     </ul>
   );
 };

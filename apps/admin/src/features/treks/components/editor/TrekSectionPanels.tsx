@@ -6,6 +6,7 @@ import { flushSync } from "react-dom";
 
 import { useEditorSectionLinks } from "@/components/editor/EditorSectionLinks";
 import { CoverAndGallery } from "@/features/photos/components/CoverAndGallery";
+import type { Photo } from "@/features/photos/types";
 import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
@@ -43,6 +44,10 @@ type TrekSectionPanelsProps = {
   activeKey: TrekSectionKey;
   values: TrekValues;
   photos: TrekPhotos;
+  /** The saved trek's id (null for a new trek): photo windows offer this trek's photos. */
+  trekId: string | null;
+  /** The library photos the guide topics show, for their previews. */
+  topicPhotos: Photo[];
   errors: FieldErrors;
   onEdit: () => void;
   regions: RegionOption[];
@@ -64,6 +69,8 @@ export const TrekSectionPanels = ({
   activeKey,
   values,
   photos,
+  trekId,
+  topicPhotos,
   errors,
   onEdit,
   regions,
@@ -115,7 +122,7 @@ export const TrekSectionPanels = ({
         <TrekListingCard values={values} errors={errors} />
       </div>
       <div {...panel("photos")}>
-        <CoverAndGallery initial={photos} regionId={regionId} subject={values.name || "This trek"} onEdit={onEdit} error={photosError} />
+        <CoverAndGallery initial={photos} regionId={regionId} trekId={trekId} subject={values.name || "This trek"} onEdit={onEdit} error={photosError} />
         <VideosCard videos={values.videos} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("intro")}>
@@ -135,7 +142,7 @@ export const TrekSectionPanels = ({
         <FitSection values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("itinerary")}>
-        <TrekItinerarySection values={values} plan={plan} routeRegions={routeRegions} errors={errors} photoChoices={trekPhotos} onEdit={onEdit} />
+        <TrekItinerarySection values={values} plan={plan} routeRegions={routeRegions} errors={errors} trekId={trekId} onEdit={onEdit} />
       </div>
       <div {...panel("inclusions")}>
         <PageHeadingFields
@@ -197,7 +204,7 @@ export const TrekSectionPanels = ({
         <PackingListCard groups={values.packingGroups} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("know")}>
-        <KnowSection values={values} photos={trekPhotos} errors={errors} onEdit={onEdit} />
+        <KnowSection values={values} photos={[...trekPhotos, ...topicPhotos]} trekId={trekId} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("faq")}>
         <PageHeadingFields

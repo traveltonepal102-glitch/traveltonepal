@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { saveArticle } from "@/features/travel-guides/actions/saveArticle";
 import { ArticleEditor } from "@/features/travel-guides/components/editor/ArticleEditor";
+import { sectionPhotoIds } from "@/features/travel-guides/lib/sectionPhotoIds";
 import { getArticleOptions } from "@/features/travel-guides/services/articleOptions";
 import { getArticle } from "@/features/travel-guides/services/articlesRepository";
 import { getFeedbackTotals } from "@/features/travel-guides/services/guideFeedbackRepository";
@@ -30,7 +31,7 @@ export const generateMetadata = async ({ params }: TravelGuidePageProps): Promis
 const TravelGuidePage = async ({ params, searchParams }: TravelGuidePageProps) => {
   await requireAdmin();
   const article = await loadArticle(params);
-  const [options, feedback, { added }] = await Promise.all([getArticleOptions(article.id), getFeedbackTotals(article.id), searchParams]);
+  const [options, feedback, { added }] = await Promise.all([getArticleOptions(article.id, sectionPhotoIds(article.sections)), getFeedbackTotals(article.id), searchParams]);
 
   return (
     <ArticleEditor
