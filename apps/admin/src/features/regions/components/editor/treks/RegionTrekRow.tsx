@@ -16,8 +16,6 @@ type RegionTrekRowProps = {
   isFeatured: boolean;
   /** Ticked to show under the featured trek. */
   isShown: boolean;
-  /** False once three are ticked (only unticking is possible then). */
-  canShow: boolean;
   onFeature: () => void;
   onToggleShow: () => void;
 };
@@ -25,7 +23,7 @@ type RegionTrekRowProps = {
 const CHOICE = "flex cursor-pointer items-center gap-2 text-caption font-bold";
 
 /** One of the region's treks: feature it, or tick it to show under the featured one. */
-export const RegionTrekRow = ({ trek, regionId, isFeatured, isShown, canShow, onFeature, onToggleShow }: RegionTrekRowProps) => (
+export const RegionTrekRow = ({ trek, regionId, isFeatured, isShown, onFeature, onToggleShow }: RegionTrekRowProps) => (
   <li className={cn("flex flex-wrap items-center gap-3 rounded-lg border border-solid p-2.5", isFeatured || isShown ? "border-brand/30 bg-brand-tint" : "border-border")}>
     <span className="inline-flex h-14 w-20 flex-none items-center justify-center overflow-hidden rounded-md bg-page text-subtle">
       {trek.cover ? <PhotoImage photo={trek.cover} alt="" sizes="80px" className="h-full w-full object-cover" /> : <Icon name="landscape" size={24} />}
@@ -39,8 +37,8 @@ export const RegionTrekRow = ({ trek, regionId, isFeatured, isShown, canShow, on
     </span>
     <span className="flex flex-wrap items-center gap-x-5 gap-y-2">
       {!isFeatured && (
-        <label className={cn(CHOICE, !canShow && !isShown && "cursor-not-allowed opacity-50")}>
-          <input type="checkbox" checked={isShown} disabled={!canShow && !isShown} onChange={onToggleShow} className="size-4 accent-brand" />
+        <label className={CHOICE}>
+          <input type="checkbox" checked={isShown} onChange={onToggleShow} className="size-4 accent-brand" />
           <span className={isShown ? "text-brand" : "text-muted-foreground"}>{isShown ? "Shown under it" : "Also show"}</span>
         </label>
       )}

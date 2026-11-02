@@ -21,7 +21,6 @@ export const TREK_PAGE_SECTIONS = [
   "pricing",
   "credentials",
   "reviews",
-  "differentiators",
   "booking_form",
   "packing",
   "field_guide",

@@ -31,7 +31,6 @@ export const TREK_PAGE_SECTION_INFO: Record<TrekPageSection, PageSectionInfo> = 
   pricing: { label: "Group rates by team size", icon: "payments", editorKey: "pricing" },
   credentials: { label: "Credentials and government licences", icon: "verified", sharedKey: "credentials" },
   reviews: { label: "Trekker reviews", icon: "rate_review", sharedKey: "reviews" },
-  differentiators: { label: "What makes this trip different", icon: "compare_arrows", sharedKey: "differentiators" },
   booking_form: { label: "Booking form", icon: "send", sharedKey: "booking_form" },
   packing: { label: "Packing list", icon: "backpack", editorKey: "packing" },
   field_guide: { label: "Trek guide: season, facilities and safety", icon: "auto_stories", editorKey: "know" },

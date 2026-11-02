@@ -47,8 +47,6 @@ export const REGION_LIMITS = {
   moreTrekNote: 160,
 } as const;
 
-/** Treks shown under the featured one on the region page (the website shows no more). */
-export const MAX_MORE_TREKS = 3;
 export const MAX_WHY_POINTS = 4;
 export const MAX_COMPARE_REGIONS = 4;
 

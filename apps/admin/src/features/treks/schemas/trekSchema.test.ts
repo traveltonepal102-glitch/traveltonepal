@@ -315,11 +315,11 @@ describe("trekSchema", () => {
   });
 
   it("stores the shared sections a trek hides, from the switches that are on", () => {
-    const allShown = ["founder", "consultation", "customization", "meals", "credentials", "reviews", "why_book", "differentiators", "booking_form", "booking_cta", "newsletter"];
+    const allShown = ["founder", "consultation", "customization", "meals", "credentials", "reviews", "why_book", "booking_form", "booking_cta", "newsletter"];
     expect(parse({ sharedSectionShown: allShown }).data?.hiddenSharedSections).toEqual([]);
     const someOff = allShown.filter((key) => key !== "newsletter" && key !== "founder");
     expect(parse({ sharedSectionShown: someOff }).data?.hiddenSharedSections).toEqual(["founder", "newsletter"]);
-    expect(parse().data?.hiddenSharedSections).toHaveLength(11);
+    expect(parse().data?.hiddenSharedSections).toHaveLength(10);
     expect(parse({ sharedSectionShown: ["founder", "pop_up"] }).success).toBe(false);
   });
 

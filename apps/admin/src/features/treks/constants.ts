@@ -329,13 +329,6 @@ export const SHARED_SECTIONS: {
     icon: "star",
   },
   {
-    key: "differentiators",
-    label: "What makes this trip different",
-    description: "How a local team compares with big agencies.",
-    where: "After the reviews",
-    icon: "compare_arrows",
-  },
-  {
     key: "booking_form",
     label: "Booking form",
     description: "Builds a ready-made WhatsApp message. Nothing is stored.",
@@ -366,7 +359,6 @@ export const SHARED_SECTION_KEYS = [
   "why_book",
   "credentials",
   "reviews",
-  "differentiators",
   "booking_form",
   "booking_cta",
   "newsletter",

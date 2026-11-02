@@ -13,7 +13,7 @@ import type { SimilarTrekOption } from "@/features/treks/types";
 import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_MORE_TREKS, REGION_LIMITS as LIMIT } from "../../../constants";
+import { REGION_LIMITS as LIMIT } from "../../../constants";
 import type { MoreTrek, RegionValues } from "../../../types";
 import { MoreTreksCard } from "./MoreTreksCard";
 import { RegionTrekRow } from "./RegionTrekRow";
@@ -30,8 +30,8 @@ type RegionTreksSectionProps = {
 };
 
 /**
- * "Trek in …" on the region page (design: section "treks"): the region's own treks with one featured, up to three
- * more of them to show under it, and the "Want your own route?" line. The treks themselves are listed, not picked.
+ * "Trek in …" on the region page (design: section "treks"): the region's own treks with one featured, any of the
+ * others to show under it, and the "Want your own route?" line. The treks themselves are listed, not picked.
  */
 export const RegionTreksSection = ({ values, regionId, regionName, regionTreks, errors, onEdit }: RegionTreksSectionProps) => {
   // A featured trek moved to another region since the last save no longer counts.
@@ -56,14 +56,14 @@ export const RegionTreksSection = ({ values, regionId, regionName, regionTreks, 
   const toggleShown = (trekId: string) => {
     const row = rowOf(trekId);
     if (row) more.remove(row.key);
-    else if (more.rows.length < MAX_MORE_TREKS) more.add({ trekId, label: "", note: "" });
+    else more.add({ trekId, label: "", note: "" });
   };
 
   return (
     <>
       <FormSection
         title={`Treks in ${name}`}
-        hint={`A trek joins this region when you add “${name}” to its regions on the route in the trek editor: first, or as a region it passes through. Pick the one to feature, and tick “Also show” on up to ${MAX_MORE_TREKS} more to show under it.`}
+        hint={`A trek joins this region when you add “${name}” to its regions on the route in the trek editor: first, or as a region it passes through. Pick the one to feature, and tick “Also show” on the ones to show under it.`}
         aside={
           <Link href={TREKS_PATH} className={cn(secondaryButton, "min-h-8 px-3 text-caption")}>
             Open Treks
@@ -82,7 +82,6 @@ export const RegionTreksSection = ({ values, regionId, regionName, regionTreks, 
                   regionId={regionId}
                   isFeatured={trek.id === featuredId}
                   isShown={isShown}
-                  canShow={more.rows.length < MAX_MORE_TREKS}
                   onFeature={() => handleFeature(trek.id)}
                   onToggleShow={() => toggleShown(trek.id)}
                 />

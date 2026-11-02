@@ -51,7 +51,7 @@ export type RegionDetail = RegionCard & {
   /** "Where it is" card lines (getting there, airport, permits, lodging); blank ones left out. */
   gettingThere: readonly { icon: IconName; label: string; value: string }[];
   featuredTrek?: RegionTrekPick;
-  /** Up to three more of the region's treks, picked in the admin. */
+  /** The region's other treks picked in the admin, in their order. */
   moreTreks: readonly RegionTrekPick[];
   customRoutePitch: string;
   /** Seasons with a note, in calendar order from spring. */

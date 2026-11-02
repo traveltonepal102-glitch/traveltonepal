@@ -22,9 +22,6 @@ const POINT_TONES: readonly IconTone[] = ["brand", "saffron", "green", "navy"];
 /** "Before you go" shows up to twelve of the region's travel guides (four rows of three). */
 export const MAX_ARTICLES = 12;
 
-/** Treks shown under the featured one (the admin picks up to this many). */
-const MAX_MORE_TREKS = 3;
-
 /** Everything the region page is made from, as read from the database (regionPageRepository). */
 export type RegionPageSource = {
   /** This region's card (facts, map pin, months, cover photo). */
@@ -65,8 +62,7 @@ const toTrekPicks = ({ card, page, treks }: RegionPageSource) => {
       const trek = trekOf(item.slug);
       if (!trek || trek.slug === featured?.slug) return [];
       return [{ trek, label: item.label || `Also in ${card.name}`, note: item.note || trek.summary }];
-    })
-    .slice(0, MAX_MORE_TREKS);
+    });
   return { featuredTrek, moreTreks };
 };
 

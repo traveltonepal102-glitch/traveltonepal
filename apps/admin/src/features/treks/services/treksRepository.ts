@@ -11,7 +11,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, MEAL_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
-import type { GroupPrice, ItineraryDay, Meal, RegionOption, SimilarTrekOption, Trek, TrekFormValues } from "../types";
+import type { GroupPrice, ItineraryDay, Meal, RegionOption, SharedSectionKey, SimilarTrekOption, Trek, TrekFormValues } from "../types";
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
 type TextRow = Database["public"]["Tables"]["trek_translations"]["Row"];
@@ -101,7 +101,12 @@ const packingGroupsSchema = z.array(z.object({ title: z.string(), icon: z.enum(P
 const faqsSchema = z
   .array(z.object({ title: z.string(), icon: z.enum(FAQ_ICON_VALUES), items: z.array(z.object({ question: z.string(), answer: richTextDocSchema })) }))
   .catch([]);
-const sharedSectionsSchema = z.array(z.enum(SHARED_SECTION_KEYS)).catch([]);
+// Known keys only: a section taken off the page (e.g. "differentiators", 2026-11-02) must not turn the others back on.
+const isSharedSectionKey = (key: string): key is SharedSectionKey => (SHARED_SECTION_KEYS as readonly string[]).includes(key);
+const sharedSectionsSchema = z
+  .array(z.string())
+  .catch([])
+  .transform((keys) => keys.filter(isSharedSectionKey));
 const sectionOrderSchema = z.array(z.string()).catch([]).transform(orderTrekSections);
 const richTextSchema = richTextDocSchema.catch(EMPTY_RICH_TEXT);
 const knowTopicsSchema = z

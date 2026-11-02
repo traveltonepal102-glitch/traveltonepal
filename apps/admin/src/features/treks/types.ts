@@ -101,7 +101,6 @@ export type SharedSectionKey =
   | "credentials"
   | "reviews"
   | "why_book"
-  | "differentiators"
   | "booking_form"
   | "booking_cta"
   | "newsletter";

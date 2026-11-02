@@ -11,7 +11,7 @@ import type { SimilarTrekOption } from "@/features/treks/types";
 import type { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_MORE_TREKS, REGION_LIMITS as LIMIT } from "../../../constants";
+import { REGION_LIMITS as LIMIT } from "../../../constants";
 import type { MoreTrek } from "../../../types";
 
 type MoreTreksCardProps = {
@@ -32,7 +32,7 @@ export const MoreTreksCard = ({ list, regionTreks, regionName, errors }: MoreTre
 
   return (
     <FormSection
-      title={`Shown under the featured trek (${list.rows.length} of ${MAX_MORE_TREKS})`}
+      title={`Shown under the featured trek (${list.rows.length})`}
       hint={`Tick “Also show” on ${regionName}'s treks above. Here you set their order and, if you like, a label and a note for each.`}
     >
       {list.rows.map((row, index) => {

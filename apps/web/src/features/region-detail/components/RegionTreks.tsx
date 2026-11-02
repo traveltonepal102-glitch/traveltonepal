@@ -44,7 +44,7 @@ const RegionTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick 
   );
 };
 
-/** "Trek in …": the signature trek, up to three more of the region's treks and the offer of a custom route. */
+/** "Trek in …": the signature trek, the other treks the admin picked and the offer of a custom route. */
 export const RegionTreks = ({ region }: { region: RegionDetail }) => (
   <section id="treks" aria-labelledby="region-treks-title" className="scroll-mt-14 border-y border-line bg-surface py-14">
     <div className={`${WRAP} flex flex-col gap-6`}>

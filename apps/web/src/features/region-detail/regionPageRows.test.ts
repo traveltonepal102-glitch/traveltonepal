@@ -147,7 +147,7 @@ describe("toRegionDetail", () => {
     expect(detail({ page: page({ why_points: { not: "a list" }, faqs: null }) })).toMatchObject({ faqs: [], overview: { points: [] } });
   });
 
-  it("shows the featured trek and up to three more of the region's published treks, each once, in order", () => {
+  it("shows the featured trek and every other pick among the region's published treks, each once, in order", () => {
     const inLangtang = (slug: string, name: string) => ({ ...TREKS[0], slug, name, route: [{ slug: "langtang", name: "Langtang" }] });
     // Starts in Tamang Heritage Trail and passes through Langtang.
     const passingThrough = {
@@ -180,6 +180,7 @@ describe("toRegionDetail", () => {
       ["tamang-langtang", "Also in Langtang", TREKS[0].summary],
       ["gosaikunda", "Sacred lakes", "Holy lakes at 4,380 m."],
       ["helambu", "Also in Langtang", TREKS[0].summary],
+      ["ganja-la", "Also in Langtang", TREKS[0].summary],
     ]);
     expect(detail({ page: page({ featured_trek_slug: "unpublished-trek" }) }).featuredTrek).toBeUndefined();
     expect(detail({ page: page({ featured_trek_slug: "everest-base-camp" }) }).featuredTrek).toBeUndefined();

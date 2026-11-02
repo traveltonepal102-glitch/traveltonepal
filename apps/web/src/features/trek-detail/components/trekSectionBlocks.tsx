@@ -19,7 +19,6 @@ import { TrekRequestSection } from "./request/TrekRequestSection";
 import { TrekRouteMap } from "./route/TrekRouteMap";
 import { SimilarTreks } from "./SimilarTreks";
 import { TrekCredentials } from "./TrekCredentials";
-import { TrekDifferentiators } from "./TrekDifferentiators";
 import { TrekFieldGuide } from "./TrekFieldGuide";
 import { TrekHighlights } from "./TrekHighlights";
 import { TrekInclusions } from "./TrekInclusions";
@@ -59,7 +58,6 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
     pricing: !isTrekSectionHidden("pricing") && <TrekPricing heading={trek.headings.pricing} intro={trek.pricingIntro} name={trek.name} days={trek.days} route={trek.route} groupPrices={trek.groupPrices} />,
     credentials: shows("credentials") && <TrekCredentials />,
     reviews: reviews.length > 0 && <TrekReviews reviews={reviews} rating={rating} />,
-    differentiators: shows("differentiators") && <TrekDifferentiators differentiators={trek.differentiators} />,
     booking_form: shows("booking_form") && <TrekRequestSection {...requestProps} />,
     packing: <TrekPacking heading={trek.headings.packing} packing={trek.packing} />,
     field_guide: <TrekFieldGuide fieldGuide={trek.fieldGuide} />,

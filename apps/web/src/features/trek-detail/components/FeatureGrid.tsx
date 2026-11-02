@@ -6,7 +6,7 @@ import type { FeatureItem } from "../types";
 import { PANEL } from "./styles";
 
 /**
- * Cards with an icon tile, title and text ("Why book with us", "What makes this trip different").
+ * Cards with an icon tile, title and text ("Why book with us").
  * Phones put the icon beside the text so a list of cards does not become a very long column.
  */
 export const FeatureGrid = ({ items }: { items: readonly FeatureItem[] }) => (

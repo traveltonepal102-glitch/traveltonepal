@@ -25,7 +25,6 @@ export type SharedSection =
   | "why_book"
   | "credentials"
   | "reviews"
-  | "differentiators"
   | "booking_form"
   | "booking_cta"
   | "newsletter";
@@ -46,7 +45,7 @@ export type GroupPrice = {
 };
 
 export type { IconTone } from "@/components/shared/iconTones";
-/** A card with an icon tile, a title and one or two lines ("What makes this trip different"). */
+/** A card with an icon tile, a title and one or two lines ("Why book your trek with us"). */
 export type FeatureItem = { icon: IconName; tone: IconTone; title: string; text: string };
 
 /** A titled point: a highlight ("Kyanjin Ri sunrise (4,773 m)") or a checklist item ("Technical skill required"). */
@@ -243,8 +242,6 @@ export type TrekDetailContent = {
   /** "What's covered · What's not included": title is the bold lead-in, e.g. "Permits". */
   inclusions: { included: readonly TrekPoint[]; excluded: readonly TrekPoint[] };
   meals: TrekMeals;
-  /** "What makes this trip different": one line of intro and the cards. */
-  differentiators: { intro: string; items: readonly FeatureItem[] };
   /** Where trekking starts, for the elevation summary, e.g. Syabrubesi at 1,503 m. */
   trailhead: { name: string; altitudeM: number };
   routeMap: TrekRouteMap;

@@ -178,7 +178,7 @@ describe("getTrekReadiness", () => {
   });
 
   it("counts the shared sections that show", () => {
-    expect(readiness().shared).toEqual({ status: "done", note: "11 of 11 shown" });
-    expect(readiness({ hiddenSharedSections: ["newsletter", "meals"] }).shared.note).toBe("9 of 11 shown");
+    expect(readiness().shared).toEqual({ status: "done", note: "10 of 10 shown" });
+    expect(readiness({ hiddenSharedSections: ["newsletter", "meals"] }).shared.note).toBe("8 of 10 shown");
   });
 });

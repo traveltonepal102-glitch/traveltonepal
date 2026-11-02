@@ -10,7 +10,6 @@ import {
   MAX_BEST_FOR,
   MAX_COMPARE_REGIONS,
   MAX_FAQS,
-  MAX_MORE_TREKS,
   MAX_PINNED_ARTICLES,
   MAX_WHY_POINTS,
   REGION_DIFFICULTY_VALUES,
@@ -136,8 +135,7 @@ export const regionSchema = z
     featuredTrekPitch: text(LIMIT.featuredTrekPitch),
     moreTreks: z
       .array(z.object({ trekId: z.uuid("Pick the treks to show from the list."), label: text(LIMIT.moreTrekLabel), note: text(LIMIT.moreTrekNote) }))
-      .refine((treks) => new Set(treks.map((trek) => trek.trekId)).size === treks.length, "A trek is in the list twice. Remove one.")
-      .refine((treks) => treks.length <= MAX_MORE_TREKS, `Show up to ${MAX_MORE_TREKS} more treks.`),
+      .refine((treks) => new Set(treks.map((trek) => trek.trekId)).size === treks.length, "A trek is in the list twice. Remove one."),
     customRoutePitch: text(LIMIT.customRoutePitch),
     pinnedArticleIds: z
       .array(z.uuid("Pin travel guides from the list."))

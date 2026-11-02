@@ -13,7 +13,7 @@ import { ROUTE_SKETCHES } from "./content/routeSketches";
 import { topPlaceOf } from "./elevation";
 import { dayRegionSlugs, toRouteStops } from "./routeRegions";
 import { toSectionHeadings } from "./sectionHeadings";
-import { customizationFor, differentiatorsFor } from "./content/sharedContent";
+import { customizationFor } from "./content/sharedContent";
 import { toTrekGuides } from "./trekGuideRows";
 import type { TrekDayRow } from "./trekPageJson";
 import {
@@ -48,7 +48,6 @@ const SHARED_SECTIONS: readonly SharedSection[] = [
   "why_book",
   "credentials",
   "reviews",
-  "differentiators",
   "booking_form",
   "booking_cta",
   "newsletter",
@@ -157,7 +156,6 @@ export const toTrekDetail = (
       trailTips: readPoints(page.meal_trail_tips),
       teahouseNotes: readPoints(page.meal_teahouse_notes),
     },
-    differentiators: differentiatorsFor(summary.region),
     trailhead: toTrailhead(page.trek_start, days),
     routeMap: {
       place: firstText(page.map_place) ?? `${summary.name}, Nepal`,
