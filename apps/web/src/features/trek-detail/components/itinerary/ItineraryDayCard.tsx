@@ -45,20 +45,19 @@ export const ItineraryDayCard = ({ day, dayNumber }: ItineraryDayCardProps) => {
 
   return (
     <article className={`overflow-hidden rounded-lg bg-surface ${look.card}`}>
-      <div className={`flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between ${look.head}`}>
-        <div className="flex min-w-0 items-center gap-3.5">
-          <span aria-hidden="true" className={`flex-none rounded-sm px-3 py-1.5 font-display text-xs font-extrabold ${look.badge}`}>
-            DAY {String(dayNumber).padStart(2, "0")}
-          </span>
-          <div className="flex min-w-0 flex-col">
-            <h3 className="text-base leading-snug font-bold">
-              <span className="sr-only">Day {dayNumber}: </span>
-              {day.title}
-            </h3>
-            <p className={`text-xs font-semibold ${look.subtitle}`}>{day.subtitle}</p>
-          </div>
+      {/* Badge as wide as itself; the title gets twice the chip's room (the chip sits under the title on phones). */}
+      <div className={`grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3.5 gap-y-2.5 px-5 py-4 sm:grid-cols-[auto_minmax(0,2fr)_minmax(0,1fr)] sm:gap-x-5 ${look.head}`}>
+        <span aria-hidden="true" className={`rounded-sm px-3 py-1.5 font-display text-xs font-extrabold ${look.badge}`}>
+          DAY {String(dayNumber).padStart(2, "0")}
+        </span>
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <h3 className="text-base leading-snug font-bold">
+            <span className="sr-only">Day {dayNumber}: </span>
+            {day.title}
+          </h3>
+          <p className={`text-xs font-semibold ${look.subtitle}`}>{day.subtitle}</p>
         </div>
-        <p className={`flex-none self-start rounded-sm border px-2.5 py-1 text-xs sm:max-w-1/2 ${look.chip}`}>{dayStats(day)}</p>
+        <p className={`col-start-2 w-fit justify-self-start rounded-sm border px-2.5 py-1 text-xs leading-normal sm:col-start-auto sm:justify-self-end ${look.chip}`}>{dayStats(day)}</p>
       </div>
 
       <div className={`flex flex-wrap gap-4 border-t px-5 pt-4 pb-5 ${look.divider}`}>
