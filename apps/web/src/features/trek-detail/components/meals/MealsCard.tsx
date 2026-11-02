@@ -55,14 +55,14 @@ export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
           </span>
           <p className="flex flex-col gap-1">
             <strong className="font-display text-body-sm font-bold text-ink">{reason.title}</strong>
-            <span className="text-xs text-text">{reason.text}</span>
+            <span className="text-body-sm text-text">{reason.text}</span>
           </p>
         </li>
       ))}
     </ul>
 
     {meals.dailyBudgetUsd && (
-      <p className="flex items-center gap-3 rounded-xl border border-saffron-line bg-saffron-tint p-3.5 text-xs text-ink">
+      <p className="flex items-center gap-3 rounded-xl border border-saffron-line bg-saffron-tint p-3.5 text-body-sm text-ink">
         <Icon name="lightbulb" className="flex-none text-saffron-deep" />
         <span>
           <strong>Average daily food budget:</strong> plan on about{" "}

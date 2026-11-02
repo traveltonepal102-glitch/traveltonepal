@@ -18,10 +18,10 @@ export const TrekPacking = ({ heading, packing }: TrekPackingProps) => (
             <Icon name={group.icon} className="flex-none text-brand" />
             {group.title}
           </h3>
-          <ul className="flex flex-col gap-2 text-xs text-text">
+          <ul className="flex flex-col gap-2 text-body-sm text-text">
             {group.items.map((item) => (
               <li key={item.title} className="flex items-start gap-2">
-                <Icon name="check" size={16} className="flex-none text-whatsapp" />
+                <Icon name="check" size={16} className="mt-0.75 flex-none text-whatsapp" />
                 <p>
                   <strong className="text-ink">{item.title}:</strong> {item.text}
                 </p>

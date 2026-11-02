@@ -18,7 +18,7 @@ export const TrekHighlights = ({ heading, highlights }: TrekHighlightsProps) => 
           <span aria-hidden="true" className="mt-2 size-2 flex-none rounded-full bg-brand" />
           <div className="flex flex-col gap-0.5">
             <h3 className="text-[15px] leading-snug font-bold">{highlight.title}</h3>
-            <p className="text-caption font-normal text-text">{highlight.text}</p>
+            <p className="text-body-sm font-normal text-text">{highlight.text}</p>
           </div>
         </li>
       ))}

@@ -35,10 +35,10 @@ const PointList = ({ title, points, look }: PointListProps) => (
       <Icon name={look.titleIcon} size={22} />
       <h3 className="font-sans text-[15px] font-bold tracking-wide text-inherit uppercase">{title}</h3>
     </div>
-    <ul className="flex flex-col gap-2 text-caption font-normal text-text">
+    <ul className="flex flex-col gap-2 text-body-sm font-normal text-text">
       {points.map((point) => (
         <li key={point.title} className="flex items-start gap-2">
-          <Icon name={look.itemIcon} size={16} className={`mt-0.5 flex-none ${look.iconColor}`} />
+          <Icon name={look.itemIcon} size={16} className={`mt-0.75 flex-none ${look.iconColor}`} />
           <p>
             <strong className="text-ink">{point.title}:</strong> {point.text}
           </p>

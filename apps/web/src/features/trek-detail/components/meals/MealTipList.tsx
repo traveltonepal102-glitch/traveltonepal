@@ -18,7 +18,7 @@ const TONES = {
 
 /** A titled list of short tips, each with a bold lead-in. */
 export const MealTipList = ({ title, icon, tone, points }: MealTipListProps) => (
-  <div className="flex flex-col gap-2.5 rounded-md border border-line bg-surface p-4 text-xs text-text shadow-card">
+  <div className="flex flex-col gap-2.5 rounded-md border border-line bg-surface p-4 text-body-sm text-text shadow-card">
     <p className={`inline-flex items-center gap-1.5 font-bold ${TONES[tone].title}`}>
       <Icon name={icon} size={16} />
       {title}
@@ -26,7 +26,7 @@ export const MealTipList = ({ title, icon, tone, points }: MealTipListProps) => 
     <ul className="flex flex-col gap-2.5">
       {points.map((point) => (
         <li key={point.title} className="flex items-start gap-2">
-          <span aria-hidden="true" className={`mt-1.75 size-1.5 flex-none rounded-full ${TONES[tone].dot}`} />
+          <span aria-hidden="true" className={`mt-2 size-1.5 flex-none rounded-full ${TONES[tone].dot}`} />
           <p>
             <strong className="text-ink">{point.title}:</strong> {point.text}
           </p>
