@@ -10,7 +10,7 @@ import {
   MAX_BEST_FOR,
   MAX_COMPARE_REGIONS,
   MAX_FAQS,
-  MAX_NEARBY_TREKS,
+  MAX_MORE_TREKS,
   MAX_PINNED_ARTICLES,
   MAX_WHY_POINTS,
   REGION_DIFFICULTY_VALUES,
@@ -132,10 +132,10 @@ export const regionSchema = z
       .pipe(z.uuid("Pick the featured trek from the list.").nullable()),
     featuredTrekLabel: text(LIMIT.featuredTrekLabel),
     featuredTrekPitch: text(LIMIT.featuredTrekPitch),
-    nearbyTreks: z
-      .array(z.object({ trekId: z.uuid("Pick the nearby treks from the list."), label: text(LIMIT.nearbyLabel), note: text(LIMIT.nearbyNote) }))
+    moreTreks: z
+      .array(z.object({ trekId: z.uuid("Pick the treks to show from the list."), label: text(LIMIT.moreTrekLabel), note: text(LIMIT.moreTrekNote) }))
       .refine((treks) => new Set(treks.map((trek) => trek.trekId)).size === treks.length, "A trek is in the list twice. Remove one.")
-      .refine((treks) => treks.length <= MAX_NEARBY_TREKS, `Suggest up to ${MAX_NEARBY_TREKS} nearby treks.`),
+      .refine((treks) => treks.length <= MAX_MORE_TREKS, `Show up to ${MAX_MORE_TREKS} more treks.`),
     customRoutePitch: text(LIMIT.customRoutePitch),
     pinnedArticleIds: z
       .array(z.uuid("Pin travel guides from the list."))
@@ -164,11 +164,11 @@ const readWhyPoints = (formData: FormData) => {
   return readList(formData, "whyTitle").map((title, index) => ({ icon: icons[index] ?? "", title, text: texts[index] ?? "" }));
 };
 
-/** Nearby treks in FormData: nearbyTrekId, nearbyTrekLabel and nearbyTrekNote, one of each per row in order. */
-const readNearbyTreks = (formData: FormData) => {
-  const labels = readList(formData, "nearbyTrekLabel");
-  const notes = readList(formData, "nearbyTrekNote");
-  return readList(formData, "nearbyTrekId").map((trekId, index) => ({ trekId, label: labels[index] ?? "", note: notes[index] ?? "" }));
+/** The treks under the featured one, in FormData: moreTrekId, moreTrekLabel and moreTrekNote, one of each per row in order. */
+const readMoreTreks = (formData: FormData) => {
+  const labels = readList(formData, "moreTrekLabel");
+  const notes = readList(formData, "moreTrekNote");
+  return readList(formData, "moreTrekId").map((trekId, index) => ({ trekId, label: labels[index] ?? "", note: notes[index] ?? "" }));
 };
 
 /** The editor's FormData as the schema expects it. */
@@ -220,7 +220,7 @@ export const readRegionForm = (formData: FormData) => {
     featuredTrekId: readText(formData, "featuredTrekId"),
     featuredTrekLabel: readText(formData, "featuredTrekLabel"),
     featuredTrekPitch: readText(formData, "featuredTrekPitch"),
-    nearbyTreks: readNearbyTreks(formData),
+    moreTreks: readMoreTreks(formData),
     customRoutePitch: readText(formData, "customRoutePitch"),
     pinnedArticleIds: readList(formData, "pinnedArticleId"),
     guidesListed: readList(formData, "regionGuideListed"),

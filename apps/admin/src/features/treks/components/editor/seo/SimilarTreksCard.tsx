@@ -4,7 +4,7 @@ import { Icon } from "@ttn/ui/icon";
 import { useId, useState } from "react";
 import type { ChangeEvent } from "react";
 
-import { ghostIconButton } from "@/components/ui/buttonStyles";
+import { dangerSolidIconButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { FormSection } from "@/components/ui/FormSection";
 import { inputClass, labelClass } from "@/components/ui/formStyles";
@@ -59,7 +59,8 @@ export const SimilarTreksCard = ({ similarTrekIds, options, error, onEdit }: Sim
               </div>
               <button
                 type="button"
-                className={`${ghostIconButton} absolute top-1.5 right-1.5 bg-surface/90`}
+                // Solid red with a white icon so it stands out on any photo.
+                className={`${dangerSolidIconButton} absolute top-1.5 right-1.5 shadow-raised`}
                 aria-label={`Remove ${trek.name}`}
                 onClick={() => change(picked.filter((id) => id !== trek.id))}
               >

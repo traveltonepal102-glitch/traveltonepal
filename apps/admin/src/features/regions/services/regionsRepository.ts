@@ -53,8 +53,8 @@ const toPinnedArticleIds = (rows: RegionQueryRow["article_regions"]) =>
     .sort((a, b) => a.position - b.position)
     .map((pin) => pin.id);
 
-/** Nearby treks in order, with their English label and note. */
-const toNearbyTreks = (rows: RegionQueryRow["region_nearby_treks"]) =>
+/** The treks shown under the featured one (stored as nearby treks), in order, with their English label and note. */
+const toMoreTreks = (rows: RegionQueryRow["region_nearby_treks"]) =>
   [...rows]
     .sort((a, b) => a.position - b.position)
     .map((row) => {
@@ -121,7 +121,7 @@ const toRegion = (row: RegionQueryRow): Region => {
     featuredTrekId: row.featured_trek_id,
     featuredTrekLabel: text.featured_trek_label,
     featuredTrekPitch: text.featured_trek_pitch,
-    nearbyTreks: toNearbyTreks(row.region_nearby_treks),
+    moreTreks: toMoreTreks(row.region_nearby_treks),
     customRoutePitch: text.custom_route_pitch,
     hiddenGuideIds: row.region_hidden_guides.map((item) => item.guide_id),
     compareRegionIds: [...row.region_compare].sort((a, b) => a.position - b.position).map((item) => item.other_region_id),
@@ -176,7 +176,7 @@ export const saveRegion = async (values: RegionFormValues, regionId: string | nu
       month_ratings: values.monthRatings,
       cover_photo_id: values.photos.coverPhotoId,
       featured_trek_id: values.featuredTrekId ?? "",
-      nearby_treks: values.nearbyTreks.map((trek) => ({ trek_id: trek.trekId, label: trek.label, note: trek.note })),
+      nearby_treks: values.moreTreks.map((trek) => ({ trek_id: trek.trekId, label: trek.label, note: trek.note })),
       hidden_guide_ids: values.hiddenGuideIds,
       max_altitude_m: values.maxAltitudeM,
       difficulty: values.difficulty ?? "",

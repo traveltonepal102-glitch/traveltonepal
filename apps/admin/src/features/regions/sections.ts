@@ -29,7 +29,7 @@ export const REGION_SECTIONS: RegionSection[] = [
     label: "Treks",
     pageTitle: "Trek in {name}",
     icon: "landscape",
-    description: "The region's treks with the featured one, nearby treks to suggest, and “Want your own route?”.",
+    description: "The region's treks with the featured one, up to three more to show, and “Want your own route?”.",
   },
   {
     key: "months",
@@ -111,7 +111,7 @@ const FIELD_SECTIONS: Record<string, RegionSectionKey> = {
   featuredTrekId: "treks",
   featuredTrekLabel: "treks",
   featuredTrekPitch: "treks",
-  nearbyTreks: "treks",
+  moreTreks: "treks",
   customRoutePitch: "treks",
   hiddenGuideIds: "guides",
   guidesListed: "guides",

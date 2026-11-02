@@ -4,13 +4,14 @@ import { toRichTextDoc } from "@ttn/ui/lib/richText";
 import type { IconTone } from "@/components/shared/iconTones";
 import type { GuideSummary } from "@/features/guides/types";
 import type { RegionCard } from "@/features/regions/regionRows";
+import { passesThrough } from "@/features/treks/route";
 import type { TrekSummary } from "@/features/treks/types";
 import { coverImage, sharePhotoImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebRegionGuideRow, WebRegionPageRow, WebRegionPhotoRow } from "@/lib/supabase/database.types";
 
 import { toRegionGuides } from "./regionGuideRows";
-import { readFaqs, readNearbyTreks, readWhyPoints } from "./regionPageJson";
+import { readFaqs, readMoreTreks, readWhyPoints } from "./regionPageJson";
 import { regionsToCompare } from "./regionsToCompare";
 import { toSeasonNotes } from "./seasons";
 import type { RegionDetail, RegionPhoto, RegionTrekPick } from "./types";
@@ -21,6 +22,9 @@ const POINT_TONES: readonly IconTone[] = ["brand", "saffron", "green", "navy"];
 /** "Before you go" shows one row of travel guides. */
 const MAX_ARTICLES = 3;
 
+/** Treks shown under the featured one (the admin picks up to this many). */
+const MAX_MORE_TREKS = 3;
+
 /** Everything the region page is made from, as read from the database (regionPageRepository). */
 export type RegionPageSource = {
   /** This region's card (facts, map pin, months, cover photo). */
@@ -28,7 +32,7 @@ export type RegionPageSource = {
   page: WebRegionPageRow;
   photos: readonly WebRegionPhotoRow[];
   guides: readonly WebRegionGuideRow[];
-  /** Every published trek, for the featured and nearby treks. */
+  /** Every published trek, for the featured trek and the ones under it. */
   treks: readonly TrekSummary[];
   /** The main site's travel guide cards, for "Before you go". */
   travelGuides: readonly GuideSummary[];
@@ -44,21 +48,26 @@ const toPhotos = (rows: readonly WebRegionPhotoRow[], photosBaseUrl: string, reg
       return image ? [{ ...image, place: firstText(row.cover_place) }] : [];
     });
 
-/** The featured trek (if it is published) and the nearby ones, each once, in the admin's order. */
+/**
+ * The featured trek (if it is published) and the admin's other picks, each once, in the admin's order. Only treks
+ * that start in or pass through the region count (picks saved when they could come from other regions drop out).
+ */
 const toTrekPicks = ({ card, page, treks }: RegionPageSource) => {
-  const trekOf = (slug: string) => treks.find((trek) => trek.slug === slug);
+  const trekOf = (slug: string) => treks.find((trek) => trek.slug === slug && passesThrough(trek, card.slug));
   const featured = page.featured_trek_slug ? trekOf(page.featured_trek_slug) : undefined;
   const featuredTrek: RegionTrekPick | undefined = featured && {
     trek: featured,
     label: firstText(page.featured_trek_label) ?? `Our signature ${card.name} trek`,
     note: firstText(page.featured_trek_pitch, featured.summary) ?? "",
   };
-  const nearbyTreks = readNearbyTreks(page.nearby_treks).flatMap((item): RegionTrekPick[] => {
-    const trek = trekOf(item.slug);
-    if (!trek || trek.slug === featured?.slug) return [];
-    return [{ trek, label: item.label || "Nearby trek", note: item.note || trek.summary }];
-  });
-  return { featuredTrek, nearbyTreks };
+  const moreTreks = readMoreTreks(page.nearby_treks)
+    .flatMap((item): RegionTrekPick[] => {
+      const trek = trekOf(item.slug);
+      if (!trek || trek.slug === featured?.slug) return [];
+      return [{ trek, label: item.label || `Also in ${card.name}`, note: item.note || trek.summary }];
+    })
+    .slice(0, MAX_MORE_TREKS);
+  return { featuredTrek, moreTreks };
 };
 
 /** The region page's content from its database rows. Blank texts fall back or are left out, never shown empty. */

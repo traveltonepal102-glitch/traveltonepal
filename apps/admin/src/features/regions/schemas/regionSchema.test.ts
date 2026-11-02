@@ -120,23 +120,25 @@ describe("regionSchema", () => {
     expect(errorsOf({ introduction: JSON.stringify(unsafe) }).introduction).toMatch(/Links must start with https/);
   });
 
-  it("reads the featured trek and the nearby treks in order, each once", () => {
+  it("reads the featured trek and the more treks in order, each once", () => {
     const featured = "00000000-0000-4000-8000-000000000031";
-    const nearby = "00000000-0000-4000-8000-000000000032";
+    const more = "00000000-0000-4000-8000-000000000032";
     const result = parse({
       featuredTrekId: featured,
       featuredTrekLabel: " Our signature trek ",
-      nearbyTrekId: [nearby],
-      nearbyTrekLabel: ["Nearby · same trailhead"],
-      nearbyTrekNote: ["Easy to combine."],
+      moreTrekId: [more],
+      moreTrekLabel: ["Short on time"],
+      moreTrekNote: ["Easy to combine."],
     });
     expect(result.data).toMatchObject({
       featuredTrekId: featured,
       featuredTrekLabel: "Our signature trek",
-      nearbyTreks: [{ trekId: nearby, label: "Nearby · same trailhead", note: "Easy to combine." }],
+      moreTreks: [{ trekId: more, label: "Short on time", note: "Easy to combine." }],
     });
     expect(parse().data?.featuredTrekId).toBeNull();
-    expect(errorsOf({ nearbyTrekId: [nearby, nearby], nearbyTrekLabel: ["", ""], nearbyTrekNote: ["", ""] }).nearbyTreks).toBe("A trek is in the list twice. Remove one.");
+    expect(errorsOf({ moreTrekId: [more, more], moreTrekLabel: ["", ""], moreTrekNote: ["", ""] }).moreTreks).toBe("A trek is in the list twice. Remove one.");
+    const four = ["41", "42", "43", "44"].map((end) => `00000000-0000-4000-8000-0000000000${end}`);
+    expect(errorsOf({ moreTrekId: four, moreTrekLabel: ["", "", "", ""], moreTrekNote: ["", "", "", ""] }).moreTreks).toBe("Show up to 3 more treks.");
     expect(errorsOf({ featuredTrekId: "langtang" }).featuredTrekId).toBe("Pick the featured trek from the list.");
   });
 

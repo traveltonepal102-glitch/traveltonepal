@@ -43,11 +43,12 @@ export const REGION_LIMITS = {
   featuredTrekLabel: 60,
   featuredTrekPitch: 300,
   customRoutePitch: 300,
-  nearbyLabel: 40,
-  nearbyNote: 160,
+  moreTrekLabel: 40,
+  moreTrekNote: 160,
 } as const;
 
-export const MAX_NEARBY_TREKS = 6;
+/** Treks shown under the featured one on the region page (the website shows no more). */
+export const MAX_MORE_TREKS = 3;
 export const MAX_WHY_POINTS = 4;
 export const MAX_COMPARE_REGIONS = 4;
 
@@ -158,7 +159,7 @@ export const EMPTY_REGION_VALUES: RegionValues = {
   featuredTrekId: null,
   featuredTrekLabel: "",
   featuredTrekPitch: "",
-  nearbyTreks: [],
+  moreTreks: [],
   customRoutePitch: "",
   hiddenGuideIds: [],
   compareRegionIds: [],

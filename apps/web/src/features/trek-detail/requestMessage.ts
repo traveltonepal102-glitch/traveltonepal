@@ -2,22 +2,17 @@ import { z } from "zod";
 
 import { formatDays } from "@/features/treks/format";
 
-/** Seasons offered instead of the chosen start day (no years: they never go stale). */
-export const SEASON_OPTIONS = [
-  "Spring (March – May)",
-  "Autumn (October – November)",
-  "Winter (December – February)",
-  "My own dates",
-  "Not sure yet",
-] as const;
-
 /** The longest special-requests text we pass on (WhatsApp and mail links get unwieldy beyond this). */
 export const MAX_REQUESTS_LENGTH = 1000;
 
-/** What the visitor types into a booking request form (group size and timing come from the page's selection). */
+/** The longest preferred-time text we pass on ("Mid-October 2027", "Not sure"). */
+export const MAX_TIMING_LENGTH = 100;
+
+/** What the visitor types into a booking request form (group size comes from the page's selection). */
 export const trekRequestSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(80, "Please keep your name under 80 characters."),
   country: z.string().trim().max(60, "Please keep the country under 60 characters."),
+  timing: z.string().trim().max(MAX_TIMING_LENGTH, `Please keep the date under ${MAX_TIMING_LENGTH} characters.`),
   requests: z.string().trim().max(MAX_REQUESTS_LENGTH, `Please keep your requests under ${MAX_REQUESTS_LENGTH} characters.`),
 });
 
@@ -28,8 +23,6 @@ export type TrekRequest = TrekRequestFields & {
   days: number;
   /** e.g. "3–5 people" (no price: prices change, the message stays in the chat). */
   groupSize: string;
-  /** e.g. "Start Nov 02, 2026" or "Spring (March – May)". */
-  timing: string;
 };
 
 /** "Check this date on WhatsApp": the trek, the chosen start day and group size, before any form is filled in. */

@@ -283,7 +283,7 @@ export type Trek = TrekValues & {
   photos: TrekPhotos;
 };
 
-/** A trek to pick from another editor (similar treks, a region's featured and nearby treks). */
+/** A trek to pick from another editor (similar treks, a region's featured trek and the ones under it). */
 export type SimilarTrekOption = {
   id: string;
   name: string;

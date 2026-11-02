@@ -22,7 +22,7 @@ export type RegionPhoto = SiteImageSource & {
   place?: string;
 };
 
-/** A trek the page suggests: the featured one (with its pitch as `note`) or a nearby one. */
+/** A trek the page shows: the featured one (with its pitch as `note`) or one of the treks under it. */
 export type RegionTrekPick = { trek: TrekSummary; label: string; note: string };
 
 /** A guide who leads treks in the region ("Your guides"). */
@@ -51,7 +51,8 @@ export type RegionDetail = RegionCard & {
   /** "Where it is" card lines (getting there, airport, permits, lodging); blank ones left out. */
   gettingThere: readonly { icon: IconName; label: string; value: string }[];
   featuredTrek?: RegionTrekPick;
-  nearbyTreks: readonly RegionTrekPick[];
+  /** Up to three more of the region's treks, picked in the admin. */
+  moreTreks: readonly RegionTrekPick[];
   customRoutePitch: string;
   /** Seasons with a note, in calendar order from spring. */
   seasons: readonly SeasonNote[];

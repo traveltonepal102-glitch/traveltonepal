@@ -31,7 +31,8 @@ const faqSchema = z.object({
   answer: richTextDocSchema.refine((doc) => !isRichTextEmpty(doc)),
 });
 
-const nearbyTrekSchema = z.object({ slug: z.string().min(1), label: text.catch(""), note: text.catch("") });
+/** A trek the region picks to show under its featured one (the view's `nearby_treks`). */
+const moreTrekSchema = z.object({ slug: z.string().min(1), label: text.catch(""), note: text.catch("") });
 
 /**
  * A JSON list from the database, item by item: items that don't fit the schema are left out, so one broken
@@ -46,4 +47,4 @@ export const readWhyPoints = (value: unknown): WhyPoint[] => listOf(value, whyPo
 
 export const readFaqs = (value: unknown): RegionFaqItem[] => listOf(value, faqSchema);
 
-export const readNearbyTreks = (value: unknown) => listOf(value, nearbyTrekSchema);
+export const readMoreTreks = (value: unknown) => listOf(value, moreTrekSchema);

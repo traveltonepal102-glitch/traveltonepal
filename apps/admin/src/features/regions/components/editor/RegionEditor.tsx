@@ -40,9 +40,8 @@ type RegionEditorProps = {
   regionId: string | null;
   isNew: boolean;
   websiteDomain: string | null;
-  /** The region's own treks and the others (to suggest as nearby). */
+  /** The region's own treks (to feature one and pick more to show). */
   regionTreks: SimilarTrekOption[];
-  otherTreks: SimilarTrekOption[];
   /** Every guide with this region in Trekking guides. */
   guides: GuideOption[];
   /** Every other region, to compare with. */
@@ -70,7 +69,6 @@ export const RegionEditor = ({
   isNew,
   websiteDomain,
   regionTreks,
-  otherTreks,
   guides,
   otherRegions,
   articles,
@@ -139,7 +137,7 @@ export const RegionEditor = ({
             <WhereSection values={values} errors={errors} />
           </div>
           <div hidden={activeKey !== "treks"} className="flex flex-col gap-4">
-            <RegionTreksSection values={values} regionId={regionId} regionName={values.name} regionTreks={regionTreks} otherTreks={otherTreks} errors={errors} onEdit={markDirty} />
+            <RegionTreksSection values={values} regionId={regionId} regionName={values.name} regionTreks={regionTreks} errors={errors} onEdit={markDirty} />
           </div>
           <div hidden={activeKey !== "months"} className="flex flex-col gap-4">
             <MonthsSection values={values} errors={errors} onEdit={markDirty} />

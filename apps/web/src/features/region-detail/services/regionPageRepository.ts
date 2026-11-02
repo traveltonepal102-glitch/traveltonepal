@@ -17,7 +17,7 @@ import type { RegionDetail } from "../types";
  */
 const readPageRow = async (slug: string) => {
   "use cache";
-  // Its featured and nearby treks and its travel guides are the published ones, so saving those changes it too.
+  // Its featured and other picked treks and its travel guides are the published ones, so saving those changes it too.
   cacheTag(CACHE_TAGS.regions, CACHE_TAGS.treks, CACHE_TAGS.travelGuides);
   cacheLife(DATABASE_CACHE_LIFE);
 

@@ -19,8 +19,8 @@ export type WhyPointIcon = Extract<
   "landscape" | "temple_buddhist" | "directions_walk" | "volunteer_activism" | "mountain_flag" | "groups" | "wb_sunny" | "cottage" | "hiking" | "route"
 >;
 
-/** A trek from another region suggested on this region's page, e.g. "Nearby · same trailhead". */
-export type NearbyTrek = { trekId: string; label: string; note: string };
+/** One of the region's own treks shown under its featured one, e.g. "Short on time". */
+export type MoreTrek = { trekId: string; label: string; note: string };
 
 /** Everything the region editor saves (one language). */
 export type RegionValues = {
@@ -77,7 +77,7 @@ export type RegionValues = {
   /** e.g. "Our signature Langtang trek" */
   featuredTrekLabel: string;
   featuredTrekPitch: string;
-  nearbyTreks: NearbyTrek[];
+  moreTreks: MoreTrek[];
   /** "Want your own route?" */
   customRoutePitch: string;
   /** Guides who lead here but are switched off for the region page (the others show automatically). */

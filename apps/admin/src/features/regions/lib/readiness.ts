@@ -76,11 +76,11 @@ const photos = ({ cover, gallery }: RegionPhotos): SectionReadiness => {
   return { status: "done", note: `Cover + ${plural(gallery.length, "photo")}` };
 };
 
-/** Needs a featured trek (one of the region's own); nearby treks are optional. */
+/** Needs a featured trek (one of the region's own); more treks to show are optional. */
 const treks = (region: RegionValues): SectionReadiness => {
   if (!region.featuredTrekId) return { status: "todo", note: "Pick the featured trek" };
-  const nearby = region.nearbyTreks.length;
-  return { status: "done", note: nearby ? `Featured trek · ${nearby} nearby` : "Featured trek" };
+  const more = region.moreTreks.length;
+  return { status: "done", note: more ? `Featured trek · ${more} more` : "Featured trek" };
 };
 
 /** Guides show by themselves (anyone with this region in Trekking guides); none showing is a to-do. */

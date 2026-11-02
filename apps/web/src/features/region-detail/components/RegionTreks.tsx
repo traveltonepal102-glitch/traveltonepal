@@ -15,8 +15,8 @@ import { CARD, WRAP } from "./styles";
 
 const CARD_LINK = `${CARD} flex items-center gap-4 p-3 text-inherit transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring`;
 
-/** A nearby trek: links to its page, or to a WhatsApp chat while it has none. */
-const NearbyTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick }) => {
+/** One of the region's other treks: links to its page, or to a WhatsApp chat while it has none. */
+const RegionTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick }) => {
   const content = (
     <>
       <span className="relative h-28 w-37.5 flex-none overflow-hidden rounded-md bg-navy">
@@ -44,15 +44,15 @@ const NearbyTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick 
   );
 };
 
-/** "Trek in …": the signature trek, nearby treks and the offer of a custom route. */
+/** "Trek in …": the signature trek, up to three more of the region's treks and the offer of a custom route. */
 export const RegionTreks = ({ region }: { region: RegionDetail }) => (
   <section id="treks" aria-labelledby="region-treks-title" className="scroll-mt-14 border-y border-line bg-surface py-14">
     <div className={`${WRAP} flex flex-col gap-6`}>
       <RegionSectionHeading id="region-treks-title" kicker="Treks" title={`Trek in ${region.name}`} />
       {region.featuredTrek && <FeaturedTrekCard pick={region.featuredTrek} />}
       <div className="grid gap-4.5 md:grid-cols-2">
-        {region.nearbyTreks.map((pick) => (
-          <NearbyTrekCard key={pick.trek.slug} pick={pick} />
+        {region.moreTreks.map((pick) => (
+          <RegionTrekCard key={pick.trek.slug} pick={pick} />
         ))}
         <div className="flex items-center gap-4 rounded-lg border border-green-line bg-green-tint p-5 shadow-card">
           <span aria-hidden="true" className="inline-flex size-13 flex-none items-center justify-center rounded-lg bg-white text-whatsapp">

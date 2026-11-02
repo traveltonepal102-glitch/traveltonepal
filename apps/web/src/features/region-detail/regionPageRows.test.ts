@@ -147,23 +147,42 @@ describe("toRegionDetail", () => {
     expect(detail({ page: page({ why_points: { not: "a list" }, faqs: null }) })).toMatchObject({ faqs: [], overview: { points: [] } });
   });
 
-  it("shows the featured trek and the nearby ones that are published, each once, in order", () => {
+  it("shows the featured trek and up to three more of the region's published treks, each once, in order", () => {
+    const inLangtang = (slug: string, name: string) => ({ ...TREKS[0], slug, name, route: [{ slug: "langtang", name: "Langtang" }] });
+    // Starts in Tamang Heritage Trail and passes through Langtang.
+    const passingThrough = {
+      ...TREKS[0],
+      slug: "tamang-langtang",
+      route: [
+        { slug: "tamang-heritage-trail", name: "Tamang Heritage Trail" },
+        { slug: "langtang", name: "Langtang" },
+      ],
+    };
+    const treks = [...TREKS, passingThrough, inLangtang("gosaikunda", "Gosaikunda"), inLangtang("helambu", "Helambu"), inLangtang("ganja-la", "Ganja La")];
     const region = detail({
+      treks,
       page: page({
         featured_trek_slug: "langtang-valley",
         featured_trek_pitch: "Kyanjin Gompa and Kyanjin Ri.",
         nearby_treks: [
           { slug: "unpublished-trek", label: "Gone", note: "" },
           { slug: "langtang-valley", label: "Again", note: "" },
-          { slug: "everest-base-camp", label: "", note: "" },
+          { slug: "everest-base-camp", label: "Another region", note: "" },
+          { slug: "tamang-langtang", label: "", note: "" },
+          { slug: "gosaikunda", label: "Sacred lakes", note: "Holy lakes at 4,380 m." },
+          { slug: "helambu", label: "", note: "" },
+          { slug: "ganja-la", label: "", note: "" },
         ],
       }),
     });
     expect(region.featuredTrek).toMatchObject({ trek: { slug: "langtang-valley" }, label: "Our signature Langtang trek", note: "Kyanjin Gompa and Kyanjin Ri." });
-    expect(region.nearbyTreks.map((pick) => [pick.trek.slug, pick.label, pick.note])).toEqual([
-      ["everest-base-camp", "Nearby trek", TREKS.find((trek) => trek.slug === "everest-base-camp")?.summary],
+    expect(region.moreTreks.map((pick) => [pick.trek.slug, pick.label, pick.note])).toEqual([
+      ["tamang-langtang", "Also in Langtang", TREKS[0].summary],
+      ["gosaikunda", "Sacred lakes", "Holy lakes at 4,380 m."],
+      ["helambu", "Also in Langtang", TREKS[0].summary],
     ]);
     expect(detail({ page: page({ featured_trek_slug: "unpublished-trek" }) }).featuredTrek).toBeUndefined();
+    expect(detail({ page: page({ featured_trek_slug: "everest-base-camp" }) }).featuredTrek).toBeUndefined();
   });
 
   it("shows a card for each season with a note, rated from the month strip", () => {

@@ -5,7 +5,7 @@ import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { saveRegion } from "@/features/regions/actions/saveRegion";
 import { RegionEditor } from "@/features/regions/components/editor/RegionEditor";
 import { EMPTY_REGION_VALUES, NO_REGION_PHOTOS, REGIONS_PATH } from "@/features/regions/constants";
-import { listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
+import { listRegionOptions } from "@/features/treks/services/treksRepository";
 import { todayInNepal } from "@/utils/formatDateTime";
 
 export const metadata: Metadata = { title: "New region" };
@@ -14,8 +14,8 @@ export const metadata: Metadata = { title: "New region" };
 const NewRegionPage = async () => {
   const admin = await requireAdmin();
   if (admin.role !== "super_admin") redirect(REGIONS_PATH);
-  // A new region has no treks or guides of its own yet; every trek can be suggested as nearby.
-  const [treks, regions] = await Promise.all([listSimilarTrekOptions(null), listRegionOptions()]);
+  // A new region has no treks or guides of its own yet.
+  const regions = await listRegionOptions();
 
   return (
     <RegionEditor
@@ -26,7 +26,6 @@ const NewRegionPage = async () => {
       isNew
       websiteDomain={null}
       regionTreks={[]}
-      otherTreks={treks}
       guides={[]}
       otherRegions={regions}
       articles={[]}

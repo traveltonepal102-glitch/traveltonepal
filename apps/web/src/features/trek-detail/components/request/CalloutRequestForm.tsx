@@ -2,14 +2,14 @@
 
 import { Icon } from "@ttn/ui/icon";
 
-import { MAX_REQUESTS_LENGTH } from "../../requestMessage";
+import { MAX_REQUESTS_LENGTH, MAX_TIMING_LENGTH } from "../../requestMessage";
 import { EmailFallback, SelectField, TextField, WhatsAppSubmit } from "./RequestFields";
 import { useTrekRequest } from "./useTrekRequest";
 import type { TrekRequestOptions } from "./useTrekRequest";
 
 /** End-of-page request form ("Book the … with us"): name, country, group size, timing and requests. */
 export const CalloutRequestForm = (options: TrekRequestOptions) => {
-  const { form, group, timing, onSubmit, emailHref } = useTrekRequest(options);
+  const { form, group, onSubmit, emailHref } = useTrekRequest(options);
   const { register, formState } = form;
 
   return (
@@ -30,7 +30,13 @@ export const CalloutRequestForm = (options: TrekRequestOptions) => {
           {...register("country")}
         />
         <SelectField label="Group size" {...group} />
-        <SelectField label="Preferred month and year" {...timing} />
+        <TextField
+          label="Preferred time"
+          maxLength={MAX_TIMING_LENGTH}
+          placeholder='Mention specific date or "Not sure"'
+          error={formState.errors.timing?.message}
+          {...register("timing")}
+        />
       </div>
       <TextField
         label="Special requests"

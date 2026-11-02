@@ -1,6 +1,6 @@
 "use client";
 
-import { MAX_REQUESTS_LENGTH } from "../../requestMessage";
+import { MAX_REQUESTS_LENGTH, MAX_TIMING_LENGTH } from "../../requestMessage";
 import { EmailFallback, SelectField, StaticField, TextAreaField, TextField, WhatsAppSubmit } from "./RequestFields";
 import { useTrekRequest } from "./useTrekRequest";
 import type { TrekRequestOptions } from "./useTrekRequest";
@@ -10,7 +10,7 @@ import { formatDays } from "@/features/treks/format";
 
 /** In-page request form ("Book your … Trek"): trek, group size, name, timing and special requests. */
 export const TrekRequestForm = (options: TrekRequestOptions) => {
-  const { form, group, timing, onSubmit, emailHref } = useTrekRequest(options);
+  const { form, group, onSubmit, emailHref } = useTrekRequest(options);
   const { register, formState } = form;
 
   return (
@@ -27,7 +27,13 @@ export const TrekRequestForm = (options: TrekRequestOptions) => {
           error={formState.errors.name?.message}
           {...register("name")}
         />
-        <SelectField label="Preferred time" {...timing} />
+        <TextField
+          label="Preferred time"
+          maxLength={MAX_TIMING_LENGTH}
+          placeholder='Mention specific date or "Not sure"'
+          error={formState.errors.timing?.message}
+          {...register("timing")}
+        />
       </div>
       <TextAreaField
         label="Special requests or exact dates"

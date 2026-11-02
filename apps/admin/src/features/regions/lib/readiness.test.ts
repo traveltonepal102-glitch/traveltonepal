@@ -128,10 +128,10 @@ describe("firstSectionWithError", () => {
 });
 
 describe("treks and guides readiness", () => {
-  it("needs a featured trek; nearby treks are counted", () => {
+  it("needs a featured trek; the more treks shown are counted", () => {
     expect(getRegionReadiness(EMPTY, NO_REGION_PHOTOS, [], []).treks).toEqual({ status: "todo", note: "Pick the featured trek" });
-    const featured = { ...EMPTY, featuredTrekId: "t1", nearbyTreks: [{ trekId: "t2", label: "", note: "" }] };
-    expect(getRegionReadiness(featured, NO_REGION_PHOTOS, [], []).treks).toEqual({ status: "done", note: "Featured trek · 1 nearby" });
+    const featured = { ...EMPTY, featuredTrekId: "t1", moreTreks: [{ trekId: "t2", label: "", note: "" }] };
+    expect(getRegionReadiness(featured, NO_REGION_PHOTOS, [], []).treks).toEqual({ status: "done", note: "Featured trek · 1 more" });
   });
 
   it("counts the guides who lead here and aren't switched off", () => {

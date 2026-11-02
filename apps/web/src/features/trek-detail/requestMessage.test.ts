@@ -15,16 +15,17 @@ const request = {
 };
 
 describe("trekRequestSchema", () => {
-  it("accepts a name with optional country and requests, trimmed", () => {
-    expect(trekRequestSchema.parse({ name: " Anna ", country: " Germany ", requests: "" })).toEqual({
+  it("accepts a name with optional country, preferred time and requests, trimmed", () => {
+    expect(trekRequestSchema.parse({ name: " Anna ", country: " Germany ", timing: " Mid-October ", requests: "" })).toEqual({
       name: "Anna",
       country: "Germany",
+      timing: "Mid-October",
       requests: "",
     });
   });
 
   it("rejects a missing name and over-long requests with readable messages", () => {
-    const result = trekRequestSchema.safeParse({ name: " ", country: "", requests: "x".repeat(MAX_REQUESTS_LENGTH + 1) });
+    const result = trekRequestSchema.safeParse({ name: " ", country: "", timing: "", requests: "x".repeat(MAX_REQUESTS_LENGTH + 1) });
     expect(result.success).toBe(false);
     expect(result.error?.issues.map((issue) => issue.message)).toEqual([
       "Please enter your name.",
