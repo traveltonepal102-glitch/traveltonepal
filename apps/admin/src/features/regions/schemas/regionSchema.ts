@@ -17,6 +17,7 @@ import {
   REGION_LIMITS as LIMIT,
   WHY_POINT_ICON_VALUES,
 } from "../constants";
+import { mentionsFlying } from "../lib/gettingThere";
 import type { RegionFormValues } from "../types";
 
 /** Empty → null; otherwise a number in range (the database checks the same range). */
@@ -101,7 +102,8 @@ export const regionSchema = z
       .transform((value) => value || null)
       .pipe(z.enum(REGION_DIFFICULTY_VALUES, "Pick the difficulty.").nullable()),
     gettingThere: text(LIMIT.fact),
-    isFlight: z.enum(["drive", "fly"]).transform((value) => value === "fly"),
+    // Not a field of its own: read from the "Getting there" text (a plane or a road on the Regions page cards).
+    isFlight: z.string().transform(mentionsFlying),
     gettingThereDetails: text(LIMIT.factDetails),
     permits: text(LIMIT.fact),
     fromKathmandu: text(LIMIT.fromKathmandu),
@@ -195,7 +197,7 @@ export const readRegionForm = (formData: FormData) => {
     trekLength: readText(formData, "trekLength"),
     difficulty: readText(formData, "difficulty"),
     gettingThere: readText(formData, "gettingThere"),
-    isFlight: readText(formData, "access") || "drive",
+    isFlight: readText(formData, "gettingThere"),
     gettingThereDetails: readText(formData, "gettingThereDetails"),
     permits: readText(formData, "permits"),
     fromKathmandu: readText(formData, "fromKathmandu"),

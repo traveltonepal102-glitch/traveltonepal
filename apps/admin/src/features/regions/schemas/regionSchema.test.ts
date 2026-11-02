@@ -161,7 +161,7 @@ describe("regionSchema", () => {
     const result = parse({
       maxAltitudeM: "4,984",
       difficulty: "moderate",
-      access: "fly",
+      gettingThere: "Drive or fly to Pokhara",
       heroHighlight: " No flights needed ",
       whyIcon: ["landscape", "route"],
       whyTitle: ["Big mountains, fast", ""],

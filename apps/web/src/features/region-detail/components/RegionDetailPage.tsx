@@ -39,7 +39,7 @@ export const RegionDetailPage = ({ region }: { region: RegionDetail }) => (
     <RegionBestTime region={region} />
     <RegionGuides regionName={region.name} guides={region.guides} />
     <RegionPhotos regionName={region.name} photos={region.photos} />
-    <RegionTravelGuides regionName={region.name} articles={region.articles} />
+    <RegionTravelGuides regionName={region.name} regionSlug={region.slug} articles={region.articles} />
     <RegionFaq region={region} />
     <OtherRegions regions={region.compareWith} />
     <RegionCta regionName={region.name} />

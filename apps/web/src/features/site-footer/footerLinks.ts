@@ -9,7 +9,6 @@ export const COMPANY_LINKS: readonly FooterLink[] = [
   { label: "Our guides", href: ABOUT_PATHS.team },
   { label: "Reviews", href: REVIEWS_PATH },
   { label: "Why travel with us", href: ABOUT_PATHS.whyUs },
-  { label: "FAQ", href: ABOUT_PATHS.faq },
 ];
 
 export const LEGAL_LINKS: readonly FooterLink[] = [

@@ -257,7 +257,6 @@ export type TrekDetailContent = {
   /** Left out of the overview until it is known. */
   distanceKm?: number;
   dailyWalking: string;
-  guideRatio: string;
   accommodation: string;
   transport: string;
   groupPrices: readonly GroupPrice[];

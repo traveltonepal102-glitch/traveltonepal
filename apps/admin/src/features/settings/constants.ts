@@ -15,7 +15,6 @@ export const SETTINGS_LIMITS = {
   taan: 40,
   item: 60,
   staffInsurer: 120,
-  paymentsNote: 160,
   url: 300,
   /** Google's "Embed a map" code as pasted (the iframe), and the address kept from it. */
   mapEmbedCode: 2000,

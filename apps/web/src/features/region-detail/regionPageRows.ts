@@ -19,8 +19,8 @@ import type { RegionDetail, RegionPhoto, RegionTrekPick } from "./types";
 /** "Why trek here" cards take these colours in turn. */
 const POINT_TONES: readonly IconTone[] = ["brand", "saffron", "green", "navy"];
 
-/** "Before you go" shows one row of travel guides. */
-const MAX_ARTICLES = 3;
+/** "Before you go" shows up to twelve of the region's travel guides (four rows of three). */
+export const MAX_ARTICLES = 12;
 
 /** Treks shown under the featured one (the admin picks up to this many). */
 const MAX_MORE_TREKS = 3;

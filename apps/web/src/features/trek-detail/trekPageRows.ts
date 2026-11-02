@@ -178,7 +178,6 @@ export const toTrekDetail = (
     startFinish: page.start_finish.trim(),
     distanceKm: page.distance_km ?? undefined,
     dailyWalking: page.daily_walking.trim(),
-    guideRatio: page.guide_ratio.trim(),
     accommodation: page.accommodation.trim(),
     transport: page.transport.trim(),
     groupPrices: readGroupPrices(page.group_prices).map((price) => ({

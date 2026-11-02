@@ -1,14 +1,14 @@
 import { GuideCard } from "@/features/guides/components/GuideCard";
+import { guideListHref } from "@/features/guides/guideFiltering";
 import type { GuideSummary } from "@/features/guides/types";
-import { ROUTES } from "@/lib/routes";
 
 import { RegionSectionHeading } from "./RegionSectionHeading";
 import { WRAP } from "./styles";
 
-type RegionTravelGuidesProps = { regionName: string; articles: readonly GuideSummary[] };
+type RegionTravelGuidesProps = { regionName: string; regionSlug: string; articles: readonly GuideSummary[] };
 
-/** "Before you go": travel guides about the region, as on the Travel guides page. */
-export const RegionTravelGuides = ({ regionName, articles }: RegionTravelGuidesProps) => {
+/** "Before you go": travel guides about the region, as on the Travel guides page, and a link to all of them there. */
+export const RegionTravelGuides = ({ regionName, regionSlug, articles }: RegionTravelGuidesProps) => {
   if (articles.length === 0) return null;
 
   return (
@@ -18,7 +18,7 @@ export const RegionTravelGuides = ({ regionName, articles }: RegionTravelGuidesP
           id="region-articles-title"
           kicker="Travel guides"
           title={`Before you go to ${regionName}`}
-          link={{ href: ROUTES.guides, label: "All travel guides" }}
+          link={{ href: guideListHref({ region: regionSlug }), label: `View all ${regionName} travel guides` }}
         />
         <ul className="grid gap-4.5 md:grid-cols-2 xl:grid-cols-3">
           {articles.map((article) => (

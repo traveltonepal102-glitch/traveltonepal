@@ -36,7 +36,7 @@ export const TrekCredentials = async () => {
       </div>
 
       {facts.length > 0 && (
-        <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {facts.map((fact) => (
             <div key={fact.label} className={`${BOX} p-3`}>
               <dt className="text-[10px] font-bold text-muted-foreground uppercase">{fact.label}</dt>

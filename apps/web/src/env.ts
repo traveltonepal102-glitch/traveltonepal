@@ -32,11 +32,11 @@ const envSchema = z.object({
   // Which site of the network this build is (read by lib/site.ts). Not set: the main site.
   SITE_ID: optional(z.string().regex(SITE_ID_PATTERN, "SITE_ID must be a site's id from the admin's Sites, e.g. ttn or everest.")),
   // The site's public address (read by lib/site.ts). Not set: the dev server's.
-  SITE_URL: optional(z.url("SITE_URL must be a URL, e.g. https://www.traveltonepal.com.")),
+  SITE_URL: optional(z.url("SITE_URL must be a URL, e.g. https://traveltonepal.com.")),
 }).refine(
   // Without it, canonical links, the sitemap, robots.txt and structured data would all name localhost (2026-10-30).
   (settings) => settings.NEXT_PUBLIC_APP_ENV !== "production" || /^https:\/\/(?!localhost)/.test(settings.SITE_URL ?? ""),
-  { message: "SITE_URL must be the site's https address in production, e.g. https://www.traveltonepal.com." },
+  { message: "SITE_URL must be the site's https address in production, e.g. https://traveltonepal.com." },
 );
 
 const parsed = envSchema.safeParse(process.env);

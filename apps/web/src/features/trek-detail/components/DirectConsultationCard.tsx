@@ -27,9 +27,10 @@ export const DirectConsultationCard = async ({ trekName }: { trekName: string })
           <Icon name="support_agent" />
           Direct local consultation
         </p>
-        <h2 id="consultation-title" className="text-h3 font-extrabold">
+        {/* A paragraph, not a heading: the page's headings are kept for the trek's own keyword. */}
+        <p id="consultation-title" className="font-display text-h3 font-extrabold text-ink">
           Do you have any specific questions that you want to ask us personally?
-        </h2>
+        </p>
         <p className="text-body-sm text-text">
           Message us on WhatsApp or send us an email. Either I or my team will personally answer your questions and make
           sure all your doubts are answered properly.

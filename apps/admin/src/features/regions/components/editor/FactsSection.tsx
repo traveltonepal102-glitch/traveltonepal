@@ -78,15 +78,9 @@ export const FactsSection = ({ values, errors }: FactsSectionProps) => {
             </select>
           )}
         </FactTile>
-        <FactTile label="Getting there" icon="route" error={errors.gettingThere ?? errors.isFlight}>
+        <FactTile label="Getting there" icon="route" error={errors.gettingThere}>
           {(id, describedBy) => (
-            <span className="flex gap-1.5">
-              <input id={id} name="gettingThere" defaultValue={values.gettingThere} placeholder="Drive, 7–8 hrs" maxLength={LIMIT.fact} aria-describedby={describedBy} aria-invalid={describedBy ? true : undefined} className={tileInput} />
-              <select name="access" aria-label="Drive or fly" defaultValue={values.isFlight ? "fly" : "drive"} className={cn(tileInput, "w-auto cursor-pointer pr-7")}>
-                <option value="drive">Drive</option>
-                <option value="fly">Fly</option>
-              </select>
-            </span>
+            <input id={id} name="gettingThere" defaultValue={values.gettingThere} placeholder="Drive or fly to Pokhara" maxLength={LIMIT.fact} aria-describedby={describedBy} aria-invalid={describedBy ? true : undefined} className={tileInput} />
           )}
         </FactTile>
         <FactTile label="Permits" icon="description" error={errors.permits}>

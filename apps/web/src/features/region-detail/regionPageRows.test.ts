@@ -5,7 +5,7 @@ import type { RegionCard } from "@/features/regions/regionRows";
 import { TREKS } from "@/features/treks/treks";
 import type { CoverColumns, WebRegionGuideRow, WebRegionPageRow } from "@/lib/supabase/database.types";
 
-import { toRegionDetail } from "./regionPageRows";
+import { MAX_ARTICLES, toRegionDetail } from "./regionPageRows";
 import type { RegionPageSource } from "./regionPageRows";
 import { seasonRating } from "./seasons";
 import { regionJsonLd } from "./seo";
@@ -223,12 +223,18 @@ describe("toRegionDetail", () => {
     ]);
   });
 
-  it("shows up to three travel guides in the given order (pinned first), skipping ones not on this site", () => {
+  it("shows the travel guides in the given order (pinned first), skipping ones not on this site", () => {
     const region = detail({
       page: page({ travel_guide_slugs: ["permits", "region-site-only", "best-time", "gear", "health"] }),
       travelGuides: ["best-time", "permits", "gear", "health"].map(travelGuide),
     });
-    expect(region.articles.map((article) => article.slug)).toEqual(["permits", "best-time", "gear"]);
+    expect(region.articles.map((article) => article.slug)).toEqual(["permits", "best-time", "gear", "health"]);
+  });
+
+  it(`shows at most ${MAX_ARTICLES} travel guides`, () => {
+    const slugs = Array.from({ length: MAX_ARTICLES + 2 }, (_, index) => `guide-${index}`);
+    const region = detail({ page: page({ travel_guide_slugs: slugs }), travelGuides: slugs.map(travelGuide) });
+    expect(region.articles.map((article) => article.slug)).toEqual(slugs.slice(0, MAX_ARTICLES));
   });
 
   it("compares with the admin's picks in order, else with the four nearest regions", () => {

@@ -1,7 +1,7 @@
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ContactCta } from "@/components/shared/ContactCta";
 import { NewsletterBand } from "@/features/newsletter/components/NewsletterBand";
-import { REGIONS } from "@/features/regions/regions";
+import type { RegionSummary } from "@/features/regions/regions";
 import type { SitePageTop } from "@/features/site-pages/types";
 
 import { pickGuideHighlights, regionsWithGuides } from "../guideLists";
@@ -16,13 +16,21 @@ import { GuideTopicsSection } from "./GuideTopicsSection";
 import { StartHereSection } from "./StartHereSection";
 import { WRAP } from "./styles";
 
+type GuidesPageProps = {
+  top: SitePageTop;
+  /** The published guides (guidesRepository). */
+  guides: readonly TravelGuide[];
+  /** Every region (regionsRepository), for the region menu and "Guides by region". */
+  allRegions: readonly RegionSummary[];
+};
+
 /**
  * Travel guides page: header with search, featured guides, topics, "Start here", every guide,
- * guides by region, a WhatsApp question box and the newsletter. `guides`: the published ones (guidesRepository).
+ * guides by region, a WhatsApp question box and the newsletter.
  */
-export const GuidesPage = ({ top, guides }: { top: SitePageTop; guides: readonly TravelGuide[] }) => {
+export const GuidesPage = ({ top, guides, allRegions }: GuidesPageProps) => {
   const highlights = pickGuideHighlights(guides);
-  const regions = regionsWithGuides(guides, REGIONS);
+  const regions = regionsWithGuides(guides, allRegions);
 
   return (
     <>

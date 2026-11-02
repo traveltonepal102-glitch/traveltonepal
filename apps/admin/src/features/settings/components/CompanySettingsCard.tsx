@@ -26,7 +26,6 @@ export const CompanySettingsCard = ({ values, certificate, panCertificate, error
       <TextField name="panNumber" label="Tax number (PAN)" defaultValue={values.panNumber} maxLength={LIMIT.pan} error={errors.panNumber} />
       <TextField name="taanNumber" label="TAAN membership number" defaultValue={values.taanNumber} maxLength={LIMIT.taan} error={errors.taanNumber} />
       <TextField name="staffInsurer" label="Staff insurance" labelNote="(insurer)" defaultValue={values.staffInsurer} maxLength={LIMIT.staffInsurer} error={errors.staffInsurer} />
-      <TextField name="paymentsNote" label="Payments" hint="e.g. the bank or how trekkers pay." defaultValue={values.paymentsNote} maxLength={LIMIT.paymentsNote} error={errors.paymentsNote} />
     </div>
     <TagListField
       label="Other memberships"

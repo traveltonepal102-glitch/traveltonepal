@@ -24,7 +24,6 @@ export const ABOUT_SECTION_IDS = {
   licences: "licences",
   responsibleTravel: "responsible-travel",
   visit: "visit-us",
-  faq: "faq",
 } as const;
 
 const aboutPath = (id: string) => `${ROUTES.about}#${id}`;
@@ -43,5 +42,4 @@ export const ABOUT_PATHS = {
   licences: aboutPath(ABOUT_SECTION_IDS.licences),
   responsibleTravel: aboutPath(ABOUT_SECTION_IDS.responsibleTravel),
   visit: aboutPath(ABOUT_SECTION_IDS.visit),
-  faq: aboutPath(ABOUT_SECTION_IDS.faq),
 } as const;

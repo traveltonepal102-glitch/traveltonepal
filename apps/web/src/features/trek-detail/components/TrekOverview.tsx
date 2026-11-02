@@ -34,9 +34,7 @@ export const TrekOverview = ({ trek }: { trek: TrekDetail }) => (
           </span>
           <dl className="flex min-w-0 flex-col leading-tight">
             <dt className="text-[10.5px] font-semibold tracking-wide break-words text-muted-foreground uppercase">{spec.label}</dt>
-            <dd className={`mt-0.75 font-display text-caption font-bold ${spec.isHighlighted ? "text-whatsapp" : "text-ink"}`}>
-              {spec.value}
-            </dd>
+            <dd className="mt-0.75 font-display text-caption font-bold text-ink">{spec.value}</dd>
           </dl>
         </li>
       ))}

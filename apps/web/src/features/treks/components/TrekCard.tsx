@@ -5,15 +5,15 @@ import { trekPath } from "@/lib/routes";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { formatAltitude, formatUsd } from "../format";
-import { trekInquiryUrl } from "../inquiry";
+import { trekInquiryEmailUrl, trekInquiryUrl } from "../inquiry";
 import type { TrekSummary } from "../types";
 import { CARD_FOCUS_RING, STRETCHED_LINK } from "./cardStyles";
 import { TrekCardMedia } from "./TrekCardMedia";
 import { TrekFacts } from "./TrekFacts";
 
 /**
- * Feature trek card (design: Main.dc.html, "Treks trekkers book first"). Two tab stops only: the trek
- * name, a link stretched over the whole card ("View trek" is its visual button), and the WhatsApp button.
+ * Feature trek card (design: Main.dc.html, "Treks trekkers book first"). Three tab stops only: the trek
+ * name, a link stretched over the whole card ("View trek" is its visual button), and the email and WhatsApp buttons.
  */
 export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
   <article
@@ -49,6 +49,13 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
           View trek
           <Icon name="arrow_forward" size={18} />
         </span>
+        <a
+          href={trekInquiryEmailUrl(trek)}
+          aria-label={`Email us about the ${trek.name}`}
+          className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full border border-line-strong bg-surface text-brand transition-colors hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <Icon name="mail" size={22} />
+        </a>
         <a
           href={trekInquiryUrl(trek)}
           target="_blank"

@@ -29,7 +29,6 @@ export type SiteSettingsValues = {
   taanNumber: string;
   memberships: string[];
   staffInsurer: string;
-  paymentsNote: string;
   certificatePhotoId: string | null;
   /** The PAN registration certificate (Inland Revenue Department). */
   panCertificatePhotoId: string | null;

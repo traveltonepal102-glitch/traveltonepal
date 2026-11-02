@@ -14,6 +14,7 @@ import { useGuideFilters } from "../../hooks/useGuideFilters";
 import type { GuideTopicId } from "../../topics";
 import type { TravelGuide } from "../../types";
 import { WRAP } from "../styles";
+import { GuideActiveFilters } from "./GuideActiveFilters";
 import { GuideNoResults } from "./GuideNoResults";
 import { GuideRegionSelect } from "./GuideRegionSelect";
 import { GuideSearchStatus } from "./GuideSearchStatus";
@@ -81,7 +82,16 @@ const GuideListView = ({ guides, cards, regions, filters, actions }: GuideListVi
           countFor={countGuidesByTopic(inRegionAndSearch)}
           onPick={actions.setTopic}
         />
-        <GuideSearchStatus total={matches.length} from={from} to={to} query={filters.q} onClearSearch={actions.clearSearch} />
+        <GuideActiveFilters
+          filters={filters}
+          regions={regions}
+          total={matches.length}
+          clearSearch={actions.clearSearch}
+          setRegion={actions.setRegion}
+          setTopic={actions.setTopic}
+          clearAll={actions.clearAll}
+        />
+        <GuideSearchStatus total={matches.length} from={from} to={to} />
 
         {items.length > 0 ? (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

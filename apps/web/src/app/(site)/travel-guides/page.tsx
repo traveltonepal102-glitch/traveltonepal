@@ -19,11 +19,11 @@ const guidesTop = async () => {
 export const generateMetadata = async (): Promise<Metadata> => withSiteDefaults(sitePageMetadata(await guidesTop(), ROUTES.guides));
 
 const TravelGuides = async () => {
-  const [guides, top] = await Promise.all([listTravelGuides(), guidesTop()]);
+  const [guides, top, regions] = await Promise.all([listTravelGuides(), guidesTop(), listRegions()]);
   return (
     <main className="flex-1 bg-page">
       <PageSchemasJsonLd kind="page" slug="travel-guides" />
-      <GuidesPage top={top} guides={guides} />
+      <GuidesPage top={top} guides={guides} allRegions={regions} />
     </main>
   );
 };

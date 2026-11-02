@@ -32,7 +32,6 @@ export const credentialsFor = (settings: SiteSettings): CompanyCredentials => {
     { label: "Govt. reg.", value: company.tourismRegistration, tone: "green" },
     { label: "Tourism licence", value: company.tourismLicence, tone: "brand" },
     { label: "Memberships", value: membershipsLine(settings), tone: "ink" },
-    { label: "Payments", value: company.paymentsNote, tone: "ink" },
   ];
   return {
     foundedYear: company.foundedYear ? String(company.foundedYear) : "",

@@ -14,7 +14,6 @@ export type CompanyDetails = {
   taanNumber: string;
   memberships: readonly string[];
   staffInsurer: string;
-  paymentsNote: string;
   /** The trekking agency licence scan, opened full size. */
   certificate?: SiteImageSource;
   /** The PAN registration certificate scan, opened full size. */

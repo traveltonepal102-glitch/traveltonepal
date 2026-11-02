@@ -14,7 +14,13 @@ import { FOOTER_LINK } from "./footerStyles";
 
 /** Shared website footer (design: Footer.dc.html). */
 export const SiteFooter = async () => {
-  const { contact, social } = await getSiteSettings();
+  const { contact, company, social } = await getSiteSettings();
+  const registrations = [
+    contact.registrationNumber && `Govt. reg. ${contact.registrationNumber}`,
+    company.panNumber && `PAN: ${company.panNumber}`,
+    contact.taanMemberNumber && `TAAN ${contact.taanMemberNumber}`,
+  ].filter(Boolean);
+
   return (
     <footer className="bg-ink text-body-sm text-footer-text">
       <FooterContactBand />
@@ -23,14 +29,15 @@ export const SiteFooter = async () => {
           <div className="flex flex-col gap-4">
             <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={98} height={56} className="h-14 w-auto self-start" />
             <p className="max-w-70">
-              Treks across nine regions of Nepal, led by local guides and planned with you on WhatsApp.
+              Your Nepal journey belongs to you. We plan your private Nepal trek around your interests and fitness
+              level, not a generic itinerary.
             </p>
-            {(contact.registrationNumber || contact.taanMemberNumber) && (
-              <p className="text-footer-muted">
-                {[contact.registrationNumber && `Govt. reg. ${contact.registrationNumber}`, contact.taanMemberNumber && `TAAN ${contact.taanMemberNumber}`]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
+            {registrations.length > 0 && (
+              <ul className="flex flex-col gap-1 text-footer-muted">
+                {registrations.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
             )}
           </div>
 

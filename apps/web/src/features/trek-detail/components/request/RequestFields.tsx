@@ -97,13 +97,19 @@ export const WhatsAppSubmit = ({ children, isTall = false }: { children: ReactNo
   </button>
 );
 
-/** "Nothing is stored on this website. Prefer email? Send it by email" */
+/** A second, outlined "Send my request by email" button under the WhatsApp one, then "Nothing is stored on this website." */
 export const EmailFallback = ({ href }: { href: string }) => (
-  <p className="flex flex-wrap items-center justify-center gap-1.5 text-center text-[11px] text-muted-foreground">
-    <Icon name="lock" size={14} />
-    Nothing is stored on this website. Prefer email?{" "}
-    <a href={href} className="rounded-sm font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-ring">
-      Send it by email
+  <div className="flex flex-col gap-2.5">
+    <a
+      href={href}
+      className="flex min-h-11 items-center justify-center gap-2 rounded-md border-2 border-brand bg-surface px-4 font-display text-body-sm font-extrabold tracking-[0.06em] text-brand uppercase hover:bg-brand-tint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    >
+      <Icon name="mail" size={18} />
+      Send my request by email
     </a>
-  </p>
+    <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-muted-foreground">
+      <Icon name="lock" size={14} />
+      Nothing is stored on this website.
+    </p>
+  </div>
 );

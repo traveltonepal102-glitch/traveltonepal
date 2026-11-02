@@ -67,7 +67,6 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       taanNumber: row.taan_number.trim(),
       memberships: row.memberships,
       staffInsurer: row.staff_insurer.trim(),
-      paymentsNote: row.payments_note.trim(),
       certificate: coverImage(
         {
           cover_id: row.certificate_id,

@@ -17,7 +17,7 @@ type StorySectionProps = { story: AboutPageContent["story"]; founder?: Founder }
 export const StorySection = ({ story, founder }: StorySectionProps) => (
   <section id={ABOUT_SECTION_IDS.story} aria-labelledby="about-story-title" className="scroll-mt-14 border-t border-line bg-surface py-16 md:py-22">
     <div className={`${WRAP} flex flex-col gap-10`}>
-      <div className="flex flex-wrap items-stretch gap-x-14 gap-y-10">
+      <div className="flex flex-wrap items-start gap-x-14 gap-y-10">
         {(story.photo || founder) && (
           <figure className="flex min-w-0 flex-[0_1_360px] flex-col overflow-hidden rounded-2xl border border-line bg-page max-sm:flex-auto">
             {story.photo && (
