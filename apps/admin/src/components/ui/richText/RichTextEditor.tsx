@@ -32,7 +32,7 @@ type RichTextEditorProps = {
 
 const MIN_HEIGHT = { default: "min-h-40", compact: "min-h-20" };
 
-/** Rich text field for admin forms: bold, italic, lists and links (see src/lib/richText). */
+/** Rich text field for admin forms: bold, italic, lists, links, photos and tables (see src/lib/richText). */
 export const RichTextEditor = ({ name, label, hint, error, defaultValue, maxLength, size = "default", onEdit, onChange }: RichTextEditorProps) => {
   const id = useId();
   const [json, setJson] = useState(() => JSON.stringify(defaultValue));

@@ -1,5 +1,5 @@
 import type { LegalBlock, LegalTable, LegalTextDoc } from "@ttn/ui/lib/legalText";
-import type { RichTextBlock, RichTextInline } from "@ttn/ui/lib/richText";
+import type { RichTextInline } from "@ttn/ui/lib/richText";
 
 const TOKEN = /\{([a-zA-Z]+)\}/g;
 
@@ -12,7 +12,7 @@ const fillBlock = <Block extends LegalBlock>(block: Block, values: Record<string
   if (block.type === "image") return block;
   if (block.type === "paragraph" || block.type === "heading") return { ...block, content: fillInlines(block.content, values) };
   if (block.type === "table") return { ...block, content: block.content.map((row) => ({ ...row, content: row.content.map((cell) => ({ ...cell, content: cell.content.map((child) => fillBlock(child, values)) })) })) };
-  return { ...block, content: block.content.map((item) => ({ ...item, content: item.content.map((child: RichTextBlock) => fillBlock(child, values)) })) };
+  return { ...block, content: block.content.map((item) => ({ ...item, content: item.content.map((child) => fillBlock(child, values)) })) };
 };
 
 /** "{registers}" alone on a line: the paragraph's whole text, if it is one placeholder. */

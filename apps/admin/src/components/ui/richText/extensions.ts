@@ -1,13 +1,17 @@
+import { TableKit } from "@tiptap/extension-table";
 import { StarterKit } from "@tiptap/starter-kit";
 
 import { isSafeHref } from "@/lib/richText/richText";
 
 import { LibraryImage } from "./libraryImageNode";
 
+/** Simple tables (the shared format's RichTextTable): no column resizing, as the website sets the widths. */
+export const TABLE_EXTENSION = TableKit.configure({ table: { resizable: false } });
+
 /**
- * The editor knows only what src/lib/richText allows: paragraphs, small headings, bold, italic, links, lists and
- * photos from the photo library.
- * Anything else pasted in (other headings, colors, tables from Word or Google Docs) becomes plain paragraphs.
+ * The editor knows only what src/lib/richText allows: paragraphs, small headings, bold, italic, links, lists,
+ * photos from the photo library and simple tables (pasted from Word or Google Docs too).
+ * Anything else pasted in (other headings, colors) becomes plain paragraphs.
  */
 export const RICH_TEXT_EXTENSIONS = [
   StarterKit.configure({
@@ -27,5 +31,6 @@ export const RICH_TEXT_EXTENSIONS = [
       HTMLAttributes: { target: null, rel: "noopener noreferrer nofollow" },
     },
   }),
+  TABLE_EXTENSION,
   LibraryImage,
 ];

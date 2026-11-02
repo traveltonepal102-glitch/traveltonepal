@@ -22,12 +22,11 @@ type LegalTextEditorProps = {
   onEdit: () => void;
 };
 
-/** Section headings numbered as on the website, tables with lines (design: .lg-doc). */
+/** Section headings numbered as on the website (design: .lg-doc); tables come with the shared editor styles. */
 const LEGAL_DOC_CLASS = cn(
   editorContentClass,
   "min-h-130 px-5 py-4 text-body [counter-reset:legal] [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-extrabold [&_h2:first-child]:mt-0",
   "[&_h2]:[counter-increment:legal] [&_h2]:before:mr-2 [&_h2]:before:text-brand [&_h2]:before:content-[counter(legal)'.']",
-  "[&_table]:my-3 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-solid [&_td]:border-border [&_td]:p-2 [&_th]:border [&_th]:border-solid [&_th]:border-border [&_th]:bg-page [&_th]:p-2 [&_th]:text-left",
 );
 
 const wordCount = (doc: LegalTextDoc) => legalTextToPlainText(doc).split(/\s+/).filter(Boolean).length;

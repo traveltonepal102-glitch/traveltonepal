@@ -1,8 +1,8 @@
-import { TableKit } from "@tiptap/extension-table";
 import { StarterKit } from "@tiptap/starter-kit";
 
 import { isSafeHref } from "@/lib/richText/richText";
 
+import { TABLE_EXTENSION } from "./extensions";
 import { LibraryImage } from "./libraryImageNode";
 
 /**
@@ -27,6 +27,6 @@ export const LEGAL_TEXT_EXTENSIONS = [
       HTMLAttributes: { target: null, rel: "noopener noreferrer nofollow" },
     },
   }),
-  TableKit.configure({ table: { resizable: false, HTMLAttributes: { class: "legal-table" } } }),
+  TABLE_EXTENSION,
   LibraryImage,
 ];

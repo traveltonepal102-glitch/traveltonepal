@@ -4,13 +4,13 @@ import { PHOTO_FILE_NAME_MAX_LENGTH, PHOTO_FILE_NAME_PATTERN } from "./photos";
 
 /**
  * Rich text as the admin saves it and the website shows it: a Tiptap (ProseMirror) JSON document limited to
- * paragraphs, small headings, bold, italic, links, lists and photos from the photo library. Stored as JSON, never HTML. Both apps check it with
+ * paragraphs, small headings, bold, italic, links, lists, photos from the photo library and simple tables. Stored as JSON, never HTML. Both apps check it with
  * richTextDocSchema: the admin before saving (apps/admin/src/lib/richText), the website when it reads it.
  */
 export type RichTextMark = { type: "bold" } | { type: "italic" } | { type: "link"; attrs: { href: string } };
 export type RichTextInline = { type: "text"; text: string; marks?: RichTextMark[] } | { type: "hardBreak" };
 export type RichTextParagraph = { type: "paragraph"; content?: RichTextInline[] };
-export type RichTextListItem = { type: "listItem"; content: RichTextBlock[] };
+export type RichTextListItem = { type: "listItem"; content: RichTextFlowBlock[] };
 export type RichTextList = { type: "bulletList" | "orderedList"; content: RichTextListItem[] };
 /** "Small heading" (level 3 in the document; the website picks the heading level that fits where it shows). */
 export type RichTextHeading = { type: "heading"; attrs: { level: 3 }; content?: RichTextInline[] };
@@ -23,7 +23,13 @@ export type RichTextImage = {
   /** fileName: the photo's file name (PhotoFiles), missing for photos put in before photos had one. */
   attrs: { photoId: string; alt: string; width: number; height: number; variantWidths: number[]; fileName?: string };
 };
-export type RichTextBlock = RichTextParagraph | RichTextHeading | RichTextList | RichTextImage;
+/** Anything but a table: what list items and table cells hold (a table never sits inside another table or a list). */
+export type RichTextFlowBlock = RichTextParagraph | RichTextHeading | RichTextList | RichTextImage;
+/** A cell of a table: a heading cell ("tableHeader", the first row's cells make the table's head) or a plain one. */
+export type RichTextTableCell = { type: "tableHeader" | "tableCell"; content: RichTextFlowBlock[] };
+export type RichTextTableRow = { type: "tableRow"; content: RichTextTableCell[] };
+export type RichTextTable = { type: "table"; content: RichTextTableRow[] };
+export type RichTextBlock = RichTextFlowBlock | RichTextTable;
 export type RichTextDoc = { type: "doc"; content: RichTextBlock[] };
 
 export const EMPTY_RICH_TEXT: RichTextDoc = { type: "doc", content: [{ type: "paragraph" }] };
@@ -54,7 +60,7 @@ const headingSchema = z.object({ type: z.literal("heading"), attrs: z.object({ l
 
 const listItemSchema: z.ZodType<RichTextListItem> = z.object({
   type: z.literal("listItem"),
-  content: z.lazy(() => z.array(richTextBlockSchema).min(1)),
+  content: z.lazy(() => z.array(flowBlockSchema).min(1)),
 });
 
 const listSchema: z.ZodType<RichTextList> = z.object({
@@ -74,8 +80,19 @@ const imageSchema = z.object({
   }),
 });
 
-/** One block: a paragraph, a small heading, a list or a photo. */
-export const richTextBlockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, headingSchema, listSchema, imageSchema]);
+const flowBlockSchema: z.ZodType<RichTextFlowBlock> = z.union([paragraphSchema, headingSchema, listSchema, imageSchema]);
+
+/** At most 8 columns and 60 rows; unknown cell attributes (widths, merged cells) are dropped. */
+const tableSchema = z.object({
+  type: z.literal("table"),
+  content: z
+    .array(z.object({ type: z.literal("tableRow"), content: z.array(z.object({ type: z.enum(["tableHeader", "tableCell"]), content: z.array(flowBlockSchema).min(1) })).min(1).max(8) }))
+    .min(1)
+    .max(60),
+});
+
+/** One block: a paragraph, a small heading, a list, a photo or a table. */
+export const richTextBlockSchema: z.ZodType<RichTextBlock> = z.union([paragraphSchema, headingSchema, listSchema, imageSchema, tableSchema]);
 
 /** Exactly the format above: anything else (other nodes, unknown attributes, unsafe links) fails or is dropped. */
 export const richTextDocSchema: z.ZodType<RichTextDoc> = z.object({
@@ -91,10 +108,11 @@ export const toRichTextDoc = (value: unknown): RichTextDoc => {
 
 const inlineText = (inline: RichTextInline) => (inline.type === "text" ? inline.text : "\n");
 
-/** A block's words; list items on their own lines. */
+/** A block's words; list items and table rows on their own lines, a row's cells separated by a tab. */
 export const richTextBlockToPlainText = (block: RichTextBlock): string => {
   if (block.type === "image") return "";
   if (block.type === "paragraph" || block.type === "heading") return (block.content ?? []).map(inlineText).join("");
+  if (block.type === "table") return block.content.map((row) => row.content.map((cell) => cell.content.map(richTextBlockToPlainText).join(" ")).join("\t")).join("\n");
   return block.content.map((item) => item.content.map(richTextBlockToPlainText).join("\n")).join("\n");
 };
 
@@ -103,10 +121,11 @@ export const richTextToPlainText = (doc: RichTextDoc) => doc.content.map(richTex
 
 export const isRichTextEmpty = (doc: RichTextDoc) => richTextToPlainText(doc) === "";
 
-/** Every photo in a text, in order (e.g. to check each has a description). */
+/** Every photo in a text, in order, list items and table cells included (e.g. to check each has a description). */
 export const richTextImages = (blocks: readonly RichTextBlock[]): RichTextImage[] =>
   blocks.flatMap((block) => {
     if (block.type === "image") return [block];
     if (block.type === "bulletList" || block.type === "orderedList") return block.content.flatMap((item) => richTextImages(item.content));
+    if (block.type === "table") return block.content.flatMap((row) => row.content.flatMap((cell) => richTextImages(cell.content)));
     return [];
   });

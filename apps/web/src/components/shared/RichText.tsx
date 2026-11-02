@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { RichTextPhoto } from "./RichTextPhoto";
+import { RichTextTable } from "./RichTextTable";
 
 const LINK = "rounded-xs font-semibold text-brand underline underline-offset-2 hover:text-brand-hover focus-visible:outline-2 focus-visible:outline-ring";
 
@@ -52,6 +53,20 @@ const Block = ({ block, headingLevel }: { block: RichTextBlock; headingLevel: He
     );
   }
   if (block.type === "image") return <RichTextPhoto image={block} />;
+  if (block.type === "table") {
+    return (
+      <RichTextTable
+        table={block}
+        renderCell={(content) => (
+          <div className="flex flex-col gap-1">
+            {content.map((child, index) => (
+              <Block key={index} block={child} headingLevel={headingLevel} />
+            ))}
+          </div>
+        )}
+      />
+    );
+  }
   const List = block.type === "orderedList" ? "ol" : "ul";
   return (
     <List className={`flex flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
@@ -77,7 +92,7 @@ type RichTextProps = {
 
 /**
  * Text written in the admin's rich text editor, as plain HTML on the server: paragraphs, small headings, bold,
- * italic, links, lists and photos. Nothing else exists in the format (@ttn/ui/lib/richText), so nothing else renders.
+ * italic, links, lists, photos and tables. Nothing else exists in the format (@ttn/ui/lib/richText), so nothing else renders.
  */
 export const RichText = ({ doc, className, headingLevel = "h3" }: RichTextProps) => (
   <div className={className}>

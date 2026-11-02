@@ -80,6 +80,31 @@ describe("richTextField", () => {
   });
 });
 
+describe("tables in a text", () => {
+  const cell = (type: "tableHeader" | "tableCell", ...content: unknown[]) => ({ type, content });
+  const row = (...cells: unknown[]) => ({ type: "tableRow", content: cells });
+  const table = (...rows: unknown[]) => ({ type: "table", content: rows });
+  const prices = table(row(cell("tableHeader", paragraph("Group")), cell("tableHeader", paragraph("Price"))), row(cell("tableCell", paragraph("2 people")), cell("tableCell", paragraph("US$ 900"))));
+
+  it("keeps a simple table and drops cell widths and merges", () => {
+    expect(richTextField(100).parse(JSON.stringify(doc(prices)))).toEqual(doc(prices));
+    const widened = table(row({ ...cell("tableCell", paragraph("Wide")), attrs: { colspan: 2, rowspan: 1, colwidth: [200] } }));
+    expect(richTextField(100).parse(JSON.stringify(doc(widened)))).toEqual(doc(table(row(cell("tableCell", paragraph("Wide"))))));
+  });
+
+  it("counts the cells' words, a row per line", () => {
+    expect(richTextToPlainText(doc(prices) as RichTextDoc)).toBe("Group\tPrice\n2 people\tUS$ 900");
+    expect(richTextField(20).safeParse(JSON.stringify(doc(prices))).success).toBe(false);
+  });
+
+  it("refuses a table inside a table or a list, and more than 8 columns", () => {
+    const nested = table(row(cell("tableCell", prices)));
+    const inList = { type: "bulletList", content: [{ type: "listItem", content: [paragraph("Prices"), prices] }] };
+    const wide = table(row(...Array.from({ length: 9 }, () => cell("tableCell", paragraph("x")))));
+    for (const value of [nested, inList, wide]) expect(richTextField(1000).safeParse(JSON.stringify(doc(value))).success).toBe(false);
+  });
+});
+
 describe("richTextToPlainText", () => {
   it("separates paragraphs with an empty line and list items with a line", () => {
     const value = {
@@ -118,8 +143,9 @@ describe("photos in a text", () => {
     expect(richTextField(100).safeParse(doc({ type: "image", attrs: { src: "https://evil.example/x.jpg", alt: "x" } })).success).toBe(false);
   });
 
-  it("checks photos in legal texts too, table cells included", () => {
+  it("checks photos in table cells, in rich and legal texts", () => {
     const table = { type: "table", content: [{ type: "tableRow", content: [{ type: "tableCell", content: [photo({ alt: "" })] }] }] };
+    expect(richTextField(1000).safeParse(doc(table)).error?.issues[0]?.message).toMatch(/Describe each photo/);
     const result = legalTextField(1000).safeParse(doc(table));
     expect(result.error?.issues[0]?.message).toMatch(/Describe each photo/);
     expect(legalTextField(1000).safeParse(doc(photo({}))).success).toBe(true);

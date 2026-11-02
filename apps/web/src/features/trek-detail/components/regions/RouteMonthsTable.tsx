@@ -38,7 +38,8 @@ export const RouteMonthsTable = ({ stops, routeMonths }: RouteMonthsTableProps) 
           ))}
         </ul>
       </div>
-      <div role="region" aria-labelledby="trek-route-months-title" tabIndex={0} className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+      {/* `relative` makes the scroll area clip the cells' sr-only labels; otherwise they widen the whole page on phones. */}
+      <div role="region" aria-labelledby="trek-route-months-title" tabIndex={0} className="relative overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
         <table className="w-full min-w-140 border-separate border-spacing-1 text-xs">
           <thead>
             <tr>

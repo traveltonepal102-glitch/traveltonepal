@@ -4,11 +4,11 @@ import type { Editor } from "@tiptap/react";
 import { useEditorState } from "@tiptap/react";
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
-import { cn } from "@ttn/ui/lib/utils";
 
 import { InsertPhotoButton } from "@/components/ui/richText/InsertPhotoButton";
 import { LinkButton } from "@/components/ui/richText/LinkButton";
 import { toolbarButtonClass } from "@/components/ui/richText/richTextStyles";
+import { TableButtons } from "@/components/ui/richText/TableButtons";
 
 const SECTION_HEADING = { level: 2 } as const;
 const SMALL_HEADING = { level: 3 } as const;
@@ -19,7 +19,6 @@ const ToolbarButton = ({ icon, label, isActive, onClick }: { icon: IconName; lab
   </button>
 );
 
-const textButton = cn(toolbarButtonClass, "w-auto px-2 text-xs font-bold");
 const Divider = () => <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />;
 
 /**
@@ -35,7 +34,6 @@ export const LegalTextToolbar = ({ editor }: { editor: Editor }) => {
       isItalic: current.isActive("italic"),
       isBulletList: current.isActive("bulletList"),
       isOrderedList: current.isActive("orderedList"),
-      isInTable: current.isActive("table"),
       canUndo: current.can().undo(),
       canRedo: current.can().redo(),
     }),
@@ -68,16 +66,7 @@ export const LegalTextToolbar = ({ editor }: { editor: Editor }) => {
       <LinkButton editor={editor} />
       <InsertPhotoButton editor={editor} />
       <Divider />
-      <ToolbarButton icon="table" label="Insert a table (3 × 2, with a heading row)" isActive={active.isInTable} onClick={() => chain().insertTable({ rows: 3, cols: 2, withHeaderRow: true }).run()} />
-      {active.isInTable && (
-        <>
-          <button type="button" className={textButton} onClick={() => chain().addRowAfter().run()}>+ Row</button>
-          <button type="button" className={textButton} onClick={() => chain().addColumnAfter().run()}>+ Column</button>
-          <button type="button" className={textButton} onClick={() => chain().deleteRow().run()}>− Row</button>
-          <button type="button" className={textButton} onClick={() => chain().deleteColumn().run()}>− Column</button>
-          <button type="button" className={cn(textButton, "text-danger")} onClick={() => chain().deleteTable().run()}>Delete table</button>
-        </>
-      )}
+      <TableButtons editor={editor} />
       <span className="flex-1" />
       <button type="button" aria-label="Undo" title="Undo (Ctrl+Z / ⌘Z)" disabled={!active.canUndo} onClick={() => chain().undo().run()} className={toolbarButtonClass}>
         <Icon name="undo" />
