@@ -52,7 +52,6 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       officeAddress,
       officeHours: officeHoursLabel(schedule),
       registrationNumber: row.tourism_registration.trim(),
-      taanMemberNumber: row.taan_number.trim(),
     },
     schedule,
     replyLanguages: row.reply_languages,
@@ -62,9 +61,7 @@ export const toSiteSettings = (row: WebSiteSettingsRow, photosBaseUrl: string): 
       foundedYear: row.founded_year ?? undefined,
       tourismRegistration: row.tourism_registration.trim(),
       tourismLicence: row.tourism_licence.trim(),
-      companyRegistration: row.company_registration.trim(),
       panNumber: row.pan_number.trim(),
-      taanNumber: row.taan_number.trim(),
       memberships: row.memberships,
       staffInsurer: row.staff_insurer.trim(),
       certificate: coverImage(

@@ -29,8 +29,6 @@ export type ContactDetails = {
   officeHours: string;
   /** Department of Tourism registration; empty until it is typed in Site settings. */
   registrationNumber: string;
-  /** TAAN membership; empty until it is typed in Site settings. */
-  taanMemberNumber: string;
 };
 
 /** The website's addresses that redirect to WhatsApp and email (app/whatsapp, app/email). */

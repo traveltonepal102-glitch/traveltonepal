@@ -18,10 +18,6 @@ export type CompanyCredentials = {
 
 const CERTIFICATE_TITLE = "Nepal Department of Tourism registration certificate";
 
-/** "TAAN 2345 · NMA · KEEP": the memberships, TAAN with its number first. */
-const membershipsLine = ({ company }: SiteSettings) =>
-  [company.taanNumber && `TAAN ${company.taanNumber}`, ...company.memberships.filter((name) => name.toUpperCase() !== "TAAN")].filter(Boolean).join(" · ");
-
 /**
  * The trek pages' "Credentials" card, from Site settings (the one place for these numbers). A number not typed in
  * yet is left out, never shown as a placeholder.
@@ -31,7 +27,7 @@ export const credentialsFor = (settings: SiteSettings): CompanyCredentials => {
   const facts: CompanyCredentials["facts"] = [
     { label: "Govt. reg.", value: company.tourismRegistration, tone: "green" },
     { label: "Tourism licence", value: company.tourismLicence, tone: "brand" },
-    { label: "Memberships", value: membershipsLine(settings), tone: "ink" },
+    { label: "Memberships", value: company.memberships.join(" · "), tone: "ink" },
   ];
   return {
     foundedYear: company.foundedYear ? String(company.foundedYear) : "",
@@ -43,16 +39,14 @@ export const credentialsFor = (settings: SiteSettings): CompanyCredentials => {
 export type Licence = { icon: IconName; label: string; value: string };
 
 /**
- * The About page's "Licences and legal" list: everything a visitor can check with the Department of Tourism and TAAN,
- * from Site settings. Only the ones typed in are listed.
+ * The About page's "Licences and legal" list: everything a visitor can check with the Department of Tourism, from
+ * Site settings. Only the ones typed in are listed.
  */
 export const licencesFor = ({ company }: SiteSettings): Licence[] =>
   [
     { icon: "verified", label: "Department of Tourism", value: company.tourismRegistration && `Reg. ${company.tourismRegistration}` },
     { icon: "description", label: "Tourism licence", value: company.tourismLicence },
-    { icon: "description", label: "Company registration", value: company.companyRegistration },
-    { icon: "groups", label: "TAAN member", value: company.taanNumber && `No. ${company.taanNumber}` },
     { icon: "description", label: "Tax number (PAN)", value: company.panNumber },
     { icon: "shield_person", label: "Staff insurance", value: company.staffInsurer },
-    { icon: "flag", label: "Other memberships", value: company.memberships.filter((name) => name.toUpperCase() !== "TAAN").join(", ") },
+    { icon: "groups", label: "Memberships", value: company.memberships.join(", ") },
   ].filter((licence): licence is Licence => Boolean(licence.value));

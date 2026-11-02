@@ -89,7 +89,7 @@ describe("toLegalDoc", () => {
   });
 
   it("shows a visible gap for a detail not typed in Site settings, and leaves out an empty registers table", () => {
-    const empty = { ...SITE_SETTINGS, company: { ...SITE_SETTINGS.company, legalName: "", tourismRegistration: "", taanNumber: "" } };
+    const empty = { ...SITE_SETTINGS, company: { ...SITE_SETTINGS.company, legalName: "", tourismRegistration: "" } };
     const blank = toLegalDoc("impressum", row({ body }), empty);
     expect(legalTextToPlainText({ type: "doc", content: blank.sections[0]?.blocks ?? [] })).toContain("[COMPANY LEGAL NAME], Thamel, Kathmandu, Nepal. Registered under no. [REGISTRATION NUMBER].");
     expect(blank.sections[1]?.blocks).toEqual([]);

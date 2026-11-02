@@ -17,20 +17,16 @@ export const legalPlaceholderValues = (settings: SiteSettings): Record<string, s
   phone: orGap(settings.contact.phoneDisplay, "PHONE"),
   registration: orGap(settings.company.tourismRegistration, "REGISTRATION NUMBER"),
   licence: orGap(settings.company.tourismLicence, "LICENCE NUMBER"),
-  companyRegistration: orGap(settings.company.companyRegistration, "COMPANY REGISTRATION NUMBER"),
   pan: orGap(settings.company.panNumber, "PAN NUMBER"),
-  taan: orGap(settings.company.taanNumber, "TAAN NUMBER"),
 });
 
 /** The registers the company is entered in, with their numbers: only the ones typed in Site settings. */
 export const companyRegisters = ({ company }: SiteSettings): [string, string][] =>
   (
     [
-      ["Office of the Company Registrar, Nepal", company.companyRegistration],
       ["Department of Tourism, trekking agency registration", company.tourismRegistration],
       ["Department of Tourism, tourism licence", company.tourismLicence],
       ["Tax number (PAN / VAT)", company.panNumber],
-      ["TAAN membership", company.taanNumber],
     ] as [string, string][]
   ).filter(([, number]) => number);
 

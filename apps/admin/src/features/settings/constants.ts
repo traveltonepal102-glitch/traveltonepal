@@ -12,7 +12,6 @@ export const SETTINGS_LIMITS = {
   legalForm: 80,
   registration: 60,
   pan: 40,
-  taan: 40,
   item: 60,
   staffInsurer: 120,
   url: 300,

@@ -12,13 +12,14 @@ const LINK = "inline-flex items-center gap-1.5 rounded-sm hover:text-white focus
 
 /** Thin top bar (desktop and tablet): licence, email, WhatsApp, language. */
 export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
-  const { contact } = await getSiteSettings();
+  const { contact, company } = await getSiteSettings();
+  const isTaanMember = company.memberships.some((name) => name.toUpperCase() === "TAAN");
   return (
     <div className={`max-md:hidden text-navy-text ${variant === "overlay" ? "border-b border-white/15" : "bg-navy"}`}>
       <div className="mx-auto flex min-h-9 max-w-content flex-wrap items-center justify-between gap-x-5 gap-y-1.5 px-6 text-xs">
         <p className="inline-flex items-center gap-1.5">
           <Icon name="verified" size={15} className="text-whatsapp-on-dark" />
-          {["Government-licensed trekking agency", contact.taanMemberNumber && "TAAN member"]
+          {["Government-licensed trekking agency", isTaanMember && "TAAN member"]
             .filter(Boolean)
             .join(" · ")}
         </p>

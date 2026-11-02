@@ -9,9 +9,7 @@ export type CompanyDetails = {
   foundedYear?: number;
   tourismRegistration: string;
   tourismLicence: string;
-  companyRegistration: string;
   panNumber: string;
-  taanNumber: string;
   memberships: readonly string[];
   staffInsurer: string;
   /** The trekking agency licence scan, opened full size. */

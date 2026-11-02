@@ -27,7 +27,7 @@ export const AboutLicencesCard = ({ values, facts, errors }: AboutLicencesCardPr
     <SectionHeadingFields
       eyebrow="Licences and legal"
       heading={{ name: "licencesHeading", value: values.licencesHeading, placeholder: "Registered, licensed and insured" }}
-      intro={{ name: "licencesIntro", value: values.licencesIntro, placeholder: "You can check every number below with the Nepal Department of Tourism and TAAN." }}
+      intro={{ name: "licencesIntro", value: values.licencesIntro, placeholder: "You can check every number below with the Nepal Department of Tourism." }}
       errors={errors}
     />
     {facts.licences.length ? (

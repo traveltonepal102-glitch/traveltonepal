@@ -317,7 +317,7 @@ export const SHARED_SECTIONS: {
   {
     key: "credentials",
     label: "Credentials and government licences",
-    description: "Government registration, TAAN and the certificate.",
+    description: "Government registration, memberships and the certificate.",
     where: "After the group rates",
     icon: "verified",
   },

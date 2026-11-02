@@ -9,11 +9,9 @@ export const aboutFactsFrom = (settings: SiteSettings, regionCount: number): Abo
   licences: [
     { label: "Department of Tourism", value: settings.tourismRegistration && `Reg. ${settings.tourismRegistration}` },
     { label: "Tourism licence", value: settings.tourismLicence },
-    { label: "Company registration", value: settings.companyRegistration },
-    { label: "TAAN member", value: settings.taanNumber && `No. ${settings.taanNumber}` },
     { label: "Tax number (PAN)", value: settings.panNumber },
     { label: "Staff insurance", value: settings.staffInsurer },
-    { label: "Other memberships", value: settings.memberships.filter((name) => name.toUpperCase() !== "TAAN").join(", ") },
+    { label: "Memberships", value: settings.memberships.join(", ") },
   ].filter((licence) => licence.value.trim()),
   hasCertificate: settings.certificatePhoto !== null,
   hasPanCertificate: settings.panCertificatePhoto !== null,

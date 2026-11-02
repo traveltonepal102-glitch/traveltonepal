@@ -11,7 +11,7 @@ import type { SiteSettingsValues } from "../types";
 type CompanySettingsCardProps = { values: SiteSettingsValues; certificate: Photo | null; panCertificate: Photo | null; errors: FieldErrors; onEdit: () => void };
 
 /**
- * "Company and licences": the numbers visitors can check with the Department of Tourism and TAAN, used by the About
+ * "Company and licences": the numbers visitors can check with the Department of Tourism, used by the About
  * page, every trek page ("Credentials and government licences") and the Impressum. A blank one isn't shown.
  */
 export const CompanySettingsCard = ({ values, certificate, panCertificate, errors, onEdit }: CompanySettingsCardProps) => (
@@ -22,9 +22,7 @@ export const CompanySettingsCard = ({ values, certificate, panCertificate, error
       <TextField name="foundedYear" label="Founded in" defaultValue={values.foundedYear?.toString() ?? ""} placeholder="2015" inputMode="numeric" error={errors.foundedYear} />
       <TextField name="tourismRegistration" label="Department of Tourism registration" defaultValue={values.tourismRegistration} maxLength={LIMIT.registration} error={errors.tourismRegistration} />
       <TextField name="tourismLicence" label="Tourism licence" defaultValue={values.tourismLicence} maxLength={LIMIT.registration} error={errors.tourismLicence} />
-      <TextField name="companyRegistration" label="Company registration" defaultValue={values.companyRegistration} maxLength={LIMIT.registration} error={errors.companyRegistration} />
       <TextField name="panNumber" label="Tax number (PAN)" defaultValue={values.panNumber} maxLength={LIMIT.pan} error={errors.panNumber} />
-      <TextField name="taanNumber" label="TAAN membership number" defaultValue={values.taanNumber} maxLength={LIMIT.taan} error={errors.taanNumber} />
       <TextField name="staffInsurer" label="Staff insurance" labelNote="(insurer)" defaultValue={values.staffInsurer} maxLength={LIMIT.staffInsurer} error={errors.staffInsurer} />
     </div>
     <TagListField

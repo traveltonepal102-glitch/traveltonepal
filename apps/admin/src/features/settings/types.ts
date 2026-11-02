@@ -24,9 +24,7 @@ export type SiteSettingsValues = {
   foundedYear: number | null;
   tourismRegistration: string;
   tourismLicence: string;
-  companyRegistration: string;
   panNumber: string;
-  taanNumber: string;
   memberships: string[];
   staffInsurer: string;
   certificatePhotoId: string | null;

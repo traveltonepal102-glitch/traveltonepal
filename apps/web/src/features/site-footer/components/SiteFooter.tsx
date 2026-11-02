@@ -20,7 +20,6 @@ export const SiteFooter = async () => {
   const registrations = [
     contact.registrationNumber && `Govt. reg. ${contact.registrationNumber}`,
     company.panNumber && `PAN: ${company.panNumber}`,
-    contact.taanMemberNumber && `TAAN ${contact.taanMemberNumber}`,
   ].filter(Boolean);
 
   return (

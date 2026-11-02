@@ -74,7 +74,7 @@ export const LicencesSection = async ({ heading }: { heading: SectionHeading }) 
           tone="green"
           eyebrow="Licences and legal"
           title={heading.title || "Registered, licensed and insured"}
-          text={heading.text || "You can check every number below with the Nepal Department of Tourism and TAAN."}
+          text={heading.text || "You can check every number below with the Nepal Department of Tourism."}
         />
         <div className="flex flex-wrap gap-6">
           {/* One small <dl> per item: a <dl> may hold only <dt>/<dd> pairs, not the icon beside them. */}

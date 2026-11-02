@@ -95,9 +95,7 @@ export const LEGAL_PLACEHOLDERS = [
   { token: "{phone}", meaning: "phone and WhatsApp" },
   { token: "{registration}", meaning: "Department of Tourism registration" },
   { token: "{licence}", meaning: "tourism licence" },
-  { token: "{companyRegistration}", meaning: "company registration" },
   { token: "{pan}", meaning: "PAN number" },
-  { token: "{taan}", meaning: "TAAN number" },
   { token: "{registers}", meaning: "on a line of its own: the table of registers and numbers" },
   { token: "{cookieTable}", meaning: "on a line of its own: what the website stores, from its code" },
 ] as const;
@@ -136,7 +134,7 @@ export const PAGE_LIMITS = {
   sectionHeading: 70,
   /** The line under a section's heading. */
   sectionIntro: 200,
-  storyTeaser: 400,
+  storyTeaser: 1500,
   storyText: 2400,
   quote: 240,
   statValue: 12,
