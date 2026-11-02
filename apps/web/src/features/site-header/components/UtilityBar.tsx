@@ -18,7 +18,7 @@ export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
       <div className="mx-auto flex min-h-9 max-w-content flex-wrap items-center justify-between gap-x-5 gap-y-1.5 px-6 text-xs">
         <p className="inline-flex items-center gap-1.5">
           <Icon name="verified" size={15} className="text-whatsapp-on-dark" />
-          {["Government-licensed trekking agency", contact.registrationNumber && `Reg. ${contact.registrationNumber}`, contact.taanMemberNumber && "TAAN member"]
+          {["Government-licensed trekking agency", contact.taanMemberNumber && "TAAN member"]
             .filter(Boolean)
             .join(" · ")}
         </p>

@@ -11,7 +11,7 @@ import { useRowList } from "@/hooks/useRowList";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { EMPTY_RICH_TEXT } from "@/lib/richText/richText";
 
-import { MAX_KNOW_TOPICS, TREK_LIMITS as LIMIT } from "../../../constants";
+import { TREK_LIMITS as LIMIT } from "../../../constants";
 import type { KnowTopic, TrekValues } from "../../../types";
 import { PageHeadingFields } from "../PageHeadingFields";
 import { KnowTopicCard } from "./KnowTopicCard";
@@ -63,7 +63,7 @@ export const KnowSection = ({ values, photos, trekId, errors, onEdit }: KnowSect
           />
         ))}
         {!list.rows.length && <p className="m-0 text-caption text-muted-foreground">No topics yet: the trek page leaves this section out.</p>}
-        <button type="button" onClick={() => list.add(NEW_TOPIC)} disabled={list.rows.length >= MAX_KNOW_TOPICS} className={cn(secondaryButton, "min-h-8 self-start px-3 text-caption")}>
+        <button type="button" onClick={() => list.add(NEW_TOPIC)} className={cn(secondaryButton, "min-h-8 self-start px-3 text-caption")}>
           <Icon name="add" size={16} />
           Add topic
         </button>

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { readList, text } from "@/lib/forms/formFields";
 import { isRichTextEmpty, richTextField } from "@/lib/richText/richText";
 
-import { KNOW_ICON_VALUES, MAX_KNOW_TOPICS, TREK_LIMITS as LIMIT } from "../constants";
+import { KNOW_ICON_VALUES, TREK_LIMITS as LIMIT } from "../constants";
 
 /** A topic needs its heading and its text (or note); a fully empty topic is ignored. */
 const knowTopicSchema = z
@@ -26,11 +26,8 @@ const knowTopicSchema = z
     videoId: media.startsWith("video:") ? media.slice(6) : null,
   }));
 
-/** "Trek guide: season, facilities and safety" topics, in order. Errors keep the topic's number. */
-export const knowTopicsSchema = z
-  .array(knowTopicSchema)
-  .transform((topics) => topics.filter((topic) => topic.title))
-  .refine((topics) => topics.length <= MAX_KNOW_TOPICS, `Keep it to ${MAX_KNOW_TOPICS} topics.`);
+/** "Trek guide: season, facilities and safety" topics, in order, as many as the admin adds. Errors keep the topic's number. */
+export const knowTopicsSchema = z.array(knowTopicSchema).transform((topics) => topics.filter((topic) => topic.title));
 
 /** Topics in FormData: knowIcon / knowTitle / knowBody / knowNote / knowMedia, one of each per topic. */
 export const readKnowTopics = (formData: FormData) => {

@@ -83,7 +83,6 @@ export const TREK_LIMITS = {
   similarIntro: 200,
 } as const;
 
-export const MAX_KNOW_TOPICS = 8;
 export const MAX_VIDEOS = 10;
 
 /** Parks and protected areas for the second tag above the heading ("" = none). */
