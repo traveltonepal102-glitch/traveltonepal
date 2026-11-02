@@ -17,6 +17,7 @@ import {
   SECTION_LIMITS as LIMIT,
 } from "../sectionKinds";
 import type { ArticleSection } from "../types";
+import { fileSection } from "./fileSchema";
 import { embedSection, htmlSection } from "./htmlAndEmbedSchemas";
 import { pickedId, pickedIds, richText, sectionId } from "./sectionFields";
 import { tableSection } from "./tableSchema";
@@ -143,6 +144,7 @@ const sectionSchema = z.discriminatedUnion(
     }),
     z.object({ id: sectionId, type: z.literal("map"), title: text(LIMIT.mapTitle), place: requiredText(LIMIT.mapPlace, "Write the place for the map.") }),
     embedSection,
+    fileSection,
     z.object({
       id: sectionId,
       type: z.literal("video"),

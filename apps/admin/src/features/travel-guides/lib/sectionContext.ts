@@ -15,4 +15,6 @@ export type SectionContext = {
   /** The guide's 12 months, shared by its "Month by month" sections. */
   months: MonthEntry[];
   onMonthsChange: (months: MonthEntry[]) => void;
+  /** Where uploaded files ("File to download") are opened from. */
+  filesBaseUrl: string;
 };

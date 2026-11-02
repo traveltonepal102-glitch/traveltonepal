@@ -18,7 +18,7 @@ export type GuidePageSource = {
 };
 
 /** A travel guide's page from its database row, or undefined when it can't show (no cover photo). */
-export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: string): GuideArticle | undefined => {
+export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: string, filesBaseUrl: string): GuideArticle | undefined => {
   const title = firstText(page.title);
   const image = title && coverImage(page, photosBaseUrl, title, page.cover_alt);
   if (!title || !image) return undefined;
@@ -27,7 +27,7 @@ export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: 
   const notes = readMonthNotes(page.month_notes);
   const ratings = page.month_ratings?.length === 12 ? page.month_ratings : undefined;
   const months = ratings ? { ratings, notes: notes ?? ratings.map(() => ({ onTheTrail: "", crowds: "" })) } : undefined;
-  const context = { treks, title, photosBaseUrl, hasMonths: Boolean(months) };
+  const context = { treks, title, photosBaseUrl, filesBaseUrl, hasMonths: Boolean(months) };
   const author = readAuthor(page.author);
   const checker = readChecker(page.checker);
   const faqs: GuideFaq[] = sections.flatMap((section) => (section.type === "faq" ? field.faqItems(section.content) : []));

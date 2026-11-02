@@ -5,6 +5,7 @@ import { PROSE, SECTION_TITLE } from "../styles";
 import { ArticleAltitude } from "./ArticleAltitude";
 import { ArticleEmbed } from "./ArticleEmbed";
 import { ArticleFaq } from "./ArticleFaq";
+import { ArticleFile } from "./ArticleFile";
 import { ArticleHtml } from "./ArticleHtml";
 import { ArticleFigure, ArticleGallery, ArticleMap } from "./ArticleMediaParts";
 import { GuideTip, GuideWords, MeetGuides } from "./ArticlePeopleParts";
@@ -97,6 +98,8 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
       return <ArticleMap title={block.title} place={block.place} />;
     case "embed":
       return <ArticleEmbed url={block.url} service={block.service} height={block.height} title={block.title} caption={block.caption} />;
+    case "file":
+      return <ArticleFile url={block.url} title={block.title} description={block.description} size={block.size} />;
     case "video":
       return <ArticleVideo youtubeId={block.youtubeId} title={block.title} />;
   }

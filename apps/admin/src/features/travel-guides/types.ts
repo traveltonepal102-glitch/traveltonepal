@@ -67,6 +67,8 @@ export type ArticleSection =
   | { id: string | null; type: "map"; title: string; place: string }
   /** `code`: the pasted embed code or link (saved as the frame's address only, @ttn/config/embeds). */
   | { id: string | null; type: "embed"; code: string; height: EmbedHeight; title: string; caption: string }
+  /** A PDF to download: `path` in the trek-files storage (@ttn/config/guideFiles) and its size; "" and 0 until uploaded. */
+  | { id: string | null; type: "file"; path: string; byteSize: number; title: string; description: string }
   | { id: string | null; type: "video"; youtubeId: string; title: string }
   | { id: string | null; type: "trek"; trekId: string | null }
   | { id: string | null; type: "faq"; items: FaqItem[] };
@@ -163,4 +165,6 @@ export type ArticleOptions = {
   checkers: { id: string; name: string; role: string }[];
   /** Other travel guides, for "Keep reading". */
   articles: { id: string; title: string }[];
+  /** Where uploaded files ("File to download") are opened from: <base>/<path>. */
+  filesBaseUrl: string;
 };

@@ -3,11 +3,10 @@
 import { Icon } from "@ttn/ui/icon";
 import { cn } from "@ttn/ui/lib/utils";
 import { useId, useState } from "react";
-import type { ChangeEvent } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
-import { putFile } from "@/features/photos/lib/putFile";
+import { usePdfUpload } from "@/hooks/usePdfUpload";
 
 import { finishPdfMapUpload, startPdfMapUpload } from "../../../actions/pdfMapUpload";
 
@@ -28,30 +27,14 @@ const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 export const PdfMapField = ({ path: savedPath, url: savedUrl, error, onEdit }: PdfMapFieldProps) => {
   const id = useId();
   const [file, setFile] = useState(savedPath && savedUrl ? { path: savedPath, url: savedUrl } : null);
-  const [progress, setProgress] = useState<number | null>(null);
-  const [message, setMessage] = useState("");
-
-  const upload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const chosen = event.target.files?.[0];
-    event.target.value = "";
-    if (!chosen) return;
-    if (chosen.type !== "application/pdf") return setMessage("Choose a PDF file.");
-    setMessage("");
-    setProgress(0);
-    try {
-      const started = await startPdfMapUpload(chosen.size);
-      if (!started.ok) return setMessage(started.message);
-      await putFile(started.uploadUrl, chosen, setProgress);
-      const finished = await finishPdfMapUpload(started.path);
-      if (!finished.ok) return setMessage(finished.message);
-      setFile({ path: finished.path, url: finished.url });
+  const { upload, progress, message } = usePdfUpload({
+    start: (chosen) => startPdfMapUpload(chosen.size),
+    finish: finishPdfMapUpload,
+    onUploaded: (uploaded) => {
+      setFile({ path: uploaded.path, url: uploaded.url });
       onEdit();
-    } catch {
-      setMessage("The upload stopped. Check your connection and try again.");
-    } finally {
-      setProgress(null);
-    }
-  };
+    },
+  });
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-solid border-border bg-page p-3">

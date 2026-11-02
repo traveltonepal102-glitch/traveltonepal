@@ -54,6 +54,8 @@ export type ArticleBlock =
   | { type: "map"; title: string; place: string }
   /** A frame from an allowed service (@ttn/config/embeds), loaded once the visitor allows it. `height` in px. */
   | { type: "embed"; url: string; service: Pick<EmbedProvider, "name" | "company" | "kind">; height: number; title: string; caption: string }
+  /** A PDF to open or download; `size` like "1.2 MB" ("" when unknown). */
+  | { type: "file"; url: string; title: string; description: string; size: string }
   /** A YouTube video, played in privacy-enhanced mode once the visitor allows it. */
   | { type: "video"; youtubeId: string; title: string };
 

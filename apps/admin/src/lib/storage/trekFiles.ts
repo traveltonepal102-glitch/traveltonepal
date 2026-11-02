@@ -16,6 +16,11 @@ const S3_FOLDER = "trek-files/";
 export const PDF_MAP_PATH = /^pdf-maps\/[0-9a-f-]{36}\.pdf$/;
 
 const PDF_TYPE = "application/pdf";
+/** The first bytes of every PDF. */
+const PDF_SIGNATURE = Buffer.from("%PDF-");
+
+/** The bucket's own limit (15 MB). */
+export const MAX_TREK_FILE_BYTES = 15 * 1024 * 1024;
 
 type TrekFileStorage = {
   /** A one-time link the browser PUTs the PDF to. Never exposes keys. */
@@ -24,9 +29,11 @@ type TrekFileStorage = {
   remove: (path: string) => Promise<void>;
 };
 
+/** Where trek files are downloaded from: <base>/<path>. */
+export const trekFilesBaseUrl = env.s3 ? `${photosPublicBaseUrl}/${S3_FOLDER.slice(0, -1)}` : `${env.SUPABASE_URL}/storage/v1/object/public/${BUCKET}`;
+
 /** Where visitors (and the editor's "Open" link) download a trek file. */
-export const trekFileUrl = (path: string) =>
-  env.s3 ? `${photosPublicBaseUrl}/${S3_FOLDER}${path}` : `${env.SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+export const trekFileUrl = (path: string) => `${trekFilesBaseUrl}/${path}`;
 
 /** Supabase Storage, as the signed-in admin (storage policies allow admins only). */
 const createSupabaseTrekFiles = async (): Promise<TrekFileStorage> => {
@@ -64,6 +71,18 @@ const createS3TrekFiles = (settings: S3Settings): TrekFileStorage => {
  * uploaded: a printable map has nothing private in it.
  */
 export const createTrekFileStorage = async (): Promise<TrekFileStorage> => (env.s3 ? createS3TrekFiles(env.s3) : createSupabaseTrekFiles());
+
+/**
+ * Keeps an uploaded file only when it really is a PDF (its first bytes, not its name) within the limit, else
+ * removes it. Returns its size in bytes, or null when it was removed.
+ */
+export const keepIfPdf = async (path: string): Promise<number | null> => {
+  const storage = await createTrekFileStorage();
+  const file = await storage.download(path);
+  if (file.length <= MAX_TREK_FILE_BYTES && file.subarray(0, PDF_SIGNATURE.length).equals(PDF_SIGNATURE)) return file.length;
+  await storage.remove(path);
+  return null;
+};
 
 /**
  * Deletes a file nothing uses any more (e.g. the printable map a save replaced). It is public, so it should go,

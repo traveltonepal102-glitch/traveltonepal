@@ -19,6 +19,7 @@ const sectionText = (section: ArticleSection) => {
   // Near enough for a reading time: the words between the tags.
   if (section.type === "html") return section.html.replace(/<[^>]*>/g, " ");
   if (section.type === "embed") return section.caption;
+  if (section.type === "file") return `${section.title} ${section.description}`;
   if (section.type === "image") return section.caption;
   if (section.type === "faq") return section.items.map((item) => `${item.question} ${richTextToPlainText(item.answer)}`).join(" ");
   return "";

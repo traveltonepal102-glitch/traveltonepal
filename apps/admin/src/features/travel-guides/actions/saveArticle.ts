@@ -15,6 +15,7 @@ import { TRAVEL_GUIDES_PATH, articlePath } from "../constants";
 import { articleSchema, readArticleForm } from "../schemas/articleSchema";
 import type { SaveArticleResult } from "../services/articlesRepository";
 import { saveArticle as saveArticleToDatabase } from "../services/articlesRepository";
+import { listGuideFilePaths, removeUnusedGuideFiles } from "../services/guideFilesRepository";
 
 const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveState => ({ status: "error", message, fieldErrors });
 
@@ -52,11 +53,16 @@ export const saveArticle = async (articleId: string | null, _previous: EditorSav
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
+  const previousFiles = articleId ? await listGuideFilePaths(articleId) : [];
   const result = await saveArticleToDatabase(parsed.data, articleId);
   if (!result.ok) {
     const { message, field } = FAILURES[result.reason];
     return failure(message, field ? { [field[0]]: field[1] } : {});
   }
+
+  // A removed or replaced "File to download" PDF is public, so it is deleted once no guide uses it.
+  const keptFiles = new Set(parsed.data.sections.flatMap((section) => (section.type === "file" ? [section.path] : [])));
+  await removeUnusedGuideFiles(previousFiles.filter((path) => !keptFiles.has(path)));
 
   refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides]);
   revalidatePath(TRAVEL_GUIDES_PATH, "layout");

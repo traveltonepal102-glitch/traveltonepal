@@ -25,7 +25,7 @@ const trek: TrekSummary = {
   hasPage: true,
 };
 
-const CONTEXT = { treks: [trek], title: "Best time to trek Langtang", photosBaseUrl: "https://photos.example", hasMonths: false };
+const CONTEXT = { treks: [trek], title: "Best time to trek Langtang", photosBaseUrl: "https://photos.example", filesBaseUrl: "https://photos.example/trek-files", hasMonths: false };
 
 /** One section as web_travel_guide_pages sends it, as a block. */
 const blockOf = (type: string, content: Record<string, unknown>, extra: Record<string, unknown> = {}) => {
@@ -106,6 +106,28 @@ describe("embeds", () => {
       caption: "Our route",
     });
     expect(blockOf("embed", { title: "Route" }, { settings: { url: "https://evil.example/embed", height: "short" } })).toBeUndefined();
+  });
+});
+
+describe("file sections", () => {
+  const path = "guide-files/00000000-0000-4000-8000-000000000001/langtang-packing-list.pdf";
+
+  it("links to an uploaded PDF with its title, description and size", () => {
+    expect(blockOf("file", { title: "Packing list", description: "One page" }, { settings: { path, byteSize: 1_258_291 } })).toEqual({
+      type: "file",
+      url: `https://photos.example/trek-files/${path}`,
+      title: "Packing list",
+      description: "One page",
+      size: "1.2 MB",
+    });
+    expect(blockOf("file", { title: "Packing list" }, { settings: { path, byteSize: 86_000 } })).toMatchObject({ description: "", size: "84 KB" });
+    expect(blockOf("file", { title: "Packing list" }, { settings: { path } })).toMatchObject({ size: "" });
+  });
+
+  it("leaves out a file without a title or with an address an upload never hands out", () => {
+    expect(blockOf("file", { title: "" }, { settings: { path } })).toBeUndefined();
+    expect(blockOf("file", { title: "Map" }, { settings: { path: "https://evil.example/x.pdf" } })).toBeUndefined();
+    expect(blockOf("file", { title: "Map" }, { settings: { path: "guide-files/../../photos/secret.pdf" } })).toBeUndefined();
   });
 });
 

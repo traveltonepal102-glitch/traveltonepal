@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 
-import { photosPublicBaseUrl } from "@/env";
+import { photosPublicBaseUrl, trekFilesPublicBaseUrl } from "@/env";
 import { listTravelGuides } from "@/features/guides/services/guidesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE, WEBSITE_LOCALE } from "@/lib/cacheTags";
@@ -37,5 +37,5 @@ export const listGuidePageSlugs = async (): Promise<string[]> => (await listTrav
 export const getGuideArticle = async (slug: string): Promise<GuideArticle | undefined> => {
   if (!(await listGuidePageSlugs()).includes(slug)) return undefined;
   const [page, treks] = await Promise.all([readPageRow(slug), listTreks()]);
-  return page ? toGuideArticle({ page, treks }, photosPublicBaseUrl) : undefined;
+  return page ? toGuideArticle({ page, treks }, photosPublicBaseUrl, trekFilesPublicBaseUrl) : undefined;
 };

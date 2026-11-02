@@ -470,6 +470,7 @@ export type ArticleSectionTypeValue =
   | "gallery"
   | "map"
   | "embed"
+  | "file"
   | "video"
   | "faq"
   | "cta";

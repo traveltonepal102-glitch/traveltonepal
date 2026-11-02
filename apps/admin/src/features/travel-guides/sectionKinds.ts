@@ -42,6 +42,8 @@ export const SECTION_LIMITS = {
   tableCell: 200,
   embedTitle: 100,
   embedCode: 4000,
+  fileTitle: 100,
+  fileDescription: 200,
   customHtml: 20000,
 } as const;
 
@@ -62,7 +64,7 @@ export const SECTION_GROUPS: { value: SectionGroup; label: string; tone: string 
   { value: "text", label: "Writing", tone: "bg-brand-tint text-brand" },
   { value: "trek", label: "Trek information", tone: "bg-green-tint text-whatsapp" },
   { value: "people", label: "Guides and people", tone: "bg-saffron-tint text-saffron-deep" },
-  { value: "media", label: "Photos, map and video", tone: "bg-muted text-text" },
+  { value: "media", label: "Photos, maps, videos and files", tone: "bg-muted text-text" },
   { value: "engage", label: "End of the article", tone: "bg-green-tint text-whatsapp" },
   { value: "advanced", label: "Advanced", tone: "bg-muted text-text" },
 ];
@@ -183,6 +185,15 @@ export const SECTION_KINDS: SectionKind[] = [
     goodFor: "Your own route maps and GPS tracks.",
     youFillIn: ["Embed code or link", "Title", "Height"],
     icon: "code_blocks",
+  },
+  {
+    type: "file",
+    group: "media",
+    name: "File to download",
+    description: "A PDF visitors can open or download, with its title and size.",
+    goodFor: "Packing lists, printable maps, permit forms, price lists.",
+    youFillIn: ["PDF (up to 15 MB)", "Title", "Short description (optional)"],
+    icon: "picture_as_pdf",
   },
   { type: "video", group: "media", name: "YouTube video", description: "A video with a “Play” button first (privacy rules).", goodFor: "Trail videos, guide introductions.", youFillIn: ["YouTube link"], icon: "smart_display" },
   {

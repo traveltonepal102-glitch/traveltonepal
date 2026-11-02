@@ -10,6 +10,7 @@ import { CostTableFields } from "./sections/CostTableFields";
 import { CtaFields } from "./sections/CtaFields";
 import { EmbedFields } from "./sections/EmbedFields";
 import { FaqSectionFields } from "./sections/FaqSectionFields";
+import { FileFields } from "./sections/FileFields";
 import { GalleryFields } from "./sections/GalleryFields";
 import { GuideWordsFields } from "./sections/GuideWordsFields";
 import { HeadingFields } from "./sections/HeadingFields";
@@ -95,6 +96,18 @@ export const SectionFields = ({ section, index, context, errors, onChange }: Sec
       return <MapFields title={section.title} place={section.place} {...shared} onChange={(patch) => onChange({ ...section, ...patch })} />;
     case "embed":
       return <EmbedFields code={section.code} height={section.height} title={section.title} caption={section.caption} {...shared} onChange={(patch) => onChange({ ...section, ...patch })} />;
+    case "file":
+      return (
+        <FileFields
+          path={section.path}
+          byteSize={section.byteSize}
+          title={section.title}
+          description={section.description}
+          filesBaseUrl={context.filesBaseUrl}
+          {...shared}
+          onChange={(patch) => onChange({ ...section, ...patch })}
+        />
+      );
     case "video":
       return <VideoFields youtubeId={section.youtubeId} title={section.title} {...shared} onChange={(patch) => onChange({ ...section, ...patch })} />;
     case "cta":

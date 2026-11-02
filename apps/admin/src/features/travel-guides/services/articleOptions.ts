@@ -2,6 +2,7 @@ import "server-only";
 
 import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
+import { trekFilesBaseUrl } from "@/lib/storage/trekFiles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { ARTICLE_LOCALE } from "../constants";
@@ -46,7 +47,7 @@ export const listAuthorOptions = async (): Promise<ArticleOptions["authors"]> =>
 };
 
 /** Everything else the editor offers: treks, guides who can check travel guides, and the other travel guides. */
-export const listArticleOptions = async (exceptArticleId: string | null): Promise<Omit<ArticleOptions, "sites" | "regions" | "authors" | "guides" | "photos">> => {
+export const listArticleOptions = async (exceptArticleId: string | null): Promise<Omit<ArticleOptions, "sites" | "regions" | "authors" | "guides" | "photos" | "filesBaseUrl">> => {
   const supabase = await createSupabaseServerClient();
   const [treks, checkers, articles] = await Promise.all([
     supabase
@@ -160,5 +161,5 @@ export const getArticleOptions = async (exceptArticleId: string | null, photoIds
     listSectionGuides(),
     listPhotosByIds(photoIds),
   ]);
-  return { ...rest, sites, authors, guides, photos, regions: sites.map(({ id, name }) => ({ id, name })) };
+  return { ...rest, sites, authors, guides, photos, regions: sites.map(({ id, name }) => ({ id, name })), filesBaseUrl: trekFilesBaseUrl };
 };

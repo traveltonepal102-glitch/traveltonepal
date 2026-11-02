@@ -32,6 +32,7 @@ const CONTENT = {
     .catch({ heading: "", header: [], rows: [], footer: [] }),
   html: z.object({ html: words }).catch({ html: "" }),
   embed: z.object({ title: words, caption: words }).catch({ title: "", caption: "" }),
+  file: z.object({ title: words, description: words }).catch({ title: "", description: "" }),
 };
 
 /** Each kind's choices that are the same in every language (article_sections.settings). */
@@ -44,6 +45,7 @@ const SETTINGS = {
   video: z.object({ youtubeId: words }).catch({ youtubeId: "" }),
   table: z.object({ hasRowHeadings: z.boolean().catch(false) }).catch({ hasRowHeadings: false }),
   embed: z.object({ url: words, height: z.enum(["short", "medium", "tall"]).catch("medium") }).catch({ url: "", height: "medium" }),
+  file: z.object({ path: words, byteSize: z.number().int().nonnegative().catch(0) }).catch({ path: "", byteSize: 0 }),
 };
 
 /** A saved table, every row as wide as the widest (a row that doesn't show is saved empty). */
@@ -94,6 +96,7 @@ export const storedSection = (row: StoredSectionRow, content: Json | undefined):
     const { url, height } = SETTINGS.embed.parse(row.settings);
     return { id: row.id, type: "embed", code: url, height, ...CONTENT.embed.parse(content) };
   }
+  if (row.type === "file") return { id: row.id, type: "file", ...SETTINGS.file.parse(row.settings), ...CONTENT.file.parse(content) };
   if (row.type === "video") return { id: row.id, type: "video", ...SETTINGS.video.parse(row.settings), ...CONTENT.title.parse(content) };
   return { id: row.id, type: "faq", ...CONTENT.faq.parse(content) };
 };
@@ -142,6 +145,7 @@ export const toStoredSection = (section: ArticleSection) => {
   if (section.type === "gallery") return { ...shared, photo_ids: section.photoIds, content: {} };
   if (section.type === "map") return { ...shared, content: { title: section.title, place: section.place } };
   if (section.type === "embed") return { ...shared, settings: { url: section.code, height: section.height }, content: { title: section.title, caption: section.caption } };
+  if (section.type === "file") return { ...shared, settings: { path: section.path, byteSize: section.byteSize }, content: { title: section.title, description: section.description } };
   if (section.type === "video") return { ...shared, settings: { youtubeId: section.youtubeId }, content: { title: section.title } };
   return { ...shared, content: {} };
 };

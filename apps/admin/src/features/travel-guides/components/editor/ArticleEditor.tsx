@@ -122,6 +122,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
                 setMonths(next);
                 markDirty();
               },
+              filesBaseUrl: options.filesBaseUrl,
             }}
             errors={errors}
           />

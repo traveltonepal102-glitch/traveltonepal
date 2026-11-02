@@ -56,7 +56,7 @@ export type NewsletterSettings = NonNullable<typeof newsletterSettings>;
 
 export const photosPublicBaseUrl = env.PHOTOS_PUBLIC_URL ?? `${env.SUPABASE_URL}/storage/v1/object/public/photos`;
 
-/** Base URL of trek files (printable maps): the bucket's trek-files/ folder beside the photos, as the admin uploads them. */
+/** Base URL of trek files (printable maps) and travel guide PDFs: the bucket's trek-files/ folder beside the photos, as the admin uploads them. */
 export const trekFilesPublicBaseUrl = env.PHOTOS_PUBLIC_URL
   ? `${env.PHOTOS_PUBLIC_URL}/trek-files`
   : `${env.SUPABASE_URL}/storage/v1/object/public/trek-files`;

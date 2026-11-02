@@ -8,6 +8,7 @@ import { articleToc } from "./guideArticles";
 import { toGuideArticle } from "./guidePageRows";
 
 const BASE = "https://photos.example/photos";
+const FILES = "https://photos.example/trek-files";
 const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 const photo = (id: string, place = "") => ({ cover_id: id, cover_width: 800, cover_height: 600, cover_variant_widths: [400, 800], cover_placeholder: "", cover_place: place });
 const section = (type: string, content: Record<string, unknown> = {}, extra: Record<string, unknown> = {}) => ({
@@ -92,7 +93,7 @@ const page = (overrides: Partial<WebTravelGuidePageRow> = {}): WebTravelGuidePag
 const treks = [trek("langtang-valley")];
 
 describe("toGuideArticle", () => {
-  const article = toGuideArticle({ page: page(), treks }, BASE);
+  const article = toGuideArticle({ page: page(), treks }, BASE, FILES);
 
   it("maps the guide's top, author and fact-checker", () => {
     expect(article).toMatchObject({
@@ -116,6 +117,7 @@ describe("toGuideArticle", () => {
     const permits = toGuideArticle(
       { page: page({ help_heading: "Questions about permits?", help_text: "  ", help_message: "Hello! A question about permits: " }), treks },
       BASE,
+      FILES,
     );
     expect(permits?.helpBox).toEqual({
       heading: "Questions about permits?",
@@ -132,7 +134,7 @@ describe("toGuideArticle", () => {
 
   it("puts the quick answer and the questions where the admin put them", () => {
     const { sections } = page();
-    const moved = toGuideArticle({ page: page({ sections: Array.isArray(sections) ? [...sections].reverse() : [] }), treks }, BASE);
+    const moved = toGuideArticle({ page: page({ sections: Array.isArray(sections) ? [...sections].reverse() : [] }), treks }, BASE, FILES);
     expect(moved?.blocks.map((block) => block.type)).toEqual(["cta", "faq", "video", "image", "tip", "months", "trek", "text", "text", "quick"]);
     expect(articleToc(moved!).map((link) => link.id)).toEqual(["faq", "autumn-the-clearest-views", "autumn-the-clearest-views-2", "quick-answer"]);
   });
@@ -147,13 +149,13 @@ describe("toGuideArticle", () => {
   });
 
   it("marks a guest writer as not verified, and has no page without a cover photo", () => {
-    const guest = toGuideArticle({ page: page({ author: { kind: "guest", name: "Tom Fletcher", job_title: "", bio: "", photo: null } }), treks }, BASE);
+    const guest = toGuideArticle({ page: page({ author: { kind: "guest", name: "Tom Fletcher", job_title: "", bio: "", photo: null } }), treks }, BASE, FILES);
     expect(guest?.author.isVerified).toBe(false);
-    expect(toGuideArticle({ page: page({ cover_id: null }), treks }, BASE)).toBeUndefined();
+    expect(toGuideArticle({ page: page({ cover_id: null }), treks }, BASE, FILES)).toBeUndefined();
   });
 
   it("shows no months without 12 ratings, so a months section is left out", () => {
-    const noMonths = toGuideArticle({ page: page({ month_ratings: null }), treks }, BASE);
+    const noMonths = toGuideArticle({ page: page({ month_ratings: null }), treks }, BASE, FILES);
     expect(noMonths?.months).toBeUndefined();
     expect(noMonths?.blocks.some((block) => block.type === "months")).toBe(false);
   });

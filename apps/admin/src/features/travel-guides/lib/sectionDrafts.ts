@@ -63,6 +63,8 @@ export const newSection = (type: SectionType): EditorSection => {
       return { id: null, type, title: "", place: "" };
     case "embed":
       return { id: null, type, code: "", height: "medium", title: "", caption: "" };
+    case "file":
+      return { id: null, type, path: "", byteSize: 0, title: "", description: "" };
     case "video":
       return { id: null, type, youtubeId: "", title: "" };
     case "cta":

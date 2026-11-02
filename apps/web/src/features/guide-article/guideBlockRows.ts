@@ -1,4 +1,5 @@
 import { EMBED_HEIGHTS, toEmbed } from "@ttn/config/embeds";
+import { GUIDE_FILE_PATH, fileSizeLabel } from "@ttn/config/guideFiles";
 import { cleanCustomHtml, customHtmlText } from "@ttn/ui/lib/customHtml";
 import { toRichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -9,8 +10,8 @@ import type { CoverRow, PersonRow, SectionRow } from "./guidePageJson";
 import { field, readDays, readPeople, readPhotos } from "./guidePageJson";
 import type { ArticleBlock, ArticleDay, GuidePerson } from "./types";
 
-/** What the sections are shown with: the published treks, the guide's title (photo text) and whether it has months. */
-type BlockContext = { treks: readonly TrekSummary[]; title: string; photosBaseUrl: string; hasMonths: boolean };
+/** What the sections are shown with: the published treks, the guide's title (photo text), whether it has months and where files are. */
+type BlockContext = { treks: readonly TrekSummary[]; title: string; photosBaseUrl: string; filesBaseUrl: string; hasMonths: boolean };
 
 /** "Autumn: the clearest views" → "autumn-the-clearest-views", for the contents list. */
 const anchorOf = (heading: string) =>
@@ -73,6 +74,14 @@ const toEmbedBlock = (content: Record<string, unknown>, settings: Record<string,
   const { name, company, kind } = embed.provider;
   const height = Object.entries(EMBED_HEIGHTS).find(([key]) => key === settings.height)?.[1] ?? EMBED_HEIGHTS.medium;
   return { type: "embed", url: embed.url, service: { name, company, kind }, height, title: field.text(content, "title") || name, caption: field.text(content, "caption") };
+};
+
+/** A PDF uploaded in the admin (its address checked again here, so it is safe to add to the base) with its title. */
+const toFileBlock = (content: Record<string, unknown>, settings: Record<string, unknown>, filesBaseUrl: string): ArticleBlock | undefined => {
+  const title = field.text(content, "title");
+  if (!title || typeof settings.path !== "string" || !GUIDE_FILE_PATH.test(settings.path)) return undefined;
+  const size = typeof settings.byteSize === "number" && settings.byteSize > 0 ? fileSizeLabel(settings.byteSize) : "";
+  return { type: "file", url: `${filesBaseUrl}/${settings.path}`, title, description: field.text(content, "description"), size };
 };
 
 /** One section as a block of the article, or nothing when what it needs is missing (a trek not published, no text…). */
@@ -140,6 +149,8 @@ export const toBlock = (section: SectionRow, context: BlockContext): ArticleBloc
     }
     case "embed":
       return toEmbedBlock(content, settings);
+    case "file":
+      return toFileBlock(content, settings, context.filesBaseUrl);
     case "cost": {
       const rows = field.costRows(content);
       return rows.length ? { type: "cost", heading: field.text(content, "heading"), rows, totalLabel: field.text(content, "totalLabel"), total: field.text(content, "total") } : undefined;
