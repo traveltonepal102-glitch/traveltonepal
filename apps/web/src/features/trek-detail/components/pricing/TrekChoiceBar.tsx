@@ -26,7 +26,7 @@ export const TrekChoiceBar = ({ trekName, days, groupPrices }: TrekChoiceBarProp
   if (!tier || !startDate) return null;
 
   const start = formatTripDate(startDate);
-  const message = buildDateCheckMessage({ trekName, days, groupSize: `${tier.label} (${formatUsd(tier.priceUsd)} per person)`, startDate: start });
+  const message = buildDateCheckMessage({ trekName, days, groupSize: tier.label, startDate: start });
 
   return (
     <div className="flex flex-col items-start justify-between gap-3 rounded-lg border border-[#d3e3f1] bg-[#f4f8fc] px-5 py-4 shadow-card sm:flex-row sm:items-center">

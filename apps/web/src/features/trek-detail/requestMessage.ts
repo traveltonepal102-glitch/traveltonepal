@@ -26,7 +26,7 @@ export type TrekRequestFields = z.infer<typeof trekRequestSchema>;
 export type TrekRequest = TrekRequestFields & {
   trekName: string;
   days: number;
-  /** e.g. "3–5 people ($890 per person)". */
+  /** e.g. "3–5 people" (no price: prices change, the message stays in the chat). */
   groupSize: string;
   /** e.g. "Start Nov 02, 2026" or "Spring (March – May)". */
   timing: string;

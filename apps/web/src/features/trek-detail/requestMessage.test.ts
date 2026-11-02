@@ -9,7 +9,7 @@ const request = {
   days: 10,
   name: "  Anna Weber ",
   country: "",
-  groupSize: "3–5 people ($890 per person)",
+  groupSize: "3–5 people",
   timing: "Start Nov 02, 2026",
   requests: "",
 };
@@ -35,8 +35,8 @@ describe("trekRequestSchema", () => {
 
 describe("buildDateCheckMessage", () => {
   it("asks about the chosen start day for the chosen group", () => {
-    expect(buildDateCheckMessage({ trekName: "Langtang Valley Trek", days: 10, groupSize: "2 people ($965 per person)", startDate: "Nov 02, 2026" })).toBe(
-      ["Hello! Can I start the Langtang Valley Trek (10 days) on Nov 02, 2026?", "", "Group size: 2 people ($965 per person)"].join("\n"),
+    expect(buildDateCheckMessage({ trekName: "Langtang Valley Trek", days: 10, groupSize: "2 people", startDate: "Nov 02, 2026" })).toBe(
+      ["Hello! Can I start the Langtang Valley Trek (10 days) on Nov 02, 2026?", "", "Group size: 2 people"].join("\n"),
     );
   });
 });
@@ -48,7 +48,7 @@ describe("buildTrekRequestMessage", () => {
         "Hello! I would like to book the Langtang Valley Trek (10 days).",
         "",
         "Name: Anna Weber",
-        "Group size: 3–5 people ($890 per person)",
+        "Group size: 3–5 people",
         "Preferred time: Start Nov 02, 2026",
       ].join("\n"),
     );

@@ -56,7 +56,7 @@ export const useTrekRequest = ({ trekName, days, groupPrices }: TrekRequestOptio
       ...fields,
       trekName,
       days,
-      groupSize: tier ? `${tier.label} (${formatUsd(tier.priceUsd)} per person)` : "",
+      groupSize: tier?.label ?? "",
       timing: season ?? start ?? NO_TIMING,
     });
 
