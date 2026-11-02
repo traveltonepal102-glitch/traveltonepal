@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
 import { imageFileUrl } from "@/lib/images";
 import { shareMetadata } from "@/features/seo/shareMetadata";
+import { webPageJsonLd } from "@/features/seo/webPage";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath, trekPath } from "@/lib/routes";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
@@ -28,7 +29,7 @@ export const trekMetadata = (trek: TrekDetail): Metadata => {
     title,
     description,
     alternates: { canonical: path },
-    ...shareMetadata({ path, title, description, images: [shareImage, trek.photos[0]] }),
+    ...shareMetadata({ path, title, description, images: [shareImage, trek.photos[0]], dates: trek.dates }),
   };
 };
 
@@ -72,10 +73,11 @@ const faqPageJsonLd = (trek: TrekDetail): JsonLdData[] => {
   ];
 };
 
-/** BreadcrumbList, TouristTrip and FAQPage for the trek page. */
+/** WebPage (its dates), BreadcrumbList, TouristTrip and FAQPage for the trek page. */
 export const trekJsonLd = (trek: TrekDetail): JsonLdData => ({
   "@context": "https://schema.org",
   "@graph": [
+    webPageJsonLd({ path: trekPath(trek.slug), name: trek.seo.title, dates: trek.dates }),
     breadcrumbListJsonLd(trek),
     ...faqPageJsonLd(trek),
     {

@@ -1,6 +1,7 @@
 import { splitLegalSections, toLegalTextDoc } from "@ttn/ui/lib/legalText";
 import { z } from "zod";
 
+import { toPageDates } from "@/features/seo/webPage";
 import type { SiteSettings } from "@/features/site-settings/types";
 import type { WebSitePageRow } from "@/lib/supabase/database.types";
 
@@ -47,6 +48,7 @@ export const toLegalDoc = (slug: LegalSlug, row: WebSitePageRow, settings: SiteS
     title: row.heading.trim(),
     intro: row.intro.trim(),
     updated: formatDay(content.lastUpdated),
+    dates: toPageDates(row.published_at, content.lastUpdated || row.updated_at),
     ownerNote: content.lawyerChecked ? undefined : LEGAL_MENU.find((item) => item.slug === slug)?.uncheckedNote,
     lead,
     sections: sections.map((section, index) => ({ ...section, id: ids[index] })),

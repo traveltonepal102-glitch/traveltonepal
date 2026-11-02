@@ -66,6 +66,6 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
     faq: <TrekFaq heading={trek.headings.faq} faqs={trek.faqs} />,
     booking_cta: shows("booking_cta") && <BookingCallout {...requestProps} shortName={trek.shortName} />,
     similar: <SimilarTreks heading={trek.headings.similar} intro={trek.similarIntro} treks={trek.similarTreks} />,
-    newsletter: shows("newsletter") && <NewsletterBand badge={`Free ${trek.shortName} packing checklist`} />,
+    newsletter: shows("newsletter") && <NewsletterBand />,
   };
 };

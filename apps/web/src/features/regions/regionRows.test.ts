@@ -30,6 +30,8 @@ const row = (slug: string, overrides: Partial<WebRegionRow> = {}): WebRegionRow 
   permits: "Langtang NP + TIMS",
   best_for: ["Close to Kathmandu", "No flights"],
   has_page: false,
+  published_at: "2026-10-23T06:00:00+00:00",
+  updated_at: "2026-10-30T10:15:00+00:00",
   ...overrides,
 });
 
@@ -120,6 +122,7 @@ describe("toRegionCards", () => {
       bestForTags: ["Close to Kathmandu", "No flights"],
       summary: "Close to Kathmandu.",
       months: ["possible", "possible", "best", "best", "best", "avoid", "avoid", "avoid", "possible", "best", "best", "possible"],
+      dates: { published: "2026-10-23T06:00:00Z", modified: "2026-10-30T10:15:00Z" },
     });
   });
 

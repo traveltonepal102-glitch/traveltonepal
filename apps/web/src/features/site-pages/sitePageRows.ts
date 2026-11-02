@@ -1,3 +1,4 @@
+import { toPageDates } from "@/features/seo/webPage";
 import type { WebSitePageRow } from "@/lib/supabase/database.types";
 import { coverImage, sharePhotoImage } from "@/lib/images";
 
@@ -15,5 +16,5 @@ export const toSitePageTop = (row: WebSitePageRow, photosBaseUrl: string, subjec
     shareImage: sharePhotoImage(row, photosBaseUrl, subject),
   },
   cover: coverImage(row, photosBaseUrl, subject),
-  updatedAt: row.updated_at,
+  dates: toPageDates(row.published_at, row.updated_at),
 });

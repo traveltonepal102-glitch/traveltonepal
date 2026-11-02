@@ -57,6 +57,7 @@ const page = (overrides: Partial<WebTravelGuidePageRow> = {}): WebTravelGuidePag
   help_heading: "",
   help_text: "",
   help_message: "",
+  show_sidebar: true,
   published_on: "2026-10-25",
   updated_on: null,
   topic: "best-time",
@@ -124,6 +125,11 @@ describe("toGuideArticle", () => {
       text: DEFAULT_GUIDE_HELP_BOX.text,
       message: "Hello! A question about permits: ",
     });
+  });
+
+  it("shows the sidebar unless the guide turns it off", () => {
+    expect(article?.showSidebar).toBe(true);
+    expect(toGuideArticle({ page: page({ show_sidebar: false }), treks }, BASE, FILES)?.showSidebar).toBe(false);
   });
 
   it("keeps the sections that can show, in order, and drops the rest", () => {

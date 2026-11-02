@@ -91,6 +91,7 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
     seoDescription: text?.seo_description ?? "",
     canonicalPath: text?.canonical_path ?? "",
     hideFromGoogle: text?.hide_from_google ?? false,
+    showSidebar: row.show_sidebar,
     helpHeading: text?.help_heading ?? "",
     helpText: text?.help_text ?? "",
     helpMessage: text?.help_message ?? "",
@@ -127,6 +128,7 @@ export const saveArticle = async (values: ArticleFormValues, articleId: string |
       photo_trek_id: values.photoTrekId ?? "",
       cover_photo_id: values.coverPhotoId ?? "",
       month_ratings: values.months.map((month) => month.rating),
+      show_sidebar: values.showSidebar,
     },
     p_text: {
       title: values.title,

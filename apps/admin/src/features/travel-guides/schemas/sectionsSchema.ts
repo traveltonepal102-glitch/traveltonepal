@@ -11,7 +11,6 @@ import {
   MAX_DAYS_SHOWN,
   MAX_FAQ_ITEMS,
   MAX_GALLERY_PHOTOS,
-  MAX_SECTIONS,
   MEET_GUIDES,
   SECTION_KINDS,
   SECTION_LIMITS as LIMIT,
@@ -181,7 +180,8 @@ export const sectionsField = z
       return z.NEVER;
     }
   })
-  .pipe(z.array(sectionSchema).max(MAX_SECTIONS, `Up to ${MAX_SECTIONS} sections.`))
+  // As many sections as the guide needs: no maximum (2026-11-02).
+  .pipe(z.array(sectionSchema))
   .superRefine((sections, context) => {
     for (const kind of ONCE_PER_ARTICLE) {
       if (sections.filter((section) => section.type === kind.type).length > 1) {

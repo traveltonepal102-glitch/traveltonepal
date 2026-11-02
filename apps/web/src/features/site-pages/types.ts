@@ -1,4 +1,5 @@
 import type { PageSeo } from "@/features/seo/shareMetadata";
+import type { PageDates } from "@/features/seo/webPage";
 import type { SiteImageSource } from "@/lib/images";
 
 /** What every fixed page has, from the admin's Pages: the top of the page and its Google result. */
@@ -10,5 +11,6 @@ export type SitePageTop = {
   seo: PageSeo & { keyword: string };
   /** The photo behind the top of the page, when one is picked (else the page's own default). */
   cover?: SiteImageSource;
-  updatedAt: string;
+  /** When the page was seeded and last saved in Pages: its published and modified dates. */
+  dates?: PageDates;
 };

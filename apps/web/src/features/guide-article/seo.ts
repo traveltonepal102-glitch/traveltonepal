@@ -7,6 +7,7 @@ import { guideListHref } from "@/features/guides/guideFiltering";
 import { getGuideTopic } from "@/features/guides/topics";
 import { imageFileUrl } from "@/lib/images";
 import { shareMetadata } from "@/features/seo/shareMetadata";
+import { datesJsonLd } from "@/features/seo/webPage";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, guidePath } from "@/lib/routes";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
@@ -36,7 +37,7 @@ export const articleMetadata = (article: GuideArticle): Metadata => {
       title,
       description,
       images: [shareImage, article.image],
-      article: { publishedTime: article.publishedOn, modifiedTime: article.updatedOn },
+      dates: { published: article.publishedOn, modified: article.updatedOn },
     }),
   };
 };
@@ -55,8 +56,7 @@ export const articleJsonLd = (article: GuideArticle): JsonLdData => {
         headline: article.title,
         description: article.seo.description,
         image: absoluteUrl(imageFileUrl(article.image, SHARE_IMAGE_WIDTH)),
-        datePublished: article.publishedOn,
-        ...(article.updatedOn ? { dateModified: article.updatedOn } : {}),
+        ...datesJsonLd({ published: article.publishedOn, modified: article.updatedOn }),
         author: { "@type": "Person", name: article.author.name, ...(article.author.role ? { jobTitle: article.author.role } : {}) },
         publisher: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl(ROUTES.home) },
         mainEntityOfPage: url,

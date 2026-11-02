@@ -48,7 +48,7 @@ export const RegionsPage = ({ top, regions, trekCount }: RegionsPageProps) => {
 
   return (
     <>
-      <JsonLd data={regionsJsonLd(regions)} />
+      <JsonLd data={regionsJsonLd(regions, top)} />
       {hero}
 
       <section aria-labelledby="regions-map-title" className="pt-10 pb-4">

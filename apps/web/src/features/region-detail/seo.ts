@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
 import { imageFileUrl } from "@/lib/images";
 import { shareMetadata } from "@/features/seo/shareMetadata";
+import { webPageJsonLd } from "@/features/seo/webPage";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES, regionPath } from "@/lib/routes";
 import { absoluteUrl } from "@/lib/site";
@@ -28,16 +29,17 @@ export const regionMetadata = (region: RegionDetail): Metadata => {
     title,
     description,
     alternates: { canonical: path },
-    ...shareMetadata({ path, title, description, images: [shareImage, region.image] }),
+    ...shareMetadata({ path, title, description, images: [shareImage, region.image], dates: region.dates }),
   };
 };
 
-/** BreadcrumbList, TouristDestination and FAQPage for the region page. */
+/** WebPage (its dates), BreadcrumbList, TouristDestination and FAQPage for the region page. */
 export const regionJsonLd = (region: RegionDetail): JsonLdData => {
   const url = absoluteUrl(regionPath(region.slug));
   return {
     "@context": "https://schema.org",
     "@graph": [
+      webPageJsonLd({ path: regionPath(region.slug), name: region.seo.title, dates: region.dates }),
       {
         "@type": "BreadcrumbList",
         itemListElement: regionBreadcrumbs(region).map((item, index) => ({

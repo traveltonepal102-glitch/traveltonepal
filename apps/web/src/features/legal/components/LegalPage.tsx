@@ -2,8 +2,10 @@ import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 import type { ReactNode } from "react";
 
+import { JsonLd } from "@/components/shared/JsonLd";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
+import { legalJsonLd } from "../seo";
 import type { LegalDoc } from "../types";
 import { LegalBlocks } from "./LegalBlocks";
 import { LegalHeader } from "./LegalHeader";
@@ -22,6 +24,7 @@ type LegalPageProps = {
 /** A legal page (design: Legal.dc.html): title band, side menu and the numbered document (from Pages › Legal pages). */
 export const LegalPage = ({ doc, children }: LegalPageProps) => (
   <>
+    <JsonLd data={legalJsonLd(doc)} />
     <LegalHeader doc={doc} />
     <div className={`${WRAP} grid items-start gap-8 pt-8 pb-14 lg:grid-cols-[260px_minmax(0,1fr)]`}>
       <LegalSidebar doc={doc} />

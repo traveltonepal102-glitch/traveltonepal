@@ -10,7 +10,7 @@ import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
-import { MAX_INCLUDED_ITEMS, MAX_MEAL_TIPS, TREK_LIMITS as LIMIT } from "../../constants";
+import { MAX_INCLUDED_ITEMS, TREK_LIMITS as LIMIT } from "../../constants";
 import type { TrekValues } from "../../types";
 
 type TrekIncludedSectionProps = {
@@ -97,7 +97,6 @@ export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSect
         field="mealTrailTips"
         itemLabel="Tip"
         points={values.mealTrailTips}
-        maxItems={MAX_MEAL_TIPS}
         limits={POINT_LIMITS}
         placeholders={{ title: "e.g. Stay hydrated", text: "e.g. drink 3–4 litres a day (ginger-lemon-honey tea, boiled water)." }}
         errors={errors}
@@ -112,7 +111,6 @@ export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSect
         field="mealTeahouseNotes"
         itemLabel="Note"
         points={values.mealTeahouseNotes}
-        maxItems={MAX_MEAL_TIPS}
         limits={POINT_LIMITS}
         placeholders={{ title: "e.g. Order early", text: "e.g. order dinner around 5 pm and choose your breakfast time the night before." }}
         errors={errors}

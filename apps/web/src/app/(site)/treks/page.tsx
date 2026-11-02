@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
+import { JsonLd } from "@/components/shared/JsonLd";
+
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { webPageJsonLd } from "@/features/seo/webPage";
 import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
-import { sitePageMetadata } from "@/features/site-pages/seo";
+import { sitePageMetadata, sitePageName } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { HowToChooseSection } from "@/features/treks/components/HowToChooseSection";
 import { TreksBrowser } from "@/features/treks/components/TreksBrowser";
@@ -28,6 +31,12 @@ const TreksPage = async () => {
 
   return (
     <main className="flex-1 bg-page">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          ...webPageJsonLd({ type: "CollectionPage", path: ROUTES.treks, name: sitePageName(top), dates: top.dates }),
+        }}
+      />
       <PageSchemasJsonLd kind="page" slug="treks" />
       <TreksHero top={top} trekCount={treks.length} regionCount={regions.length} />
       <TreksBrowser treks={treks} regions={regions} />

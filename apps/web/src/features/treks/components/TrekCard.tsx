@@ -52,7 +52,7 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
         <a
           href={trekInquiryEmailUrl(trek)}
           aria-label={`Email us about the ${trek.name}`}
-          className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full border border-line-strong bg-surface text-brand transition-colors hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full bg-brand text-on-brand transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <Icon name="mail" size={22} />
         </a>

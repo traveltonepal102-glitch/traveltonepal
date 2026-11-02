@@ -1,10 +1,12 @@
 import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import Image from "next/image";
+import Link from "next/link";
 
 import { PreferredSourceBadge } from "@/components/shared/PreferredSourceBadge";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { MAIN_SECTIONS } from "@/lib/navigation";
+import { ROUTES } from "@/lib/routes";
 
 import { COMPANY_LINKS } from "../footerLinks";
 import { FooterBottomBar } from "./FooterBottomBar";
@@ -27,7 +29,12 @@ export const SiteFooter = async () => {
       <div className="mx-auto flex max-w-content flex-col gap-11 px-4 pt-10 pb-7 md:px-6 md:pt-14">
         <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 sm:gap-9 lg:grid-cols-4">
           <div className="flex flex-col gap-4">
-            <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={98} height={56} className="h-14 w-auto self-start" />
+            <Link
+              href={ROUTES.home}
+              className="self-start rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+            >
+              <Image src="/brand/logo-white.svg" alt="Travel To Nepal" width={98} height={56} className="h-14 w-auto" />
+            </Link>
             <p className="max-w-70">
               Your Nepal journey belongs to you. We plan your private Nepal trek around your interests and fitness
               level, not a generic itinerary.

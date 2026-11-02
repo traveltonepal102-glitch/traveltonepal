@@ -1,11 +1,12 @@
 import { Icon } from "@ttn/ui/icon";
 
+import { ClampedText } from "@/components/shared/ClampedText";
 import { RichText } from "@/components/shared/RichText";
 import { SiteImage } from "@/components/ui/SiteImage";
 
 import type { TrekDetail } from "../types";
 import { SectionHeading } from "./SectionHeading";
-import { PANEL } from "./styles";
+import { PANEL, TEXT_ACTION } from "./styles";
 
 /** "Practical field knowledge": season, teahouses, food and the emergency plan, from our trek leaders (with a photo beside a topic that has one). */
 export const TrekFieldGuide = ({ fieldGuide }: Pick<TrekDetail, "fieldGuide">) => (
@@ -24,10 +25,13 @@ export const TrekFieldGuide = ({ fieldGuide }: Pick<TrekDetail, "fieldGuide">) =
             {topic.title}
           </h3>
           <div className="flex flex-col gap-4 md:flex-row md:items-start">
-            <div className="flex min-w-0 flex-1 flex-col gap-2.5 text-body-sm text-text">
-              <RichText doc={topic.body} headingLevel="h4" className="flex flex-col gap-2.5" />
-              {topic.note && <p className="text-xs text-muted-foreground italic">*{topic.note}</p>}
-            </div>
+            {/* Long topics show their first 5 lines (about the opening paragraph), then "Read more". */}
+            <ClampedText lines={5} className="min-w-0 flex-1 text-body-sm" buttonClassName={TEXT_ACTION}>
+              <div className="flex flex-col gap-2.5 text-text">
+                <RichText doc={topic.body} headingLevel="h4" className="flex flex-col gap-2.5" />
+                {topic.note && <p className="text-xs text-muted-foreground italic">*{topic.note}</p>}
+              </div>
+            </ClampedText>
             {topic.photo && (
               <div className="relative aspect-4/3 w-full flex-none overflow-hidden rounded-md border border-line md:w-56">
                 <SiteImage image={topic.photo} sizes="(min-width: 768px) 224px, 100vw" className="object-cover" />

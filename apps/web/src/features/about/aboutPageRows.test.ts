@@ -59,6 +59,7 @@ const ROW: WebSitePageRow = {
       "broken",
     ],
   },
+  published_at: "2026-10-26T06:00:00Z",
   updated_at: "2026-10-26T08:00:00Z",
   cover_id: null,
   cover_width: null,

@@ -3,9 +3,14 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+/** Lines shown before "Read more" (written out so Tailwind sees each class). */
+const MAX_HEIGHTS = { 5: "max-h-[5lh]", 7: "max-h-[7lh]" } as const;
+
 type ClampedTextProps = {
   /** The text; it sets its own colour and spacing. */
   children: ReactNode;
+  /** Lines shown before "Read more"; 7 when left out. */
+  lines?: keyof typeof MAX_HEIGHTS;
   /** Classes for the wrapper; give it the text's size so a line (`lh`) is the text's line. */
   className: string;
   /** Classes for the "Read more" button. */
@@ -13,10 +18,10 @@ type ClampedTextProps = {
 };
 
 /**
- * Shows the first 7 lines of a text, and "Read more" / "Read less" only when it is longer. The whole text is in the
+ * Shows the first lines of a text (7 unless `lines` says otherwise), and "Read more" / "Read less" only when it is longer. The whole text is in the
  * HTML from the start (only cut off), so search engines read all of it.
  */
-export const ClampedText = ({ children, className, buttonClassName }: ClampedTextProps) => {
+export const ClampedText = ({ children, lines = 7, className, buttonClassName }: ClampedTextProps) => {
   const boxRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isLong, setIsLong] = useState(false);
@@ -45,7 +50,7 @@ export const ClampedText = ({ children, className, buttonClassName }: ClampedTex
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <div ref={boxRef} id={contentId} className={`${isCut ? "max-h-[7lh] overflow-hidden" : ""} ${fade}`}>
+      <div ref={boxRef} id={contentId} className={`${isCut ? `${MAX_HEIGHTS[lines]} overflow-hidden` : ""} ${fade}`}>
         <div ref={contentRef}>{children}</div>
       </div>
       {isLong && (

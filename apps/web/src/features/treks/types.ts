@@ -1,3 +1,4 @@
+import type { PageDates } from "@/features/seo/webPage";
 import type { SiteImageSource } from "@/lib/images";
 
 export type TrekDifficulty = "Easy" | "Moderate" | "Challenging" | "Strenuous";
@@ -36,7 +37,7 @@ export type TrekSummary = {
   isPopular: boolean;
   /** It has its own page (a day-by-day plan); cards for the others offer a WhatsApp inquiry. */
   hasPage: boolean;
-  /** When the trek was last saved (ISO), for the sitemap; demo treks have none. */
-  updatedAt?: string;
+  /** When it was first published and last saved, for its page and the sitemap; demo treks have none. */
+  dates?: PageDates;
   image?: SiteImageSource;
 };

@@ -14,10 +14,16 @@ import { GuideHelpCard } from "./sidebar/GuideHelpCard";
 import { WRAP } from "./styles";
 import { ArticleToc } from "./toc/ArticleToc";
 
+/** Columns of the article row: contents list (from 1280px), article, and the sidebar unless the guide turns it off. */
+const COLUMNS = {
+  withSidebar: "lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[220px_minmax(0,1fr)_300px]",
+  withoutSidebar: "xl:grid-cols-[220px_minmax(0,1fr)]",
+};
+
 /**
  * Guide article (design: Guide-article.dc.html): photo hero, key facts, then contents list / article /
  * sidebar, then related guides (`guides`: the published ones, to pick them from). Three columns from 1280px, article and sidebar from 1024px (contents
- * folded into the article), one column below.
+ * folded into the article), one column below. A general guide without the sidebar gives the article its width.
  */
 export const GuideArticlePage = ({ article, guides }: { article: GuideArticle; guides: readonly TravelGuide[] }) => {
   const toc = articleToc(article);
@@ -29,16 +35,18 @@ export const GuideArticlePage = ({ article, guides }: { article: GuideArticle; g
       <ArticleFacts facts={article.facts} />
 
       <div className="bg-surface">
-        <div className={`${WRAP} grid items-start gap-10 pt-9 pb-12 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[220px_minmax(0,1fr)_300px]`}>
+        <div className={`${WRAP} grid items-start gap-10 pt-9 pb-12 ${article.showSidebar ? COLUMNS.withSidebar : COLUMNS.withoutSidebar}`}>
           {/* Stretched to the row's height so the list inside can stay in view while the article scrolls. */}
           <div className="hidden self-stretch xl:block">
             <ArticleToc links={toc} readMinutes={article.readMinutes} />
           </div>
           <ArticleBody article={article} toc={toc} />
-          <aside aria-label="Plan your trek" className="flex flex-col gap-4 lg:sticky lg:top-5 print:hidden">
-            {article.trek && <PlanTrekCard trek={article.trek} guideTitle={article.title} />}
-            <GuideHelpCard box={article.helpBox} guideTitle={article.title} />
-          </aside>
+          {article.showSidebar && (
+            <aside aria-label="Plan your trek" className="flex flex-col gap-4 lg:sticky lg:top-5 print:hidden">
+              {article.trek && <PlanTrekCard trek={article.trek} guideTitle={article.title} />}
+              <GuideHelpCard box={article.helpBox} guideTitle={article.title} />
+            </aside>
+          )}
         </div>
       </div>
 

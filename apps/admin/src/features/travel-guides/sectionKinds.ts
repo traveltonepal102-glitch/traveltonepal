@@ -2,7 +2,6 @@ import type { IconName } from "@ttn/ui/icon";
 
 import type { Crowds, SectionType } from "./types";
 
-export const MAX_SECTIONS = 60;
 export const MAX_FAQ_ITEMS = 15;
 export const MAX_CHECK_ITEMS = 20;
 export const MAX_COST_ROWS = 15;

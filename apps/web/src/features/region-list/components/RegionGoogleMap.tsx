@@ -4,7 +4,7 @@ import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import type { GoogleMapsConfig } from "@/lib/googleMaps/config";
-import { loadGoogleMaps } from "@/lib/googleMaps/loader";
+import { loadGoogleMaps, onGoogleMapsAuthFailure } from "@/lib/googleMaps/loader";
 import type { AdvancedMarker, GoogleMap, LatLng } from "@/lib/googleMaps/loader";
 
 import type { RegionListItem } from "../regionListItems";
@@ -39,6 +39,10 @@ export const RegionGoogleMap = ({ config, regions, selectedIndex, onSelect, fall
 
   useEffect(() => {
     let isCancelled = false;
+    // Google's own error box would cover the map: show the drawn map instead.
+    const stopListening = onGoogleMapsAuthFailure(() => {
+      if (!isCancelled) setStatus("failed");
+    });
     loadGoogleMaps(config.apiKey)
       .then((maps) => {
         const container = containerRef.current;
@@ -62,7 +66,7 @@ export const RegionGoogleMap = ({ config, regions, selectedIndex, onSelect, fall
             content: createPinElement(region, isSelected),
             zIndex: isSelected ? 10 : 1,
           });
-          marker.addListener("click", () => select(index));
+          marker.addEventListener("gmp-click", () => select(index));
           bounds.extend(positionOf(region));
           return marker;
         });
@@ -76,6 +80,7 @@ export const RegionGoogleMap = ({ config, regions, selectedIndex, onSelect, fall
 
     return () => {
       isCancelled = true;
+      stopListening();
       for (const marker of markersRef.current) marker.map = null;
       markersRef.current = [];
       mapRef.current = null;

@@ -2,9 +2,11 @@ import type { MetadataRoute } from "next";
 
 import { ROUTES, guidePath, regionPath, trekPath } from "@/lib/routes";
 
+import type { PageDates } from "./webPage";
+
 /** What the sitemap lists, as the pages themselves decide it: only things that have their own page. */
 export type SitemapSource = {
-  treks: readonly { slug: string; hasPage: boolean; updatedAt?: string }[];
+  treks: readonly { slug: string; hasPage: boolean; dates?: PageDates }[];
   regions: readonly { slug: string; hasPage: boolean }[];
   /** Travel guides that have their own page. */
   guideSlugs: readonly string[];
@@ -22,7 +24,7 @@ type SitemapPage = { path: string; lastModified?: string };
 const sitemapPages = ({ treks, regions, guideSlugs }: SitemapSource): SitemapPage[] => {
   const pages: SitemapPage[] = [
     ...FIXED_PAGES.map((path) => ({ path })),
-    ...treks.flatMap((trek) => (trek.hasPage ? [{ path: trekPath(trek.slug), ...(trek.updatedAt ? { lastModified: trek.updatedAt } : {}) }] : [])),
+    ...treks.flatMap((trek) => (trek.hasPage ? [{ path: trekPath(trek.slug), ...(trek.dates?.modified ? { lastModified: trek.dates.modified } : {}) }] : [])),
     ...regions.flatMap((region) => (region.hasPage ? [{ path: regionPath(region.slug) }] : [])),
     ...guideSlugs.map((slug) => ({ path: guidePath(slug) })),
   ];

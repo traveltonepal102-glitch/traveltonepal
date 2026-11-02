@@ -15,10 +15,11 @@ import { WhyUsSection } from "@/features/home/components/WhyUsSection";
 import { homeGuides, homeTreks } from "@/features/home/homeContent";
 import { listRegions } from "@/features/regions/services/regionsRepository";
 import { PageSchemasJsonLd } from "@/features/seo/PageSchemasJsonLd";
+import { webPageJsonLd } from "@/features/seo/webPage";
 import { websiteJsonLd } from "@/features/seo/website";
 import { withSiteDefaults } from "@/features/seo/withSiteDefaults";
 import { SiteHeader } from "@/features/site-header/components/SiteHeader";
-import { sitePageMetadata } from "@/features/site-pages/seo";
+import { sitePageMetadata, sitePageName } from "@/features/site-pages/seo";
 import { getListPageTop } from "@/features/site-pages/services/sitePagesRepository";
 import { listTreks } from "@/features/treks/services/treksRepository";
 import { ROUTES } from "@/lib/routes";
@@ -45,7 +46,12 @@ const HomePage = async () => {
         <SiteHeader variant="overlay" />
       </div>
       <main className="flex-1 bg-surface">
-        <JsonLd data={{ "@context": "https://schema.org", ...websiteJsonLd() }} />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@graph": [websiteJsonLd(), webPageJsonLd({ path: ROUTES.home, name: sitePageName(top), dates: top.dates })],
+          }}
+        />
         <PageSchemasJsonLd kind="page" slug="home" />
         <HomeHero top={top} />
         <TrekFinder regions={regions} />

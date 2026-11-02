@@ -52,6 +52,9 @@ export type WebRegionRow = CoverColumns & {
   best_for: string[];
   /** True once the introduction is written: the region has its own page (web_region_pages). */
   has_page: boolean;
+  /** When the region was created, and its last save: the page's published and modified dates. */
+  published_at: string;
+  updated_at: string;
 };
 
 /**
@@ -128,6 +131,8 @@ export type WebTrekRow = CoverColumns & {
   price_from_usd: number | null;
   region_slug: string;
   region_name: string;
+  /** The first time it was published, and its last save: the page's published and modified dates. */
+  published_at: string;
   updated_at: string;
   /** True once it has a day-by-day plan: the trek has its own page (web_trek_pages). */
   has_page: boolean;
@@ -292,6 +297,8 @@ export type WebTravelGuidePageRow = CoverColumns & ShareColumns & {
   help_heading: string;
   help_text: string;
   help_message: string;
+  /** False: the guide leaves out the sidebar ("Plan this trek" and the help box) and the article is wider. */
+  show_sidebar: boolean;
   published_on: string;
   updated_on: string | null;
   topic: WebTravelGuideRow["topic"];
@@ -378,6 +385,8 @@ export type WebSitePageRow = CoverColumns & ShareColumns & {
   seo_description: string;
   seo_keyword: string;
   content: unknown;
+  /** When the page was seeded, and its last save: its published and modified dates. */
+  published_at: string;
   updated_at: string;
   /** About: the founder (an office author); the photo only with their consent. */
   founder_name: string | null;

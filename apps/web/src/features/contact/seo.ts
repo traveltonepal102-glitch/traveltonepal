@@ -2,7 +2,8 @@ import { richTextToPlainText } from "@ttn/ui/lib/richText";
 import type { Metadata } from "next";
 
 import { ORGANIZATION_ID } from "@/features/seo/organization";
-import { sitePageMetadata } from "@/features/site-pages/seo";
+import { datesJsonLd } from "@/features/seo/webPage";
+import { sitePageMetadata, sitePageName } from "@/features/site-pages/seo";
 import type { JsonLdData } from "@/lib/jsonLd";
 import { ROUTES } from "@/lib/routes";
 import { absoluteUrl } from "@/lib/site";
@@ -11,14 +12,15 @@ import type { ContactPageContent } from "./types";
 
 export const contactMetadata = (page: ContactPageContent): Metadata => sitePageMetadata(page.top, ROUTES.contact);
 
-/** ContactPage about the company (its contact points are on every page, by its id), the breadcrumb and the FAQ. */
+/** ContactPage (with its dates) about the company (its contact points are on every page, by its id), the breadcrumb and the FAQ. */
 export const contactJsonLd = ({ top, faqs }: ContactPageContent): JsonLdData => ({
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "ContactPage",
       url: absoluteUrl(ROUTES.contact),
-      name: top.seo.title || top.heading,
+      name: sitePageName(top),
+      ...datesJsonLd(top.dates),
       mainEntity: { "@id": ORGANIZATION_ID },
     },
     {

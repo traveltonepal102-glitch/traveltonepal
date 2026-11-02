@@ -50,13 +50,13 @@ describe("shareMetadata", () => {
     });
   });
 
-  it("marks a travel guide as an article with its dates, the update only when there is one", () => {
-    expect(shareMetadata({ ...page, images: [], article: { publishedTime: "2026-03-01", modifiedTime: "2026-09-12" } }).openGraph).toMatchObject({
+  it("marks a page with dates as an article with them, the update only when there is one", () => {
+    expect(shareMetadata({ ...page, images: [], dates: { published: "2026-03-01", modified: "2026-09-12" } }).openGraph).toMatchObject({
       type: "article",
       publishedTime: "2026-03-01",
       modifiedTime: "2026-09-12",
     });
-    expect(shareMetadata({ ...page, images: [], article: { publishedTime: "2026-03-01" } }).openGraph).not.toHaveProperty("modifiedTime");
+    expect(shareMetadata({ ...page, images: [], dates: { published: "2026-03-01" } }).openGraph).not.toHaveProperty("modifiedTime");
   });
 });
 

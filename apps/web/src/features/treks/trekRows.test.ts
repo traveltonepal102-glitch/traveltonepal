@@ -27,6 +27,7 @@ const row = (slug: string, overrides: Partial<WebTrekRow> = {}): WebTrekRow => (
   region_slug: "langtang",
   region_name: "Langtang",
   route_regions: [{ slug: "langtang", name: "Langtang" }],
+  published_at: "2026-10-20T08:00:00.123456+00:00",
   updated_at: "2026-10-24T00:00:00Z",
   ...NO_COVER,
   ...overrides,
@@ -55,7 +56,7 @@ describe("toTrekSummaries", () => {
       badge: "Best value",
       isPopular: true,
       hasPage: true,
-      updatedAt: "2026-10-24T00:00:00Z",
+      dates: { published: "2026-10-20T08:00:00Z", modified: "2026-10-24T00:00:00Z" },
       image: { src: `${BASE}/p1`, alt: "Kyanjin, Langtang Valley Trek", variantWidths: [400], placeholder: undefined },
     });
   });

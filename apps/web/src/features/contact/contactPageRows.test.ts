@@ -34,6 +34,7 @@ const ROW: WebSitePageRow = {
     faqHeading: "Before you write",
     timeZones: ["Europe/London", "Mars/Olympus", "Europe/London", "Europe/Berlin"],
   },
+  published_at: "2026-10-26T06:00:00Z",
   updated_at: "2026-10-26T08:00:00Z",
   cover_id: null,
   cover_width: null,

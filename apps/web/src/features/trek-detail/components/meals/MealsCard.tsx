@@ -75,10 +75,11 @@ export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
     )}
 
     <div className="mt-1 flex flex-col gap-3.5 rounded-xl border border-line bg-page p-4.5 md:p-5">
-      <h4 className="inline-flex items-center gap-2 border-b border-line pb-2 text-[15px] font-extrabold tracking-wide uppercase">
+      {/* An h2 (SEO): the tips are about the whole trail, not only meals, so they get their own outline entry. */}
+      <h2 className="inline-flex items-center gap-2 border-b border-line pb-2 text-[15px] font-extrabold tracking-wide uppercase">
         <Icon name="lightbulb" className="text-brand" />
         Pro tips and important notes
-      </h4>
+      </h2>
       {/* Pro tips first, the important notes below them (one column at every width). */}
       <div className="grid gap-4">
         <MealTipList title="Trail pro tips" icon="check_circle" tone="green" points={meals.trailTips} />

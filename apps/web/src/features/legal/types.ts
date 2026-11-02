@@ -1,5 +1,7 @@
 import type { LegalBlock } from "@ttn/ui/lib/legalText";
 
+import type { PageDates } from "@/features/seo/webPage";
+
 export type LegalSlug = "terms" | "privacy" | "impressum" | "cookies";
 
 export type LegalSection = {
@@ -16,6 +18,8 @@ export type LegalDoc = {
   intro: string;
   /** e.g. "26 October 2026"; "" until a date is set. */
   updated: string;
+  /** Published when seeded; modified on the "Last updated" day (else the last save). */
+  dates?: PageDates;
   /** For the owner, shown only in `pnpm dev` while the text is not checked by a lawyer. */
   ownerNote?: string;
   /** Text before the first numbered section. */

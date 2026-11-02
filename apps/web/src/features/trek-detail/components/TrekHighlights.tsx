@@ -17,7 +17,8 @@ export const TrekHighlights = ({ heading, highlights }: TrekHighlightsProps) => 
         <li key={highlight.title} className="flex items-start gap-3">
           <span aria-hidden="true" className="mt-2 size-2 flex-none rounded-full bg-brand" />
           <div className="flex flex-col gap-0.5">
-            <h3 className="text-[15px] leading-snug font-bold">{highlight.title}</h3>
+            {/* A list item, not a heading (SEO): the section's h2 is the only heading here. */}
+            <p className="font-display text-[15px] leading-snug font-bold text-ink">{highlight.title}</p>
             <p className="text-body-sm font-normal text-text">{highlight.text}</p>
           </div>
         </li>

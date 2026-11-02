@@ -8,7 +8,7 @@ describe("sitemapEntries", () => {
   const entries = sitemapEntries(
     {
       treks: [
-        { slug: "langtang-valley", hasPage: true, updatedAt: "2026-10-24T09:05:11Z" },
+        { slug: "langtang-valley", hasPage: true, dates: { published: "2026-10-20T08:00:00Z", modified: "2026-10-24T09:05:11Z" } },
         { slug: "no-page-yet", hasPage: false },
       ],
       regions: [

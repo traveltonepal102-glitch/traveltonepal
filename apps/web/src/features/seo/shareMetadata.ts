@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import type { SiteImageSource } from "@/lib/images";
 import { SITE_NAME } from "@/lib/site";
 
+import type { PageDates } from "./webPage";
+
 /** A page's Google result and its shared links' photo (chosen in the admin's Google card), as the rows give them. */
 export type PageSeo = { title: string; description: string; shareImage?: SiteImageSource };
 
@@ -25,16 +27,16 @@ type ShareInput = {
   description: string;
   /** In order of preference (the chosen share photo, then the page's main photo); none: Site settings' share image. */
   images: readonly (SiteImageSource | undefined)[];
-  /** A travel guide: dates (YYYY-MM-DD) and type "article". */
-  article?: { publishedTime: string; modifiedTime?: string };
+  /** When it was published and last changed: sent as article:published_time / modified_time (type "article"). */
+  dates?: PageDates;
 };
 
 /** Open Graph and X (Twitter) tags of a page: what WhatsApp, Facebook, LinkedIn and X show for a shared link. */
-export const shareMetadata = ({ path, title, description, images, article }: ShareInput): Pick<Metadata, "openGraph" | "twitter"> => {
+export const shareMetadata = ({ path, title, description, images, dates }: ShareInput): Pick<Metadata, "openGraph" | "twitter"> => {
   const image = images.find((candidate) => candidate !== undefined);
   return {
     openGraph: {
-      ...(article ? { type: "article", publishedTime: article.publishedTime, ...(article.modifiedTime ? { modifiedTime: article.modifiedTime } : {}) } : { type: "website" }),
+      ...(dates ? { type: "article", publishedTime: dates.published, ...(dates.modified ? { modifiedTime: dates.modified } : {}) } : { type: "website" }),
       siteName: SITE_NAME,
       locale: SHARE_LOCALE,
       url: path,

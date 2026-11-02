@@ -59,6 +59,7 @@ export const TrekRouteMap = ({ heading, name, routeMap, routeSketch, itinerary }
           embedUrl={links.embedUrl}
           title={`Google map of the ${name}`}
           preview={routeSketch && <RouteMapPreview sketch={routeSketch} />}
+          hidesTitleBar={links.hasTrailLine}
         />
 
         {stops.length > 0 && <RouteStopList stops={stops} />}

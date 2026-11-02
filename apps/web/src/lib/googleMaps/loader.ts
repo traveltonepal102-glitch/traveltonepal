@@ -18,7 +18,7 @@ export type AdvancedMarker = {
   content: HTMLElement;
   zIndex: number | null;
   map: GoogleMap | null;
-  addListener: (event: "click", handler: () => void) => void;
+  addEventListener: (event: "gmp-click", handler: () => void) => void;
 };
 
 export type MapOptions = {
@@ -50,11 +50,25 @@ type GoogleMapsWindow = Window & {
   google?: { maps?: GoogleMapsApi };
   /** Called by the script once loaded (the URL's callback parameter). */
   __ttnGoogleMapsReady?: () => void;
-  /** Called by Google when the key is invalid or not allowed on this domain. */
+  /** Called by Google when it refuses the key (invalid, not allowed on this domain, billing off). */
   gm_authFailure?: () => void;
 };
 
 let loading: Promise<GoogleMapsApi> | null = null;
+
+/** Google refuses a key only after the script has loaded (often after the map is drawn), so maps listen for it. */
+const authFailureListeners = new Set<() => void>();
+let hasAuthFailed = false;
+
+/** Calls `listener` once Google refuses the key (right away if it already has); returns a function that stops listening. */
+export const onGoogleMapsAuthFailure = (listener: () => void): (() => void) => {
+  if (hasAuthFailed) {
+    listener();
+    return () => {};
+  }
+  authFailureListeners.add(listener);
+  return () => authFailureListeners.delete(listener);
+};
 
 /** The Maps API with the marker library; the script is added on the first call only. */
 export const loadGoogleMaps = (apiKey: string): Promise<GoogleMapsApi> => {
@@ -67,7 +81,11 @@ export const loadGoogleMaps = (apiKey: string): Promise<GoogleMapsApi> => {
       if (maps) resolve(maps);
       else reject(new Error("Google Maps loaded without its API"));
     };
-    scope.gm_authFailure = () => reject(new Error("Google Maps rejected the API key"));
+    scope.gm_authFailure = () => {
+      hasAuthFailed = true;
+      reject(new Error("Google Maps rejected the API key"));
+      for (const listener of authFailureListeners) listener();
+    };
 
     const script = document.createElement("script");
     const params = new URLSearchParams({

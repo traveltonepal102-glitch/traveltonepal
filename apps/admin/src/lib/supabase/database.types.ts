@@ -88,6 +88,8 @@ type TrekRow = {
   optional_high_point_m: number | null;
   /** pdf-maps/<uuid>.pdf in the trek-files bucket. */
   pdf_map_path: string | null;
+  /** The first time it was published (set by a trigger); null until then. The website's "published" date. */
+  published_at: string | null;
   created_at: string;
   updated_at: string;
   updated_by: string | null;
@@ -362,6 +364,8 @@ export type SitePageRow = {
   photo_id: string | null;
   founder_author_id: string | null;
   content: Json;
+  /** When the page was seeded: the website's "published" date. */
+  created_at: string;
   updated_at: string;
   updated_by: string | null;
 };
@@ -413,6 +417,8 @@ type ArticleRow = {
   cover_photo_id: string | null;
   /** Jan–Dec, shared by the guide's "Month by month" sections; null until set. */
   month_ratings: MonthRating[] | null;
+  /** False: the website leaves out the sidebar beside the guide ("Plan this trek" and the help box). */
+  show_sidebar: boolean;
   created_at: string;
   updated_at: string;
   updated_by: string | null;

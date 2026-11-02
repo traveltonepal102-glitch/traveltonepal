@@ -1,3 +1,4 @@
+import { toPageDates } from "@/features/seo/webPage";
 import { coverImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebTrekRow } from "@/lib/supabase/database.types";
@@ -44,7 +45,7 @@ export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: stri
           badge: firstText(row.card_badge),
           isPopular: row.is_popular,
           hasPage: row.has_page,
-          updatedAt: row.updated_at,
+          dates: toPageDates(row.published_at, row.updated_at),
           image: coverImage(row, photosBaseUrl, name),
         },
       ];

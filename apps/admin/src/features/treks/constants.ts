@@ -126,7 +126,6 @@ export const KNOW_ICON_VALUES = [
 
 export const MAX_DAYS = 60;
 export const MAX_INCLUDED_ITEMS = 20;
-export const MAX_MEAL_TIPS = 10;
 export const MAX_GROUP_PRICES = 10;
 export const PRICE_LIMITS = {
   label: 40,

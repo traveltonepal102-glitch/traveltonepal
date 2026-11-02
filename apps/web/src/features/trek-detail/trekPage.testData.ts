@@ -27,6 +27,7 @@ export const LANGTANG_SUMMARY: TrekSummary = {
   badge: "Best value",
   isPopular: true,
   hasPage: true,
+  dates: { published: "2026-10-20T08:00:00Z", modified: "2026-10-31T12:30:00Z" },
   image: { src: `${PHOTOS_BASE}/cover`, alt: "Langtang Valley Trek", variantWidths: [400, 800] },
 };
 

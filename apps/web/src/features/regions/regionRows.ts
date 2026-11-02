@@ -1,3 +1,4 @@
+import { type PageDates, toPageDates } from "@/features/seo/webPage";
 import { coverImage } from "@/lib/images";
 import { firstText } from "@/lib/rowText";
 import type { WebRegionRow } from "@/lib/supabase/database.types";
@@ -48,6 +49,8 @@ export type RegionCard = RegionSummary &
   RegionOverview & {
     /** Up to three phrases, e.g. "Close to Kathmandu"; the card shows the first, the table all. */
     bestForTags: readonly string[];
+    /** When it was created and last saved: its page's published and modified dates. */
+    dates?: PageDates;
   };
 
 /**
@@ -76,6 +79,7 @@ export const toRegionCards = (rows: readonly WebRegionRow[], photosBaseUrl: stri
           bestForTags,
           summary: row.summary.trim(),
           months: row.month_ratings,
+          dates: toPageDates(row.published_at, row.updated_at),
         },
       ];
     })

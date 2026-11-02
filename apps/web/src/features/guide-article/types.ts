@@ -105,4 +105,6 @@ export type GuideArticle = {
   seo: PageSeo;
   /** The navy box beside the guide (a local expert on WhatsApp or by email), worded for this guide or the default. */
   helpBox: GuideHelpBox;
+  /** False for a general guide: no sidebar ("Plan this trek" and the help box), and the article takes its width. */
+  showSidebar: boolean;
 };

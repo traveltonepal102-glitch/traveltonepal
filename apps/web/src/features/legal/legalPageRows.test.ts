@@ -38,6 +38,7 @@ const row = (content: unknown): WebSitePageRow => ({
   share_variant_widths: null,
   share_place: null,
   content,
+  published_at: "2026-10-26T06:00:00Z",
   updated_at: "2026-10-26T08:00:00Z",
   cover_id: null,
   cover_width: null,
@@ -56,6 +57,14 @@ const row = (content: unknown): WebSitePageRow => ({
 describe("toLegalDoc", () => {
   const doc = toLegalDoc("impressum", row({ body, lawyerChecked: false, lastUpdated: "2026-10-26" }), SITE_SETTINGS);
   const sectionText = (index: number) => legalTextToPlainText({ type: "doc", content: doc.sections[index]?.blocks ?? [] });
+
+  it("is published when seeded and modified on its \"Last updated\" day, else on its last save", () => {
+    expect(doc.dates).toEqual({ published: "2026-10-26T06:00:00Z", modified: "2026-10-26T06:00:00Z" });
+    const changed = toLegalDoc("impressum", row({ body, lawyerChecked: false, lastUpdated: "2026-11-02" }), SITE_SETTINGS);
+    expect(changed.dates).toEqual({ published: "2026-10-26T06:00:00Z", modified: "2026-11-02" });
+    const undated = toLegalDoc("impressum", row({ body, lawyerChecked: false, lastUpdated: "" }), SITE_SETTINGS);
+    expect(undated.dates).toEqual({ published: "2026-10-26T06:00:00Z", modified: "2026-10-26T08:00:00Z" });
+  });
 
   it("splits the text at its section headings, with unique anchors", () => {
     expect(doc.title).toBe("Impressum");

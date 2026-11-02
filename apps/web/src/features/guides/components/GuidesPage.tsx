@@ -34,7 +34,7 @@ export const GuidesPage = ({ top, guides, allRegions }: GuidesPageProps) => {
 
   return (
     <>
-      <JsonLd data={guidesJsonLd(guides)} />
+      <JsonLd data={guidesJsonLd(guides, top)} />
       <GuidesHero top={top} />
       {highlights && <GuideHighlightsSection {...highlights} />}
       <GuideTopicsSection guides={guides} />
@@ -57,7 +57,7 @@ export const GuidesPage = ({ top, guides, allRegions }: GuidesPageProps) => {
 
       {/* The band renders nothing until an email provider is connected; empty:hidden drops the spacing too. */}
       <div className={`${WRAP} pb-12 empty:hidden md:pb-16`}>
-        <NewsletterBand badge="Free Nepal packing checklist" />
+        <NewsletterBand />
       </div>
     </>
   );

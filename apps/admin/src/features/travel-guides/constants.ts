@@ -115,6 +115,7 @@ export const EMPTY_ARTICLE_VALUES: ArticleValues = {
   seoDescription: "",
   canonicalPath: "",
   hideFromGoogle: false,
+  showSidebar: true,
   helpHeading: "",
   helpText: "",
   helpMessage: "",

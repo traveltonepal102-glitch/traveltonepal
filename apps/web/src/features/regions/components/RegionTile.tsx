@@ -50,9 +50,10 @@ export const RegionTile = ({ region, index, isFeatured = false }: RegionTileProp
       <Icon name="altitude" size={14} />
       Up to {formatAltitude(region.maxAltitudeM)}
     </span>
-    <span className={`relative mt-auto font-display tracking-tight ${isFeatured ? "text-h1" : "text-h2-sm"}`}>
+    {/* Under the section's h2; white, as headings are ink by default (globals.css). */}
+    <h3 className={`relative mt-auto font-display tracking-tight text-white ${isFeatured ? "text-h1" : "text-h2-sm"}`}>
       {region.name}
-    </span>
+    </h3>
 
     {isFeatured && region.tagline && (
       <>

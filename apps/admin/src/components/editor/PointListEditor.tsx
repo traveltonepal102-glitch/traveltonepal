@@ -20,7 +20,8 @@ type PointListEditorProps = {
   /** One row's name, e.g. "Highlight" → "Highlight 1". */
   itemLabel: string;
   points: Point[];
-  maxItems: number;
+  /** Leave out for a list without a limit. */
+  maxItems?: number;
   limits: { title: number; text: number };
   placeholders: Point;
   errors: FieldErrors;
@@ -49,7 +50,7 @@ const RowActions = ({ label, isFirst, isLast, onUp, onDown, onRemove, className 
 );
 
 /** An ordered list of "bold title + one line" points: add, reorder and remove rows. */
-export const PointListEditor = ({ prefix, field, itemLabel, points, maxItems, limits, placeholders, errors, onEdit, layout = "stacked" }: PointListEditorProps) => {
+export const PointListEditor = ({ prefix, field, itemLabel, points, maxItems = Infinity, limits, placeholders, errors, onEdit, layout = "stacked" }: PointListEditorProps) => {
   const [rows, setRows] = useState<PointRow[]>(() => points.map((point, index) => ({ ...point, id: `saved-${index}` })));
   const isRows = layout === "rows";
 

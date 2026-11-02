@@ -1,6 +1,6 @@
 import { ClampedText } from "@/components/shared/ClampedText";
+import { ExpandablePhoto } from "@/components/shared/photo-viewer/ExpandablePhoto";
 import { RichText } from "@/components/shared/RichText";
-import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitude } from "@/features/treks/format";
 
 import { topPlaceOf } from "../../elevation";
@@ -62,9 +62,12 @@ export const ItineraryDayCard = ({ day, dayNumber }: ItineraryDayCardProps) => {
 
       <div className={`flex flex-wrap gap-4 border-t px-5 pt-4 pb-5 ${look.divider}`}>
         {day.photo && (
-          <div className="relative h-42.5 w-full flex-none overflow-hidden rounded-md border border-line sm:h-28 sm:w-40">
-            <SiteImage image={day.photo} sizes="(min-width: 640px) 160px, 100vw" className="object-cover" />
-          </div>
+          <ExpandablePhoto
+            photo={day.photo}
+            title={`Day ${dayNumber}: ${day.title}`}
+            sizes="(min-width: 640px) 160px, 100vw"
+            className="h-42.5 w-full flex-none rounded-md border border-line sm:h-28 sm:w-40"
+          />
         )}
         {/* Photos added in the text stay where they were put, as wide as the text column. Long days show 7 lines. */}
         <ClampedText className="min-w-0 flex-[1_1_260px] text-body-sm" buttonClassName={TEXT_ACTION}>

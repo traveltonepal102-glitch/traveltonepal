@@ -6,9 +6,9 @@ import { TREK_LIMITS as LIMIT } from "../constants";
 
 /**
  * A list of titled points (highlights, "Is this trek for you?"…). A point needs both parts; a fully empty row
- * is ignored. Errors keep the row number shown in the editor.
+ * is ignored. Errors keep the row number shown in the editor. Without `maxItems` the list has no limit.
  */
-export const pointsSchema = (maxItems: number) =>
+export const pointsSchema = (maxItems = Infinity) =>
   z
     .array(
       z.object({ title: text(LIMIT.pointTitle), text: text(LIMIT.pointText) }).superRefine((point, context) => {

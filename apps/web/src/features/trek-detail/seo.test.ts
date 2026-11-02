@@ -27,6 +27,19 @@ describe("trek page SEO", () => {
     });
   });
 
+  it("sends when the page was published and last changed, in its tags and its WebPage", () => {
+    expect(trekMetadata(trek).openGraph).toMatchObject({
+      type: "article",
+      publishedTime: "2026-10-20T08:00:00Z",
+      modifiedTime: "2026-10-31T12:30:00Z",
+    });
+    expect(byType("WebPage")).toMatchObject({
+      url: expect.stringMatching(/\/treks\/langtang-valley$/),
+      datePublished: "2026-10-20T08:00:00Z",
+      dateModified: "2026-10-31T12:30:00Z",
+    });
+  });
+
   it("lists the breadcrumb trail with full URLs, ending at the trek page", () => {
     const items = byType("BreadcrumbList")?.itemListElement as { position: number; name: string; item: string }[];
     expect(items.map((item) => item.name)).toEqual(["Home", "Nepal treks", "Langtang region", "Langtang Valley Trek"]);

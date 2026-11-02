@@ -19,10 +19,11 @@ const TONES = {
 /** A titled list of short tips, each with a bold lead-in. */
 export const MealTipList = ({ title, icon, tone, points }: MealTipListProps) => (
   <div className="flex flex-col gap-2.5 rounded-md border border-line bg-surface p-4 text-body-sm text-text shadow-card">
-    <p className={`inline-flex items-center gap-1.5 font-bold ${TONES[tone].title}`}>
+    {/* An h3 under "Pro tips and important notes", in the body font like the list. */}
+    <h3 className={`inline-flex items-center gap-1.5 font-sans font-bold ${TONES[tone].title}`}>
       <Icon name={icon} size={16} />
       {title}
-    </p>
+    </h3>
     <ul className="flex flex-col gap-2.5">
       {points.map((point) => (
         <li key={point.title} className="flex items-start gap-2">

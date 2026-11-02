@@ -72,5 +72,7 @@ export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: 
       // Kept as typed (a final space lets the visitor carry on writing).
       message: page.help_message.trim() ? page.help_message : DEFAULT_HELP_BOX.message,
     },
+    // Only an explicit "off" hides it: rows read before the setting existed keep their sidebar.
+    showSidebar: page.show_sidebar !== false,
   };
 };
