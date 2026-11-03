@@ -1,8 +1,8 @@
 import { createSectionErrorLookup } from "@/components/editor/sectionErrors";
 import type { EditorSection } from "@/components/editor/types";
 
-import { LEGAL_PAGES, LIST_PAGES } from "./constants";
-import type { LegalPageSlug, ListPageSlug } from "./constants";
+import { LEGAL_PAGES } from "./constants";
+import type { LegalPageSlug, ListPage, ListPageSlug } from "./constants";
 
 export type AboutSectionKey = "top" | "listen" | "honest" | "flexible" | "openMind" | "safety" | "story" | "team" | "licences" | "promises" | "seo";
 export type ContactSectionKey = "top" | "ways" | "steps" | "office" | "faq" | "seo";
@@ -33,18 +33,17 @@ export const CONTACT_SECTIONS: EditorSection<ContactSectionKey>[] = [
 ];
 
 /** The list editor's sections: one per list page (design: Admin-pages, "List pages"). */
-export const LIST_SECTIONS: EditorSection<ListPageSlug>[] = LIST_PAGES.map((page) => ({
-  key: page.slug,
-  label: page.label,
-  icon: page.icon,
-  description: "Only the text at the top and the Google result. The list itself fills from your content.",
-}));
+export const listSectionsFor = (pages: readonly ListPage[]): EditorSection<ListPageSlug>[] =>
+  pages.map((page) => ({
+    key: page.slug,
+    label: page.label,
+    icon: page.icon,
+    description: "Only the text at the top and the Google result. The list itself fills from your content.",
+  }));
 
 /** A list page's fields start with its slug ("treks.heading"), so its errors belong to its section. */
-export const listSectionErrors = createSectionErrorLookup<ListPageSlug>(
-  LIST_SECTIONS,
-  Object.fromEntries(LIST_PAGES.map((page) => [page.slug, page.slug])),
-);
+export const listSectionErrorsFor = (pages: readonly ListPage[]) =>
+  createSectionErrorLookup<ListPageSlug>(listSectionsFor(pages), Object.fromEntries(pages.map((page) => [page.slug, page.slug])));
 
 /** The legal editor's sections: one per legal page (design: Admin-pages, "Legal pages"). */
 export const LEGAL_SECTIONS: EditorSection<LegalPageSlug>[] = LEGAL_PAGES.map((page) => ({

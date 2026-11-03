@@ -27,20 +27,20 @@ const toPageTop = (row: PageRow): PageTopValues => ({
   hideFromGoogle: row.hide_from_google,
 });
 
-/** When each page was last saved, for the Pages list. Throws when the database can't be read. */
-export const listPageUpdates = async (): Promise<Partial<Record<SitePageSlug, string>>> => {
+/** When each of the site's pages was last saved, for the Pages list. Throws when the database can't be read. */
+export const listPageUpdates = async (siteId: string): Promise<Partial<Record<SitePageSlug, string>>> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("site_pages").select("slug, updated_at");
+  const { data, error } = await supabase.from("site_pages").select("slug, updated_at").eq("site_id", siteId);
   if (error) throw new Error(`Could not load the pages: ${error.message}`);
   return Object.fromEntries(data.map((row) => [row.slug, row.updated_at]));
 };
 
-/** One page with its photos (by place), or null when it has no row. Throws when the database can't be read. */
-export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> => {
+/** One of the site's pages with its photos (by place), or null when it has no row. Throws when the database can't be read. */
+export const getSitePage = async (siteId: string, slug: SitePageSlug): Promise<SitePage | null> => {
   const supabase = await createSupabaseServerClient();
   const [page, photos] = await Promise.all([
-    supabase.from("site_pages").select(`*, photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS}), ${SHARE_COLUMNS}`).eq("slug", slug).maybeSingle(),
-    supabase.from("site_page_photos").select(`position, photo:photos!site_page_photos_photo_id_fkey(${PHOTO_COLUMNS})`).eq("page_slug", slug).order("position"),
+    supabase.from("site_pages").select(`*, photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS}), ${SHARE_COLUMNS}`).eq("site_id", siteId).eq("slug", slug).maybeSingle(),
+    supabase.from("site_page_photos").select(`position, photo:photos!site_page_photos_photo_id_fkey(${PHOTO_COLUMNS})`).eq("site_id", siteId).eq("page_slug", slug).order("position"),
   ]);
   if (page.error) throw new Error(`Could not load the ${slug} page: ${page.error.message}`);
   if (photos.error) throw new Error(`Could not load the ${slug} page's photos: ${photos.error.message}`);
@@ -62,10 +62,10 @@ export const getSitePage = async (slug: SitePageSlug): Promise<SitePage | null> 
   };
 };
 
-/** Several pages without their photos (the list pages have none) but with their share photo, in any order. Throws when the database can't be read. */
-export const getSitePages = async (slugs: readonly SitePageSlug[]): Promise<SitePage[]> => {
+/** Several of the site's pages without their photos (the list pages have none) but with their share photo, in any order. Throws when the database can't be read. */
+export const getSitePages = async (siteId: string, slugs: readonly SitePageSlug[]): Promise<SitePage[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("site_pages").select(`*, ${SHARE_COLUMNS}`).in("slug", [...slugs]);
+  const { data, error } = await supabase.from("site_pages").select(`*, ${SHARE_COLUMNS}`).eq("site_id", siteId).in("slug", [...slugs]);
   if (error) throw new Error(`Could not load the pages: ${error.message}`);
   return data.map((row) => ({
     slug: row.slug,
@@ -113,28 +113,29 @@ const toSaveResult = (functionName: string, error: { code: string; message: stri
   return { ok: false, reason: "failed" };
 };
 
-/** Saves a page in one transaction (save_site_page): its top, Google result, own parts and photos. */
-export const saveSitePage = async (slug: SitePageSlug, page: SavePageInput): Promise<SavePageResult> => {
+/** Saves one of the site's pages in one transaction (save_site_page): its top, Google result, own parts and photos. */
+export const saveSitePage = async (siteId: string, slug: SitePageSlug, page: SavePageInput): Promise<SavePageResult> => {
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.rpc("save_site_page", { p_slug: slug, p_page: toPagePayload(page), p_photo_ids: (page.photoIds ?? []).map((id) => id ?? "") });
+  const { error } = await supabase.rpc("save_site_page", { p_site_id: siteId, p_slug: slug, p_page: toPagePayload(page), p_photo_ids: (page.photoIds ?? []).map((id) => id ?? "") });
   return toSaveResult("save_site_page", error);
 };
 
-/** Saves several pages together, in one transaction (save_site_pages), e.g. the four list or legal pages. */
-const saveSitePages = async (pages: Partial<Record<SitePageSlug, SavePageInput>>): Promise<SavePageResult> => {
+/** Saves several of the site's pages together, in one transaction (save_site_pages), e.g. the four list or legal pages. */
+const saveSitePages = async (siteId: string, pages: Partial<Record<SitePageSlug, SavePageInput>>): Promise<SavePageResult> => {
   const supabase = await createSupabaseServerClient();
   const payload = Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, toPagePayload(page)]));
-  const { error } = await supabase.rpc("save_site_pages", { p_pages: payload });
+  const { error } = await supabase.rpc("save_site_pages", { p_site_id: siteId, p_pages: payload });
   return toSaveResult("save_site_pages", error);
 };
 
 /** The four list pages: their tops and Google results (no photo, no own parts). */
-export const saveListPages = (pages: ListPagesValues): Promise<SavePageResult> =>
-  saveSitePages(Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, { ...page, photoId: null, content: {} }])));
+export const saveListPages = (siteId: string, pages: ListPagesValues): Promise<SavePageResult> =>
+  saveSitePages(siteId, Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, { ...page, photoId: null, content: {} }])));
 
 /** The four legal pages: title, intro and their text, lawyer check and date (no photos, no Google result: title and intro). */
-export const saveLegalPages = (pages: LegalPagesValues): Promise<SavePageResult> =>
+export const saveLegalPages = (siteId: string, pages: LegalPagesValues): Promise<SavePageResult> =>
   saveSitePages(
+    siteId,
     Object.fromEntries(
       Object.entries(pages).map(([slug, page]) => [
         slug,

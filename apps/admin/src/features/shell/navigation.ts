@@ -1,5 +1,7 @@
 import type { IconName } from "@ttn/ui/icon";
 
+import type { SiteKind } from "@/lib/supabase/database.types";
+
 export type AdminSection = {
   label: string;
   href: string;
@@ -52,6 +54,12 @@ export const ADMIN_SECTIONS = {
     icon: "photo_library",
     summary: "Every photo and YouTube video, in folders by where it is used. Upload photos, add video links, find and delete them.",
   },
+  sites: {
+    label: "Sites",
+    href: "/sites",
+    icon: "public",
+    summary: "Every website: the main site and the region sites, each with its own address. Super admins add region sites.",
+  },
   settings: {
     label: "Site settings",
     href: "/settings",
@@ -81,8 +89,31 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },
   { title: "Growth", items: [ADMIN_SECTIONS.searchPerformance, ADMIN_SECTIONS.structuredData] },
+  { title: "All websites", items: [ADMIN_SECTIONS.sites] },
 ];
 
 /** The current screen's menu item: an exact match for the dashboard, otherwise the section and its sub-pages. */
 export const isActivePath = (pathname: string, href: string) =>
   href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+
+/**
+ * A region site's menu (decided 2026-11-02): only what belongs to that website, plus Sites. Site settings sit at the
+ * bottom of the sidebar for every site. Regions, adventures, people and growth belong to the main site.
+ */
+export const REGION_NAV_GROUPS: NavGroup[] = [
+  {
+    title: "This website",
+    items: [ADMIN_SECTIONS.pages, ADMIN_SECTIONS.treks, ADMIN_SECTIONS.travelGuides, ADMIN_SECTIONS.photos, ADMIN_SECTIONS.reviews],
+  },
+  { title: "All websites", items: [ADMIN_SECTIONS.sites] },
+];
+
+/** The menu for the site "Working on" shows: everything for the main site, the region menu for a region site. */
+export const navGroupsFor = (siteKind: SiteKind): NavGroup[] => (siteKind === "main" ? NAV_GROUPS : REGION_NAV_GROUPS);
+
+/** Where a region site's admin opens when the screen you were on isn't in its menu. */
+export const REGION_SITE_START = ADMIN_SECTIONS.treks.href;
+
+/** Whether this screen is in the site's menu (or is Site settings, at the bottom of every sidebar). */
+export const isInSiteMenu = (pathname: string, siteKind: SiteKind) =>
+  [...navGroupsFor(siteKind).flatMap((group) => group.items), ADMIN_SECTIONS.settings].some((section) => isActivePath(pathname, section.href));

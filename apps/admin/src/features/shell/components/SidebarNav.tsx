@@ -1,18 +1,21 @@
-import { NAV_GROUPS, isActivePath } from "../navigation";
+import type { NavGroup } from "../navigation";
+import { isActivePath } from "../navigation";
 import { SidebarNavLink } from "./SidebarNavLink";
 
 type SidebarNavProps = {
+  /** The menu of the site "Working on" shows (navGroupsFor). */
+  groups: NavGroup[];
   pathname: string;
   onNavigate: () => void;
 };
 
-/** The grouped menu (Content, People, Growth). Scrolls on its own when the window is short. */
-export const SidebarNav = ({ pathname, onNavigate }: SidebarNavProps) => (
+/** The grouped menu (Content, People, Growth; a region site has its own). Scrolls on its own when the window is short. */
+export const SidebarNav = ({ groups, pathname, onNavigate }: SidebarNavProps) => (
   <nav
     aria-label="Main"
     className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-3.5 pt-1 pb-4 rail:gap-2.5 rail:px-3"
   >
-    {NAV_GROUPS.map((group, index) => {
+    {groups.map((group, index) => {
       const titleId = group.title ? `nav-group-${index}` : undefined;
       return (
         <div
