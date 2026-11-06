@@ -8,6 +8,7 @@ import type { MonthRating } from "@ttn/ui/lib/bestMonths";
 import { isRichTextEmpty, toRichTextDoc } from "@ttn/ui/lib/richText";
 
 import { formatAltitude, formatDays } from "@/lib/format";
+import { ROUTES, pagePath } from "@/lib/routes";
 
 import { toHomeFieldGuide, toHomeGuideTeam, toHomeMeals, toHomeRouteMap } from "./homeTrekExtras";
 import type { HomeFact, HomeSectionKey, HomeTrek, HomeTrekCard } from "./types";
@@ -24,7 +25,7 @@ const toMonthRatings = (ratings: readonly string[] | null) => {
   return known.length === 12 ? known : null;
 };
 
-export const toTrekCard = (row: WebTrekRow, photosBaseUrl: string): HomeTrekCard => ({
+export const toTrekCard = (row: WebTrekRow, photosBaseUrl: string, homeSlug: string | null): HomeTrekCard => ({
   slug: row.slug,
   name: row.name,
   summary: row.summary.trim(),
@@ -36,6 +37,7 @@ export const toTrekCard = (row: WebTrekRow, photosBaseUrl: string): HomeTrekCard
   priceFromUsd: row.price_from_usd,
   image: coverImage(row, photosBaseUrl, row.name),
   hasPage: row.has_page,
+  href: row.slug === homeSlug ? ROUTES.home : pagePath(row.slug),
 });
 
 /** The cover first, then the gallery in the admin's order. */
@@ -93,7 +95,7 @@ const toSections = (page: WebTrekPageRow, trek: Omit<HomeTrek, "sections">): Hom
 
 export type HomeTrekSource = { summary: WebTrekRow; page: WebTrekPageRow; photos: readonly WebTrekPhotoRow[]; guides: readonly WebTrekGuideRow[] };
 
-/** The main trek from its database rows. Blank texts fall back to this design's words, or their section is left out. */
+/** A trek from its database rows. Blank texts fall back to this design's words, or their section is left out. */
 export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, photosBaseUrl: string, trekFilesBaseUrl: string): HomeTrek => {
   const shortName = firstText(page.short_name) ?? summary.name;
   const ratings = toMonthRatings(page.region_month_ratings);

@@ -23,7 +23,7 @@ import { WhyBookWithUs } from "./WhyBookWithUs";
 type TrekSectionsProps = { trek: HomeTrek; company: HomeCompany; reviews: readonly HomeReview[]; rating: HomeRating | null };
 
 /**
- * The main trek's sections in the order set in its editor, each in this website's design. The altitude chart ("elevation"
+ * A trek's sections in the order set in its editor, each in this website's design. The altitude chart ("elevation"
  * on a trek page) is part of the itinerary here, and the "Other treks" band stands for the similar treks.
  */
 export const TrekSections = ({ trek, company, reviews, rating }: TrekSectionsProps) => {
@@ -51,7 +51,7 @@ export const TrekSections = ({ trek, company, reviews, rating }: TrekSectionsPro
     reviews: <TrekReviews reviews={reviews} rating={rating} />,
     booking_form: <TrekRequest name={trek.name} days={trek.days} />,
     faq: <TrekFaq faq={trek.faq} />,
-    // As wide as the page: HomePage shows it after these columns.
+    // As wide as the page: TrekPageBody shows it after these columns.
     booking_cta: null,
   };
 

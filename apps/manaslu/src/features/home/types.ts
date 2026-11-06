@@ -114,6 +114,8 @@ export type HomeTrekCard = {
   priceFromUsd: number | null;
   image?: SiteImageSource;
   hasPage: boolean;
+  /** Where its page is: the main trek's is the home page. */
+  href: string;
 };
 
 export type HomeReview = { id: string; source: "google" | "tripadvisor"; name: string; when: string; rating: number; text: string; url: string; photo?: SiteImageSource };

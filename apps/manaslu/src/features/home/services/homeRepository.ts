@@ -10,23 +10,7 @@ import { toHomeAdventures, toHomeCompany } from "../homeCompanyRows";
 import { toHomeGuides, toHomeRating, toHomeReviews, toHomeTop } from "../homeRows";
 import { toHomeTrek, toTrekCard } from "../homeTrekRows";
 import type { HomeData } from "../types";
-
-const check = <Row>({ data, error }: { data: Row | null; error: { message: string } | null }, what: string): Row => {
-  if (error || data === null) throw new Error(`Could not load ${what}: ${error?.message ?? "nothing found"}`);
-  return data;
-};
-
-/** The main trek's own rows, when the website has one that is published with a page. */
-const readTrekRows = async (slug: string) => {
-  const client = createDatabaseClient();
-  const [page, photos, guides] = await Promise.all([
-    client.from("web_trek_pages").select("*").eq("slug", slug).eq("locale", WEBSITE_LOCALE).maybeSingle(),
-    client.from("web_trek_photos").select("*").eq("trek_slug", slug),
-    client.from("web_trek_guides").select("*").eq("trek_slug", slug).eq("locale", WEBSITE_LOCALE),
-  ]);
-  if (page.error) throw new Error(`Could not load the trek "${slug}": ${page.error.message}`);
-  return { page: page.data, photos: check(photos, "the trek's photos"), guides: check(guides, "the trek's guides") };
-};
+import { check, readTrekRows } from "./trekRowsRepository";
 
 /**
  * Everything the home page shows, read once and cached. Throws when the database can't be read (a failed refresh keeps
@@ -64,8 +48,8 @@ export const getHomeData = async (): Promise<HomeData> => {
   return {
     top,
     trek: summary && homeRows?.page ? toHomeTrek({ summary, page: homeRows.page, photos: homeRows.photos, guides: homeRows.guides }, photosPublicBaseUrl, trekFilesPublicBaseUrl) : null,
-    trekCard: summary ? toTrekCard(summary, photosPublicBaseUrl) : null,
-    otherTreks: trekRows.filter((row) => row.slug !== homeSlug).map((row) => toTrekCard(row, photosPublicBaseUrl)),
+    trekCard: summary ? toTrekCard(summary, photosPublicBaseUrl, homeSlug) : null,
+    otherTreks: trekRows.filter((row) => row.slug !== homeSlug).map((row) => toTrekCard(row, photosPublicBaseUrl, homeSlug)),
     reviews: toHomeReviews(check(reviews, "the reviews"), photosPublicBaseUrl, new Date()),
     rating: toHomeRating(check(ratings, "the rating")),
     guides: toHomeGuides(check(guides, "the travel guides"), photosPublicBaseUrl),

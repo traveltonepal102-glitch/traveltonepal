@@ -56,7 +56,7 @@ export const SiteHeader = async () => {
           {trek && <MainTrekLink name={trek.name} className={NAV_LINK} />}
           <NavDropdown
             label="Other treks"
-            items={otherTreks.map((other) => ({ href: other.hasPage ? pagePath(other.slug) : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image }))}
+            items={otherTreks.map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image }))}
             more={trek ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" }}
           />
           <NavDropdown

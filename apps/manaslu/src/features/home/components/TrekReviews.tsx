@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
+import { ROUTES } from "@/lib/routes";
 
 import type { HomeRating, HomeReview } from "../types";
 import { ReviewCard } from "./ReviewCard";
@@ -37,7 +38,7 @@ export const TrekReviews = async ({ reviews, rating }: TrekReviewsProps) => {
         )}
         {googleProfileUrl && " · "}
         {(googleWriteUrl || googleProfileUrl) && (
-          <a href="/review" className="underline">
+          <a href={ROUTES.review} className="underline">
             Write a review
           </a>
         )}

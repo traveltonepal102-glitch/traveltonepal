@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { formatAltitude, formatDays, formatUsd } from "@/lib/format";
-import { pagePath } from "@/lib/routes";
 
 import type { HomeTrekCard } from "../types";
 
@@ -10,7 +9,7 @@ const CELL = "px-4 py-3.5";
 
 type CompareTreksProps = { current: HomeTrekCard; others: readonly HomeTrekCard[] };
 
-/** The main trek beside the others, at a glance. */
+/** The trek on this page beside the others, at a glance. */
 export const CompareTreks = ({ current, others }: CompareTreksProps) => (
   <div id="compare" className="flex flex-col gap-3">
     <h3>Compare at a glance</h3>
@@ -41,7 +40,7 @@ export const CompareTreks = ({ current, others }: CompareTreksProps) => (
                 <td className={CELL}>{trek.difficulty}</td>
                 <td className={CELL}>{trek.maxAltitudeM ? formatAltitude(trek.maxAltitudeM) : ""}</td>
                 <td className={`${CELL} font-semibold text-forest`}>{trek.priceFromUsd !== null ? formatUsd(trek.priceFromUsd) : "On request"}</td>
-                <td className={`${CELL} text-right`}>{!isCurrent && trek.hasPage && <Link href={pagePath(trek.slug)} className="font-semibold">View</Link>}</td>
+                <td className={`${CELL} text-right`}>{!isCurrent && trek.hasPage && <Link href={trek.href} className="font-semibold">View</Link>}</td>
               </tr>
             );
           })}

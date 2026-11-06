@@ -6,7 +6,6 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { formatAltitude, formatDays, formatUsd } from "@/lib/format";
-import { pagePath } from "@/lib/routes";
 
 import type { HomeTrekCard } from "../types";
 
@@ -25,7 +24,7 @@ export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
       <div className="flex flex-col gap-1.5">
         <h3 className="text-[23px]! leading-7.25!">
           {trek.hasPage ? (
-            <Link href={pagePath(trek.slug)} className="text-ink no-underline">
+            <Link href={trek.href} className="text-ink no-underline">
               {trek.name}
             </Link>
           ) : (
@@ -62,7 +61,7 @@ export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
           <span className="font-display text-xl leading-6.5 font-semibold text-forest">Price on request</span>
         )}
         {trek.hasPage ? (
-          <Link href={pagePath(trek.slug)} className={primaryButton}>
+          <Link href={trek.href} className={primaryButton}>
             View trek
             <TrailIcon name="arrow" size={16} />
           </Link>

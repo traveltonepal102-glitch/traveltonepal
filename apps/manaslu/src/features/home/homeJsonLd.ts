@@ -8,10 +8,10 @@ import type { HomeSeo, HomeTrek } from "./types";
 /** Google reads one file of each photo, about this wide. */
 const IMAGE_WIDTH = 1200;
 
-/** The page (with its dates), the main trek and its questions. No rating: Google refuses self-serving ones. */
-export const homeJsonLd = (trek: HomeTrek, seo: HomeSeo) => {
+/** The page (with its dates), the trek shown on it and its questions. No rating: Google refuses self-serving ones. */
+export const homeJsonLd = (trek: HomeTrek, seo: HomeSeo, path = "/") => {
   const prices = trek.pricing.prices.map((price) => price.priceUsd);
-  const url = absoluteUrl("/");
+  const url = absoluteUrl(path);
   return {
     "@context": "https://schema.org",
     "@graph": [

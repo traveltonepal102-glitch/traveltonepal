@@ -4,6 +4,7 @@ import { OfficeMap } from "@/components/shared/OfficeMap";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { SITE_NAME } from "@/lib/site";
+import { ROUTES } from "@/lib/routes";
 
 import { CONTACT_SECTIONS } from "../sections";
 import type { ContactPageContent } from "../types";
@@ -60,7 +61,7 @@ export const OfficeSection = async ({ page }: OfficeSectionProps) => {
             {googleWriteUrl && (
               <p className="text-[15px] leading-5.75">
                 Trekked with us?{" "}
-                <a href="/review" className="font-semibold underline underline-offset-2">
+                <a href={ROUTES.review} className="font-semibold underline underline-offset-2">
                   Write a review on Google
                 </a>
               </p>

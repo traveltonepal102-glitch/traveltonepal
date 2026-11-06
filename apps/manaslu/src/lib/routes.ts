@@ -8,6 +8,8 @@ export const ROUTES = {
   privacy: "/privacy",
   impressum: "/impressum",
   cookies: "/cookies",
+  /** Redirects to the "write a review" link in Site settings (a plain link, not a page). */
+  review: "/review",
 } as const;
 
 /** A trek's or a travel guide's address. */
