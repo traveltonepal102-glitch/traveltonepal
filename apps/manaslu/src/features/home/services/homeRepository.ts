@@ -7,7 +7,7 @@ import { photosPublicBaseUrl, trekFilesPublicBaseUrl } from "@/env";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE, WEBSITE_LOCALE, createDatabaseClient } from "@/lib/database";
 
 import { toHomeAdventures, toHomeCompany } from "../homeCompanyRows";
-import { toHomeGuides, toHomeRating, toHomeReviews, toHomeTop } from "../homeRows";
+import { toHomeGuides, toHomeRating, toHomeReviews, toHomeTop, toLatestGuides } from "../homeRows";
 import { toHomeTrek, toTrekCard } from "../homeTrekRows";
 import type { HomeData } from "../types";
 import { check, readTrekRows } from "./trekRowsRepository";
@@ -38,6 +38,7 @@ export const getHomeData = async (): Promise<HomeData> => {
   const siteRow = check(site, "the website");
   const pageRow = check(page, "the home page");
   const trekRows = check(treks, "the treks");
+  const guideRows = check(guides, "the travel guides");
 
   const homeSlug = siteRow.home_trek_slug;
   const summary = trekRows.find((row) => row.slug === homeSlug);
@@ -52,7 +53,8 @@ export const getHomeData = async (): Promise<HomeData> => {
     otherTreks: trekRows.filter((row) => row.slug !== homeSlug).map((row) => toTrekCard(row, photosPublicBaseUrl, homeSlug)),
     reviews: toHomeReviews(check(reviews, "the reviews"), photosPublicBaseUrl, new Date()),
     rating: toHomeRating(check(ratings, "the rating")),
-    guides: toHomeGuides(check(guides, "the travel guides"), photosPublicBaseUrl),
+    guides: toHomeGuides(guideRows, photosPublicBaseUrl),
+    latestGuides: toLatestGuides(guideRows, photosPublicBaseUrl),
     company: toHomeCompany(about.data, photosPublicBaseUrl),
     adventures: toHomeAdventures(adventureSection.data, check(adventures, "the adventures"), photosPublicBaseUrl),
     seo: {

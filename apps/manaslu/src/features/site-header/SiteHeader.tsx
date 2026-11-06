@@ -18,7 +18,7 @@ const NAV_LINK = "inline-flex min-h-11 items-center whitespace-nowrap text-snow 
 
 /** The dark bar at the top: the website's details (those filled in), the logo, the menu with the treks and blogs, "Plan my trek" and Email (when an address is saved). */
 export const SiteHeader = async () => {
-  const [{ phoneDisplay, email, licence }, { trek, otherTreks, guides }] = await Promise.all([getSiteSettings(), getHomeData()]);
+  const [{ phoneDisplay, email, licence }, { trek, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasTopLine = Boolean(phoneDisplay || email || licence);
 
   return (
@@ -56,8 +56,10 @@ export const SiteHeader = async () => {
           />
           <NavDropdown
             label="Blogs"
-            items={guides.map((guide) => ({ href: pagePath(guide.slug), title: guide.title, text: guide.tag, image: guide.image }))}
-            more={{ href: ROUTES.travelGuides, label: "View all blogs" }}
+            heading="Latest blogs"
+            hasTwoColumns
+            items={latestGuides.map((guide) => ({ href: pagePath(guide.slug), title: guide.title, text: guide.meta, image: guide.image }))}
+            more={{ href: ROUTES.blogs, label: "View all blogs" }}
           />
           <Link href={ROUTES.about} className={NAV_LINK}>
             About

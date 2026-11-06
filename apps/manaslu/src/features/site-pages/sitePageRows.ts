@@ -16,6 +16,7 @@ export const toSitePageTop = (row: WebSitePageRow, photosBaseUrl: string, subjec
     intro,
     seo: {
       title: row.seo_title.trim() || heading,
+      isTitleTyped: Boolean(row.seo_title.trim()),
       description: row.seo_description.trim() || intro,
       shareImageBase: shareId ? photoShareUrl(`${photosBaseUrl}/${shareId}`) : undefined,
     },

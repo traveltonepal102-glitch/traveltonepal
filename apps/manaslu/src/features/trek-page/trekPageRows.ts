@@ -14,13 +14,13 @@ export const toTrekTop = (summary: WebTrekRow, page: WebTrekPageRow): HomeTop =>
   secondLabel: "See the itinerary",
 });
 
-/** A trek page's Google result: the trek's own, else its name and summary. The share picture is its chosen one, else its cover. */
-export const toTrekSeo = (summary: WebTrekRow, page: WebTrekPageRow, photosBaseUrl: string, isLive: boolean): HomeSeo => {
+/** A trek page's Google result: the trek's own, else its name and summary. The share picture is its chosen one, else its cover, else the website's from Site settings. */
+export const toTrekSeo = (summary: WebTrekRow, page: WebTrekPageRow, photosBaseUrl: string, isLive: boolean, siteShareImageBase?: string): HomeSeo => {
   const shareId = page.share_id ?? summary.cover_id;
   return {
     title: firstText(page.seo_title) ?? summary.name,
     description: firstText(page.seo_description) ?? summary.summary.trim(),
-    shareImageBase: shareId ? photoShareUrl(`${photosBaseUrl}/${shareId}`) : undefined,
+    shareImageBase: shareId ? photoShareUrl(`${photosBaseUrl}/${shareId}`) : siteShareImageBase,
     isLive,
     dates: toPageDates(summary.published_at, summary.updated_at),
   };

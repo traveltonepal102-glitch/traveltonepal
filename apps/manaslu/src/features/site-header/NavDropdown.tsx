@@ -2,20 +2,29 @@
 
 import type { SiteImageSource } from "@ttn/site-data/images";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
+
+const ONE_COLUMN_PANEL = "left-0 w-100 max-sm:fixed max-sm:inset-x-4 max-sm:top-auto max-sm:w-auto";
+/** Centred under its button where the menu has one row, as wide as the screen where it hasn't (the button may sit near an edge). */
+const TWO_COLUMN_PANEL = "lg:left-1/2 lg:w-190 lg:-translate-x-1/2 max-lg:fixed max-lg:inset-x-4 max-lg:top-auto";
 
 type NavDropdownProps = {
   label: string;
   items: readonly { href: string; title: string; text?: string; image?: SiteImageSource }[];
   /** The last link, under the list. */
   more: { href: string; label: string };
+  /** A small title above the list, saying what it is. */
+  heading?: string;
+  /** Wider, the list running down one column and then the other; one column on a phone. */
+  hasTwoColumns?: boolean;
 };
 
 /** A menu item that opens a list of links with their photos (loaded only once it is open): closes on Escape, a click outside or a link chosen. Left out with nothing to list. */
-export const NavDropdown = ({ label, items, more }: NavDropdownProps) => {
+export const NavDropdown = ({ label, items, more, heading, hasTwoColumns = false }: NavDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -63,8 +72,13 @@ export const NavDropdown = ({ label, items, more }: NavDropdownProps) => {
         <TrailIcon name="chevron" size={14} className={isOpen ? "rotate-180" : ""} />
       </button>
       {isOpen && (
-        <div id={panelId} className="absolute top-full left-0 z-40 mt-1 flex max-h-[75vh] w-100 flex-col overflow-y-auto max-sm:fixed max-sm:inset-x-4 max-sm:top-auto max-sm:w-auto rounded-[14px] border border-solid border-line bg-snow p-2 text-ink shadow-raised">
-          <ul className="flex flex-col">
+        <div id={panelId} className={`absolute top-full z-40 mt-1 flex max-h-[75vh] flex-col overflow-y-auto rounded-[14px] border border-solid border-line bg-snow p-2 text-ink shadow-raised ${hasTwoColumns ? TWO_COLUMN_PANEL : ONE_COLUMN_PANEL}`}>
+          {heading && <p className="eyebrow px-2 pt-2 pb-1.5">{heading}</p>}
+          <ul
+            className={hasTwoColumns ? "grid gap-x-2 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-[repeat(var(--rows),auto)]" : "flex flex-col"}
+            // Down the first column, then the second: ten blogs make five and five.
+            style={hasTwoColumns ? ({ "--rows": Math.ceil(items.length / 2) } as CSSProperties) : undefined}
+          >
             {items.map((item) => (
               <li key={item.title}>
                 <Link href={item.href} onClick={close} className="flex items-center gap-3 rounded-[10px] p-2 no-underline hover:bg-forest-tint">

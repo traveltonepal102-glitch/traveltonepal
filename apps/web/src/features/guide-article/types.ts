@@ -1,5 +1,5 @@
-import type { EmbedProvider } from "@ttn/config/embeds";
 import type { GuideHelpBox } from "@ttn/config/guideHelpBox";
+import type { GuideBlock, GuidePerson } from "@ttn/site-data/guideBlocks";
 import type { IconName } from "@ttn/ui/icon";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -7,57 +7,16 @@ import type { IconTone } from "@/components/shared/iconTones";
 import type { GuideTopicId } from "@/features/guides/topics";
 import type { MonthRating } from "@/features/regions/overviews";
 import type { PageSeo } from "@/features/seo/shareMetadata";
-import type { ItineraryDay } from "@/features/trek-detail/types";
 import type { TrekSummary } from "@/features/treks/types";
 import type { SiteImageSource } from "@/lib/images";
 
 /** One row of the month-by-month table (the month's rating is in the article's months). */
 export type MonthNote = { onTheTrail: string; crowds: string };
 
-/** A trekking guide shown in the article (a tip, their own words, or "Meet the guides"). */
-export type GuidePerson = { name: string; role: string; quote?: string; photo?: SiteImageSource };
-
-/** A day of a trek's plan shown in the article, with its number in the trek. */
-export type ArticleDay = ItineraryDay & { dayNumber: number };
+export type { GuideDay as ArticleDay, GuidePerson } from "@ttn/site-data/guideBlocks";
 
 /** A piece of the article body, top to bottom (the admin's section kinds). */
-export type ArticleBlock =
-  | { type: "quick"; body: RichTextDoc }
-  /** Where the questions sit (they are the article's faqs, also given to Google). */
-  | { type: "faq" }
-  | { type: "paragraph"; body: RichTextDoc }
-  /** A section with its heading: a stop in the contents list. */
-  | { type: "text"; id: string; heading: string; tocLabel: string; body: RichTextDoc }
-  /** A heading with nothing under it; an H2 is a stop in the contents list too. */
-  | { type: "heading"; id: string; level: "h2" | "h3"; heading: string; tocLabel: string }
-  | { type: "callout"; tone: "note" | "warning"; body: RichTextDoc }
-  | { type: "check"; heading: string; items: readonly string[] }
-  /** Every row as wide as the widest; no header or footer: []. */
-  | { type: "table"; heading: string; header: readonly string[]; rows: readonly (readonly string[])[]; footer: readonly string[]; hasRowHeadings: boolean }
-  /** The admin's own HTML, cleaned (@ttn/ui/lib/customHtml). */
-  | { type: "html"; html: string }
-  /** The article's months, as a colour strip or a table with notes. */
-  | { type: "months"; heading: string; view: "strip" | "table" }
-  | { type: "cta"; heading: string; buttonText: string; message: string }
-  | { type: "trek"; trek: TrekSummary }
-  | { type: "quote"; text: string }
-  | { type: "days"; trek: TrekSummary; days: readonly ArticleDay[] }
-  /** Every day of the trek, for its altitude curve. */
-  | { type: "altitude"; heading: string; trek: TrekSummary; days: readonly ArticleDay[] }
-  | { type: "cost"; heading: string; rows: readonly { item: string; price: string }[]; totalLabel: string; total: string }
-  | { type: "compare"; treks: readonly TrekSummary[] }
-  | { type: "tip"; guide: GuidePerson; text: string }
-  | { type: "gquote"; guide: GuidePerson; text: string }
-  | { type: "meet"; heading: string; guides: readonly GuidePerson[] }
-  | { type: "image"; image: SiteImageSource; caption: string }
-  | { type: "gallery"; images: readonly SiteImageSource[] }
-  | { type: "map"; title: string; place: string }
-  /** A frame from an allowed service (@ttn/config/embeds), loaded once the visitor allows it. `height` in px. */
-  | { type: "embed"; url: string; service: Pick<EmbedProvider, "name" | "company" | "kind">; height: number; title: string; caption: string }
-  /** A PDF to open or download; `size` like "1.2 MB" ("" when unknown). */
-  | { type: "file"; url: string; title: string; description: string; size: string }
-  /** A YouTube video, played in privacy-enhanced mode once the visitor allows it. */
-  | { type: "video"; youtubeId: string; title: string };
+export type ArticleBlock = GuideBlock<TrekSummary>;
 
 export type GuideFact = { icon: IconName; tone: IconTone; label: string; value: string };
 

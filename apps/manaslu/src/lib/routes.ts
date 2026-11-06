@@ -1,7 +1,7 @@
 /** This website's addresses (flat: a trek or a travel guide is directly under the root). */
 export const ROUTES = {
   home: "/",
-  travelGuides: "/travel-guides",
+  blogs: "/blogs",
   about: "/about",
   contact: "/contact",
   terms: "/terms",

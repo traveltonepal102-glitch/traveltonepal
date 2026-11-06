@@ -7,9 +7,12 @@ import type { HomeGuide, HomeRating, HomeReview, HomeTop } from "./types";
 
 const REVIEWS_SHOWN = 6;
 
-const GUIDE_TOPICS: Record<WebTravelGuideRow["topic"], string> = { planning: "Planning", "best-time": "Best time to trek", health: "Health and safety", gear: "Gear and packing" };
+export const GUIDE_TOPICS: Record<WebTravelGuideRow["topic"], string> = { planning: "Planning", "best-time": "Best time to trek", health: "Health and safety", gear: "Gear and packing" };
 
 const DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+/** "Oct 25, 2026" from a saved date. */
+export const formatGuideDate = (day: string) => DATE.format(new Date(`${day}T00:00:00Z`));
 
 const textOf = (content: unknown, key: string) => {
   const value = content && typeof content === "object" && key in content ? (content as Record<string, unknown>)[key] : "";
@@ -50,18 +53,25 @@ export const toHomeRating = (rows: readonly WebReviewRatingRow[]): HomeRating | 
   return google ? { rating: Number(google.rating), count: google.review_count, profileUrl: google.profile_url } : null;
 };
 
-/** The featured guide first, then the newest. */
-export const toHomeGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] =>
-  rows
-    .toSorted((a, b) => Number(b.is_featured) - Number(a.is_featured) || b.published_on.localeCompare(a.published_on))
-    .slice(0, 5)
-    .map((row) => ({
-      slug: row.slug,
-      title: row.title,
-      text: firstText(row.card_text) ?? "",
-      topic: row.topic,
-      tag: GUIDE_TOPICS[row.topic],
-      meta: `${DATE.format(new Date(`${row.published_on}T00:00:00Z`))} · ${row.read_minutes} min read`,
-      image: coverImage(row, photosBaseUrl, row.title, row.cover_alt),
-      isFeatured: row.is_featured,
-    }));
+const toGuide = (row: WebTravelGuideRow, photosBaseUrl: string): HomeGuide => ({
+  slug: row.slug,
+  title: row.title,
+  text: firstText(row.card_text) ?? "",
+  topic: row.topic,
+  tag: GUIDE_TOPICS[row.topic],
+  meta: `${formatGuideDate(row.published_on)} · ${row.read_minutes} min read`,
+  image: coverImage(row, photosBaseUrl, row.title, row.cover_alt),
+  isFeatured: row.is_featured,
+  regionSlugs: row.region_slugs,
+});
+
+/** Every guide, the featured one first, then the newest. */
+const toAllGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] =>
+  rows.toSorted((a, b) => Number(b.is_featured) - Number(a.is_featured) || b.published_on.localeCompare(a.published_on)).map((row) => toGuide(row, photosBaseUrl));
+
+/** The newest guides, whichever is featured: the menu's ten, or every one for the Blogs page. */
+export const toLatestGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string, count = 10): HomeGuide[] =>
+  rows.toSorted((a, b) => b.published_on.localeCompare(a.published_on)).slice(0, count).map((row) => toGuide(row, photosBaseUrl));
+
+/** The guides the home page shows. */
+export const toHomeGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] => toAllGuides(rows, photosBaseUrl).slice(0, 5);

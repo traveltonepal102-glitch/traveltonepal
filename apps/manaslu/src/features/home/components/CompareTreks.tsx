@@ -7,11 +7,11 @@ import type { HomeTrekCard } from "../types";
 const HEAD = "px-4 py-3.5 font-semibold";
 const CELL = "px-4 py-3.5";
 
-type CompareTreksProps = { current: HomeTrekCard; others: readonly HomeTrekCard[] };
+type CompareTreksProps = { current?: HomeTrekCard; others: readonly HomeTrekCard[] };
 
-/** The trek on this page beside the others, at a glance. */
+/** Treks side by side at a glance: the one on this page, when there is one, first and marked. */
 export const CompareTreks = ({ current, others }: CompareTreksProps) => (
-  <div id="compare" className="flex flex-col gap-3">
+  <div id={current ? "compare" : undefined} className="flex flex-col gap-3">
     <h3>Compare at a glance</h3>
     <div className="relative overflow-x-auto rounded-[14px] border border-solid border-line bg-snow">
       <table className="w-full min-w-[720px] border-collapse text-[15px] leading-5.5">
@@ -28,8 +28,8 @@ export const CompareTreks = ({ current, others }: CompareTreksProps) => (
           </tr>
         </thead>
         <tbody>
-          {[current, ...others].map((trek) => {
-            const isCurrent = trek.slug === current.slug;
+          {[...(current ? [current] : []), ...others].map((trek) => {
+            const isCurrent = trek.slug === current?.slug;
             return (
               <tr key={trek.slug} className={`border-t border-solid border-line ${isCurrent ? "bg-forest-tint" : ""}`}>
                 <th scope="row" className={`${CELL} text-left font-semibold text-ink`}>

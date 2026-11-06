@@ -25,7 +25,7 @@ export const GuideFeatureCard = ({ guide, className = "" }: { guide: HomeGuide; 
     {guide.text && <p className="relative max-w-130 text-white/90">{guide.text}</p>}
     <p className="relative text-sm leading-5 text-white/80">{guide.meta}</p>
     <span aria-hidden="true" className="relative mt-1 inline-flex min-h-11 items-center gap-1.5 self-start rounded-full bg-snow px-4.5 text-[15px] font-semibold text-forest">
-      Read the guide
+      Read the blog
       <TrailIcon name="arrow" />
     </span>
   </article>

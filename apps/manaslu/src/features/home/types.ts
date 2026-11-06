@@ -122,7 +122,7 @@ export type HomeReview = { id: string; source: "google" | "tripadvisor"; name: s
 
 export type HomeRating = { rating: number; count: number; profileUrl: string };
 
-export type HomeGuide = { slug: string; title: string; text: string; topic: string; tag: string; meta: string; image?: SiteImageSource; isFeatured: boolean };
+export type HomeGuide = { slug: string; title: string; text: string; topic: string; tag: string; meta: string; image?: SiteImageSource; isFeatured: boolean; regionSlugs: readonly string[] };
 
 /** What the trek sections say about the company, from Pages › About. */
 export type HomeCompany = {
@@ -147,6 +147,8 @@ export type HomeData = {
   reviews: HomeReview[];
   rating: HomeRating | null;
   guides: HomeGuide[];
+  /** The newest ten, for the menu. */
+  latestGuides: HomeGuide[];
   company: HomeCompany;
   adventures: HomeAdventures;
   seo: HomeSeo;

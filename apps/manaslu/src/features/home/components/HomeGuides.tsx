@@ -19,21 +19,21 @@ export const HomeGuides = ({ guides }: { guides: readonly HomeGuide[] }) => {
   return (
     <section aria-labelledby="guides-h" className="wrap flex flex-col gap-7 py-22 max-md:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4.5">
-        <SectionHeading id="guides-h" eyebrow="Travel guides" title="Read before you go" />
-        <Link href={ROUTES.travelGuides} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
-          All guides
+        <SectionHeading id="guides-h" eyebrow="Blogs" title="Read before you go" />
+        <Link href={ROUTES.blogs} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
+          View all blogs
           <TrailIcon name="arrow" />
         </Link>
       </div>
-      <ul aria-label="Guide topics" className="flex flex-wrap gap-2">
+      <ul aria-label="Blog topics" className="flex flex-wrap gap-2">
         <li>
-          <Link href={ROUTES.travelGuides} className={`${TOPIC} border-forest bg-forest text-snow hover:text-snow`}>
+          <Link href={ROUTES.blogs} className={`${TOPIC} border-forest bg-forest text-snow hover:text-snow`}>
             All
           </Link>
         </li>
         {topics.map(([topic, tag]) => (
           <li key={topic}>
-            <Link href={`${ROUTES.travelGuides}?topic=${topic}`} className={`${TOPIC} border-line bg-snow text-ink`}>
+            <Link href={`${ROUTES.blogs}?topic=${topic}`} className={`${TOPIC} border-line bg-snow text-ink`}>
               {tag}
             </Link>
           </li>

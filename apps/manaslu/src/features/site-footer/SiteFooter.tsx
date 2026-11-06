@@ -24,7 +24,7 @@ const COLUMNS = [
     links: [
       { label: "About us", href: ROUTES.about },
       { label: "Contact", href: ROUTES.contact },
-      { label: "Travel guides", href: ROUTES.travelGuides },
+      { label: "Blogs", href: ROUTES.blogs },
       { label: "Reviews", href: "/#reviews" },
     ],
   },

@@ -7,7 +7,8 @@ export type SitePageTop = {
   eyebrow: string;
   heading: string;
   intro: string;
-  seo: { title: string; description: string; shareImageBase?: string };
+  /** `isTitleTyped`: the title comes from the page's Google card and shows exactly as typed; else it is the H1, with the website's name after it. */
+  seo: { title: string; isTitleTyped: boolean; description: string; shareImageBase?: string };
   /** The photo behind the top of the page, when one is picked. */
   cover?: SiteImageSource;
   dates?: PageDates;

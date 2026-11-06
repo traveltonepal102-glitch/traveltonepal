@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 
+import { BlogArticlePage } from "@/features/blog-article/components/BlogArticlePage";
+import { blogMetadata } from "@/features/blog-article/seo";
+import { getBlogArticle } from "@/features/blog-article/services/blogArticleRepository";
+import { listBlogPages } from "@/features/blogs/services/blogsRepository";
 import { getHomeData } from "@/features/home/services/homeRepository";
 import { TrekPage } from "@/features/trek-page/components/TrekPage";
 import { trekPageMetadata } from "@/features/trek-page/seo";
-import { findMovedTrekPath, getTrekPage, listTrekPages } from "@/features/trek-page/services/trekPageRepository";
+import { findMovedPath, getTrekPage } from "@/features/trek-page/services/trekPageRepository";
+import { listTrekPages } from "@/features/trek-page/services/trekPagesList";
 import { ROUTES } from "@/lib/routes";
 
 type SlugPageProps = PageProps<"/[slug]">;
 
-/** Cache Components needs at least one address to prerender; until a website has another trek, this one (a 404). */
-const NO_TREK_PAGE_YET = "no-trek-page-yet";
+/** Cache Components needs at least one address to prerender; until a website has another trek or a blog, this one (a 404). */
+const NO_PAGE_YET = "no-page-yet";
 
-// Every trek with a page is prerendered at build time; one that gets its page later renders on its first visit.
+// Every trek with a page and every blog is prerendered at build time; one added later renders on its first visit.
 export const generateStaticParams = async () => {
-  const treks = await listTrekPages();
-  return (treks.length > 0 ? treks.map((trek) => trek.slug) : [NO_TREK_PAGE_YET]).map((slug) => ({ slug }));
+  const pages = [...(await listTrekPages()), ...(await listBlogPages())];
+  return (pages.length > 0 ? [...new Set(pages.map((page) => page.slug))] : [NO_PAGE_YET]).map((slug) => ({ slug }));
 };
 
 // An address not built yet waits for its finished page instead of streaming a shell (which would fix the status at 200),
@@ -23,19 +28,24 @@ export const generateStaticParams = async () => {
 export const ensureStatic = "navigation";
 
 export const generateMetadata = async ({ params }: SlugPageProps): Promise<Metadata> => {
-  const page = await getTrekPage((await params).slug);
-  return page ? trekPageMetadata(page) : { title: "Page not found" };
+  const { slug } = await params;
+  const trek = await getTrekPage(slug);
+  if (trek) return trekPageMetadata(trek);
+  const blog = await getBlogArticle(slug);
+  return blog ? blogMetadata(blog) : { title: "Page not found" };
 };
 
 const SlugPage = async ({ params }: SlugPageProps) => {
   const { slug } = await params;
-  const page = await getTrekPage(slug);
-  if (page) return <TrekPage data={page} />;
+  const trek = await getTrekPage(slug);
+  if (trek) return <TrekPage data={trek} />;
+  const blog = await getBlogArticle(slug);
+  if (blog) return <BlogArticlePage blog={blog} />;
 
-  // The main trek's page is the home page; a renamed trek's old address moves on to today's; anything else is a 404.
+  // The main trek's page is the home page; a renamed trek's or blog's old address moves on to today's; anything else is a 404.
   const { trekCard } = await getHomeData();
   if (trekCard?.slug === slug) permanentRedirect(ROUTES.home);
-  const moved = await findMovedTrekPath(slug);
+  const moved = await findMovedPath(slug);
   if (moved) permanentRedirect(moved === `/${trekCard?.slug}` ? ROUTES.home : moved);
   notFound();
 };

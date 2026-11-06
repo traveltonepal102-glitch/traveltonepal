@@ -22,6 +22,10 @@ describe("toTrekSeo", () => {
     expect(seo.shareImageBase).toContain("https://photos/cover");
   });
 
+  it("falls back to the website's share picture without a cover", () => {
+    expect(toTrekSeo({ ...summary, cover_id: null }, page, "https://photos", true, "https://site/share.jpg").shareImageBase).toBe("https://site/share.jpg");
+  });
+
   it("prefers what the Google card says", () => {
     const seo = toTrekSeo(summary, { ...page, seo_title: "Title", seo_description: "Text", share_id: "chosen" }, "https://photos", false);
     expect(seo).toMatchObject({ title: "Title", description: "Text", isLive: false });

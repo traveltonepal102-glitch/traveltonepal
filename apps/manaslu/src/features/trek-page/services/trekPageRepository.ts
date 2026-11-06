@@ -6,50 +6,23 @@ import { toHomeReviews } from "@/features/home/homeRows";
 import { toHomeTrek } from "@/features/home/homeTrekRows";
 import { getHomeData } from "@/features/home/services/homeRepository";
 import { check, readTrekRows } from "@/features/home/services/trekRowsRepository";
+import { getPageSeoOverrides } from "@/features/site-pages/services/pageSeoOverridesRepository";
+import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE, WEBSITE_LOCALE, createDatabaseClient } from "@/lib/database";
-import { ROUTES, pagePath } from "@/lib/routes";
+import { pagePath } from "@/lib/routes";
 
 import { toTrekSeo, toTrekTop } from "../trekPageRows";
-import { toTrekSeoOverrides } from "../trekSeoOverrides";
 import type { TrekPageData } from "../types";
 
-/** This website's treks that have their own page: all with a page but the main one, which is the home page. */
-export const listTrekPages = async () => {
+/** Today's address of a trek or blog that was renamed, or undefined. */
+export const findMovedPath = async (slug: string) => {
   "use cache";
-  cacheTag(CACHE_TAGS.treks, CACHE_TAGS.pages);
+  cacheTag(CACHE_TAGS.treks, CACHE_TAGS.travelGuides);
   cacheLife(DATABASE_CACHE_LIFE);
 
-  const client = createDatabaseClient();
-  const [site, treks] = await Promise.all([client.from("web_site").select("home_trek_slug").single(), client.from("web_treks").select("slug, updated_at, has_page").eq("locale", WEBSITE_LOCALE)]);
-  const homeSlug = check(site, "the website").home_trek_slug;
-  return check(treks, "the treks").flatMap((row) => (row.has_page && row.slug !== homeSlug ? [{ slug: row.slug, modified: row.updated_at }] : []));
-};
-
-/** The Google cards' choices for this website's treks (Throws on a database error). */
-const getTrekSeoOverrides = async () => {
-  "use cache";
-  cacheTag(CACHE_TAGS.treks, CACHE_TAGS.pages);
-  cacheLife(DATABASE_CACHE_LIFE);
-
-  const [rows, treks] = await Promise.all([createDatabaseClient().from("web_page_seo_overrides").select("*").eq("locale", WEBSITE_LOCALE), listTrekPages()]);
-  return toTrekSeoOverrides(check(rows, "the treks' Google settings"), new Set<string>([ROUTES.home, ROUTES.about, ROUTES.contact, ...treks.map((trek) => pagePath(trek.slug))]));
-};
-
-/** The trek pages the sitemap lists: not hidden, and their own main version. */
-export const listListedTrekPages = async () => {
-  const [treks, { hidden, canonicals }] = await Promise.all([listTrekPages(), getTrekSeoOverrides()]);
-  return treks.filter((trek) => !hidden.has(trek.slug) && !canonicals.has(trek.slug));
-};
-
-/** Today's address of a trek that was renamed, or undefined. */
-export const findMovedTrekPath = async (slug: string) => {
-  "use cache";
-  cacheTag(CACHE_TAGS.treks);
-  cacheLife(DATABASE_CACHE_LIFE);
-
-  const moved = await createDatabaseClient().from("web_redirects").select("to_slug").eq("kind", "trek").eq("from_slug", slug).maybeSingle();
-  if (moved.error) throw new Error(`Could not load redirects: ${moved.error.message}`);
-  return moved.data ? pagePath(moved.data.to_slug) : undefined;
+  const { data, error } = await createDatabaseClient().from("web_redirects").select("to_slug").in("kind", ["trek", "guide"]).eq("from_slug", slug).limit(1);
+  if (error) throw new Error(`Could not load redirects: ${error.message}`);
+  return data[0] && pagePath(data[0].to_slug);
 };
 
 /**
@@ -58,7 +31,7 @@ export const findMovedTrekPath = async (slug: string) => {
  */
 export const getTrekPage = async (slug: string): Promise<TrekPageData | null> => {
   "use cache";
-  cacheTag(CACHE_TAGS.treks, CACHE_TAGS.reviews);
+  cacheTag(CACHE_TAGS.treks, CACHE_TAGS.reviews, CACHE_TAGS.settings);
   cacheLife(DATABASE_CACHE_LIFE);
 
   const home = await getHomeData();
@@ -66,11 +39,12 @@ export const getTrekPage = async (slug: string): Promise<TrekPageData | null> =>
   if (!card?.hasPage) return null;
 
   const client = createDatabaseClient();
-  const [summary, rows, reviews, { hidden, canonicals }] = await Promise.all([
+  const [summary, rows, reviews, { hidden, canonicals }, settings] = await Promise.all([
     client.from("web_treks").select("*").eq("slug", slug).eq("locale", WEBSITE_LOCALE).single(),
     readTrekRows(slug),
     client.from("web_reviews").select("*").eq("trek_slug", slug),
-    getTrekSeoOverrides(),
+    getPageSeoOverrides(),
+    getSiteSettings(),
   ]);
   const summaryRow = check(summary, "the trek");
   if (!rows.page) return null;
@@ -85,8 +59,8 @@ export const getTrekPage = async (slug: string): Promise<TrekPageData | null> =>
     company: home.company,
     adventures: home.adventures,
     guides: home.guides,
-    seo: toTrekSeo(summaryRow, rows.page, photosPublicBaseUrl, home.seo.isLive),
-    isHidden: hidden.has(slug),
-    canonicalPath: canonicals.get(slug),
+    seo: toTrekSeo(summaryRow, rows.page, photosPublicBaseUrl, home.seo.isLive, settings.shareImageBase),
+    isHidden: hidden.has(pagePath(slug)),
+    canonicalPath: canonicals.get(pagePath(slug)),
   };
 };
