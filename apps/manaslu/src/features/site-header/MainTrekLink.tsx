@@ -11,7 +11,7 @@ type MainTrekLinkProps = { name: string; className: string };
 export const MainTrekLink = ({ name, className }: MainTrekLinkProps) => {
   const isCurrent = usePathname() === ROUTES.home;
   return (
-    <Link href={ROUTES.home} aria-current={isCurrent ? "page" : undefined} className={`${className} ${isCurrent ? "shadow-[inset_0_-2px_0_var(--color-saffron)]" : ""}`}>
+    <Link href={ROUTES.home} aria-current={isCurrent ? "page" : undefined} className={`${className} ${isCurrent ? "shadow-[inset_0_-2px_0_var(--color-forest)]" : ""}`}>
       {name}
     </Link>
   );

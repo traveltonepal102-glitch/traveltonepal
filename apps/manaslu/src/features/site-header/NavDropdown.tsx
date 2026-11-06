@@ -66,7 +66,7 @@ export const NavDropdown = ({ label, items, more, heading, hasTwoColumns = false
         aria-expanded={isOpen}
         aria-controls={isOpen ? panelId : undefined}
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent whitespace-nowrap text-snow hover:text-saffron"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent whitespace-nowrap text-ink hover:text-forest"
       >
         {label}
         <TrailIcon name="chevron" size={14} className={isOpen ? "rotate-180" : ""} />
