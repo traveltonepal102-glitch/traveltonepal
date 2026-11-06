@@ -10,6 +10,7 @@ const site = (id: string, kind: Site["kind"], url: string | null = null): Site =
   name: id,
   url,
   isLive: false,
+  homeTrekId: null,
   position: 1,
 });
 

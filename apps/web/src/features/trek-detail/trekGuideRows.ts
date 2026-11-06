@@ -1,3 +1,4 @@
+import { certBadgeOf, certificationsOf } from "@ttn/site-data/guideCredentials";
 import type { IconName } from "@ttn/ui/icon";
 
 import type { TrekGuide } from "@/features/team/types";
@@ -16,34 +17,6 @@ const specialtyOf = (badge: WebTrekGuideRow["badge"], regionName: string): TrekG
     photo: { label: "Photography", icon: "image" },
   };
   return specialties[badge];
-};
-
-/** The green tag on the photo: the strongest qualification that is valid today. */
-const certBadgeOf = (row: WebTrekGuideRow) => {
-  if (row.has_wfr) return "WFR certified";
-  if (row.has_first_aid) return "First aid";
-  if (row.is_licensed) return "Licensed";
-  if (row.other_certificates.includes("nathm")) return "NATHM trained";
-  return "Local guide";
-};
-
-const CERTIFICATE_NAMES: Record<string, string> = {
-  nathm: "trekking guide training (NATHM)",
-  nma: "mountaineering course (NMA)",
-  language: "language certificate",
-};
-
-/** The "Cert:" line: what is valid today, in plain words. */
-const certificationsOf = (row: WebTrekGuideRow) => {
-  const names = [
-    row.is_licensed && "trekking guide licence",
-    row.has_wfr && "wilderness first responder",
-    row.has_first_aid && "first aid",
-    ...row.other_certificates.map((certificate) => CERTIFICATE_NAMES[certificate]),
-  ].filter((name): name is string => Boolean(name));
-  if (!names.length) return "Local trekking guide";
-  const text = names.join(", ");
-  return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 /** The web_trek_guides rows of one trek as "Meet your trek guide" cards, in the admin's order. */

@@ -19,7 +19,7 @@ const FUNCTION_MISSING = "PGRST202";
 
 /** Until supabase/migrations/20261103100000_sites.sql is applied: the main site alone, so the admin keeps working. */
 const MAIN_SITE_ONLY: Site[] = [
-  { id: MAIN_SITE_ID, kind: "main", regionId: null, name: "Travel To Nepal", url: "https://traveltonepal.com", isLive: true, position: 1 },
+  { id: MAIN_SITE_ID, kind: "main", regionId: null, name: "Travel To Nepal", url: "https://traveltonepal.com", isLive: true, homeTrekId: null, position: 1 },
 ];
 
 /** Every site, in switcher order (the main site first). Throws when the database can't be read. Once per request. */
@@ -27,7 +27,7 @@ export const listSites = cache(async (): Promise<Site[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("sites")
-    .select("id, kind, region_id, name, url, is_live, position")
+    .select("id, kind, region_id, name, url, is_live, home_trek_id, position")
     .order("position")
     .order("name");
   if (error?.code === TABLE_MISSING) {
@@ -42,6 +42,7 @@ export const listSites = cache(async (): Promise<Site[]> => {
     name: row.name,
     url: row.url,
     isLive: row.is_live,
+    homeTrekId: row.home_trek_id,
     position: row.position,
   }));
 });

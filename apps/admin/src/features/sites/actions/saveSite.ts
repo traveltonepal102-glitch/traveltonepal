@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -7,6 +8,7 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { sitesSavedPath } from "../constants";
 import { editSiteSchema, readEditSiteForm } from "../schemas/editSiteSchema";
@@ -42,6 +44,8 @@ export const saveSite = async (siteId: string, _previous: EditorSaveState, formD
     return failure(message, field ? { [field]: message } : {});
   }
 
+  // The website shows its name and whether it is live.
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.settings]);
   revalidatePath("/", "layout");
   redirect(sitesSavedPath("changed"));
 };

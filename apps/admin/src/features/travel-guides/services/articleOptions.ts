@@ -1,6 +1,10 @@
 import "server-only";
 
+import { MAIN_SITE_ID } from "@ttn/config/sites";
+
 import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
+import { siteDomain } from "@/features/sites/lib/pickCurrentSite";
+import type { Site } from "@/features/sites/types";
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { trekFilesBaseUrl } from "@/lib/storage/trekFiles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -13,17 +17,12 @@ import { listSectionGuides } from "./sectionOptions";
 
 const byName = <Item extends { name: string }>(items: Item[]) => items.sort((a, b) => a.name.localeCompare(b.name));
 
-/** The region websites (and the regions a guide can show on), A–Z. A site without its domain yet shows "[slug] site". */
-export const listSiteOptions = async (): Promise<ArticleOptions["sites"]> => {
+/** The regions a guide can show on, A–Z. */
+const listGuideRegions = async (): Promise<ArticleOptions["regions"]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("regions")
-    .select("id, slug, website_domain, region_translations!inner(name)")
-    .eq("region_translations.locale", ARTICLE_LOCALE);
+  const { data, error } = await supabase.from("regions").select("id, region_translations!inner(name)").eq("region_translations.locale", ARTICLE_LOCALE);
   if (error) throw new Error(`Could not load regions: ${error.message}`);
-  return byName(
-    data.map((region) => ({ id: region.id, name: region.region_translations[0]?.name ?? "", domain: region.website_domain ?? `[${region.slug} site]` })),
-  );
+  return byName(data.map((region) => ({ id: region.id, name: region.region_translations[0]?.name ?? "" })));
 };
 
 /** Authors A–Z (a guide author named by their guide), with what the editor checks. */
@@ -46,8 +45,8 @@ export const listAuthorOptions = async (): Promise<ArticleOptions["authors"]> =>
   );
 };
 
-/** Everything else the editor offers: treks, guides who can check travel guides, and the other travel guides. */
-export const listArticleOptions = async (exceptArticleId: string | null): Promise<Omit<ArticleOptions, "sites" | "regions" | "authors" | "guides" | "photos" | "filesBaseUrl">> => {
+/** Everything else the editor offers: the website's treks and other travel guides, and guides who can check travel guides. */
+const listArticleOptions = async (siteId: string, exceptArticleId: string | null): Promise<Omit<ArticleOptions, "site" | "regions" | "authors" | "guides" | "photos" | "filesBaseUrl">> => {
   const supabase = await createSupabaseServerClient();
   const [treks, checkers, articles] = await Promise.all([
     supabase
@@ -56,6 +55,7 @@ export const listArticleOptions = async (exceptArticleId: string | null): Promis
         `id, days, difficulty, max_altitude_m, region_id, cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}), trek_translations!inner(name),
         trek_group_prices(price_usd, is_default), trek_days(id, position, altitude_m, trek_day_translations(locale, title, duration))`,
       )
+      .eq("site_id", siteId)
       .eq("trek_translations.locale", ARTICLE_LOCALE),
     supabase
       .from("trekking_guides")
@@ -63,7 +63,7 @@ export const listArticleOptions = async (exceptArticleId: string | null): Promis
       .eq("can_fact_check", true)
       .eq("photo_consent", true)
       .eq("trekking_guide_translations.locale", ARTICLE_LOCALE),
-    supabase.from("articles").select("id, article_translations!inner(title)").eq("article_translations.locale", ARTICLE_LOCALE),
+    supabase.from("articles").select("id, article_translations!inner(title)").eq("site_id", siteId).eq("article_translations.locale", ARTICLE_LOCALE),
   ]);
   const error = treks.error ?? checkers.error ?? articles.error;
   if (error) throw new Error(`Could not load the travel guide choices: ${error.message}`);
@@ -96,16 +96,17 @@ export const listArticleOptions = async (exceptArticleId: string | null): Promis
   };
 };
 
-/** Every travel guide for the list, most recently edited first. Throws when the database can't be read. */
-export const listArticles = async (): Promise<ArticleListItem[]> => {
+/** The website's travel guides for the list, most recently edited first. Throws when the database can't be read. */
+export const listArticles = async (siteId: string): Promise<ArticleListItem[]> => {
   const supabase = await createSupabaseServerClient();
   const [{ data, error }, feedback] = await Promise.all([
     supabase
       .from("articles")
       .select(
-        `id, topic, status, site_region_id, author_id, published_on, is_featured, start_here_position, updated_at,
+        `id, topic, status, author_id, published_on, is_featured, start_here_position, updated_at,
         cover:photos!articles_cover_photo_id_fkey(${PHOTO_COLUMNS}), article_translations!inner(title)`,
       )
+      .eq("site_id", siteId)
       .eq("article_translations.locale", ARTICLE_LOCALE)
       .order("updated_at", { ascending: false }),
     listFeedbackTotals(),
@@ -117,7 +118,6 @@ export const listArticles = async (): Promise<ArticleListItem[]> => {
     title: row.article_translations[0]?.title ?? "",
     topic: row.topic,
     status: row.status,
-    siteRegionId: row.site_region_id,
     authorId: row.author_id,
     publishedOn: row.published_on,
     isFeatured: row.is_featured,
@@ -128,12 +128,13 @@ export const listArticles = async (): Promise<ArticleListItem[]> => {
   }));
 };
 
-/** Every travel guide about a region (the region ticked in its settings), any status, most recently edited first. */
+/** Travel To Nepal's travel guides about a region (the region ticked in its settings), any status, most recently edited first. */
 export const listRegionArticles = async (regionId: string): Promise<RegionArticleItem[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("articles")
     .select(`id, topic, status, published_on, cover:photos!articles_cover_photo_id_fkey(${PHOTO_COLUMNS}), article_translations!inner(title), article_regions!inner(region_id)`)
+    .eq("site_id", MAIN_SITE_ID)
     .eq("article_translations.locale", ARTICLE_LOCALE)
     .eq("article_regions.region_id", regionId)
     .order("updated_at", { ascending: false });
@@ -150,16 +151,29 @@ export const listRegionArticles = async (regionId: string): Promise<RegionArticl
 };
 
 /**
- * Everything the editor offers, in one go (`exceptArticleId`: the guide being edited, left out of "Keep reading";
- * `photoIds`: the photos its sections show, for their previews).
+ * Everything the editor offers for a guide of this website, in one go (`exceptArticleId`: the guide being edited,
+ * left out of "Keep reading"; `photoIds`: the photos its sections show, for their previews).
  */
-export const getArticleOptions = async (exceptArticleId: string | null, photoIds: string[] = []): Promise<ArticleOptions> => {
-  const [sites, authors, rest, guides, photos] = await Promise.all([
-    listSiteOptions(),
+export const getArticleOptions = async (site: Site, exceptArticleId: string | null, photoIds: string[] = []): Promise<ArticleOptions> => {
+  const [regions, authors, rest, guides, photos] = await Promise.all([
+    listGuideRegions(),
     listAuthorOptions(),
-    listArticleOptions(exceptArticleId),
+    listArticleOptions(site.id, exceptArticleId),
     listSectionGuides(),
     listPhotosByIds(photoIds),
   ]);
-  return { ...rest, sites, authors, guides, photos, regions: sites.map(({ id, name }) => ({ id, name })), filesBaseUrl: trekFilesBaseUrl };
+  const domain = siteDomain(site) ?? `[${site.name} website]`;
+  return {
+    ...rest,
+    site: {
+      domain,
+      addressPrefix: site.kind === "main" ? `${domain}/guides/` : `${domain}/`,
+      region: regions.find((region) => region.id === site.regionId) ?? null,
+    },
+    authors,
+    guides,
+    photos,
+    regions,
+    filesBaseUrl: trekFilesBaseUrl,
+  };
 };

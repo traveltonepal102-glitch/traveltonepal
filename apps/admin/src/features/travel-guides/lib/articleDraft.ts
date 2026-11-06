@@ -5,7 +5,7 @@ import type { ArticleTopic, ArticleValues } from "../types";
 /** What the photo tags, the web address and the Google checks follow while the form is being typed. */
 export type ArticleDraft = Pick<
   ArticleValues,
-  "title" | "intro" | "topic" | "siteRegionId" | "mainTrekId" | "photoTrekId" | "highlightTag" | "coverAlt" | "seoKeyword" | "seoTitle" | "seoDescription"
+  "title" | "intro" | "topic" | "mainTrekId" | "photoTrekId" | "highlightTag" | "coverAlt" | "seoKeyword" | "seoTitle" | "seoDescription"
 >;
 
 const isTopic = (value: string): value is ArticleTopic => (ARTICLE_TOPIC_VALUES as readonly string[]).includes(value);
@@ -17,7 +17,6 @@ export const draftFromArticleForm = (formData: FormData): ArticleDraft => {
     title: raw.title.trim(),
     intro: raw.intro.trim(),
     topic: isTopic(raw.topic) ? raw.topic : "best-time",
-    siteRegionId: raw.siteRegionId || null,
     mainTrekId: raw.mainTrekId || null,
     photoTrekId: raw.photoTrekId || null,
     highlightTag: raw.highlightTag.trim(),

@@ -61,6 +61,8 @@ export type TrekTagValue = "classic" | "off-the-beaten-path";
 
 type TrekRow = {
   id: string;
+  /** The website the trek belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
   slug: string;
   region_id: string;
   status: TrekStatusValue;
@@ -217,6 +219,8 @@ export type ReviewSourceValue = "google" | "tripadvisor";
 /** A real review copied from a review site (supabase/migrations/20261027130000_reviews.sql). */
 export type ReviewRow = {
   id: string;
+  /** The website the review belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
   source: ReviewSourceValue;
   url: string;
   reviewer_name: string;
@@ -291,6 +295,8 @@ export type SiteRow = {
   /** e.g. "https://manaslutrek.com"; null until the domain is set up. */
   url: string | null;
   is_live: boolean;
+  /** A region site's main trek, shown as its Home (one of its own treks); null for none yet and for the main site. */
+  home_trek_id: string | null;
   position: number;
   created_at: string;
   created_by: string | null;
@@ -320,13 +326,14 @@ export type PageSchemaRow = {
 export type ArticleFeedbackRow = { id: number; article_id: string; is_helpful: boolean; created_at: string };
 
 /** The overall rating on a review site, as typed in. */
-export type ReviewRatingRow = { source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
+export type ReviewRatingRow = { site_id: string; source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
 
 export type AuthorKindValue = "office" | "guide" | "guest";
 
 /** The one row of Site settings (supabase/migrations/20261026120000_site_settings.sql). */
 export type SiteSettingsRow = {
-  id: boolean;
+  /** One row per website, made with it. */
+  site_id: string;
   phone_country_code: string;
   phone_number: string;
   email: string;
@@ -422,7 +429,9 @@ export type ArticleStatusValue = "draft" | "published" | "hidden";
 
 type ArticleRow = {
   id: string;
-  /** Null: the main site. */
+  /** The website the guide belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
+  /** No longer written (site_id replaced it): stays until the website stops reading it. */
   site_region_id: string | null;
   also_on_main_site: boolean;
   slug: string;
@@ -1026,6 +1035,10 @@ export type Database = {
       };
       is_admin: { Args: never; Returns: boolean };
       is_super_admin: { Args: never; Returns: boolean };
+      copy_trek: {
+        Args: { p_trek_id: string; p_site_id: string };
+        Returns: string;
+      };
       save_trek: {
         Args: {
           p_trek_id: string | null;
@@ -1052,11 +1065,15 @@ export type Database = {
         Returns: string;
       };
       save_site_settings: {
-        Args: { p_settings: Json };
+        Args: { p_settings: Json; p_site_id: string };
         Returns: undefined;
       };
       save_site_page: {
         Args: { p_slug: SitePageSlug; p_page: Json; p_photo_ids: Json; p_site_id: string };
+        Returns: undefined;
+      };
+      save_region_home: {
+        Args: { p_site_id: string; p_page: Json; p_home_trek_id: string | null };
         Returns: undefined;
       };
       save_site_pages: {
@@ -1068,7 +1085,7 @@ export type Database = {
         Returns: string;
       };
       save_review_ratings: {
-        Args: { p_ratings: Json };
+        Args: { p_ratings: Json; p_site_id: string };
         Returns: undefined;
       };
       save_adventure_section: {

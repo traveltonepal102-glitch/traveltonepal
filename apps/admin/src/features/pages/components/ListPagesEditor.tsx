@@ -16,7 +16,7 @@ import { PageTopCard } from "./PageTopCard";
 
 type ListPagesEditorProps = {
   action: EditorSaveAction;
-  /** The site's list pages (listPagesFor): all four on the main site, Home and Travel guides on a region site. */
+  /** The site's list pages (listPagesFor): all four on the main site, only Travel guides on a region site. */
   pages: readonly ListPage[];
   /** The site "Working on" shows, e.g. "Manaslu Trek". */
   siteName: string;

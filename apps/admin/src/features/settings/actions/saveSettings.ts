@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { SETTINGS_PATH } from "../constants";
 import { readSettingsForm, settingsSchema } from "../schemas/settingsSchema";
@@ -21,10 +22,12 @@ const FAILURE_MESSAGES = {
   failed: "The settings couldn't be saved. Nothing was lost on this page: try Save again in a moment.",
 } as const;
 
-/** Saves Site settings. Only a Super admin may (checked here and by Row Level Security). */
-export const saveSettings = async (_previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+/** Saves the settings of the website they were opened for (`siteId`, bound by the page). Only a Super admin may (checked here and by Row Level Security). */
+export const saveSettings = async (siteId: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   const admin = await requireAdmin();
   if (admin.role !== "super_admin") return failure(FAILURE_MESSAGES.forbidden);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = settingsSchema.safeParse(readSettingsForm(formData));
   if (!parsed.success) {
@@ -33,11 +36,11 @@ export const saveSettings = async (_previous: EditorSaveState, formData: FormDat
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const result = await saveSiteSettings(parsed.data);
+  const result = await saveSiteSettings(siteId, parsed.data);
   if (!result.ok) return failure(FAILURE_MESSAGES[result.reason]);
 
   // Every page shows the contact details, so the whole website refreshes.
-  refreshWebsite([WEBSITE_CACHE_TAGS.settings]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.settings]);
   revalidatePath(SETTINGS_PATH);
   return { status: "saved" };
 };

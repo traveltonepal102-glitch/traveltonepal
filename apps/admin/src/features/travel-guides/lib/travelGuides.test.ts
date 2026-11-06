@@ -15,7 +15,6 @@ const item = (id: string, overrides: Partial<ArticleListItem> = {}): ArticleList
   title: id,
   topic: "best-time",
   status: "draft",
-  siteRegionId: null,
   authorId: null,
   publishedOn: null,
   isFeatured: false,
@@ -27,17 +26,16 @@ const item = (id: string, overrides: Partial<ArticleListItem> = {}): ArticleList
 });
 
 const ARTICLES = [
-  item("Best time to trek Langtang", { siteRegionId: "langtang", status: "published", publishedOn: "2026-10-12" }),
-  item("Langtang permits and costs", { siteRegionId: "langtang", topic: "planning" }),
+  item("Best time to trek Langtang", { status: "published", publishedOn: "2026-10-12" }),
+  item("Langtang permits and costs", { topic: "planning" }),
   item("Altitude sickness", { topic: "health", status: "published", publishedOn: "2027-01-05" }),
 ];
 const titles = (articles: ArticleListItem[]) => articles.map((article) => article.title);
 
 describe("filterArticles", () => {
-  it("searches titles and filters by website, topic and status", () => {
+  it("searches titles and filters by topic and status", () => {
     expect(titles(filterArticles(ARTICLES, { ...NO_ARTICLE_FILTERS, query: "LANGTANG" }))).toEqual(["Best time to trek Langtang", "Langtang permits and costs"]);
-    expect(titles(filterArticles(ARTICLES, { ...NO_ARTICLE_FILTERS, site: "main" }))).toEqual(["Altitude sickness"]);
-    expect(titles(filterArticles(ARTICLES, { ...NO_ARTICLE_FILTERS, site: "langtang", topic: "planning" }))).toEqual(["Langtang permits and costs"]);
+    expect(titles(filterArticles(ARTICLES, { ...NO_ARTICLE_FILTERS, query: "langtang", topic: "planning" }))).toEqual(["Langtang permits and costs"]);
     expect(titles(filterArticles(ARTICLES, { ...NO_ARTICLE_FILTERS, status: "published" }))).toHaveLength(2);
   });
 

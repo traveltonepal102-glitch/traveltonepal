@@ -11,7 +11,6 @@ import { ArticleStatusLine } from "../ArticleStatusLine";
 
 type ArticleRowsProps = {
   articles: ArticleListItem[];
-  siteName: (siteRegionId: string | null) => string;
   authorName: (authorId: string | null) => string;
   /** "YYYY-MM-DD" in Nepal. */
   today: string;
@@ -19,14 +18,14 @@ type ArticleRowsProps = {
 
 const topicLabel = (article: ArticleListItem) => ARTICLE_TOPICS.find((topic) => topic.value === article.topic)?.label ?? "";
 
-/** One row per guide (a card on phones): photo, title, topic, website, author, status, readers' votes and last edit. */
-export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRowsProps) => (
+/** One row per guide (a card on phones): photo, title, topic, author, status, readers' votes and last edit. */
+export const ArticleRows = ({ articles, authorName, today }: ArticleRowsProps) => (
   <ul className="m-0 flex list-none flex-col overflow-hidden rounded-lg border border-solid border-border bg-surface p-0">
     {articles.map((article) => (
       <li key={article.id} className="border-b border-solid border-border last:border-b-0">
         <Link
           href={articlePath(article.id)}
-          className="grid items-center gap-x-4 gap-y-2 px-4 py-3 text-text no-underline hover:bg-page focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring tablet:grid-cols-[minmax(0,1fr)_150px_150px_150px]"
+          className="grid items-center gap-x-4 gap-y-2 px-4 py-3 text-text no-underline hover:bg-page focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring tablet:grid-cols-[minmax(0,1fr)_150px_150px]"
         >
           <span className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-18 flex-none items-center justify-center overflow-hidden rounded-md bg-navy text-white/40">
@@ -41,7 +40,6 @@ export const ArticleRows = ({ articles, siteName, authorName, today }: ArticleRo
               </span>
             </span>
           </span>
-          <span className="text-caption max-tablet:hidden">{siteName(article.siteRegionId)}</span>
           <span className="truncate text-caption max-tablet:hidden">{authorName(article.authorId) || "No author yet"}</span>
           <span className="flex flex-col gap-0.5">
             <ArticleStatusLine article={article} today={today} />

@@ -4,11 +4,10 @@ import { cn } from "@ttn/ui/lib/utils";
 import { startTransition, useActionState } from "react";
 import type { FormEvent } from "react";
 
-import type { EditorSaveState } from "@/components/editor/types";
+import type { EditorSaveAction, EditorSaveState } from "@/components/editor/types";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { TextField } from "@/components/ui/TextField";
 
-import { saveReviewRatings } from "../../actions/saveReviewRatings";
 import { REVIEW_SOURCES } from "../../constants";
 import type { ReviewRating } from "../../types";
 
@@ -18,8 +17,8 @@ const IDLE: EditorSaveState = { status: "idle" };
  * "Overall rating": the review sites' own numbers, typed in by hand (e.g. 4.9 from 37 Google reviews). Shown on the
  * website beside the reviews; both empty hides it. Not <form action>: React would empty the fields after saving.
  */
-export const RatingsCard = ({ ratings }: { ratings: ReviewRating[] }) => {
-  const [state, action, isSaving] = useActionState(saveReviewRatings, IDLE);
+export const RatingsCard = ({ ratings, saveAction }: { ratings: ReviewRating[]; saveAction: EditorSaveAction }) => {
+  const [state, action, isSaving] = useActionState(saveAction, IDLE);
   const errors = state.status === "error" ? state.fieldErrors : {};
 
   const submit = (event: FormEvent<HTMLFormElement>) => {

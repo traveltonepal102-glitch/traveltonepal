@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { saveTrek } from "@/features/treks/actions/saveTrek";
@@ -11,15 +13,17 @@ import { todayInNepal } from "@/utils/formatDateTime";
 
 export const metadata: Metadata = { title: "New trek" };
 
-/** Add a trek: the trek editor, empty (status Draft). Saving creates it and opens it. */
+/** Add a trek to the website "Working on" shows: the trek editor, empty (status Draft). Saving creates it and opens it. */
 const NewTrekPage = async () => {
   await requireAdmin();
-  const [regions, similarOptions, guides] = await Promise.all([listRegionOptions(), listSimilarTrekOptions(null), listTrekkingGuides()]);
+  const site = await getCurrentSite();
+  if (!site) notFound();
+  const [regions, similarOptions, guides] = await Promise.all([listRegionOptions(), listSimilarTrekOptions(site.id, null), listTrekkingGuides()]);
   const today = todayInNepal();
 
   return (
     <TrekEditor
-      action={saveTrek.bind(null, null)}
+      action={saveTrek.bind(null, site.id, null)}
       values={EMPTY_TREK_VALUES}
       photos={NO_TREK_PHOTOS}
       trekId={null}

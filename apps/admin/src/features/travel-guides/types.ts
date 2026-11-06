@@ -88,9 +88,6 @@ export type ArticleValues = {
   updatedLine: string;
   facts: KeyFact[];
   // Publishing
-  /** Null: the main site (traveltonepal.com). */
-  siteRegionId: string | null;
-  alsoOnMainSite: boolean;
   topic: ArticleTopic;
   slug: string;
   status: ArticleStatus;
@@ -130,6 +127,8 @@ export type ArticleValues = {
 
 export type Article = ArticleValues & {
   id: string;
+  /** The website it belongs to. */
+  siteId: string;
   cover: Photo | null;
   /** The photo of the guide's shared links (its 1200×630 share picture); null: the guide's photo. */
   sharePhoto: Photo | null;
@@ -143,7 +142,15 @@ export type ArticleFormValues = ArticleValues & { coverPhotoId: string | null; s
 
 /** The choices the editor offers. */
 export type ArticleOptions = {
-  sites: { id: string; name: string; domain: string }[];
+  /** The website the guide belongs to. */
+  site: {
+    /** Its domain, for the address and Google previews. */
+    domain: string;
+    /** What comes before the guide's address: "traveltonepal.com/guides/", or "manaslutrek.com/" (flat addresses). */
+    addressPrefix: string;
+    /** A region website's region (new uploads are tagged with it, its guides suggested first); null for the main site. */
+    region: { id: string; name: string } | null;
+  };
   regions: { id: string; name: string }[];
   treks: {
     id: string;

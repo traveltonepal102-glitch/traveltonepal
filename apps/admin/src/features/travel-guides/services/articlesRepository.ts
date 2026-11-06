@@ -52,6 +52,7 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
   const [text] = row.article_translations;
   return {
     id: row.id,
+    siteId: row.site_id,
     updatedAt: row.updated_at,
     updatedOn: row.updated_on,
     cover: row.cover ? toPhoto(row.cover) : null,
@@ -64,8 +65,6 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
     highlightTag: text?.highlight_tag ?? "",
     updatedLine: text?.updated_line ?? "",
     facts: storedFactsSchema.parse(text?.facts),
-    siteRegionId: row.site_region_id,
-    alsoOnMainSite: row.also_on_main_site,
     topic: row.topic,
     slug: row.slug,
     status: row.status,
@@ -105,15 +104,17 @@ export type SaveArticleResult =
 
 const ruleOf = (message: string): ArticleRule | undefined => RULES.find((rule) => rule === message);
 
-/** Adds (articleId null) or updates a travel guide, its English text, regions and related guides (save_article). */
-export const saveArticle = async (values: ArticleFormValues, articleId: string | null): Promise<SaveArticleResult> => {
+/**
+ * Adds (articleId null) a travel guide to the website `siteId`, or updates one (it stays on its website), with its
+ * English text, regions and related guides (save_article).
+ */
+export const saveArticle = async (values: ArticleFormValues, articleId: string | null, siteId: string): Promise<SaveArticleResult> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_article", {
     p_article_id: articleId,
     p_locale: ARTICLE_LOCALE,
     p_article: {
-      site_region_id: values.siteRegionId ?? "",
-      also_on_main_site: values.alsoOnMainSite,
+      site_id: siteId,
       slug: values.slug,
       topic: values.topic,
       status: values.status,

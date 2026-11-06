@@ -4,18 +4,19 @@ import { revalidatePath } from "next/cache";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 
 import { pagePath } from "../constants";
 import { aboutContentOf } from "../lib/aboutContent";
 import { aboutPageSchema, readAboutForm } from "../schemas/aboutPageSchema";
 import { saveSitePage } from "../services/pagesRepository";
-import { checkPageSite, refreshSitePages } from "./pageSite";
+import { refreshSitePages } from "./pageSite";
 import { failedPageSave, invalidPageForm } from "./pageSaveResult";
 
 /** Saves Pages › About of the site it was opened for (siteId, bound by the page). Any admin may (checked here and by Row Level Security). */
 export const saveAboutPage = async (siteId: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
-  const wrongSite = await checkPageSite(siteId);
+  const wrongSite = await checkCurrentSite(siteId);
   if (wrongSite) return wrongSite;
 
   const parsed = aboutPageSchema.safeParse(readAboutForm(formData));

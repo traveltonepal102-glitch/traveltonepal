@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { ReactNode } from "react";
 
+import type { EditorSaveAction } from "@/components/editor/types";
 import { primaryButton } from "@/components/ui/buttonStyles";
 
 import { NEW_REVIEW_PATH } from "../../constants";
@@ -17,6 +18,8 @@ import { ReviewListCard } from "./ReviewListCard";
 type ReviewsOverviewProps = {
   reviews: Review[];
   ratings: ReviewRating[];
+  /** saveReviewRatings bound to the website. */
+  saveRatingsAction: EditorSaveAction;
   treks: ReviewTrekOption[];
   /** The review whose panel is open ("new" while adding). */
   openId: string | null;
@@ -27,7 +30,7 @@ type ReviewsOverviewProps = {
 };
 
 /** The Reviews screen: the overall rating, then every saved review with filters, and the edit drawer. */
-export const ReviewsOverview = ({ reviews, ratings, treks, openId, panel, savedNotice }: ReviewsOverviewProps) => {
+export const ReviewsOverview = ({ reviews, ratings, saveRatingsAction, treks, openId, panel, savedNotice }: ReviewsOverviewProps) => {
   const [filters, setFilters] = useState(NO_REVIEW_FILTERS);
   const shown = filterReviews(reviews, filters);
   const onWebsite = reviews.filter((review) => review.isShown).length;
@@ -60,7 +63,7 @@ export const ReviewsOverview = ({ reviews, ratings, treks, openId, panel, savedN
           {savedNotice} The website shows the change within seconds.
         </p>
       )}
-      <RatingsCard ratings={ratings} />
+      <RatingsCard ratings={ratings} saveAction={saveRatingsAction} />
       <ReviewFilterBar filters={filters} onChange={setFilters} treks={treks} countLabel={countLabel} />
 
       <ul className="m-0 grid list-none gap-3.5 p-0 tablet:grid-cols-2 desktop:grid-cols-3">

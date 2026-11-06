@@ -9,6 +9,8 @@ export type Site = {
   /** e.g. "https://manaslutrek.com"; null until the domain is set up. */
   url: string | null;
   isLive: boolean;
+  /** A region site's main trek, shown as its Home (Pages › Home); null until one is picked, and for the main site. */
+  homeTrekId: string | null;
   position: number;
 };
 

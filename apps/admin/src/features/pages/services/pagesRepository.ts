@@ -86,10 +86,10 @@ const FOREIGN_KEY_VIOLATION = "23503";
 const INVALID_VALUE = "22023";
 
 /** `photoIds`: the page's photos by place, null for an empty place. */
-type SavePageInput = PageTopValues & { founderAuthorId?: string | null; photoIds?: (string | null)[]; content: Json };
+export type SavePageInput = PageTopValues & { founderAuthorId?: string | null; photoIds?: (string | null)[]; content: Json };
 
 /** A page as save_site_page takes it. */
-const toPagePayload = (page: SavePageInput) => ({
+export const toPagePayload = (page: SavePageInput) => ({
   eyebrow: page.eyebrow,
   heading: page.heading,
   intro: page.intro,

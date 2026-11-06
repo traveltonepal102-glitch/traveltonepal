@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { saveArticle } from "@/features/travel-guides/actions/saveArticle";
 import { ArticleEditor } from "@/features/travel-guides/components/editor/ArticleEditor";
+import { TRAVEL_GUIDES_PATH } from "@/features/travel-guides/constants";
 import { sectionPhotoIds } from "@/features/travel-guides/lib/sectionPhotoIds";
 import { getArticleOptions } from "@/features/travel-guides/services/articleOptions";
 import { getArticle } from "@/features/travel-guides/services/articlesRepository";
@@ -27,15 +29,19 @@ export const generateMetadata = async ({ params }: TravelGuidePageProps): Promis
   return { title: (await loadArticle(params)).title };
 };
 
-/** Edit a travel guide (design: Admin-article-editor.dc.html). "?added=1" right after it was added. */
+/**
+ * Edit a travel guide (design: Admin-article-editor.dc.html). "?added=1" right after it was added. A guide of another
+ * website than "Working on" shows (e.g. after switching) goes back to this website's Travel guides.
+ */
 const TravelGuidePage = async ({ params, searchParams }: TravelGuidePageProps) => {
   await requireAdmin();
-  const article = await loadArticle(params);
-  const [options, feedback, { added }] = await Promise.all([getArticleOptions(article.id, sectionPhotoIds(article.sections)), getFeedbackTotals(article.id), searchParams]);
+  const [article, site] = await Promise.all([loadArticle(params), getCurrentSite()]);
+  if (!site || article.siteId !== site.id) redirect(TRAVEL_GUIDES_PATH);
+  const [options, feedback, { added }] = await Promise.all([getArticleOptions(site, article.id, sectionPhotoIds(article.sections)), getFeedbackTotals(article.id), searchParams]);
 
   return (
     <ArticleEditor
-      action={saveArticle.bind(null, article.id)}
+      action={saveArticle.bind(null, article.siteId, article.id)}
       article={article}
       values={article}
       options={options}

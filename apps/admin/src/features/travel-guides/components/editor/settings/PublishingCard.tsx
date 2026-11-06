@@ -13,55 +13,34 @@ import { formatCalendarDate } from "@/utils/formatDateTime";
 import { slugify } from "@/utils/slugify";
 
 import { ARTICLE_TOPICS } from "../../../constants";
-import type { Article, ArticleOptions, ArticleValues, PublishMode } from "../../../types";
+import type { Article, ArticleValues, PublishMode } from "../../../types";
 
 type PublishingCardProps = {
   values: ArticleValues;
   /** The saved guide (null for a new one), for its dates. */
   article: Article | null;
-  sites: ArticleOptions["sites"];
-  /** The website and title as typed now. */
-  siteRegionId: string | null;
+  /** What comes before the guide's address, e.g. "traveltonepal.com/guides/". */
+  addressPrefix: string;
+  /** The title as typed now. */
   title: string;
   errors: FieldErrors;
 };
-
-const MAIN_SITE = "traveltonepal.com";
 
 const PUBLISH_MODES: { value: PublishMode; label: string }[] = [
   { value: "now", label: "As soon as I set it to Published" },
   { value: "date", label: "On a date I choose" },
 ];
 
-/** "Publishing": the website, topic, web address, when it goes live, and its dates. */
-export const PublishingCard = ({ values, article, sites, siteRegionId, title, errors }: PublishingCardProps) => {
+/** "Publishing": the topic, web address, when it goes live, and its dates. */
+export const PublishingCard = ({ values, article, addressPrefix, title, errors }: PublishingCardProps) => {
   const id = useId();
   const [mode, setMode] = useState(values.publishMode);
   const [slug, setSlug] = useState(values.slug);
   const [isSlugTyped, setIsSlugTyped] = useState(Boolean(article));
-  const site = sites.find((item) => item.id === siteRegionId);
   const shownSlug = isSlugTyped ? slug : slugify(title);
 
   return (
     <FormSection title="Publishing">
-      <SelectField
-        name="siteRegionId"
-        label="Website"
-        options={[{ value: "", label: "Travel To Nepal (main)" }, ...sites.map((item) => ({ value: item.id, label: item.name }))]}
-        defaultValue={values.siteRegionId ?? ""}
-        error={errors.siteRegionId}
-      />
-      {site && (
-        <label className="flex cursor-pointer items-start gap-2.5 text-body-sm text-ink">
-          <input type="checkbox" name="alsoOnMainSite" defaultChecked={values.alsoOnMainSite} className="mt-0.5 size-4.5 flex-none accent-brand" />
-          <span>
-            Also show on the main site ({MAIN_SITE})
-            <span className="block text-xs text-muted-foreground">
-              The main-site copy tells Google the {site.name} site has the original (canonical), so the two don’t compete.
-            </span>
-          </span>
-        </label>
-      )}
       <SelectField
         name="topic"
         label="Topic"
@@ -72,7 +51,7 @@ export const PublishingCard = ({ values, article, sites, siteRegionId, title, er
       />
       <SlugField
         label="Web address"
-        prefix={`${site?.domain ?? MAIN_SITE}/guides/`}
+        prefix={addressPrefix}
         value={shownSlug}
         onChange={(next) => {
           setIsSlugTyped(true);

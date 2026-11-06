@@ -273,6 +273,8 @@ export type TrekFormValues = Omit<TrekValues, "days" | "maxAltitudeM" | "itinera
 
 export type Trek = TrekValues & {
   id: string;
+  /** The website it belongs to. */
+  siteId: string;
   regionName: string;
   /** The names of routeRegionIds, in route order. */
   routeRegionNames: string[];

@@ -1,3 +1,4 @@
+import { MAIN_SITE_ID } from "@ttn/config/sites";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -41,7 +42,7 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
   const canDelete = admin.role === "super_admin";
   const [region, treks, guides, regions, { added }] = await Promise.all([
     loadRegion(params),
-    listSimilarTrekOptions(null),
+    listSimilarTrekOptions(MAIN_SITE_ID, null),
     listTrekkingGuides(),
     listRegionOptions(),
     searchParams,

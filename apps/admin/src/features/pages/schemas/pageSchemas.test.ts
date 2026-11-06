@@ -182,13 +182,13 @@ describe("listPagesSchema", () => {
     expect(Object.keys(toFieldErrors(result.error!))).toEqual(["treks.heading"]);
   });
 
-  it("checks only Home and Travel guides on a region site (it has no Treks or Regions page)", () => {
+  it("checks only Travel guides on a region site (its Home has its own editor; no Treks or Regions page)", () => {
     const regionPages = listPagesFor("region");
-    expect(regionPages.map((page) => page.slug)).toEqual(["home", "travel-guides"]);
+    expect(regionPages.map((page) => page.slug)).toEqual(["travel-guides"]);
     const result = listPagesSchemaFor(regionPages).safeParse(
       readListPagesForm(form([...pageFields("home", "Manaslu Trek"), ...pageFields("travel-guides", "Manaslu guides")]), regionPages),
     );
     expect(result.success).toBe(true);
-    expect(Object.keys(result.data ?? {})).toEqual(["home", "travel-guides"]);
+    expect(Object.keys(result.data ?? {})).toEqual(["travel-guides"]);
   });
 });

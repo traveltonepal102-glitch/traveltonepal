@@ -8,7 +8,8 @@
     "dev:admin": "pnpm --filter admin dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r --if-present test"
+    "test": "pnpm -r --if-present test",
+    "dev:manaslu": "pnpm --filter manaslu dev"
   },
   "devEngines": {
     "packageManager": {

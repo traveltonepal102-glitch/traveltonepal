@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import { todayInNepal } from "@/utils/formatDateTime";
 
 import { LEGAL_PAGES, LEGAL_PAGES_ROUTE, pagePath } from "../constants";
@@ -11,7 +12,7 @@ import { legalWordsChanged, toLegalValues } from "../lib/pageContent";
 import { legalPagesSchema, readLegalPagesForm } from "../schemas/legalPagesSchema";
 import { getSitePages, saveLegalPages as saveLegalPagesToDatabase } from "../services/pagesRepository";
 import type { LegalPagesValues } from "../types";
-import { checkPageSite, refreshSitePages } from "./pageSite";
+import { refreshSitePages } from "./pageSite";
 import { failedPageSave, invalidPageForm } from "./pageSaveResult";
 
 /**
@@ -20,7 +21,7 @@ import { failedPageSave, invalidPageForm } from "./pageSaveResult";
  */
 export const saveLegalPages = async (siteId: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
-  const wrongSite = await checkPageSite(siteId);
+  const wrongSite = await checkCurrentSite(siteId);
   if (wrongSite) return wrongSite;
 
   const parsed = legalPagesSchema.safeParse(readLegalPagesForm(formData));

@@ -15,8 +15,9 @@ import type { ArticleOptions } from "../../types";
 import { ArticleRows } from "./ArticleRows";
 
 type ArticlesOverviewProps = {
+  /** The website "Working on" shows, e.g. "Manaslu Trek". */
+  siteName: string;
   articles: ArticleListItem[];
-  sites: ArticleOptions["sites"];
   authors: ArticleOptions["authors"];
   /** "YYYY-MM-DD" in Nepal. */
   today: string;
@@ -27,10 +28,9 @@ const topicOf = (value: string) => ARTICLE_TOPICS.find((topic) => topic.value ==
 const statusOf = (value: string) => ARTICLE_STATUSES.find((status) => status.value === value)?.value ?? "";
 
 /** The Travel guides screen: heading, "Add travel guide", filters and the list (most recently edited first). */
-export const ArticlesOverview = ({ articles, sites, authors, today }: ArticlesOverviewProps) => {
+export const ArticlesOverview = ({ siteName, articles, authors, today }: ArticlesOverviewProps) => {
   const [filters, setFilters] = useState(NO_ARTICLE_FILTERS);
   const shown = filterArticles(articles, filters);
-  const siteName = (id: string | null) => (id ? (sites.find((site) => site.id === id)?.name ?? "") : "Travel To Nepal (main)");
   const authorName = (id: string | null) => authors.find((author) => author.id === id)?.name ?? "";
 
   return (
@@ -44,7 +44,7 @@ export const ArticlesOverview = ({ articles, sites, authors, today }: ArticlesOv
             Travel guides
             <span className="rounded-full bg-muted px-2.5 py-0.5 font-sans text-caption font-bold text-text">{articles.length}</span>
           </h1>
-          <p className="m-0 mt-1 max-w-195 text-muted-foreground">Practical guides for planning a trek: seasons, permits, health and gear. Each belongs to one website.</p>
+          <p className="m-0 mt-1 max-w-195 text-muted-foreground">Practical guides for planning a trek: seasons, permits, health and gear. These are {siteName}’s; each website has its own.</p>
         </div>
         <Link href={NEW_ARTICLE_PATH} className={primaryButton}>
           <Icon name="add" />
@@ -58,15 +58,6 @@ export const ArticlesOverview = ({ articles, sites, authors, today }: ArticlesOv
           <Icon name="search" size={20} className="pointer-events-none absolute top-2.5 left-3 text-muted-foreground" />
           <input type="search" value={filters.query} onChange={(event) => setFilters({ ...filters, query: event.target.value })} placeholder="Search by title" className={cn(inputClass, "pl-10.5")} />
         </label>
-        <select aria-label="Filter by website" value={filters.site} onChange={(event) => setFilters({ ...filters, site: event.target.value })} className={selectClass}>
-          <option value="all">All websites</option>
-          <option value="main">Travel To Nepal (main)</option>
-          {sites.map((site) => (
-            <option key={site.id} value={site.id}>
-              {site.name}
-            </option>
-          ))}
-        </select>
         <select aria-label="Filter by topic" value={filters.topic} onChange={(event) => setFilters({ ...filters, topic: topicOf(event.target.value) })} className={selectClass}>
           <option value="">All topics</option>
           {ARTICLE_TOPICS.map((topic) => (
@@ -90,10 +81,10 @@ export const ArticlesOverview = ({ articles, sites, authors, today }: ArticlesOv
       </div>
 
       {shown.length ? (
-        <ArticleRows articles={shown} siteName={siteName} authorName={authorName} today={today} />
+        <ArticleRows articles={shown} authorName={authorName} today={today} />
       ) : (
         <p className="m-0 rounded-lg border border-dashed border-line-strong bg-surface px-6 py-12 text-center text-muted-foreground">
-          {articles.length ? "No travel guide matches these filters." : "No travel guides yet. Add the first one with “Add travel guide”."}
+          {articles.length ? "No travel guide matches these filters." : `${siteName} has no travel guides yet. Add the first one with “Add travel guide”.`}
         </p>
       )}
     </>

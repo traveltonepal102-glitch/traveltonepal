@@ -40,7 +40,7 @@ const savedLabel = (updatedAt: string) => `Published · saved ${formatDateTime(u
 /** "View on site" opens the main website; a region website isn't built yet, so its pages have none. */
 const viewOnSiteUrl = (site: Site) => (site.kind === "main" ? (env.WEBSITE_URL ?? null) : null);
 
-/** The list editor, open at ?page=<slug> (Home when missing or unknown). */
+/** The list editor, open at ?page=<slug> (its first page when missing or unknown). */
 const ListPagesEditorPage = async (site: Site, pageParam: unknown) => {
   const listPages = listPagesFor(site.kind);
   const pages = await getSitePages(site.id, listPages.map((page) => page.slug));
@@ -48,7 +48,7 @@ const ListPagesEditorPage = async (site: Site, pageParam: unknown) => {
   const pageOf = (slug: ListPageSlug) => pages.find((page) => page.slug === slug);
   // Every list page of the site has its row (made with the site); a missing one is a broken site.
   if (!latest || listPages.some((page) => !pageOf(page.slug))) notFound();
-  const initialPage = listPages.find((page) => page.slug === pageParam)?.slug ?? "home";
+  const initialPage = listPages.find((page) => page.slug === pageParam)?.slug ?? listPages[0].slug;
   return (
     <ListPagesEditor
       action={saveListPages.bind(null, site.id)}
@@ -102,7 +102,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
     return <ContactPageEditor action={saveContactPage.bind(null, site.id)} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
   }
 
-  const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(), listRegions()]);
+  const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(site.id), listRegions()]);
   return (
     <AboutPageEditor
       action={saveAboutPage.bind(null, site.id)}

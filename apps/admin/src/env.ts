@@ -19,6 +19,11 @@ const envSchema = z.object({
   /** Optional: the main website, for the "View website" link and for refreshing it after a save (with REVALIDATE_SECRET). */
   WEBSITE_URL: optional(z.url({ protocol: /^https?$/, error: "must be an http(s) URL" })),
   /**
+   * Optional: where region websites run instead of their address in Sites, "manaslu=http://localhost:3002,everest=…"
+   * (development, or before a website has its domain). Read by lib/website/websiteAddresses.ts.
+   */
+  REGION_WEBSITE_URLS: optional(z.string().regex(/^[a-z0-9-]+=https?:\/\/[^\s,=]+(,[a-z0-9-]+=https?:\/\/[^\s,=]+)*$/, "must be like manaslu=http://localhost:3002,everest=https://everest.example.com")),
+  /**
    * Optional: where the sized photos are public, without a trailing slash (production: the CloudFront
    * address, e.g. https://images.traveltonepal.com). Empty: Supabase Storage's public "photos" bucket.
    */

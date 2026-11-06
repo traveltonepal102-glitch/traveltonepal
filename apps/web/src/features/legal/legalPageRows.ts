@@ -1,3 +1,4 @@
+import { sectionIds } from "@ttn/site-data/legalText";
 import { splitLegalSections, toLegalTextDoc } from "@ttn/ui/lib/legalText";
 import { z } from "zod";
 
@@ -22,17 +23,6 @@ const contentSchema = z
 /** "2026-10-26" → "26 October 2026" (a calendar day: no time zone to shift it). */
 const formatDay = (day: string) =>
   day ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`)) : "";
-
-/** "If you cancel" → "if-you-cancel", made unique on the page ("if-you-cancel-2"). */
-const sectionIds = (headings: readonly string[]) => {
-  const seen = new Map<string, number>();
-  return headings.map((heading) => {
-    const base = heading.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
-    const count = (seen.get(base) ?? 0) + 1;
-    seen.set(base, count);
-    return count === 1 ? base : `${base}-${count}`;
-  });
-};
 
 /** A legal page's web_site_pages row as the page shows it, with the company details from Site settings filled in. */
 export const toLegalDoc = (slug: LegalSlug, row: WebSitePageRow, settings: SiteSettings): LegalDoc => {

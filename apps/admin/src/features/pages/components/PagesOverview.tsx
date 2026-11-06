@@ -4,6 +4,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { REGION_HOME_PATH } from "@/features/region-home/constants";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 import type { SiteKind } from "@/lib/supabase/database.types";
 
@@ -24,6 +25,9 @@ const PAGE_ROWS: { slug: EditablePageSlug | ListPageSlug | LegalPageSlug; label:
   ...LIST_PAGES.map((page) => ({ ...page, what: "Big heading, text under it, Google title and description", href: listPagePath(page.slug) })),
   ...LEGAL_PAGES.map((page) => ({ ...page, href: legalPagePath(page.slug) })),
 ];
+
+/** A region website's Home has its own editor: its main trek, the top of the page and the Google result. */
+const REGION_HOME_ROW = { href: REGION_HOME_PATH, what: "Main trek, the top of the page (photo, title, intro) and the Google result" };
 
 const ROW = "flex w-full items-center gap-3 border-t border-solid border-[#EEF2F6] px-5 py-3.5 text-left no-underline first:border-t-0";
 
@@ -56,7 +60,8 @@ type PagesOverviewProps = {
 /** Pages (design: Admin-pages, list view): the pages that are not treks, regions or travel guides, in groups. */
 export const PagesOverview = ({ siteKind, savedLabels }: PagesOverviewProps) => {
   const siteListPages = listPagesFor(siteKind);
-  const isOnSite = (slug: string) => !LIST_PAGES.some((page) => page.slug === slug) || siteListPages.some((page) => page.slug === slug);
+  // A region site's Home is not a list page there, but it has its own editor.
+  const isOnSite = (slug: string) => slug === "home" || !LIST_PAGES.some((page) => page.slug === slug) || siteListPages.some((page) => page.slug === slug);
 
   return (
     <div className="flex max-w-295 flex-col gap-5.5">
@@ -80,8 +85,9 @@ export const PagesOverview = ({ siteKind, savedLabels }: PagesOverviewProps) => 
             <p className="m-0 mt-0.5 max-w-190 text-caption text-muted-foreground">{group.description}</p>
           </div>
           {group.pages.filter(isOnSite).map((slug) => {
-            const row = PAGE_ROWS.find((candidate) => candidate.slug === slug);
-            if (!row) return null;
+            const found = PAGE_ROWS.find((candidate) => candidate.slug === slug);
+            if (!found) return null;
+            const row = siteKind === "region" && slug === "home" ? { ...found, ...REGION_HOME_ROW } : found;
             return (
               <Link key={row.slug} href={row.href} className={cn(ROW, "hover:bg-page focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring")}>
                 <PageRowContent icon={row.icon} tone={group.tone} label={row.label} websitePath={row.websitePath} what={row.what} note={savedLabels[row.slug] ?? "Not saved yet"} />
