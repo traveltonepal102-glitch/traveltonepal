@@ -7,9 +7,10 @@ import { z } from "zod";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { TRAVEL_GUIDES_PATH, articlePath } from "../constants";
 import { articleSchema, readArticleForm } from "../schemas/articleSchema";
@@ -23,7 +24,7 @@ type FailureReason = Extract<SaveArticleResult, { ok: false }>["reason"];
 
 /** What each failed save says, and on which field. */
 const FAILURES: Record<FailureReason, { message: string; field?: [string, string] }> = {
-  slug_taken: { message: "That web address is already used.", field: ["slug", "Another travel guide uses this web address. Pick another."] },
+  slug_taken: { message: "That web address is already used.", field: ["slug", "Another travel guide on this website uses this web address. Pick another."] },
   author_language: { message: "That author doesn't write in English.", field: ["authorId", "Pick an author who writes in English, or add English in Authors."] },
   checker_not_allowed: { message: "That guide can't check travel guides.", field: ["checkerGuideId", "Pick a guide who can check travel guides."] },
   guest_needs_checker: {
@@ -39,12 +40,15 @@ const FAILURES: Record<FailureReason, { message: string; field?: [string, string
 };
 
 /**
- * Saves the travel guide editor. articleId null adds a guide and opens it; otherwise updates it.
- * articleId comes from the browser (bound argument), so it is checked here; access is enforced by RLS.
+ * Saves the travel guide editor. articleId null adds a guide to the website `siteId` and opens it; otherwise updates
+ * it (a guide stays on its website). Both are bound by the page; the save is refused when "Working on" changed since,
+ * and access is enforced by RLS.
  */
-export const saveArticle = async (articleId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const saveArticle = async (siteId: string, articleId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
   if (articleId !== null && !z.uuid().safeParse(articleId).success) return failure(FAILURES.not_found.message);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = articleSchema.safeParse(readArticleForm(formData));
   if (!parsed.success) {
@@ -54,7 +58,7 @@ export const saveArticle = async (articleId: string | null, _previous: EditorSav
   }
 
   const previousFiles = articleId ? await listGuideFilePaths(articleId) : [];
-  const result = await saveArticleToDatabase(parsed.data, articleId);
+  const result = await saveArticleToDatabase(parsed.data, articleId, siteId);
   if (!result.ok) {
     const { message, field } = FAILURES[result.reason];
     return failure(message, field ? { [field[0]]: field[1] } : {});
@@ -64,7 +68,7 @@ export const saveArticle = async (articleId: string | null, _previous: EditorSav
   const keptFiles = new Set(parsed.data.sections.flatMap((section) => (section.type === "file" ? [section.path] : [])));
   await removeUnusedGuideFiles(previousFiles.filter((path) => !keptFiles.has(path)));
 
-  refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.travelGuides]);
   revalidatePath(TRAVEL_GUIDES_PATH, "layout");
   if (articleId === null) redirect(`${articlePath(result.articleId)}?added=1`);
   return { status: "saved" };

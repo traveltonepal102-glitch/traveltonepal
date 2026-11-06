@@ -42,7 +42,8 @@ export type ContactPageValues = PageTopValues & {
 };
 
 /** Pages › List pages: the top and Google result of Home, Treks, Regions and Travel guides, edited together. */
-export type ListPagesValues = Record<"home" | "treks" | "regions" | "travel-guides", PageTopValues>;
+/** The site's list pages (a region site has only Home and Travel guides). */
+export type ListPagesValues = Partial<Record<"home" | "treks" | "regions" | "travel-guides", PageTopValues>>;
 
 /** One legal page (Pages › Legal pages): its title (H1), intro and text, and when and whether it was checked. */
 export type LegalPageValues = {

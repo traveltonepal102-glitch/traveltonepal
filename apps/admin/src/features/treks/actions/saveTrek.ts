@@ -7,10 +7,11 @@ import { z } from "zod";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
 import { removeUnusedTrekFile } from "@/lib/storage/trekFiles";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKS_PATH, trekPath } from "../constants";
 import { readTrekForm, trekSchema } from "../schemas/trekSchema";
@@ -26,12 +27,15 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Saves the trek editor. trekId null adds a trek and opens it; otherwise updates it.
- * trekId comes from the browser (bound argument), so it is checked here and access is enforced by RLS.
+ * Saves the trek editor. trekId null adds a trek to the website `siteId` and opens it; otherwise updates it (a trek
+ * stays on its website). Both are bound by the page; the save is refused when "Working on" changed since, and
+ * access is enforced by RLS.
  */
-export const saveTrek = async (trekId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const saveTrek = async (siteId: string, trekId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
   if (trekId !== null && !z.uuid().safeParse(trekId).success) return failure(FAILURE_MESSAGES.not_found);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = trekSchema.safeParse(readTrekForm(formData));
   if (!parsed.success) {
@@ -41,10 +45,10 @@ export const saveTrek = async (trekId: string | null, _previous: EditorSaveState
   }
 
   const previousPdfMap = trekId ? await getTrekPdfMapPath(trekId) : null;
-  const result = await saveTrekToDatabase(parsed.data, trekId);
+  const result = await saveTrekToDatabase(parsed.data, trekId, siteId);
   if (!result.ok) {
     if (result.reason === "slug_taken") {
-      return failure("That web address is already used.", { slug: "Another trek uses this web address. Pick another." });
+      return failure("That web address is already used.", { slug: "Another trek on this website uses this web address. Pick another." });
     }
     return failure(FAILURE_MESSAGES[result.reason]);
   }
@@ -52,7 +56,7 @@ export const saveTrek = async (trekId: string | null, _previous: EditorSaveState
   // A replaced or removed printable map is public, so it is deleted once the trek no longer points to it.
   if (previousPdfMap && previousPdfMap !== parsed.data.pdfMapPath) await removeUnusedTrekFile(previousPdfMap);
 
-  refreshWebsite([WEBSITE_CACHE_TAGS.treks]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.treks]);
   revalidatePath(TREKS_PATH);
   revalidatePath(trekPath(result.trekId));
   if (trekId === null) redirect(`${trekPath(result.trekId)}?added=1`);

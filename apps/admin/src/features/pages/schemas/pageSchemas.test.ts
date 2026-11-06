@@ -4,7 +4,8 @@ import { toFieldErrors } from "@/lib/forms/fieldErrors";
 
 import { aboutPageSchema, readAboutForm } from "./aboutPageSchema";
 import { contactPageSchema, readContactForm } from "./contactPageSchema";
-import { listPagesSchema, readListPagesForm } from "./listPagesSchema";
+import { listPagesFor } from "../constants";
+import { listPagesSchemaFor, readListPagesForm } from "./listPagesSchema";
 
 const ID = "6f1c2b3a-1d2e-4f50-8a9b-0c1d2e3f4a5b";
 const rich = (text: string) => JSON.stringify({ type: "doc", content: [{ type: "paragraph", content: text ? [{ type: "text", text }] : [] }] });
@@ -149,16 +150,16 @@ describe("listPagesSchema", () => {
   ];
 
   it("reads each page's fields by its slug, keeping {regions} for the website to fill", () => {
-    const result = listPagesSchema.safeParse(
+    const result = listPagesSchemaFor().safeParse(
       readListPagesForm(form([...pageFields("home", "Walk the Himalaya"), ...pageFields("treks", "Nepal treks"), ...pageFields("regions", "Regions"), ...pageFields("travel-guides", "Guides")])),
     );
     expect(result.success).toBe(true);
     expect(result.data?.treks).toMatchObject({ heading: "Nepal treks", intro: "{regions} trekking regions.", photoId: null });
-    expect(result.data?.["travel-guides"].heading).toBe("Guides");
+    expect(result.data?.["travel-guides"]?.heading).toBe("Guides");
   });
 
   it("reads each page's Google settings: canonical address and Hide from Google", () => {
-    const result = listPagesSchema.safeParse(
+    const result = listPagesSchemaFor().safeParse(
       readListPagesForm(
         form([
           ...pageFields("home", "Walk the Himalaya"),
@@ -175,9 +176,19 @@ describe("listPagesSchema", () => {
   });
 
   it("puts an error on the page it belongs to", () => {
-    const result = listPagesSchema.safeParse(
+    const result = listPagesSchemaFor().safeParse(
       readListPagesForm(form([...pageFields("home", "Home"), ...pageFields("treks", ""), ...pageFields("regions", "Regions"), ...pageFields("travel-guides", "Guides")])),
     );
     expect(Object.keys(toFieldErrors(result.error!))).toEqual(["treks.heading"]);
+  });
+
+  it("checks only Travel guides on a region site (its Home has its own editor; no Treks or Regions page)", () => {
+    const regionPages = listPagesFor("region");
+    expect(regionPages.map((page) => page.slug)).toEqual(["travel-guides"]);
+    const result = listPagesSchemaFor(regionPages).safeParse(
+      readListPagesForm(form([...pageFields("home", "Manaslu Trek"), ...pageFields("travel-guides", "Manaslu guides")]), regionPages),
+    );
+    expect(result.success).toBe(true);
+    expect(Object.keys(result.data ?? {})).toEqual(["travel-guides"]);
   });
 });

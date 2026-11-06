@@ -7,10 +7,11 @@ import { usePathname } from "next/navigation";
 import type { KeyboardEvent, ReactNode, RefObject } from "react";
 
 import { SIDEBAR_ID } from "../constants";
-import { ADMIN_SECTIONS, isActivePath } from "../navigation";
+import type { SiteKind } from "@/lib/supabase/database.types";
+
+import { ADMIN_SECTIONS, isActivePath, navGroupsFor } from "../navigation";
 import { SidebarNav } from "./SidebarNav";
 import { SidebarNavLink } from "./SidebarNavLink";
-import { SiteSwitcher } from "./SiteSwitcher";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -20,6 +21,9 @@ type SidebarProps = {
   onClose: () => void;
   onToggleRail: () => void;
   closeButtonRef: RefObject<HTMLButtonElement | null>;
+  /** The kind of site "Working on" shows: a region site has its own, shorter menu. */
+  siteKind: SiteKind;
+  siteSwitcher: ReactNode;
   user: ReactNode;
 };
 
@@ -27,7 +31,7 @@ const sidebarButton =
   "m-0 cursor-pointer items-center justify-center rounded-md border-0 focus-visible:outline-2 focus-visible:outline-sidebar-ring";
 
 /** Navy menu: full width (256px), icons only (76px) on wide screens, or a drawer on narrow ones. */
-export const Sidebar = ({ isOpen, isClosing, isRail, onClose, onToggleRail, closeButtonRef, user }: SidebarProps) => {
+export const Sidebar = ({ isOpen, isClosing, isRail, onClose, onToggleRail, closeButtonRef, siteKind, siteSwitcher, user }: SidebarProps) => {
   const pathname = usePathname();
   const railLabel = isRail ? "Show the full menu" : "Show icons only";
 
@@ -78,8 +82,8 @@ export const Sidebar = ({ isOpen, isClosing, isRail, onClose, onToggleRail, clos
         </button>
       </div>
 
-      <SiteSwitcher />
-      <SidebarNav pathname={pathname} onNavigate={onClose} />
+      {siteSwitcher}
+      <SidebarNav groups={navGroupsFor(siteKind)} pathname={pathname} onNavigate={onClose} />
 
       <div className="px-3.5 pb-2 rail:px-3">
         <SidebarNavLink

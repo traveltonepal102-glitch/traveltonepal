@@ -128,6 +128,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>, videoTitles
   const [text] = row.trek_translations;
   return {
     id: row.id,
+    siteId: row.site_id,
     updatedAt: row.updated_at,
     regionName: regionNames.get(row.region_id) ?? "",
     routeRegionNames: toRouteRegionIds(row.trek_regions).map((id) => regionNames.get(id) ?? ""),
@@ -241,13 +242,14 @@ export const listRegionOptions = cache(async (): Promise<RegionOption[]> => {
 
 const regionNameMap = async () => new Map((await listRegionOptions()).map((region) => [region.id, region.name]));
 
-/** Treks to pick as similar treks (every trek but `exceptId`), A–Z. Throws when the database can't be read. */
-export const listSimilarTrekOptions = async (exceptId: string | null): Promise<SimilarTrekOption[]> => {
+/** The website's treks to pick from (as similar treks, a region's featured trek…), but `exceptId`, A–Z. Throws when the database can't be read. */
+export const listSimilarTrekOptions = async (siteId: string, exceptId: string | null): Promise<SimilarTrekOption[]> => {
   const supabase = await createSupabaseServerClient();
   const [{ data, error }, regionNames] = await Promise.all([
     supabase
       .from("treks")
       .select(`id, days, difficulty, region_id, cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}), trek_translations!inner(name), trek_regions(position, region_id)`)
+      .eq("site_id", siteId)
       .eq("trek_translations.locale", TREK_LOCALE),
     regionNameMap(),
   ]);
@@ -268,13 +270,14 @@ export const listSimilarTrekOptions = async (exceptId: string | null): Promise<S
     .sort((a, b) => a.name.localeCompare(b.name));
 };
 
-/** All treks with their English text, most recently edited first. Throws when the database can't be read. */
-export const listTreks = async (): Promise<Trek[]> => {
+/** The website's treks with their English text, most recently edited first. Throws when the database can't be read. */
+export const listTreks = async (siteId: string): Promise<Trek[]> => {
   const supabase = await createSupabaseServerClient();
   const [{ data, error }, regionNames, videoTitles] = await Promise.all([
     supabase
       .from("treks")
       .select(TREK_COLUMNS)
+      .eq("site_id", siteId)
       .eq("trek_translations.locale", TREK_LOCALE)
       .eq("trek_days.trek_day_translations.locale", TREK_LOCALE)
       .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
@@ -317,13 +320,17 @@ export type SaveTrekResult =
   | { ok: true; trekId: string }
   | { ok: false; reason: "slug_taken" | "missing_link" | "not_found" | "forbidden" | "failed" };
 
-/** Adds (trekId null) or updates a trek, its English text and its photos in one transaction (save_trek). */
-export const saveTrek = async (values: TrekFormValues, trekId: string | null): Promise<SaveTrekResult> => {
+/**
+ * Adds (trekId null) a trek to the website `siteId`, or updates one (it stays on its website), with its English text
+ * and its photos in one transaction (save_trek).
+ */
+export const saveTrek = async (values: TrekFormValues, trekId: string | null, siteId: string): Promise<SaveTrekResult> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_trek", {
     p_trek_id: trekId,
     p_locale: TREK_LOCALE,
     p_trek: {
+      site_id: siteId,
       slug: values.slug,
       region_id: values.regionId,
       status: values.status,
@@ -447,5 +454,19 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null): P
   if (error.code === RLS_VIOLATION) return { ok: false, reason: "forbidden" };
 
   console.error(`save_trek failed: ${error.code} ${error.message}`);
+  return { ok: false, reason: "failed" };
+};
+
+export type CopyTrekResult = { ok: true; trekId: string } | { ok: false; reason: "not_found" | "forbidden" | "failed" };
+
+/** Copies one of Travel To Nepal's treks to a region website as a new draft trek, new ids and all (copy_trek). */
+export const copyTrek = async (trekId: string, siteId: string): Promise<CopyTrekResult> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc("copy_trek", { p_trek_id: trekId, p_site_id: siteId });
+  if (!error) return { ok: true, trekId: data };
+  if (error.code === NOT_FOUND) return { ok: false, reason: "not_found" };
+  if (error.code === RLS_VIOLATION) return { ok: false, reason: "forbidden" };
+
+  console.error(`copy_trek failed: ${error.code} ${error.message}`);
   return { ok: false, reason: "failed" };
 };

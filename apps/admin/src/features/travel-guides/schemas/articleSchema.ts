@@ -45,8 +45,6 @@ export const articleSchema = z
     highlightTag: text(LIMIT.highlightTag),
     updatedLine: text(LIMIT.updatedLine),
     facts: factsField,
-    siteRegionId: optionalId("Pick the website from the list."),
-    alsoOnMainSite: isOn,
     topic: z.enum(ARTICLE_TOPIC_VALUES, "Pick the topic."),
     slug: slugField("best-time-to-trek-langtang"),
     status: z.enum(ARTICLE_STATUS_VALUES, "Pick the status."),
@@ -89,7 +87,6 @@ export const articleSchema = z
   })
   .transform((article): ArticleFormValues => ({
     ...article,
-    alsoOnMainSite: article.alsoOnMainSite && article.siteRegionId !== null,
     // "As soon as I click Publish" keeps no chosen date (the database keeps the day it first went live).
     publishedOn: article.publishMode === "date" ? article.publishedOn : null,
   })) satisfies z.ZodType<ArticleFormValues, unknown>;
@@ -111,8 +108,6 @@ export const readArticleForm = (formData: FormData) => ({
     "photoTrekId",
     "highlightTag",
     "updatedLine",
-    "siteRegionId",
-    "alsoOnMainSite",
     "topic",
     "slug",
     "status",

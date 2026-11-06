@@ -5,7 +5,7 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { TrekDetail } from "../types";
 
-/** Phones: the booking card is far down the page, so the price, WhatsApp and email stay pinned to the bottom. */
+/** Phones: the booking card scrolls away under the photos, so the price, WhatsApp and email stay pinned to the bottom. */
 export const MobileBookingBar = ({ trek }: { trek: TrekDetail }) => (
   <div className="sticky bottom-0 z-30 flex items-center justify-between gap-3 border-t border-line bg-surface px-4 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] md:hidden">
     {trek.priceFromUsd ? (

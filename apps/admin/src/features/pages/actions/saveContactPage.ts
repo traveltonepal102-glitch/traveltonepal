@@ -1,30 +1,32 @@
 "use server";
 
-import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 
 import { pagePath } from "../constants";
 import { contactContentOf } from "../lib/pageContent";
 import { contactPageSchema, readContactForm } from "../schemas/contactPageSchema";
 import { saveSitePage } from "../services/pagesRepository";
+import { refreshSitePages } from "./pageSite";
 import { failedPageSave, invalidPageForm } from "./pageSaveResult";
 
-/** Saves Pages › Contact. Any admin may (checked here and by Row Level Security). */
-export const saveContactPage = async (_previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+/** Saves Pages › Contact of the site it was opened for (siteId, bound by the page). Any admin may (checked here and by Row Level Security). */
+export const saveContactPage = async (siteId: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = contactPageSchema.safeParse(readContactForm(formData));
   if (!parsed.success) return invalidPageForm(parsed.error);
 
   const values = parsed.data;
-  const result = await saveSitePage("contact", { ...values, content: contactContentOf(values) });
+  const result = await saveSitePage(siteId, "contact", { ...values, content: contactContentOf(values) });
   if (!result.ok) return failedPageSave(result);
 
-  refreshWebsite([WEBSITE_CACHE_TAGS.pages]);
+  refreshSitePages(siteId);
   revalidatePath(pagePath("contact"));
   return { status: "saved" };
 };

@@ -67,7 +67,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
   const [chosenPhotos, setChosenPhotos] = useState<Photo[]>([]);
   const knownPhotos = [...chosenPhotos, ...options.photos];
   const addPhoto = (photo: Photo) => setChosenPhotos((current) => (current.some((other) => other.id === photo.id) ? current : [photo, ...current]));
-  const site = options.sites.find((item) => item.id === draft.siteRegionId);
+  const { site } = options;
 
   const changeCover = (next: typeof cover) => {
     setCover(next);
@@ -101,6 +101,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
         <div className="flex min-w-0 flex-col gap-4">
           <ArticleTopCard
             values={values}
+            regionId={site.region?.id ?? null}
             draft={draft}
             cover={cover}
             readMinutes={readMinutes({ intro: draft.intro, sections: sections.rows })}
@@ -116,7 +117,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
               guides: options.guides,
               photos: knownPhotos,
               addPhoto,
-              region: site ? { id: site.id, name: site.name } : null,
+              region: site.region,
               months,
               onMonthsChange: (next) => {
                 setMonths(next);
@@ -129,7 +130,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
         </div>
 
         <aside aria-label="Travel guide settings" className="flex min-w-0 flex-col gap-4">
-          <PublishingCard values={values} article={article} sites={options.sites} siteRegionId={draft.siteRegionId} title={draft.title} errors={errors} />
+          <PublishingCard values={values} article={article} addressPrefix={site.addressPrefix} title={draft.title} errors={errors} />
           <GuidesPageCard values={values} errors={errors} />
           <PeopleCard values={values} authors={options.authors} checkers={options.checkers} errors={errors} />
           <LinksCard values={values} options={options} errors={errors} onEdit={markDirty} />
@@ -146,7 +147,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
           <ArticleSeoCard
             values={values}
             draft={draft}
-            domain={site?.domain ?? "traveltonepal.com"}
+            domain={site.domain}
             checks={getArticleSeoChecks({ ...draft, hasCover: cover !== null, sections: sections.rows })}
             errors={errors}
             sharePhoto={article?.sharePhoto ?? null}

@@ -1,32 +1,18 @@
 import { isIconName } from "@ttn/ui/icon";
-import { photoAltText } from "@ttn/ui/lib/photos";
 import { z } from "zod";
 
 import type { IconTone } from "@/components/shared/iconTones";
 import { readPageRichText } from "@/features/site-pages/pageRichText";
 import { toSitePageTop } from "@/features/site-pages/sitePageRows";
-import type { SiteImageSource } from "@/lib/images";
 import { coverImage } from "@/lib/images";
 import { listOf } from "@/lib/jsonList";
 import type { WebAboutTeamRow, WebSitePageRow } from "@/lib/supabase/database.types";
 import { SITE_NAME } from "@/lib/site";
 
-import { beliefOf, fieldOf, honestOf, listenOf, paragraphsOf, safetyOf, sectionObject, text, titledList } from "./aboutBeliefRows";
-import type { AboutFlexible, AboutOpenMind, AboutPageContent, Founder, TeamMember } from "./types";
+import { PHOTO_PLACES, fieldOf, flexibleOf, honestOf, listenOf, openMindOf, paragraphsOf, photosByPlace, safetyOf, sectionObject, text, titledList } from "./aboutBeliefRows";
+import type { AboutPageContent, Founder, TeamMember } from "./types";
 
 const promiseSchema = z.object({ icon: z.string().catch(""), title: z.string().trim().min(1), text });
-const pagePhotoSchema = z.object({
-  id: z.string().min(1),
-  variant_widths: z.array(z.number()).min(1),
-  file_name: z.string().nullable().catch(null),
-  placeholder: z.string().nullable().catch(null),
-  place: z.string().nullable().catch(null),
-  position: z.number().int(),
-});
-
-/** The page's photos by place (site_page_photos.position): 1 the founder, 2 "flexible", 3–5 the villages. */
-const PHOTO_PLACES = { founder: 1, flexible: 2, places: [3, 4, 5] } as const;
-
 /** The promises take their icon tile colours from their place in the row (the design's order). */
 const PROMISE_TONES: readonly IconTone[] = ["brand", "saffron", "green", "navy", "green", "saffron"];
 const MAX_PROMISES = 6;
@@ -46,62 +32,11 @@ const founderOf = (row: WebSitePageRow, photosBaseUrl: string): Founder | undefi
   return { name, shortName: name.split(/\s+/)[0] ?? name, role: row.founder_role?.trim() ?? "", photo };
 };
 
-/** A function giving the photo at a place, described by `alt` (or by where it was taken). */
-const photosByPlace = (value: unknown, photosBaseUrl: string) => {
-  const photos = listOf(value, pagePhotoSchema);
-  return (position: number, alt: string): SiteImageSource | undefined => {
-    const photo = photos.find((item) => item.position === position);
-    if (!photo) return undefined;
-    return {
-      src: `${photosBaseUrl}/${photo.id}`,
-      alt: alt || photoAltText({ place: photo.place ?? "" }, SITE_NAME),
-      variantWidths: photo.variant_widths,
-      fileName: photo.file_name || undefined,
-      placeholder: photo.placeholder || undefined,
-    };
-  };
-};
-
-type PhotoAt = ReturnType<typeof photosByPlace>;
-
-const flexibleOf = (value: unknown, photoAt: PhotoAt): AboutFlexible => {
-  const section = sectionObject(value);
-  const photoCaption = fieldOf(section, "photoCaption");
-  return {
-    ...beliefOf(section),
-    quoteNote: fieldOf(section, "quoteNote"),
-    photo: photoAt(PHOTO_PLACES.flexible, photoCaption),
-    photoCaption,
-    stagesHeading: fieldOf(section, "stagesHeading"),
-    stages: titledList(section.stages),
-    limits: { lead: fieldOf(section, "limitsLead"), text: fieldOf(section, "limitsText") },
-  };
-};
-
-const openMindOf = (value: unknown, photoAt: PhotoAt): AboutOpenMind => {
-  const section = sectionObject(value);
-  const places = listOf(section.places, z.object({ title: text, text }).catch({ title: "", text: "" }));
-  return {
-    ...beliefOf(section),
-    more: paragraphsOf(fieldOf(section, "more")),
-    quoteNote: fieldOf(section, "quoteNote"),
-    // A village shows with its photo only (the photo places follow the villages' order).
-    places: PHOTO_PLACES.places.flatMap((position, index) => {
-      const place = places[index];
-      const photo = place?.title ? photoAt(position, `${place.title}: ${place.text}`) : undefined;
-      return place && photo ? [{ ...place, photo }] : [];
-    }),
-    inviteHeading: fieldOf(section, "inviteHeading"),
-    invites: titledList(section.invites),
-    inviteNote: fieldOf(section, "inviteNote"),
-  };
-};
-
 /** The web_site_pages row of the About page, as the page shows it; broken or empty items are left out. */
 export const toAboutPage = (row: WebSitePageRow, photosBaseUrl: string): AboutPageContent => {
   const content = sectionObject(row.content);
   const field = (key: string) => fieldOf(content, key);
-  const photoAt = photosByPlace(row.story_photos, photosBaseUrl);
+  const photoAt = photosByPlace(row.story_photos, photosBaseUrl, SITE_NAME);
   const founder = founderOf(row, photosBaseUrl);
   const statValue = field("statValue");
   const statLabel = field("statLabel");

@@ -61,6 +61,8 @@ export type TrekTagValue = "classic" | "off-the-beaten-path";
 
 type TrekRow = {
   id: string;
+  /** The website the trek belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
   slug: string;
   region_id: string;
   status: TrekStatusValue;
@@ -217,6 +219,8 @@ export type ReviewSourceValue = "google" | "tripadvisor";
 /** A real review copied from a review site (supabase/migrations/20261027130000_reviews.sql). */
 export type ReviewRow = {
   id: string;
+  /** The website the review belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
   source: ReviewSourceValue;
   url: string;
   reviewer_name: string;
@@ -279,9 +283,32 @@ export type VideoRow = {
   updated_by: string | null;
 };
 
+export type SiteKind = "main" | "region";
+
+/** One website of the network (supabase/migrations/20261103100000_sites.sql); `id` is the website's SITE_ID. */
+export type SiteRow = {
+  id: string;
+  kind: SiteKind;
+  /** A region site's region; null for the main site. */
+  region_id: string | null;
+  name: string;
+  /** e.g. "https://manaslutrek.com"; null until the domain is set up. */
+  url: string | null;
+  is_live: boolean;
+  /** A region site's main trek, shown as its Home (one of its own treks); null for none yet and for the main site. */
+  home_trek_id: string | null;
+  position: number;
+  created_at: string;
+  created_by: string | null;
+  updated_at: string;
+  updated_by: string | null;
+};
+
 /** One custom JSON-LD block on a page (supabase/migrations/20261029155000_page_schemas.sql): exactly one page column is set. */
 export type PageSchemaRow = {
   id: string;
+  /** The main site for now ('ttn'); a fixed page's schemas belong to that site's page. */
+  site_id: string;
   site_page_slug: SitePageSlug | null;
   trek_id: string | null;
   region_id: string | null;
@@ -299,13 +326,14 @@ export type PageSchemaRow = {
 export type ArticleFeedbackRow = { id: number; article_id: string; is_helpful: boolean; created_at: string };
 
 /** The overall rating on a review site, as typed in. */
-export type ReviewRatingRow = { source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
+export type ReviewRatingRow = { site_id: string; source: ReviewSourceValue; rating: number; review_count: number; updated_at: string; updated_by: string | null };
 
 export type AuthorKindValue = "office" | "guide" | "guest";
 
 /** The one row of Site settings (supabase/migrations/20261026120000_site_settings.sql). */
 export type SiteSettingsRow = {
-  id: boolean;
+  /** One row per website, made with it. */
+  site_id: string;
   phone_country_code: string;
   phone_number: string;
   email: string;
@@ -348,6 +376,8 @@ export type SitePageSlug = "about" | "contact" | "home" | "treks" | "regions" | 
 
 /** One fixed page of the website (supabase/migrations/20261026150000_site_pages.sql); `content` is checked by zod. */
 export type SitePageRow = {
+  /** The site the page belongs to (supabase/migrations/20261103120000_site_pages_per_site.sql); slugs repeat per site. */
+  site_id: string;
   slug: SitePageSlug;
   eyebrow: string;
   heading: string;
@@ -370,7 +400,7 @@ export type SitePageRow = {
   updated_by: string | null;
 };
 
-type SitePagePhotoRow = { page_slug: SitePageSlug; position: number; photo_id: string };
+type SitePagePhotoRow = { site_id: string; page_slug: SitePageSlug; position: number; photo_id: string };
 
 type AuthorRow = {
   id: string;
@@ -399,7 +429,9 @@ export type ArticleStatusValue = "draft" | "published" | "hidden";
 
 type ArticleRow = {
   id: string;
-  /** Null: the main site. */
+  /** The website the guide belongs to ('ttn': Travel To Nepal). */
+  site_id: string;
+  /** No longer written (site_id replaced it): stays until the website stops reading it. */
   site_region_id: string | null;
   also_on_main_site: boolean;
   slug: string;
@@ -798,7 +830,7 @@ export type Database = {
         Row: SitePagePhotoRow;
         Insert: SitePagePhotoRow;
         Update: never;
-        Relationships: [Fk<"site_page_photos_page_slug_fkey", "page_slug", "site_pages">, Fk<"site_page_photos_photo_id_fkey", "photo_id", "photos">];
+        Relationships: [Fk<"site_page_photos_photo_id_fkey", "photo_id", "photos">];
       };
       reviews: {
         Row: ReviewRow;
@@ -817,6 +849,12 @@ export type Database = {
         Insert: Partial<AdventureRow> & Pick<AdventureRow, "title" | "summary">;
         Update: Partial<AdventureRow>;
         Relationships: [Fk<"adventures_photo_id_fkey", "photo_id", "photos">];
+      };
+      sites: {
+        Row: SiteRow;
+        Insert: never;
+        Update: never;
+        Relationships: [Fk<"sites_region_id_fkey", "region_id", "regions">];
       };
       videos: {
         Row: VideoRow;
@@ -997,6 +1035,10 @@ export type Database = {
       };
       is_admin: { Args: never; Returns: boolean };
       is_super_admin: { Args: never; Returns: boolean };
+      copy_trek: {
+        Args: { p_trek_id: string; p_site_id: string };
+        Returns: string;
+      };
       save_trek: {
         Args: {
           p_trek_id: string | null;
@@ -1023,15 +1065,19 @@ export type Database = {
         Returns: string;
       };
       save_site_settings: {
-        Args: { p_settings: Json };
+        Args: { p_settings: Json; p_site_id: string };
         Returns: undefined;
       };
       save_site_page: {
-        Args: { p_slug: SitePageSlug; p_page: Json; p_photo_ids: Json };
+        Args: { p_slug: SitePageSlug; p_page: Json; p_photo_ids: Json; p_site_id: string };
+        Returns: undefined;
+      };
+      save_region_home: {
+        Args: { p_site_id: string; p_page: Json; p_home_trek_id: string | null };
         Returns: undefined;
       };
       save_site_pages: {
-        Args: { p_pages: Json };
+        Args: { p_pages: Json; p_site_id: string };
         Returns: undefined;
       };
       save_review: {
@@ -1039,7 +1085,7 @@ export type Database = {
         Returns: string;
       };
       save_review_ratings: {
-        Args: { p_ratings: Json };
+        Args: { p_ratings: Json; p_site_id: string };
         Returns: undefined;
       };
       save_adventure_section: {
@@ -1049,6 +1095,14 @@ export type Database = {
       save_adventure: {
         Args: { p_adventure_id: string | null; p_adventure: Json };
         Returns: string;
+      };
+      save_site: {
+        Args: { p_site_id: string | null; p_site: Json };
+        Returns: string;
+      };
+      delete_site: {
+        Args: { p_site_id: string };
+        Returns: undefined;
       };
       save_page_schemas: {
         Args: { p_page_kind: "page" | "trek" | "region" | "guide"; p_page_key: string; p_schemas: Json };

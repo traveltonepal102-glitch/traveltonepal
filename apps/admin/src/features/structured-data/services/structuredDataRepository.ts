@@ -1,5 +1,7 @@
 import "server-only";
 
+import { MAIN_SITE_ID } from "@ttn/config/sites";
+
 import { REGION_LOCALE } from "@/features/regions/constants";
 import { ARTICLE_LOCALE } from "@/features/travel-guides/constants";
 import { TREK_LOCALE } from "@/features/treks/constants";
@@ -43,9 +45,10 @@ export const listSchemaPages = async (): Promise<SchemaPage[]> => {
   const supabase = await createSupabaseServerClient();
   const [schemas, treks, regions, articles] = await Promise.all([
     supabase.from("page_schemas").select("site_page_slug, trek_id, region_id, article_id, is_shown"),
-    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("trek_translations.locale", TREK_LOCALE),
+    // Structured data is Travel To Nepal's only (not in a region website's menu).
+    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("site_id", MAIN_SITE_ID).eq("trek_translations.locale", TREK_LOCALE),
     supabase.from("regions").select("id, slug, region_translations!inner(name)").eq("region_translations.locale", REGION_LOCALE),
-    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("article_translations.locale", ARTICLE_LOCALE),
+    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("site_id", MAIN_SITE_ID).eq("article_translations.locale", ARTICLE_LOCALE),
   ]);
   if (schemas.error || treks.error || regions.error || articles.error) {
     const error = schemas.error ?? treks.error ?? regions.error ?? articles.error;

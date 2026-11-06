@@ -13,7 +13,7 @@ import { AboutPageEditor } from "@/features/pages/components/about/AboutPageEdit
 import { ContactPageEditor } from "@/features/pages/components/contact/ContactPageEditor";
 import { LegalPagesEditor } from "@/features/pages/components/legal/LegalPagesEditor";
 import { ListPagesEditor } from "@/features/pages/components/ListPagesEditor";
-import { EDITABLE_PAGES, LEGAL_PAGES, LEGAL_PAGES_ROUTE, LIST_PAGES, LIST_PAGES_ROUTE, isEditablePage } from "@/features/pages/constants";
+import { EDITABLE_PAGES, LEGAL_PAGES, LEGAL_PAGES_ROUTE, LIST_PAGES_ROUTE, isEditablePage, listPagesFor } from "@/features/pages/constants";
 import type { LegalPageSlug, ListPageSlug } from "@/features/pages/constants";
 import { aboutFactsFrom } from "@/features/pages/lib/aboutFacts";
 import { aboutTeamPeople } from "@/features/pages/lib/aboutTeamPeople";
@@ -24,6 +24,8 @@ import { listRegions } from "@/features/regions/services/regionsRepository";
 import { getSiteSettings } from "@/features/settings/services/settingsRepository";
 import { guidePath } from "@/features/trekking-guides/constants";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
+import type { Site } from "@/features/sites/types";
 import { formatDateTime } from "@/utils/formatDateTime";
 
 export const generateMetadata = async ({ params }: PageProps<"/pages/[slug]">): Promise<Metadata> => {
@@ -35,31 +37,35 @@ export const generateMetadata = async ({ params }: PageProps<"/pages/[slug]">): 
 
 const savedLabel = (updatedAt: string) => `Published · saved ${formatDateTime(updatedAt)} Nepal time`;
 
-/** The list editor, open at ?page=<slug> (Home when missing or unknown). */
-const ListPagesEditorPage = async (pageParam: unknown) => {
-  const pages = await getSitePages(LIST_PAGES.map((page) => page.slug));
+/** "View on site" opens the main website; a region website isn't built yet, so its pages have none. */
+const viewOnSiteUrl = (site: Site) => (site.kind === "main" ? (env.WEBSITE_URL ?? null) : null);
+
+/** The list editor, open at ?page=<slug> (its first page when missing or unknown). */
+const ListPagesEditorPage = async (site: Site, pageParam: unknown) => {
+  const listPages = listPagesFor(site.kind);
+  const pages = await getSitePages(site.id, listPages.map((page) => page.slug));
   const latest = pages.map((page) => page.updatedAt).sort().at(-1);
   const pageOf = (slug: ListPageSlug) => pages.find((page) => page.slug === slug);
-  const topOf = (slug: ListPageSlug) => pageOf(slug)?.top;
-  const sharePhotoOf = (slug: ListPageSlug) => pageOf(slug)?.sharePhoto ?? null;
-  const [home, treks, regions, guides] = [topOf("home"), topOf("treks"), topOf("regions"), topOf("travel-guides")];
-  if (!home || !treks || !regions || !guides || !latest) notFound();
-  const initialPage = LIST_PAGES.find((page) => page.slug === pageParam)?.slug ?? "home";
+  // Every list page of the site has its row (made with the site); a missing one is a broken site.
+  if (!latest || listPages.some((page) => !pageOf(page.slug))) notFound();
+  const initialPage = listPages.find((page) => page.slug === pageParam)?.slug ?? listPages[0].slug;
   return (
     <ListPagesEditor
-      action={saveListPages}
-      values={{ home, treks, regions, "travel-guides": guides }}
-      sharePhotos={{ home: sharePhotoOf("home"), treks: sharePhotoOf("treks"), regions: sharePhotoOf("regions"), "travel-guides": sharePhotoOf("travel-guides") }}
+      action={saveListPages.bind(null, site.id)}
+      pages={listPages}
+      siteName={site.name}
+      values={Object.fromEntries(listPages.map((page) => [page.slug, pageOf(page.slug)?.top]))}
+      sharePhotos={Object.fromEntries(listPages.map((page) => [page.slug, pageOf(page.slug)?.sharePhoto ?? null]))}
       initialPage={initialPage}
-      websiteUrl={env.WEBSITE_URL ?? null}
+      websiteUrl={viewOnSiteUrl(site)}
       lastSaved={savedLabel(latest)}
     />
   );
 };
 
 /** The legal editor, open at ?page=<slug> (Terms when missing or unknown). */
-const LegalPagesEditorPage = async (pageParam: unknown) => {
-  const pages = await getSitePages(LEGAL_PAGES.map((page) => page.slug));
+const LegalPagesEditorPage = async (site: Site, pageParam: unknown) => {
+  const pages = await getSitePages(site.id, LEGAL_PAGES.map((page) => page.slug));
   const latest = pages.map((page) => page.updatedAt).sort().at(-1);
   const valuesOf = (slug: LegalPageSlug) => {
     const page = pages.find((item) => item.slug === slug);
@@ -70,10 +76,10 @@ const LegalPagesEditorPage = async (pageParam: unknown) => {
   const initialPage = LEGAL_PAGES.find((page) => page.slug === pageParam)?.slug ?? "terms";
   return (
     <LegalPagesEditor
-      action={saveLegalPages}
+      action={saveLegalPages.bind(null, site.id)}
       values={{ terms, privacy, impressum, cookies }}
       initialPage={initialPage}
-      websiteUrl={env.WEBSITE_URL ?? null}
+      websiteUrl={viewOnSiteUrl(site)}
       lastSaved={savedLabel(latest)}
     />
   );
@@ -82,29 +88,28 @@ const LegalPagesEditorPage = async (pageParam: unknown) => {
 /** One page's editor: /pages/about, /pages/contact, /pages/lists (the list pages) or /pages/legal (the legal pages). */
 const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[slug]">) => {
   await requireAdmin();
-  const { slug } = await params;
-  if (!isEditablePage(slug)) notFound();
-  if (slug === LIST_PAGES_ROUTE) return ListPagesEditorPage((await searchParams).page);
-  if (slug === LEGAL_PAGES_ROUTE) return LegalPagesEditorPage((await searchParams).page);
+  const [{ slug }, site] = await Promise.all([params, getCurrentSite()]);
+  if (!isEditablePage(slug) || !site) notFound();
+  if (slug === LIST_PAGES_ROUTE) return ListPagesEditorPage(site, (await searchParams).page);
+  if (slug === LEGAL_PAGES_ROUTE) return LegalPagesEditorPage(site, (await searchParams).page);
 
-  const page = await getSitePage(slug);
+  const page = await getSitePage(site.id, slug);
   if (!page) notFound();
   const lastSaved = savedLabel(page.updatedAt);
-  const websiteUrl = env.WEBSITE_URL ?? null;
+  const websiteUrl = viewOnSiteUrl(site);
 
   if (slug === "contact") {
-    return <ContactPageEditor action={saveContactPage} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
+    return <ContactPageEditor action={saveContactPage.bind(null, site.id)} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
   }
 
-  const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(), listRegions()]);
+  const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(site.id), listRegions()]);
   return (
     <AboutPageEditor
-      action={saveAboutPage}
+      action={saveAboutPage.bind(null, site.id)}
       values={toAboutValues(page)}
       photo={page.photo}
       sharePhoto={page.sharePhoto}
       photoSlots={page.photoSlots}
-     
       officeAuthors={authors.filter((author) => author.kind === "office").map((author) => ({ id: author.id, name: author.name, jobTitle: author.jobTitle }))}
       team={aboutTeamPeople(authors, guides, { authorHref: authorPath, guideHref: guidePath })}
       facts={aboutFactsFrom(settings, regions.length)}

@@ -17,6 +17,8 @@ import { SocialSettingsCard } from "./SocialSettingsCard";
 
 type SettingsEditorProps = {
   action: EditorSaveAction;
+  /** The website they belong to, e.g. "Manaslu Trek". */
+  siteName: string;
   settings: SiteSettings;
   /** Only a Super admin may save. */
   canEdit: boolean;
@@ -30,7 +32,7 @@ const SECTION = ADMIN_SECTIONS.settings;
  * Site settings: contact details, company and licences, social links. One form, one Save. A main screen, so it has
  * the same heading as the other main screens (no "back" bar like an item's editor).
  */
-export const SettingsEditor = ({ action, settings, canEdit, lastSaved }: SettingsEditorProps) => {
+export const SettingsEditor = ({ action, siteName, settings, canEdit, lastSaved }: SettingsEditorProps) => {
   const form = useEditorForm({ action, firstKey: "settings", firstSectionWithError: () => undefined, isNew: false, lastSaved });
   const [status, statusTone] = form.saveStatus;
   const { errors, markDirty } = form;
@@ -43,7 +45,7 @@ export const SettingsEditor = ({ action, settings, canEdit, lastSaved }: Setting
         </span>
         <div className="min-w-60 flex-1">
           <h1 className="m-0 font-display text-[28px] leading-tight font-extrabold text-ink max-tablet:text-[22px]">{SECTION.label}</h1>
-          <p className="m-0 mt-1 max-w-195 text-muted-foreground">{SECTION.summary}</p>
+          <p className="m-0 mt-1 max-w-195 text-muted-foreground">{SECTION.summary} These are {siteName}’s: each website has its own, and a blank one is left off its pages.</p>
         </div>
         {canEdit && (
           <div className="flex flex-col items-end gap-1.5 max-tablet:w-full max-tablet:items-stretch">

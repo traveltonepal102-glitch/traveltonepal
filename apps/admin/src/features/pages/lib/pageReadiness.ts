@@ -56,10 +56,11 @@ export const contactReadiness = (values: ContactPageValues): Partial<Record<Cont
 /** Each list page's status in the list editor's menu: its address while the top and Google result are complete. */
 export const listReadiness = (values: ListPagesValues): Partial<Record<ListPageSlug, SectionReadiness>> =>
   Object.fromEntries(
-    LIST_PAGES.map((page) => {
+    LIST_PAGES.flatMap((page) => {
       const top = values[page.slug];
+      if (!top) return [];
       const isComplete = top.heading && top.intro && top.seoKeyword && top.seoTitle && top.seoDescription;
-      return [page.slug, isComplete ? done(page.websitePath) : warn("Text or Google result missing")];
+      return [[page.slug, isComplete ? done(page.websitePath) : warn("Text or Google result missing")]];
     }),
   );
 

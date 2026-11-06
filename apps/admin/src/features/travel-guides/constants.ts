@@ -84,7 +84,7 @@ export const FACT_ICON_VALUES = [
 /** Jan–Dec before they are filled in: "Not ideal" and no notes (like a new region's months). */
 export const emptyMonths = (): MonthEntry[] => Array.from({ length: 12 }, () => ({ rating: "avoid", onTheTrail: "", crowds: "" }));
 
-/** A new travel guide before anything is typed (the main site, "Best time to trek", a draft). */
+/** A new travel guide before anything is typed ("Best time to trek", a draft). */
 export const EMPTY_ARTICLE_VALUES: ArticleValues = {
   title: "",
   intro: "",
@@ -94,8 +94,6 @@ export const EMPTY_ARTICLE_VALUES: ArticleValues = {
   highlightTag: "",
   updatedLine: "",
   facts: [],
-  siteRegionId: null,
-  alsoOnMainSite: false,
   topic: "best-time",
   slug: "",
   status: "draft",

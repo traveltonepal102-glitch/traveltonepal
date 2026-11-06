@@ -5,13 +5,12 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
-import type { EditorSaveAction } from "@/components/editor/types";
+import type { EditorSaveAction, RemoveState } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 
-import { removeReview } from "../../actions/removeReview";
 import { REVIEWS_PATH } from "../../constants";
 import type { Review, ReviewTrekOption, ReviewValues } from "../../types";
 import { ReviewPlacementFields, ReviewTextFields } from "./ReviewFields";
@@ -23,13 +22,14 @@ type ReviewPanelProps = {
   review: Review | null;
   values: ReviewValues;
   treks: ReviewTrekOption[];
-  canRemove: boolean;
+  /** removeReview bound to the website and this review; null without the right, and while adding. */
+  removeAction: (() => Promise<RemoveState>) | null;
 };
 
 const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutral: "text-muted-foreground" } as const;
 
 /** Add or edit one review in a drawer over the list. One Save sends everything and closes the drawer. */
-export const ReviewPanel = ({ action, review, values, treks, canRemove }: ReviewPanelProps) => {
+export const ReviewPanel = ({ action, review, values, treks, removeAction }: ReviewPanelProps) => {
   const form = useEditorForm<"review">({
     action,
     firstKey: "review",
@@ -64,7 +64,7 @@ export const ReviewPanel = ({ action, review, values, treks, canRemove }: Review
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
-          {review && canRemove && <ConfirmRemoveButton name={title} action={removeReview.bind(null, review.id)} />}
+          {removeAction && <ConfirmRemoveButton name={title} action={removeAction} />}
           <span className="flex-1" />
           <Dialog.Close type="button" className={secondaryButton}>
             Cancel

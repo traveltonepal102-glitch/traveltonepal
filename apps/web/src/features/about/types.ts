@@ -1,4 +1,5 @@
 import type { IconName } from "@ttn/ui/icon";
+import type { AboutFlexible, AboutHonest, AboutListen, AboutOpenMind, AboutSafety, TitledText } from "@ttn/site-data/aboutRows";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import type { IconTone } from "@/components/shared/iconTones";
@@ -18,51 +19,7 @@ export type Founder = {
   photo?: SiteImageSource;
 };
 
-/** A short title with a line of text (steps, goals, facts…). Empty ones are left out. */
-export type TitledText = { title: string; text: string };
-
-/** One of the four beliefs: its card in the overview, and its own section (design: About.dc.html). */
-export type AboutBelief = {
-  eyebrow: string;
-  heading: string;
-  paragraphs: string[];
-  quote: string;
-  card: { title: string; text: string; link: string };
-};
-
-export type AboutListen = AboutBelief & {
-  /** Always three (listen, understand, suggest), each shown when it has a title. */
-  steps: TitledText[];
-  questions: string[];
-  understand: { label: string; value: string }[];
-  understandNote: string;
-  example: string;
-};
-
-export type AboutHonest = AboutBelief & { adviceHeading: string; advice: { quote: string; who: string }[]; points: TitledText[] };
-
-export type AboutFlexible = AboutBelief & {
-  quoteNote: string;
-  photo?: SiteImageSource;
-  photoCaption: string;
-  stagesHeading: string;
-  stages: TitledText[];
-  limits: { lead: string; text: string };
-};
-
-export type AboutPlace = TitledText & { photo: SiteImageSource };
-
-export type AboutOpenMind = AboutBelief & {
-  more: string[];
-  quoteNote: string;
-  /** Only the villages with a photo. */
-  places: AboutPlace[];
-  inviteHeading: string;
-  invites: TitledText[];
-  inviteNote: string;
-};
-
-export type AboutSafety = { eyebrow: string; heading: string; facts: TitledText[] };
+export type { AboutBelief, AboutFlexible, AboutHonest, AboutListen, AboutOpenMind, AboutPlace, AboutSafety, TitledText } from "@ttn/site-data/aboutRows";
 
 /** The About page as saved in the admin's Pages › About. */
 export type AboutPageContent = {

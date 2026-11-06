@@ -40,20 +40,22 @@ type TrekEditorProps = {
   pdfMapUrl: string | null;
   lastSaved?: string;
   isJustAdded?: boolean;
+  /** Right after "Copy a trek": a draft whose words are still the original's. */
+  isJustCopied?: boolean;
 };
 
 /**
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
     firstSectionWithError,
     isNew,
     lastSaved,
-    addedLabel: isJustAdded ? "Trek added" : undefined,
+    addedLabel: isJustCopied ? "Copied as a draft: change the words, then publish" : isJustAdded ? "Trek added" : undefined,
   });
   const { errors, activeKey, markDirty } = form;
   const [status, statusTone] = form.saveStatus;

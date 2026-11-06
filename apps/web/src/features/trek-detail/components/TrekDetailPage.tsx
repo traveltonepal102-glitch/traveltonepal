@@ -21,7 +21,8 @@ import { TrekTopBar } from "./TrekTopBar";
 /**
  * Trek page (design: Trek.dc.html). The provider shares the chosen group size and start day between
  * the booking card, the pricing section and both request forms. The sections follow the trek's own order
- * (beside the booking card, then the full-width ones); shared sections the trek hides are left out.
+ * (beside the booking card, then the full-width ones); shared sections the trek hides are left out. Below
+ * desktop width the booking card sits between the photos and the first section.
  */
 export const TrekDetailPage = async ({ trek }: { trek: TrekDetail }) => {
   const published = await getPublishedReviews();
@@ -37,14 +38,19 @@ export const TrekDetailPage = async ({ trek }: { trek: TrekDetail }) => {
       <TrekSectionNav hasReviews={reviews.length > 0} order={trek.sectionOrder} />
 
       <BookingSelectionProvider defaultGroupIndex={defaultGroupIndex(trek.groupPrices)} monthRatings={trek.monthRatings}>
-        <div className="mx-auto grid max-w-content gap-8 px-4 pt-8 pb-12 md:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
-          <div className="flex min-w-0 flex-col gap-6">
+        <div className="mx-auto grid max-w-content gap-6 px-4 pt-8 pb-12 md:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-x-8">
+          <div className="min-w-0">
             <TrekGallery photos={trek.photos} badges={trek.photoBadges} title={trek.name} />
+          </div>
+          {/* Desktop: the right column; stretched so the card stays sticky down the page. */}
+          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch">
+            <BookingCard trek={trek} />
+          </div>
+          <div className="flex min-w-0 flex-col gap-6">
             {mainSections.map((section) => (
               <Fragment key={section}>{blocks[section]}</Fragment>
             ))}
           </div>
-          <BookingCard trek={trek} />
         </div>
 
         {fullWidthGroups(trek.sectionOrder).map((group) =>

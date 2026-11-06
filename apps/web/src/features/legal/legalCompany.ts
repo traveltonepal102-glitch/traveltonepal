@@ -1,4 +1,4 @@
-import type { LegalTable } from "@ttn/ui/lib/legalText";
+export { legalTable } from "@ttn/site-data/legalText";
 
 import type { SiteSettings } from "@/features/site-settings/types";
 
@@ -29,14 +29,3 @@ export const companyRegisters = ({ company }: SiteSettings): [string, string][] 
       ["Tax number (PAN / VAT)", company.panNumber],
     ] as [string, string][]
   ).filter(([, number]) => number);
-
-const cell = (type: "tableHeader" | "tableCell", text: string) => ({ type, content: [{ type: "paragraph" as const, content: text ? [{ type: "text" as const, text }] : [] }] });
-
-/** A table in the legal text format, from a heading row and rows of plain text. */
-export const legalTable = (head: readonly string[], rows: readonly (readonly string[])[]): LegalTable => ({
-  type: "table",
-  content: [
-    { type: "tableRow", content: head.map((text) => cell("tableHeader", text)) },
-    ...rows.map((row) => ({ type: "tableRow" as const, content: row.map((text) => cell("tableCell", text)) })),
-  ],
-});

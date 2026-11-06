@@ -15,6 +15,8 @@ import { KeyFactsField } from "./KeyFactsField";
 
 type ArticleTopCardProps = {
   values: ArticleValues;
+  /** The website's region: new uploads are tagged with it (null: none). */
+  regionId: string | null;
   draft: ArticleDraft;
   cover: Photo | null;
   /** Counted from the intro and the article body as typed. */
@@ -26,7 +28,7 @@ type ArticleTopCardProps = {
 };
 
 /** "Top of the page" (always first): the photo and its tags, the title, intro, card text and key facts. */
-export const ArticleTopCard = ({ values, draft, cover, readMinutes, treks, errors, onEdit, onCoverChange }: ArticleTopCardProps) => {
+export const ArticleTopCard = ({ values, regionId, draft, cover, readMinutes, treks, errors, onEdit, onCoverChange }: ArticleTopCardProps) => {
   const photoTrek = treks.find((trek) => trek.id === draft.photoTrekId);
   const mainTrek = treks.find((trek) => trek.id === draft.mainTrekId);
   const tags = [
@@ -38,7 +40,7 @@ export const ArticleTopCard = ({ values, draft, cover, readMinutes, treks, error
 
   return (
     <FormSection title="Top of the page" aside={<span className="text-xs text-muted-foreground">Always first</span>}>
-      <ArticleCoverField cover={cover} regionId={draft.siteRegionId} tags={tags} error={errors.coverPhotoId} onChange={onCoverChange} />
+      <ArticleCoverField cover={cover} regionId={regionId} tags={tags} error={errors.coverPhotoId} onChange={onCoverChange} />
       <TextField
         name="coverAlt"
         label="Photo description"

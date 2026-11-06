@@ -7,9 +7,10 @@ import { z } from "zod";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { REVIEWS_PATH, reviewsSavedPath } from "../constants";
 import { readReviewForm, reviewSchema } from "../schemas/reviewSchema";
@@ -25,12 +26,14 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Saves the review form (reviewId null adds a review), then closes the panel and the list says so. reviewId comes
- * from the browser (bound argument), so it is checked here; access is enforced by RLS.
+ * Saves the review form (reviewId null adds a review to the website `siteId`), then closes the panel and the list says
+ * so. Both are bound by the page; the save is refused when "Working on" changed since, and access is enforced by RLS.
  */
-export const saveReview = async (reviewId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const saveReview = async (siteId: string, reviewId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
   if (reviewId !== null && !z.uuid().safeParse(reviewId).success) return failure(FAILURE_MESSAGES.not_found);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = reviewSchema.safeParse(readReviewForm(formData));
   if (!parsed.success) {
@@ -39,13 +42,13 @@ export const saveReview = async (reviewId: string | null, _previous: EditorSaveS
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const result = await saveReviewToDatabase(parsed.data, reviewId);
+  const result = await saveReviewToDatabase(parsed.data, reviewId, siteId);
   if (!result.ok) {
-    if (result.reason === "duplicate_link") return failure("This review is already in the list.", { url: "Another saved review has this link." });
+    if (result.reason === "duplicate_link") return failure("This review is already in the list.", { url: "Another review on this website has this link." });
     return failure(FAILURE_MESSAGES[result.reason]);
   }
 
-  refreshWebsite([WEBSITE_CACHE_TAGS.reviews]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.reviews]);
   revalidatePath(REVIEWS_PATH);
   redirect(reviewsSavedPath(reviewId === null ? "added" : "changed"));
 };

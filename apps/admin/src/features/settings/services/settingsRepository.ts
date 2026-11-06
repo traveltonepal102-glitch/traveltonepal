@@ -10,10 +10,10 @@ const COLUMNS = `*,
   panCertificate:photos!site_settings_pan_certificate_photo_id_fkey(${PHOTO_COLUMNS}),
   share:photos!site_settings_share_photo_id_fkey(${PHOTO_COLUMNS})` as const;
 
-/** Site settings (one row). Throws when the database can't be read. */
-export const getSiteSettings = async (): Promise<SiteSettings> => {
+/** A website's settings (one row each, made with the website). Throws when the database can't be read. */
+export const getSiteSettings = async (siteId: string): Promise<SiteSettings> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("site_settings").select(COLUMNS).single();
+  const { data, error } = await supabase.from("site_settings").select(COLUMNS).eq("site_id", siteId).single();
   if (error) throw new Error(`Could not load the site settings: ${error.message}`);
 
   return {
@@ -58,10 +58,11 @@ export type SaveSettingsResult = { ok: true } | { ok: false; reason: "forbidden"
 const RLS_VIOLATION = "42501";
 const FOREIGN_KEY_VIOLATION = "23503";
 
-/** Saves the Site settings in one statement (save_site_settings). */
-export const saveSiteSettings = async (values: SiteSettingsValues): Promise<SaveSettingsResult> => {
+/** Saves a website's settings in one statement (save_site_settings). */
+export const saveSiteSettings = async (siteId: string, values: SiteSettingsValues): Promise<SaveSettingsResult> => {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc("save_site_settings", {
+    p_site_id: siteId,
     p_settings: {
       phone_country_code: values.phoneCountryCode,
       phone_number: values.phoneNumber,

@@ -35,7 +35,7 @@ const PUBLISHABLE = {
 
 describe("articleSchema", () => {
   it("saves a draft with only a title and a web address", () => {
-    expect(parse().data).toMatchObject({ siteRegionId: null, alsoOnMainSite: false, publishedOn: null, isFeatured: false, startHerePosition: null, facts: [], relatedIds: [], sections: [] });
+    expect(parse().data).toMatchObject({ publishedOn: null, isFeatured: false, startHerePosition: null, facts: [], relatedIds: [], sections: [] });
     expect(errorsOf({ title: " ", slug: "Best Time!" })).toMatchObject({ title: "Write the title.", slug: expect.stringMatching(/lowercase letters/) });
   });
 
@@ -56,11 +56,6 @@ describe("articleSchema", () => {
     expect(errorsOf({ publishMode: "date", publishedOn: "2027-02-30" }).publishedOn).toBe("Pick a real date.");
     expect(parse({ publishMode: "date", publishedOn: "2027-01-05" }).data?.publishedOn).toBe("2027-01-05");
     expect(parse({ publishMode: "now", publishedOn: "2027-01-05" }).data?.publishedOn).toBeNull();
-  });
-
-  it("shows on the main site only as a region site's copy", () => {
-    expect(parse({ alsoOnMainSite: "on" }).data?.alsoOnMainSite).toBe(false);
-    expect(parse({ siteRegionId: ID(3), alsoOnMainSite: "on" }).data).toMatchObject({ siteRegionId: ID(3), alsoOnMainSite: true });
   });
 
   it("reads key facts, dropping empty rows and flagging half-filled ones", () => {

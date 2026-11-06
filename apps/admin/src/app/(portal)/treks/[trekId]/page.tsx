@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { saveTrek } from "@/features/treks/actions/saveTrek";
+import { TREKS_PATH } from "@/features/treks/constants";
 import { TrekEditor } from "@/features/treks/components/editor/TrekEditor";
 import { getTrek, listRegionOptions, listSimilarTrekOptions } from "@/features/treks/services/treksRepository";
 import { trekFileUrl } from "@/lib/storage/trekFiles";
@@ -28,24 +30,24 @@ export const generateMetadata = async ({ params }: TrekPageProps): Promise<Metad
   return { title: (await loadTrek(params)).name };
 };
 
-/** Edit a trek (design: Admin-trek-editor.dc.html). "?added=1" right after it was added. */
+/**
+ * Edit a trek (design: Admin-trek-editor.dc.html). "?added=1" right after it was added, "?copied=1" after "Copy a trek". A trek of another website
+ * than "Working on" shows (e.g. after switching) goes back to this website's Treks.
+ */
 const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
   await requireAdmin();
   const { trekId } = await params;
-  const [trek, regions, similarOptions, guides] = await Promise.all([
-    loadTrek(params),
-    listRegionOptions(),
-    listSimilarTrekOptions(trekId),
-    listTrekkingGuides(),
-  ]);
+  const [trek, site, regions, guides] = await Promise.all([loadTrek(params), getCurrentSite(), listRegionOptions(), listTrekkingGuides()]);
+  if (trek.siteId !== site?.id) redirect(TREKS_PATH);
+  const similarOptions = await listSimilarTrekOptions(trek.siteId, trekId);
   // A topic's photo can be any library photo, not only the trek's: loaded for its preview.
   const topicPhotos = await listPhotosByIds(trek.knowTopics.flatMap((topic) => (topic.photoId ? [topic.photoId] : [])));
   const today = todayInNepal();
-  const { added } = await searchParams;
+  const { added, copied } = await searchParams;
 
   return (
     <TrekEditor
-      action={saveTrek.bind(null, trek.id)}
+      action={saveTrek.bind(null, trek.siteId, trek.id)}
       values={trek}
       photos={trek.photos}
       trekId={trek.id}
@@ -58,6 +60,7 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       pdfMapUrl={trek.pdfMapPath ? trekFileUrl(trek.pdfMapPath) : null}
       lastSaved={`Saved ${formatDateTime(trek.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
+      isJustCopied={copied === "1"}
     />
   );
 };

@@ -3,6 +3,8 @@
 import { cn } from "@ttn/ui/lib/utils";
 import type { ReactNode } from "react";
 
+import type { SiteKind } from "@/lib/supabase/database.types";
+
 import { useMobileMenu } from "../hooks/useMobileMenu";
 import type { NewItem } from "../newItems";
 import { useSidebarRail } from "../hooks/useSidebarRail";
@@ -11,6 +13,10 @@ import { Topbar } from "./Topbar";
 
 type AdminShellProps = {
   isRailInitially: boolean;
+  /** "Working on" at the top of the sidebar (its sites come from the server). */
+  siteSwitcher: ReactNode;
+  /** The kind of site "Working on" shows, for the sidebar's menu. */
+  siteKind: SiteKind;
   /** The signed-in admin's box at the bottom of the sidebar (rendered on the server). */
   user: ReactNode;
   websiteUrl?: string;
@@ -23,7 +29,7 @@ type AdminShellProps = {
  * Frame of every signed-in screen (design: Admin-dashboard.dc.html): navy sidebar, white top bar, page
  * content. Below 1101px the sidebar is a drawer opened from the top bar.
  */
-export const AdminShell = ({ isRailInitially, user, websiteUrl, newItems, children }: AdminShellProps) => {
+export const AdminShell = ({ isRailInitially, siteSwitcher, siteKind, user, websiteUrl, newItems, children }: AdminShellProps) => {
   const menu = useMobileMenu();
   const { isRail, toggleRail } = useSidebarRail(isRailInitially);
 
@@ -49,6 +55,8 @@ export const AdminShell = ({ isRailInitially, user, websiteUrl, newItems, childr
         onClose={menu.close}
         onToggleRail={toggleRail}
         closeButtonRef={menu.closeButtonRef}
+        siteKind={siteKind}
+        siteSwitcher={siteSwitcher}
         user={user}
       />
 

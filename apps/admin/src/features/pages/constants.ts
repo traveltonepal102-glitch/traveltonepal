@@ -1,7 +1,7 @@
 import type { IconName } from "@ttn/ui/icon";
 
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
-import type { SitePageSlug } from "@/lib/supabase/database.types";
+import type { SiteKind, SitePageSlug } from "@/lib/supabase/database.types";
 
 export const PAGES_PATH = ADMIN_SECTIONS.pages.href;
 export const pagePath = (slug: SitePageSlug | "lists" | "legal") => `${PAGES_PATH}/${slug}`;
@@ -64,7 +64,16 @@ export const LIST_PAGES = [
   },
 ] as const satisfies readonly { slug: SitePageSlug; label: string; websitePath: string; icon: IconName; hint: string; auto: string }[];
 
-export type ListPageSlug = (typeof LIST_PAGES)[number]["slug"];
+export type ListPage = (typeof LIST_PAGES)[number];
+export type ListPageSlug = ListPage["slug"];
+
+/**
+ * A site's list pages: all four on the main site; only Travel guides on a region site (decided 2026-11-03: its few
+ * treks are linked straight from the menu, so it has no Treks list and no Regions page; 2026-11-04: its Home has its
+ * own editor, /pages/home, with its top, sections and Google result).
+ */
+export const listPagesFor = (siteKind: SiteKind): readonly ListPage[] =>
+  siteKind === "main" ? LIST_PAGES : LIST_PAGES.filter((page) => page.slug === "travel-guides");
 
 export const isEditablePage = (slug: string): slug is EditablePageSlug | typeof LIST_PAGES_ROUTE | typeof LEGAL_PAGES_ROUTE =>
   slug === LIST_PAGES_ROUTE || slug === LEGAL_PAGES_ROUTE || EDITABLE_PAGES.some((page) => page.slug === slug);

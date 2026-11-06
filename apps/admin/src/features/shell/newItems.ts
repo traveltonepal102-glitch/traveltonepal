@@ -2,6 +2,7 @@ import type { IconName } from "@ttn/ui/icon";
 
 import { NEW_ADVENTURE_PATH } from "@/features/adventures/constants";
 import { NEW_REGION_PATH } from "@/features/regions/constants";
+import { NEW_SITE_PATH } from "@/features/sites/constants";
 import { NEW_GUIDE_PATH } from "@/features/trekking-guides/constants";
 import { NEW_TREK_PATH } from "@/features/treks/constants";
 import { NEW_VIDEO_PATH } from "@/features/videos/constants";
@@ -37,6 +38,7 @@ export const NEW_ITEMS: NewItem[] = [
   },
   { label: "Upload photos", hint: "Location data is removed", icon: "image", tone: "green", href: ADMIN_SECTIONS.photos.href },
   { label: "YouTube video", hint: "Paste the link once, use it anywhere", icon: "smart_display", tone: "green", href: NEW_VIDEO_PATH },
+  { label: "Region website", hint: "A new site for one region", icon: "public", tone: "saffron", href: NEW_SITE_PATH, isSuperAdminOnly: true },
 ];
 
 /** The "New" menu for this admin: without what only a Super admin can add, for an editor. */
