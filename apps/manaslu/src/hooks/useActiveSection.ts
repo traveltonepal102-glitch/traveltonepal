@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { activeSectionAt } from "../activeSection";
+import { activeSectionAt } from "@/lib/activeSection";
 
 /**
  * A section counts as being read once its top is this far down the screen: past where the menu's jumps stop it (80px,

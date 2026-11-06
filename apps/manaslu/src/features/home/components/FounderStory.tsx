@@ -30,7 +30,7 @@ export const FounderStory = ({ company: { storyTeaser, founder } }: { company: H
               <span className="text-sm leading-5 text-muted">{founder.role}</span>
             </p>
           )}
-          <Link href={ROUTES.about} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
+          <Link href={`${ROUTES.about}#story`} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
             Read our story
             <TrailIcon name="arrow" size={16} />
           </Link>

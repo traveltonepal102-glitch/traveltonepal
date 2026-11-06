@@ -49,7 +49,7 @@ export const SiteFooter = async () => {
       <div className="wrap flex flex-col gap-9 pt-14 pb-7">
         <div className="flex flex-wrap gap-10">
           <div className="flex flex-[1_1_260px] flex-col gap-3.5">
-            <Image src="/brand/logo-footer.png" alt={SITE_NAME} width={2586} height={1300} sizes="150px" className="h-auto w-37.5" />
+            <Image src="/brand/logo-footer.png" alt={SITE_NAME} width={1999} height={1884} sizes="150px" className="h-auto w-37.5" />
             <p>Private treks in the Manaslu Conservation Area, on the day you choose and at your own pace.</p>
             {officeAddress && (
               <p className="flex items-start gap-2">

@@ -19,12 +19,9 @@ const FIELD = "min-h-12 w-full rounded-[10px] border border-solid border-field b
 const STEP = "size-11 cursor-pointer border-0 bg-transparent text-[22px] leading-none text-forest disabled:cursor-not-allowed disabled:opacity-40";
 const MIN_TRAVELLERS = 1;
 
-/** Today in Nepal, as a date field's value: the page is built ahead, so the browser works it out. */
-const todayInNepal = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu" }).format(new Date());
-
 /** The sticky card: the start day and travellers set the price and the total; the message on WhatsApp or by email carries them. */
 export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => {
-  const { prices, ranges, travellers, setTravellers, chosenIndex, startDate, setStartDate } = useBooking();
+  const { prices, ranges, travellers, setTravellers, chosenIndex, today, startDate, setStartDate } = useBooking();
   const id = useId();
   const chosen = prices[chosenIndex];
   const tip = nextGroupTip(ranges, prices, travellers);
@@ -49,7 +46,7 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
           <label htmlFor={`${id}-date`} className={LABEL}>
             Start date
           </label>
-          <input id={`${id}-date`} type="date" value={startDate} onFocus={(event) => (event.currentTarget.min = todayInNepal())} onChange={(event) => setStartDate(event.target.value)} className={FIELD} />
+          <input id={`${id}-date`} type="date" value={startDate} min={today || undefined} onChange={(event) => setStartDate(event.target.value)} className={FIELD} />
           <span className="text-eyebrow text-muted">Private trek: start on any day you like.</span>
         </div>
 

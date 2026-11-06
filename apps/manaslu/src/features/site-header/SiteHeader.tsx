@@ -49,7 +49,7 @@ export const SiteHeader = async () => {
       )}
       <div className="wrap flex flex-wrap items-center justify-between gap-x-7 gap-y-2 py-3">
         <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="inline-flex">
-          <Image src="/brand/logo-header.png" alt={SITE_NAME} width={1999} height={1884} sizes="62px" preload className="h-14.5 w-auto" />
+          <Image src="/brand/logo-header.png" alt={SITE_NAME} width={2586} height={1300} sizes="116px" preload className="h-14.5 w-auto" />
         </Link>
         <nav aria-label="Main" className="order-3 flex w-full flex-wrap items-center gap-x-6.5 font-medium lg:order-none lg:w-auto">
           {trek && <MainTrekLink name={trek.name} className={NAV_LINK} />}
