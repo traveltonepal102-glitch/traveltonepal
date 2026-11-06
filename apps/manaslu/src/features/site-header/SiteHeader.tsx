@@ -2,7 +2,8 @@ import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import Image from "next/image";
 import Link from "next/link";
 
-import { whatsAppButton } from "@/components/ui/buttonStyles";
+import { outlineOnDarkButton, whatsAppButton } from "@/components/ui/buttonStyles";
+import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getHomeData } from "@/features/home/services/homeRepository";
 import type { HomeTrekCard } from "@/features/home/types";
@@ -20,7 +21,7 @@ const NAV_LINK = "inline-flex min-h-11 items-center whitespace-nowrap text-snow 
 const trekFacts = ({ days, difficulty, priceFromUsd }: HomeTrekCard) =>
   [days && formatDays(days), difficulty, priceFromUsd !== null && `from ${formatUsd(priceFromUsd)}`].filter(Boolean).join(" · ");
 
-/** The dark bar at the top: the website's details (those filled in), the logo, the menu with the treks and blogs, and "Plan my trek". */
+/** The dark bar at the top: the website's details (those filled in), the logo, the menu with the treks and blogs, "Plan my trek" and Email (when an address is saved). */
 export const SiteHeader = async () => {
   const [{ phoneDisplay, email, licence }, { trek, otherTreks, guides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasTopLine = Boolean(phoneDisplay || email || licence);
@@ -47,7 +48,7 @@ export const SiteHeader = async () => {
           </div>
         </div>
       )}
-      <div className="wrap flex flex-wrap items-center justify-between gap-x-7 gap-y-2 py-3">
+      <div className="wrap flex flex-wrap items-center justify-between gap-x-2 gap-y-2 py-3 sm:gap-x-7">
         <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="inline-flex">
           <Image src="/brand/logo-header.png" alt={SITE_NAME} width={2586} height={1300} sizes="116px" preload className="h-14.5 w-auto" />
         </Link>
@@ -70,10 +71,18 @@ export const SiteHeader = async () => {
             Contact
           </Link>
         </nav>
-        <a href={getWhatsAppUrl("Hello! I would like to plan a trek in the Manaslu region.")} className={`${whatsAppButton} min-h-11.5 rounded-full`}>
-          <WhatsAppLogo />
-          Plan my trek
-        </a>
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <a href={getWhatsAppUrl("Hello! I would like to plan a trek in the Manaslu region.")} className={`${whatsAppButton} min-h-11.5 rounded-full px-4! sm:px-5!`}>
+            <WhatsAppLogo />
+            Plan my trek
+          </a>
+          {email && (
+            <a href={getEmailUrl({ subject: `Planning a trek with ${SITE_NAME}` })} className={`${outlineOnDarkButton} min-h-11.5 w-12 rounded-full px-0! sm:w-auto sm:px-5!`}>
+              <TrailIcon name="mail" />
+              <span className="sr-only sm:not-sr-only">Email</span>
+            </a>
+          )}
+        </div>
       </div>
     </header>
   );
