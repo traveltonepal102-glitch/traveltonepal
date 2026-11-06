@@ -24,7 +24,7 @@ export const ensureStatic = "navigation";
 
 export const generateMetadata = async ({ params }: SlugPageProps): Promise<Metadata> => {
   const page = await getTrekPage((await params).slug);
-  return page ? trekPageMetadata(page) : {};
+  return page ? trekPageMetadata(page) : { title: "Page not found" };
 };
 
 const SlugPage = async ({ params }: SlugPageProps) => {

@@ -6,9 +6,8 @@ import { outlineOnDarkButton, whatsAppButton } from "@/components/ui/buttonStyle
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getHomeData } from "@/features/home/services/homeRepository";
-import type { HomeTrekCard } from "@/features/home/types";
+import { trekFacts } from "@/features/home/trekFacts";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { formatDays, formatUsd } from "@/lib/format";
 import { ROUTES, pagePath } from "@/lib/routes";
 import { SITE_NAME } from "@/lib/site";
 
@@ -16,10 +15,6 @@ import { MainTrekLink } from "./MainTrekLink";
 import { NavDropdown } from "./NavDropdown";
 
 const NAV_LINK = "inline-flex min-h-11 items-center whitespace-nowrap text-snow no-underline hover:text-saffron";
-
-/** "12 days · Challenging · from $1,450": what's known of a trek, for the menu. */
-const trekFacts = ({ days, difficulty, priceFromUsd }: HomeTrekCard) =>
-  [days && formatDays(days), difficulty, priceFromUsd !== null && `from ${formatUsd(priceFromUsd)}`].filter(Boolean).join(" · ");
 
 /** The dark bar at the top: the website's details (those filled in), the logo, the menu with the treks and blogs, "Plan my trek" and Email (when an address is saved). */
 export const SiteHeader = async () => {
