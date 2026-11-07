@@ -46,7 +46,7 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
         <ShareButton title={title} className={SHARE} />
       </div>
       <div className="relative aspect-16/10 overflow-hidden rounded-2xl bg-forest-tint md:aspect-21/9">
-        <SiteImage image={image} isPriority sizes="(min-width: 1240px) 1192px, 100vw" className="object-cover" />
+        <SiteImage image={image} isPriority sizes="(min-width: 1440px) 1392px, 100vw" className="object-cover" />
       </div>
     </header>
   );

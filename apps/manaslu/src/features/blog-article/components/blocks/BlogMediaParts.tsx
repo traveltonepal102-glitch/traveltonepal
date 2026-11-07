@@ -5,7 +5,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { RouteMapFrame } from "@/features/home/components/RouteMapFrame";
 
-const COLUMN_SIZES = "(min-width: 1024px) 800px, 100vw";
+const COLUMN_SIZES = "(min-width: 1024px) 780px, 100vw";
 
 /** A photo with its caption. */
 export const BlogImage = ({ image, caption }: { image: SiteImageSource; caption: string }) => (

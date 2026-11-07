@@ -13,7 +13,7 @@ import type { HomeTrekCard } from "../types";
 export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
   <article className="flex flex-col overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-card">
     <div className="relative aspect-16/10 bg-forest-tint">
-      {trek.image && <SiteImage image={trek.image} sizes="(min-width: 1024px) 380px, 100vw" className="object-cover" />}
+      {trek.image && <SiteImage image={trek.image} sizes="(min-width: 1440px) 700px, (min-width: 1024px) 50vw, 100vw" className="object-cover" />}
       <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-eyebrow font-semibold text-forest-deep">
         <TrailIcon name="pin" size={14} />
         {trek.region}

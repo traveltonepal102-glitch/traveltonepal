@@ -14,7 +14,7 @@ export const StorySection = ({ story, founder }: StorySectionProps) => (
         <figure className="flex flex-col overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-card">
           {story.photo && (
             <div className="relative aspect-4/5 bg-forest-tint">
-              <SiteImage image={story.photo} sizes="(min-width: 1024px) 460px, 100vw" className="object-cover object-[62%_40%]" />
+              <SiteImage image={story.photo} sizes="(min-width: 1024px) 530px, 100vw" className="object-cover object-[62%_40%]" />
             </div>
           )}
           {founder && (

@@ -5,9 +5,9 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { AllPhotosDialog } from "./AllPhotosDialog";
 
 /** The biggest the first photo shows beside the others, and alone (the page's whole width). */
-const MAIN_SIZES = "(min-width: 1240px) 760px, (min-width: 768px) 60vw, 100vw";
-const ALONE_SIZES = "(min-width: 1240px) 1192px, 100vw";
-const THUMB_SIZES = "(min-width: 768px) 300px, 1px";
+const MAIN_SIZES = "(min-width: 1440px) 930px, (min-width: 768px) 65vw, 100vw";
+const ALONE_SIZES = "(min-width: 1440px) 1392px, 100vw";
+const THUMB_SIZES = "(min-width: 768px) 460px, 1px";
 
 const layoutFor = (thumbs: number) => {
   if (thumbs === 0) return "grid-cols-1";

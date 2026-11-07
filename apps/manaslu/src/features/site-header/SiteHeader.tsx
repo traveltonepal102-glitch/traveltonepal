@@ -23,22 +23,22 @@ const PLAN_BUTTON = `${primaryButton} whitespace-nowrap max-sm:px-3.5!`;
 const ICON_FIRST = "w-12 px-0! xl:w-auto xl:px-5!";
 
 /**
- * The logo on white at the header's full height, with the dark bar of company details (those filled in) starting beside
- * it and the menu and buttons under that. On a small screen: the bar across the top, then the logo and buttons, then the menu.
- * The columns line up with the page's 1192px content (the logo's 214px and the 978px beside it).
+ * The dark bar of company details (those filled in) across the whole width, with the logo at the header's full height on
+ * white in front of it, and the menu and buttons under the bar. On a small screen: the bar across the top, then the logo and buttons, then the menu.
+ * The columns line up with the page's 1392px content (`wrap`: the logo's 214px and the 1178px beside it).
  */
 export const SiteHeader = async () => {
   const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trek, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasBar = Boolean(phoneDisplay || email || licence || tourismRegistration || memberships.length);
 
   return (
-    <header className="grid grid-cols-[16px_minmax(0,1fr)_auto_16px] border-0 border-b border-solid border-line bg-snow text-ink lg:grid-cols-[minmax(24px,1fr)_214px_minmax(0,978px)_minmax(24px,1fr)] print:hidden">
-      <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="col-start-2 row-start-2 inline-flex flex-none items-center justify-self-start py-2 lg:row-span-2 lg:row-start-1">
+    <header className="grid grid-cols-[16px_minmax(0,1fr)_auto_16px] border-0 border-b border-solid border-line bg-snow text-ink lg:grid-cols-[minmax(24px,1fr)_214px_minmax(0,1178px)_minmax(24px,1fr)] print:hidden">
+      <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="col-start-2 row-start-2 inline-flex flex-none items-center justify-self-start py-2 lg:relative lg:z-10 lg:row-span-2 lg:row-start-1 lg:-ml-6 lg:justify-self-stretch lg:bg-snow lg:pl-6">
         <Image src="/brand/logo-header-dark.png" alt={SITE_NAME} width={640} height={263} sizes="(min-width: 1024px) 190px, 130px" preload className="h-13.5 w-auto max-w-none lg:h-19.5" />
       </Link>
       {hasBar && (
         <>
-          <div aria-hidden="true" className="col-span-full row-start-1 bg-forest-deep lg:col-start-3 lg:col-end-5" />
+          <div aria-hidden="true" className="col-span-full row-start-1 bg-forest-deep" />
           <div className="col-start-2 col-end-4 row-start-1 flex min-w-0 items-center justify-between gap-x-6 py-2 text-sm leading-5 text-on-forest-muted lg:col-start-3 lg:col-end-4 lg:pl-5">
             <p className="flex min-w-0 gap-x-6 overflow-hidden whitespace-nowrap max-md:hidden">
               {tourismRegistration && <span>Govt reg: {tourismRegistration}</span>}

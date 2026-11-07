@@ -24,7 +24,7 @@ export const BlogArticlePage = ({ blog }: { blog: BlogArticle }) => {
     <main id="main">
       <JsonLd data={blogJsonLd(blog)} />
       <BlogHeader blog={blog} />
-      <div className={`wrap grid items-start gap-x-14 gap-y-8 pt-10 pb-16 md:pb-20 ${hasRail ? "lg:grid-cols-[minmax(0,1fr)_340px]" : ""}`}>
+      <div className={`wrap grid items-start gap-x-14 gap-y-8 pt-10 pb-16 md:pb-20 ${hasRail ? "lg:grid-cols-[minmax(0,780px)_340px] lg:justify-between" : ""}`}>
         <article className={`flex min-w-0 flex-col gap-7 ${hasRail ? "" : "mx-auto w-full max-w-190"}`}>
           {toc.length > 0 && <BlogTocFolded links={toc} />}
           <BlogFacts facts={blog.facts} />

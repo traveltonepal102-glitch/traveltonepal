@@ -37,7 +37,7 @@ const Photo = ({ image }: { image: RichTextImage }) => {
   const { photoId, alt, width, height, variantWidths, fileName } = image.attrs;
   return (
     <figure className="relative overflow-hidden rounded-xl bg-forest-tint" style={{ aspectRatio: `${width} / ${height}` }}>
-      <SiteImage image={{ src: `${photosPublicBaseUrl}/${photoId}`, alt, variantWidths, fileName }} sizes="(min-width: 1024px) 760px, 100vw" className="object-cover" />
+      <SiteImage image={{ src: `${photosPublicBaseUrl}/${photoId}`, alt, variantWidths, fileName }} sizes="(min-width: 1024px) 900px, 100vw" className="object-cover" />
     </figure>
   );
 };
@@ -100,7 +100,7 @@ const Block = ({ block }: { block: RichTextBlock }) => {
   }
   const List = block.type === "orderedList" ? "ol" : "ul";
   return (
-    <List className={`flex flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
+    <List className={`flex max-w-[72ch] flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
       {block.content.map((item, index) => (
         <li key={index} className="space-y-1.5">
           {item.content.map((child, childIndex) => (

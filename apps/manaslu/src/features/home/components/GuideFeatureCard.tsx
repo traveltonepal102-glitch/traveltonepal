@@ -10,7 +10,7 @@ import { GUIDE_TOPIC_ICONS } from "./guideTopicIcons";
 /** The featured guide: words over its photo, darkened so they stay readable. The whole card is the link. */
 export const GuideFeatureCard = ({ guide, className = "" }: { guide: HomeGuide; className?: string }) => (
   <article className={`group relative flex min-h-105 flex-col justify-end gap-3 overflow-hidden rounded-[14px] bg-forest-deep p-8 text-snow max-sm:p-5.5 ${className}`}>
-    {guide.image && <SiteImage image={guide.image} sizes="(min-width: 1024px) 800px, 100vw" className="object-cover object-[50%_25%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />}
+    {guide.image && <SiteImage image={guide.image} sizes="(min-width: 1024px) 930px, 100vw" className="object-cover object-[50%_25%] transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />}
     <span aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-forest-deep/10 via-forest-deep/70 via-45% to-forest-deep/95" />
     <span className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-saffron px-3 py-1 text-xs leading-4 font-semibold tracking-[0.06em] text-ink uppercase">
       <TrailIcon name={GUIDE_TOPIC_ICONS[guide.topic] ?? "doc"} size={14} />

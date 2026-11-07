@@ -30,6 +30,11 @@
     text-wrap: balance;
   }
 
+  /* Text stays easy to read however wide the page is. */
+  p {
+    max-width: 72ch;
+  }
+
   h1 {
     font-size: var(--text-h1);
     line-height: var(--text-h1--line-height);

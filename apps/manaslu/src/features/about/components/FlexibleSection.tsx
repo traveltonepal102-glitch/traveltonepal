@@ -18,7 +18,7 @@ export const FlexibleSection = ({ flexible }: { flexible: AboutFlexible }) => {
           {photo && (
             <figure className="flex flex-col gap-2">
               <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-forest-tint">
-                <SiteImage image={photo} sizes="(min-width: 1024px) 590px, 100vw" className="object-cover object-[50%_25%]" />
+                <SiteImage image={photo} sizes="(min-width: 1024px) 680px, 100vw" className="object-cover object-[50%_25%]" />
               </div>
               {flexible.photoCaption && <figcaption className="text-sm leading-5 text-muted">{flexible.photoCaption}</figcaption>}
             </figure>

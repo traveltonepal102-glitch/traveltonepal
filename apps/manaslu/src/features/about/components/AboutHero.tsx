@@ -27,7 +27,7 @@ export const AboutHero = ({ top, stats }: { top: SitePageTop; stats: readonly Ab
       {top.cover && (
         <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-forest-tint">
           {/* Decorative: the title says what the page is. */}
-          <SiteImage image={{ ...top.cover, alt: "" }} isPriority sizes="(min-width: 1024px) 520px, 100vw" className="object-cover" />
+          <SiteImage image={{ ...top.cover, alt: "" }} isPriority sizes="(min-width: 1024px) 620px, 100vw" className="object-cover" />
         </div>
       )}
     </div>

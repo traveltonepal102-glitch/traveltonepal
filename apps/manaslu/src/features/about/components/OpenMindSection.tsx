@@ -26,7 +26,7 @@ export const OpenMindSection = ({ openMind }: { openMind: AboutOpenMind }) => {
             <li key={place.title}>
               <figure className="flex h-full flex-col overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-card">
                 <div className="relative aspect-4/3 bg-forest-tint">
-                  <SiteImage image={place.photo} sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+                  <SiteImage image={place.photo} sizes="(min-width: 1024px) 460px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
                 </div>
                 <figcaption className="flex flex-col gap-1 p-5">
                   <span className="font-semibold text-ink">{place.title}</span>
