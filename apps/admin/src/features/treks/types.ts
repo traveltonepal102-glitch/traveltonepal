@@ -4,7 +4,7 @@ import type { IconName } from "@ttn/ui/icon";
 import type { PhotoSelection } from "@/features/photos/hooks/usePhotoSelection";
 import type { Photo, PhotoDetails } from "@/features/photos/types";
 import type { RichTextDoc } from "@/lib/richText/richText";
-import type { MonthRating } from "@/lib/supabase/database.types";
+import type { MonthRating, TrekUsageKind } from "@/lib/supabase/database.types";
 
 export type TrekStatus = "draft" | "published" | "hidden";
 export type TrekDifficulty = "easy" | "moderate" | "challenging" | "strenuous";
@@ -321,3 +321,6 @@ export type TrekSectionKey =
   | "seo"
   | "shared"
   | "order";
+
+/** Something that still uses a trek, so it can't be deleted yet (trek_usage). */
+export type TrekUsageItem = { kind: TrekUsageKind; id: string; name: string };

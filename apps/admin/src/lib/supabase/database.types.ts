@@ -10,6 +10,9 @@ export type MonthRating = "best" | "possible" | "avoid";
 /** What region_usage lists as still using a region. */
 export type RegionUsageKind = "trek" | "travel_guide" | "trekking_guide" | "region";
 
+/** What trek_usage lists as still using a trek. */
+export type TrekUsageKind = "website" | "region" | "travel_guide";
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type RegionRow = {
@@ -1167,6 +1170,15 @@ export type Database = {
       delete_region: {
         Args: { p_region_id: string };
         Returns: undefined;
+      };
+      trek_usage: {
+        Args: { p_trek_id: string; p_locale?: string };
+        Returns: { kind: TrekUsageKind; id: string; name: string }[];
+      };
+      /** Returns the deleted trek's printable map path, or null. */
+      delete_trek: {
+        Args: { p_trek_id: string; p_site_id: string };
+        Returns: string | null;
       };
       login_clear_failures: { Args: { p_email: string }; Returns: undefined };
       login_locked_until: { Args: { p_email: string }; Returns: string | null };

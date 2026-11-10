@@ -2,6 +2,7 @@
 
 import { Icon } from "@ttn/ui/icon";
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { StatusSelect } from "@/components/editor/StatusSelect";
@@ -41,13 +42,15 @@ type ArticleEditorProps = {
   feedback?: GuideFeedbackTotals | null;
   lastSaved?: string;
   isJustAdded?: boolean;
+  /** Extra buttons beside Save, e.g. "Delete" for a Super admin. */
+  headerActions?: ReactNode;
 };
 
 /**
  * Add or edit a travel guide (design: Admin-article-editor): "Top of the page" and the article body on the
  * left, the settings on the right (below on phones). One form: Save sends everything, including the status.
  */
-export const ArticleEditor = ({ action, article, values, options, feedback = null, lastSaved, isJustAdded = false }: ArticleEditorProps) => {
+export const ArticleEditor = ({ action, article, values, options, feedback = null, lastSaved, isJustAdded = false, headerActions }: ArticleEditorProps) => {
   const form = useEditorForm<"article">({
     action,
     firstKey: "article",
@@ -95,6 +98,7 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
         isDirty={form.isDirty}
         saveState={form.state}
       >
+        {headerActions}
         <StatusSelect options={ARTICLE_STATUSES} defaultValue={values.status} />
       </EditorHeader>
       {form.state.status === "error" && <FormAlert message={form.state.message} />}

@@ -167,3 +167,14 @@ export const saveArticle = async (values: ArticleFormValues, articleId: string |
   console.error(`save_article failed: ${error.code} ${error.message}`);
   return { ok: false, reason: "failed" };
 };
+
+/**
+ * Deletes a travel guide of the website `siteId` for good; its sections, feedback and links go with it (foreign keys
+ * cascade). False when there is no such guide on that website, or RLS refused (not a Super admin).
+ */
+export const deleteArticle = async (articleId: string, siteId: string): Promise<boolean> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("articles").delete().eq("id", articleId).eq("site_id", siteId).select("id");
+  if (error) throw new Error(`Could not delete travel guide ${articleId}: ${error.message}`);
+  return data.length > 0;
+};

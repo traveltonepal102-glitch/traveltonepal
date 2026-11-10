@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { EditorHeader } from "@/components/editor/EditorHeader";
 import { EditorSectionHeading } from "@/components/editor/EditorSectionHeading";
@@ -42,13 +43,15 @@ type TrekEditorProps = {
   isJustAdded?: boolean;
   /** Right after "Copy a trek": a draft whose words are still the original's. */
   isJustCopied?: boolean;
+  /** Extra buttons beside Save, e.g. "Delete" for a Super admin. */
+  headerActions?: ReactNode;
 };
 
 /**
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
@@ -80,6 +83,7 @@ export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, region
         isDirty={form.isDirty}
         saveState={form.state}
       >
+        {headerActions}
         <TrekStatusSelect defaultValue={values.status} />
       </EditorHeader>
       {form.state.status === "error" && <FormAlert message={form.state.message} />}
