@@ -12,8 +12,11 @@ export const createDatabaseClient = () => createSiteClient({ supabaseUrl: env.SU
 /** Tags on cached reads; the admin refreshes them after a save (app/api/revalidate). */
 export const CACHE_TAGS = WEBSITE_CACHE_TAGS;
 
-/** A refresh every hour still catches what no save announces. */
-export const DATABASE_CACHE_LIFE = "hours";
+/**
+ * Pages change only when the admin saves (it refreshes their tags at once), so reads keep the longest life, rebuilt at
+ * most every 30 days: hourly rebuilds by crawlers went over Vercel's ISR write limit (see apps/web/src/lib/cacheTags.ts).
+ */
+export const DATABASE_CACHE_LIFE = "max";
 
 /** The language this website shows. */
 export const WEBSITE_LOCALE = "en";

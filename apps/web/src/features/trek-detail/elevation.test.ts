@@ -1,7 +1,7 @@
 import { EMPTY_RICH_TEXT } from "@ttn/ui/lib/richText";
 import { describe, expect, it } from "vitest";
 
-import { buildElevationProfile } from "./elevation";
+import { buildElevationProfile, highestHighlightDay } from "./elevation";
 import { PHOTOS_BASE, TREK_FILES_BASE, langtangSource } from "./trekPage.testData";
 import { toTrekDetail } from "./trekPageRows";
 import type { ItineraryDay } from "./types";
@@ -81,5 +81,14 @@ describe("buildElevationProfile", () => {
     const high = buildElevationProfile([day("Lukla", 2860), day("Kala Patthar", 5545)]);
     expect(high?.gridLines.at(-1)?.altitudeM).toBe(6000);
     expect(buildElevationProfile([day("Kathmandu", 1400)])).toBeNull();
+  });
+});
+
+describe("highestHighlightDay", () => {
+  it("picks the highest of several highlight days, and nothing when no day is one", () => {
+    const tilicho = { ...day("Tilicho Lake", 4919), isHighPoint: true };
+    const thorong = { ...day("Thorong La", 5416), isHighPoint: true };
+    expect(highestHighlightDay([day("Manang", 3540), tilicho, thorong, day("Muktinath", 3800)])).toBe(thorong);
+    expect(highestHighlightDay([day("Manang", 3540)])).toBeUndefined();
   });
 });

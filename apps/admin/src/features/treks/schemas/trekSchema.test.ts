@@ -155,9 +155,9 @@ describe("trekSchema", () => {
     });
   });
 
-  it("allows one highlight day only, and only real day ids", () => {
+  it("allows several highlight days, and only real day ids", () => {
     const two = days(day("A", "2000", { dayHighPoint: "true" }), day("B", "3000", { dayHighPoint: "true" }));
-    expect(errorsOf(two).itinerary).toBe("Only one day can be the highlight day.");
+    expect(parse(two).data?.itinerary.filter((item) => item.isHighPoint)).toHaveLength(2);
     expect(errorsOf(days(day("A", "2000", { dayId: "not-an-id" })))).toHaveProperty(["itinerary.0.id"]);
   });
 

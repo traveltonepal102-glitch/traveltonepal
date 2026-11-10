@@ -1,6 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 
+import { ClampedText } from "@/components/shared/ClampedText";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { getAboutPage } from "@/features/about/services/aboutRepository";
 import type { SiteImageSource } from "@/lib/images";
@@ -34,7 +35,7 @@ const Portrait = ({ photo }: { photo?: SiteImageSource }) => (
 /** "Born in the mountains of Nepal": the short founder story from Pages › About, linking to the full one. */
 export const FounderStoryCard = async () => {
   const { story, founder } = await getAboutPage();
-  if (!story.teaser) return null;
+  if (!story.teaser.length) return null;
   return (
     <section
       aria-labelledby="founder-story-title"
@@ -51,7 +52,14 @@ export const FounderStoryCard = async () => {
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
         <Portrait photo={founder?.photo} />
         <div className="flex min-w-0 flex-1 flex-col gap-2 text-body-sm text-text">
-          <p>{story.teaser}</p>
+          {/* Five lines, then "Read more" when the story is longer; the whole story is in the HTML for search engines. */}
+          <ClampedText lines={5} className="text-body-sm" buttonClassName={TEXT_ACTION}>
+            <div className="flex flex-col gap-2.5">
+              {story.teaser.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+          </ClampedText>
           <div className="mt-1 flex flex-wrap items-center justify-between gap-2 border-t border-muted pt-2.5">
             {founder ? (
               <p className="flex flex-col leading-snug">

@@ -10,7 +10,7 @@ import { firstText } from "@/lib/rowText";
 import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow } from "@/lib/supabase/database.types";
 
 import { ROUTE_SKETCHES } from "./content/routeSketches";
-import { topPlaceOf } from "./elevation";
+import { highestHighlightDay, topPlaceOf } from "./elevation";
 import { dayRegionSlugs, toRouteStops } from "./routeRegions";
 import { toSectionHeadings } from "./sectionHeadings";
 import { customizationFor } from "./content/sharedContent";
@@ -133,7 +133,7 @@ export const toTrekDetail = (
     currentSeason: page.current_season.trim(),
     daysNote: page.days_note.trim(),
     grade: toGrade(page.grade),
-    highPoint: firstText(page.high_point) ?? topPlaceOf(days.find((day) => day.isHighPoint)) ?? "",
+    highPoint: firstText(page.high_point) ?? topPlaceOf(highestHighlightDay(days)) ?? "",
     optionalHighPoint: sideTrip && page.optional_high_point_m ? { name: sideTrip, altitudeM: page.optional_high_point_m } : undefined,
     intro: toRichTextDoc(page.introduction),
     photos: toPhotos(summary, photos, photosBaseUrl),

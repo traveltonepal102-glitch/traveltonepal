@@ -106,7 +106,7 @@ describe("toRegionDetail", () => {
     const region = detail();
     expect(region).toMatchObject({ name: "Langtang", district: "Rasuwa", heroHighlight: "No flights needed", bestMonthsLabel: "Mar–May, Oct–Nov" });
     expect(region.seo).toEqual({
-      title: "Langtang trekking region: treks, best time and local guides",
+      title: "Langtang: treks, best time and local guides",
       description: "The closest big-mountain valley to Kathmandu.",
     });
     expect(region.overview.heading).toBe("Trekking in Langtang");
@@ -205,8 +205,8 @@ describe("toRegionDetail", () => {
       ],
     });
     expect(region.photos.map((item) => [item.src, item.alt, item.place])).toEqual([
-      [`${BASE}/p1`, "Kyanjin Gompa, Langtang region", "Kyanjin Gompa"],
-      [`${BASE}/p2`, "Langtang region", undefined],
+      [`${BASE}/p1`, "Kyanjin Gompa, Langtang", "Kyanjin Gompa"],
+      [`${BASE}/p2`, "Langtang", undefined],
     ]);
   });
 

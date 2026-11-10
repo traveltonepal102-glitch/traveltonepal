@@ -61,7 +61,7 @@ export const StartDatePicker = ({ days, regionNames }: StartDatePickerProps) => 
       </div>
       <p className="text-body-sm text-text">
         There are no fixed departures. Pick the month that suits you, then your start day.
-        {regionNames.length === 1 && ` The colours show how good each month is for the ${regionNames[0]} region.`}
+        {regionNames.length === 1 && ` The colours show how good each month is for the ${regionNames[0]}.`}
         {regionNames.length > 1 && ` The colours show how good each month is along the route (${regionNames.join(", ")}): as good as its worst region.`}
       </p>
 

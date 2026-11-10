@@ -114,7 +114,7 @@ describe("getTrekReadiness", () => {
     expect(readiness().itinerary).toEqual({ status: "todo", note: "Add the days" });
     expect(readiness({ itinerary: [planDay, planDay] }).itinerary.note).toBe("2 days without a description");
     const described = { ...planDay, description: doc("Walk.") };
-    expect(readiness({ itinerary: [described] }).itinerary.note).toBe("Mark the highlight day");
+    expect(readiness({ itinerary: [described] }).itinerary.note).toBe("Mark a highlight day");
     expect(readiness({ itinerary: [described, { ...described, isHighPoint: true }] }).itinerary).toEqual({ status: "done", note: "2 days" });
   });
 

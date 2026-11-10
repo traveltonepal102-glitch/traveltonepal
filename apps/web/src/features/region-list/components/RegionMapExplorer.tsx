@@ -43,7 +43,7 @@ export const RegionMapExplorer = ({ regions, initialSlug, googleMaps }: RegionMa
           ) : (
             <iframe
               src={selected.mapEmbedUrl}
-              title={`Google map of the ${selected.name} region`}
+              title={`Google map of the ${selected.name}`}
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"

@@ -68,7 +68,7 @@ export const AboutStoryCard = ({ values, officeAuthors, founderPhoto, errors, on
     <TextField
       name="storyTeaser"
       label="Short story for trek pages"
-      hint="Not on this page: shown on every trek page next to the founder, with a link to this story."
+      hint="Not on this page: shown on every trek page next to the founder, with a link to this story. Each line is its own paragraph; a long story shows five lines and Read more."
       multiline
       rows={3}
       defaultValue={values.storyTeaser}

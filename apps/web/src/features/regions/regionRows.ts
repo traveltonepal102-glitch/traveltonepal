@@ -32,7 +32,7 @@ const toRegionSummary = (row: WebRegionRow, photosBaseUrl: string): RegionSummar
     name,
     maxAltitudeM: row.max_altitude_m,
     tagline: firstText(row.tagline, row.summary),
-    image: coverImage(row, photosBaseUrl, `${name} region`),
+    image: coverImage(row, photosBaseUrl, name),
     // Its introduction is written (has_page) and it has what its page's map and facts show.
     hasPage: row.has_page && hasMapFacts(row),
   };

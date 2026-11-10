@@ -42,7 +42,7 @@ describe("trek page SEO", () => {
 
   it("lists the breadcrumb trail with full URLs, ending at the trek page", () => {
     const items = byType("BreadcrumbList")?.itemListElement as { position: number; name: string; item: string }[];
-    expect(items.map((item) => item.name)).toEqual(["Home", "Nepal treks", "Langtang region", "Langtang Valley Trek"]);
+    expect(items.map((item) => item.name)).toEqual(["Home", "Nepal treks", "Langtang", "Langtang Valley Trek"]);
     expect(items.at(-1)?.item).toMatch(/^https?:\/\/.+\/treks\/langtang-valley$/);
   });
 

@@ -161,7 +161,7 @@ export const ItineraryDayCard = ({
         <div className="flex flex-wrap items-center gap-3 pt-1">
           <label className="flex cursor-pointer items-center gap-2.5 text-body-sm text-text">
             <Switch label="Highlight day" checked={day.isHighPoint} onChange={onToggleHighPoint} />
-            Mark as the highlight day (orange on the trek page)
+            Mark as a highlight day (orange on the trek page; a trek may have several)
           </label>
           <span className="flex-1" />
           <button type="button" onClick={onDuplicate} className={cn(secondaryButton, "min-h-8 px-3 text-caption")}>

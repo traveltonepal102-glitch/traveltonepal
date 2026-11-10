@@ -37,8 +37,8 @@ export type AboutPageContent = {
   safety: AboutSafety;
   story: {
     heading: string;
-    /** Short version on every trek page ("Our heritage and roots"). */
-    teaser: string;
+    /** Short version on every trek page ("Our heritage and roots"), one paragraph per line typed. */
+    teaser: string[];
     body: RichTextDoc;
     /** "Our voice"'s quote, by the founder. */
     quote: string;

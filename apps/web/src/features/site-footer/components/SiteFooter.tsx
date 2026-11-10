@@ -51,7 +51,7 @@ export const SiteFooter = async () => {
           <FooterLinkColumn title="Company" links={COMPANY_LINKS} />
 
           <div className="flex flex-col gap-4">
-            <h2 className="font-display text-eyebrow text-white uppercase">Talk to us</h2>
+            <p className="font-display text-eyebrow text-white uppercase">Talk to us</p>
             <address className="flex flex-col gap-2.5 not-italic">
               <a
                 href={getWhatsAppUrl()}

@@ -68,7 +68,7 @@ export const RouteRegionCard = ({ stop, number }: RouteRegionCardProps) => {
             ))}
         </dl>
         <Link href={stop.href} className={`${TEXT_ACTION} mt-auto inline-flex items-center gap-1 self-start pt-1`}>
-          {stop.href.startsWith("/regions/") ? `Explore the ${stop.name} region` : `See treks in ${stop.name}`}
+          {stop.href.startsWith("/regions/") ? `Explore ${stop.name}` : `See treks in ${stop.name}`}
           <Icon name="arrow_forward" size={14} />
         </Link>
       </div>

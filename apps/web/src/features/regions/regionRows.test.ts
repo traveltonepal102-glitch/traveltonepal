@@ -65,13 +65,13 @@ describe("toRegionSummaries", () => {
     expect(withNeither.tagline).toBeUndefined();
   });
 
-  it("trims the name and names the region in its photo's image text", () => {
+  it("trims the name and names the region (never 'Langtang Region region') in its photo's image text", () => {
     const [region] = toRegionSummaries(
-      [row("langtang", { name: " Langtang ", cover_id: "p1", cover_variant_widths: [400, 800], cover_place: "Kyanjin Gompa", cover_placeholder: "" })],
+      [row("langtang", { name: " Langtang Region ", cover_id: "p1", cover_variant_widths: [400, 800], cover_place: "Kyanjin Gompa", cover_placeholder: "" })],
       BASE,
     );
-    expect(region.name).toBe("Langtang");
-    expect(region.image).toEqual({ src: `${BASE}/p1`, alt: "Kyanjin Gompa, Langtang region", variantWidths: [400, 800], placeholder: undefined });
+    expect(region.name).toBe("Langtang Region");
+    expect(region.image).toEqual({ src: `${BASE}/p1`, alt: "Kyanjin Gompa, Langtang Region", variantWidths: [400, 800], placeholder: undefined });
   });
 
   it("has no photo when the region has no cover (the tile shows its drawing)", () => {

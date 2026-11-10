@@ -41,7 +41,7 @@ const toPhotos = (rows: readonly WebRegionPhotoRow[], photosBaseUrl: string, reg
   rows
     .toSorted((a, b) => a.position - b.position)
     .flatMap((row) => {
-      const image = coverImage(row, photosBaseUrl, `${regionName} region`);
+      const image = coverImage(row, photosBaseUrl, regionName);
       return image ? [{ ...image, place: firstText(row.cover_place) }] : [];
     });
 
@@ -79,9 +79,9 @@ export const toRegionDetail = (source: RegionPageSource, photosBaseUrl: string):
   return {
     ...card,
     seo: {
-      title: firstText(page.seo_title) ?? `${card.name} trekking region: treks, best time and local guides`,
+      title: firstText(page.seo_title) ?? `${card.name}: treks, best time and local guides`,
       description: firstText(page.seo_description, card.summary, card.tagline) ?? "",
-      shareImage: sharePhotoImage(page, photosBaseUrl, `${card.name} region`),
+      shareImage: sharePhotoImage(page, photosBaseUrl, card.name),
     },
     heroHighlight: page.hero_highlight.trim(),
     bestMonthsLabel: formatBestMonths(card.months),

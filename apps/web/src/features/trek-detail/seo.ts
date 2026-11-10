@@ -17,7 +17,7 @@ const SHARE_IMAGE_WIDTH = 1200;
 export const trekBreadcrumbs = (trek: TrekDetail): BreadcrumbItem[] => [
   { label: "Home", href: ROUTES.home },
   { label: "Nepal treks", href: ROUTES.treks },
-  { label: `${trek.region} region`, href: regionPath(trek.regionSlug) },
+  { label: trek.region, href: regionPath(trek.regionSlug) },
   { label: trek.name },
 ];
 

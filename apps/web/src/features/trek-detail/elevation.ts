@@ -42,6 +42,10 @@ export type ElevationProfile = {
 export const topPlaceOf = <Day extends Pick<ItineraryDay, "place" | "highPlace" | "sleepAltitudeM">>(day: Day | undefined) =>
   day && (day.sleepAltitudeM === undefined ? day.place : (day.highPlace ?? ""));
 
+/** The highest of the highlight days (a trek may have several, e.g. Tilicho Lake and Thorong La); the first on a tie. */
+export const highestHighlightDay = <Day extends Pick<ItineraryDay, "isHighPoint" | "altitudeM">>(days: readonly Day[]) =>
+  days.filter((day) => day.isHighPoint).reduce<Day | undefined>((highest, day) => (highest && highest.altitudeM >= day.altitudeM ? highest : day), undefined);
+
 const withAltitude = (place: string, altitudeM: number) => [place, formatAltitude(altitudeM)].filter(Boolean).join(" ");
 
 const roleOf = (index: number, peakIndex: number, nightIndex: number): ElevationPointRole => {

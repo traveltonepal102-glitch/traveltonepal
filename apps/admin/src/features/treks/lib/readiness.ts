@@ -60,7 +60,7 @@ const itinerary = (trek: TrekValues): SectionReadiness => {
   if (!days.length) return { status: "todo", note: "Add the days" };
   const undescribed = days.filter((day) => isRichTextEmpty(day.description)).length;
   if (undescribed) return { status: "warn", note: `${plural(undescribed, "day")} without a description` };
-  if (!days.some((day) => day.isHighPoint)) return { status: "warn", note: "Mark the highlight day" };
+  if (!days.some((day) => day.isHighPoint)) return { status: "warn", note: "Mark a highlight day" };
   return { status: "done", note: plural(days.length, "day") };
 };
 

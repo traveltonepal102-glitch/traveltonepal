@@ -56,6 +56,13 @@ export type AboutSafety = { eyebrow: string; heading: string; facts: TitledText[
  */
 export const text = z.string().trim().catch("");
 
+/** Paragraphs of a short text typed in a plain text box: each line is one (an Enter starts a new paragraph). */
+export const linesOf = (value: string) =>
+  value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
 /** Paragraphs typed with an empty line between them. */
 export const paragraphsOf = (value: string) =>
   value

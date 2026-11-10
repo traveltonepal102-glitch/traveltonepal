@@ -14,7 +14,7 @@ import { RouteSketch } from "./RouteSketch";
 const RegionMarker = ({ name, isFirst }: { name: string; isFirst: boolean }) => (
   <p className="flex items-center gap-2 pt-1 text-caption font-bold text-brand">
     <Icon name="pin_drop" size={16} className="flex-none" />
-    {isFirst ? `Starts in the ${name} region` : `Into the ${name} region`}
+    {isFirst ? `Starts in the ${name}` : `Into the ${name}`}
     <span aria-hidden="true" className="h-px flex-1 bg-line" />
   </p>
 );

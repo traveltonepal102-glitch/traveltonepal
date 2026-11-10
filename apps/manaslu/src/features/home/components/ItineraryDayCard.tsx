@@ -44,7 +44,7 @@ export const ItineraryDayCard = ({ day }: { day: HomeDay }) => (
         {day.isHighPoint && <span className="inline-flex items-center rounded-full bg-saffron px-2.5 py-0.75 text-sm leading-5 font-semibold text-ink">High point</span>}
       </p>
       <ClampedText className="text-base leading-6.5">
-        <RichText doc={day.body} className="flex flex-col gap-3" />
+        <RichText doc={day.body} className="flex flex-col gap-3" headingLevel={4} />
       </ClampedText>
     </article>
   </li>

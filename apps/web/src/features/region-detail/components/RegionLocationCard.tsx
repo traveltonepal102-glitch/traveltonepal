@@ -33,7 +33,7 @@ export const RegionLocationCard = ({ region }: { region: RegionDetail }) => (
     <MapConsentGate preview={<DrawnPin region={region} />} previewLabel={`Map of ${region.name}`} noticePlacement="below">
       <iframe
         src={regionMapEmbedUrl(region.location)}
-        title={`Google map of the ${region.name} region`}
+        title={`Google map of the ${region.name}`}
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"

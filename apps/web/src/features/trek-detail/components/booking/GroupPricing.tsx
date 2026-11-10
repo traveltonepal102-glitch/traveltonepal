@@ -106,8 +106,8 @@ export const GroupPricing = ({ groupPrices }: GroupPricingProps) => {
           ))}
         </div>
         <p className="text-sm leading-snug text-muted-foreground">
-          Private trek guarantee: you trek only with your own dedicated guide
-          and porter crew.
+          Private trek guarantee: your own dedicated guide, with porters on
+          request.
         </p>
       </fieldset>
     </>

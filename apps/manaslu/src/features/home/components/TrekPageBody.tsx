@@ -17,7 +17,8 @@ export const TrekPageBody = ({ trek, company, reviews, rating, children }: TrekP
   <BookingProvider prices={trek.pricing.prices}>
     <SectionMenu sections={reviews.length ? trek.sections : trek.sections.filter((section) => section !== "reviews")} priceFromUsd={trek.priceFromUsd} />
     <div className="wrap flex flex-wrap items-start gap-12 pt-10 pb-22 max-md:pb-14 lg:flex-nowrap">
-      <div className="flex min-w-0 flex-[999_1_600px] flex-col gap-16 max-md:gap-12">
+      {/* Never wider than the page beside the card, so its text fills it (no 72ch gap before the card). */}
+      <div className="flex min-w-0 flex-[999_1_600px] flex-col gap-16 [--text-measure:none] max-md:gap-12">
         {trek.facts.length > 0 && <TrekFacts facts={trek.facts} />}
         <TrekSections trek={trek} company={company} reviews={reviews} rating={rating} />
       </div>

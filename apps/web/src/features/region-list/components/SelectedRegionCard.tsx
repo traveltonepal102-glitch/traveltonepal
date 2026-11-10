@@ -26,7 +26,7 @@ export const SelectedRegionCard = ({ region }: { region: RegionListItem }) => {
   return (
     <aside
       aria-live="polite"
-      aria-label={`${region.name} region`}
+      aria-label={region.name}
       className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-[0_6px_18px_rgba(15,23,42,0.08)]"
     >
       <div className="relative aspect-video">

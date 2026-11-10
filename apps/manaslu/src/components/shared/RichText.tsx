@@ -42,7 +42,10 @@ const Photo = ({ image }: { image: RichTextImage }) => {
   );
 };
 
-const Block = ({ block }: { block: RichTextBlock }) => {
+/** The level of the text's headings: one below the heading the text sits under (h3 under an h2, h4 under an h3). */
+type HeadingLevel = 3 | 4;
+
+const Block = ({ block, headingLevel }: { block: RichTextBlock; headingLevel: HeadingLevel }) => {
   if (block.type === "paragraph") {
     return block.content?.length ? (
       <p>
@@ -51,10 +54,11 @@ const Block = ({ block }: { block: RichTextBlock }) => {
     ) : null;
   }
   if (block.type === "heading") {
+    const Heading = headingLevel === 4 ? "h4" : "h3";
     return (
-      <h3>
+      <Heading>
         <Inlines content={block.content} />
-      </h3>
+      </Heading>
     );
   }
   if (block.type === "image") return <Photo image={block} />;
@@ -71,7 +75,7 @@ const Block = ({ block }: { block: RichTextBlock }) => {
                 {first.content.map((cell, cellIndex) => (
                   <th key={cellIndex} scope="col" className="p-3 text-left align-top font-semibold text-ink">
                     {cell.content.map((child, childIndex) => (
-                      <Block key={childIndex} block={child} />
+                      <Block key={childIndex} block={child} headingLevel={headingLevel} />
                     ))}
                   </th>
                 ))}
@@ -86,7 +90,7 @@ const Block = ({ block }: { block: RichTextBlock }) => {
                   return (
                     <Cell key={cellIndex} className="p-3 text-left align-top">
                       {cell.content.map((child, childIndex) => (
-                        <Block key={childIndex} block={child} />
+                        <Block key={childIndex} block={child} headingLevel={headingLevel} />
                       ))}
                     </Cell>
                   );
@@ -100,11 +104,11 @@ const Block = ({ block }: { block: RichTextBlock }) => {
   }
   const List = block.type === "orderedList" ? "ol" : "ul";
   return (
-    <List className={`flex max-w-[72ch] flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
+    <List className={`flex max-w-[var(--text-measure,72ch)] flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
       {block.content.map((item, index) => (
         <li key={index} className="space-y-1.5">
           {item.content.map((child, childIndex) => (
-            <Block key={childIndex} block={child} />
+            <Block key={childIndex} block={child} headingLevel={headingLevel} />
           ))}
         </li>
       ))}
@@ -112,11 +116,18 @@ const Block = ({ block }: { block: RichTextBlock }) => {
   );
 };
 
+type RichTextProps = {
+  doc: RichTextDoc;
+  className?: string;
+  /** 4 when the text sits under an h3 (an itinerary day); else its headings are h3. */
+  headingLevel?: HeadingLevel;
+};
+
 /** Text written in the admin's rich text editor, as plain HTML on the server, in this website's look. */
-export const RichText = ({ doc, className = "flex flex-col gap-3.5" }: { doc: RichTextDoc; className?: string }) => (
+export const RichText = ({ doc, className = "flex flex-col gap-3.5", headingLevel = 3 }: RichTextProps) => (
   <div className={className}>
     {doc.content.map((block, index) => (
-      <Block key={index} block={block} />
+      <Block key={index} block={block} headingLevel={headingLevel} />
     ))}
   </div>
 );

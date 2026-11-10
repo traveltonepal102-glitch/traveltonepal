@@ -45,7 +45,7 @@ const ROW: WebSitePageRow = {
     },
     safety: { heading: "Your safety", facts: [{ title: "Rescue plan", text: "From Kathmandu." }, { title: "", text: "" }] },
     storyHeading: "Why Sandip started Travel To Nepal",
-    storyTeaser: "Short story.",
+    storyTeaser: "Short story.\nSecond line.\n\n  Third, after an empty line.  \n",
     storyText: "Born in Tanahun.\n\nThree goals.",
     quote: "It's time for Nepal to have its own voice.",
     founderOrigin: "From Tanahun",
@@ -118,6 +118,7 @@ describe("toAboutPage", () => {
     expect(about.story).toMatchObject({ heading: "Why Sandip started Travel To Nepal", origin: "From Tanahun", goals: [{ title: "Fair pay", text: "For the trail team." }] });
     expect(about.story.voice).toEqual({ eyebrow: "Our voice", heading: "", paragraphs: ["Para one.", "Para two."] });
     expect(about.story.body.content).toHaveLength(2);
+    expect(about.story.teaser).toEqual(["Short story.", "Second line.", "Third, after an empty line."]);
     expect(about.headings.team).toEqual({ title: "", text: "Local guides." });
   });
 
@@ -140,6 +141,7 @@ describe("toAboutPage", () => {
     expect(empty.listen.steps).toHaveLength(3);
     expect(empty.openMind.places).toEqual([]);
     expect(empty.story.photo).toBeUndefined();
+    expect(empty.story.teaser).toEqual([]);
     expect(empty.story.body).toEqual({ type: "doc", content: [{ type: "paragraph" }] });
   });
 });

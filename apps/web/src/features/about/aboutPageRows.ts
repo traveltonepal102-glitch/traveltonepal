@@ -9,7 +9,7 @@ import { listOf } from "@/lib/jsonList";
 import type { WebAboutTeamRow, WebSitePageRow } from "@/lib/supabase/database.types";
 import { SITE_NAME } from "@/lib/site";
 
-import { PHOTO_PLACES, fieldOf, flexibleOf, honestOf, listenOf, openMindOf, paragraphsOf, photosByPlace, safetyOf, sectionObject, text, titledList } from "./aboutBeliefRows";
+import { PHOTO_PLACES, fieldOf, flexibleOf, honestOf, linesOf, listenOf, openMindOf, paragraphsOf, photosByPlace, safetyOf, sectionObject, text, titledList } from "./aboutBeliefRows";
 import type { AboutPageContent, Founder, TeamMember } from "./types";
 
 const promiseSchema = z.object({ icon: z.string().catch(""), title: z.string().trim().min(1), text });
@@ -53,7 +53,7 @@ export const toAboutPage = (row: WebSitePageRow, photosBaseUrl: string): AboutPa
     safety: safetyOf(content.safety),
     story: {
       heading: field("storyHeading"),
-      teaser: field("storyTeaser"),
+      teaser: linesOf(field("storyTeaser")),
       body: readPageRichText(content.storyText ?? content.story),
       quote: field("quote"),
       origin: field("founderOrigin"),

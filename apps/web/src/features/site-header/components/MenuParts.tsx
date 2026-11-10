@@ -44,13 +44,13 @@ type PanelFooterProps = {
   href: string;
 };
 
-/** Bottom row of a menu: a short note and a link to the whole section. */
+/** Bottom row of a menu: the link to the whole section on the left, where the eye starts, then a short note. */
 export const PanelFooter = ({ note, linkLabel, href }: PanelFooterProps) => (
   <div className="mt-4 flex flex-wrap items-center justify-between gap-2.5 border-t border-line pt-3.5 text-caption">
-    {note && <span className="text-muted-foreground">{note}</span>}
-    <Link href={href} className={`ml-auto inline-flex items-center gap-1.5 rounded-sm font-bold text-brand hover:underline ${FOCUS_RING}`}>
+    <Link href={href} className={`inline-flex items-center gap-1.5 rounded-sm font-bold text-brand hover:underline ${FOCUS_RING}`}>
       {linkLabel}
       <Icon name="arrow_forward" size={16} />
     </Link>
+    {note && <span className="text-muted-foreground">{note}</span>}
   </div>
 );

@@ -51,11 +51,8 @@ const daySchema = z
     sleepAltitudeM: topAltitude === null ? null : sleepAltitude,
   }));
 
-/** The day-by-day plan, in order. One highlight day at most (the database checks it too). */
-export const itinerarySchema = z
-  .array(daySchema)
-  .max(MAX_DAYS, `A trek can have up to ${MAX_DAYS} days.`)
-  .refine((days) => days.filter((day) => day.isHighPoint).length <= 1, "Only one day can be the highlight day.");
+/** The day-by-day plan, in order. Any number of days may be highlight days (Tilicho Lake and Thorong La). */
+export const itinerarySchema = z.array(daySchema).max(MAX_DAYS, `A trek can have up to ${MAX_DAYS} days.`);
 
 /** The days in the editor's FormData: one value per day for each day field, in order (meals: "breakfast,dinner"). */
 export const readItinerary = (formData: FormData) => {

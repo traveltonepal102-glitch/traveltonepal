@@ -61,7 +61,7 @@ const emptyRow = (): DayRow => ({
 });
 
 /**
- * The day-by-day plan in the editor: add, duplicate, reorder and delete days, one highlight day at most,
+ * The day-by-day plan in the editor: add, duplicate, reorder and delete days, any number of highlight days,
  * and one day open at a time (like the design). Day numbers follow the order by themselves.
  */
 export const useItineraryDays = (initial: ItineraryDay[], onEdit: () => void) => {
@@ -99,9 +99,9 @@ export const useItineraryDays = (initial: ItineraryDay[], onEdit: () => void) =>
       return next;
     });
 
-  /** On for this day turns it off everywhere else; on again turns it off. */
+  /** Turns this day's highlight on or off; other highlight days stay as they are. */
   const toggleHighPoint = (key: string) =>
-    change((current) => current.map((day) => ({ ...day, isHighPoint: day.key === key ? !day.isHighPoint : false })));
+    change((current) => current.map((day) => (day.key === key ? { ...day, isHighPoint: !day.isHighPoint } : day)));
 
   const update = (key: string, patch: Partial<DayRow>) =>
     change((current) => current.map((day) => (day.key === key ? { ...day, ...patch } : day)));
