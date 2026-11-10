@@ -77,8 +77,8 @@ export const CookieBanner = () => {
                 Your privacy, your choice
               </h2>
               <p className="text-body-sm text-text">
-                We use only what is needed to run this site. With your permission we also count page visits (Google Analytics
-                and Microsoft Clarity) and show Google Maps and YouTube videos. You can change this at any time under{" "}
+                We use only what is needed to run this site. With your permission we also count page visits (Google Analytics,
+                Google Tag Manager and Microsoft Clarity) and show Google Maps and YouTube videos. You can change this at any time under{" "}
                 <Link href={ROUTES.cookies} className={LINK}>
                   Cookie settings
                 </Link>

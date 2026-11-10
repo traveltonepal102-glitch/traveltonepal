@@ -4,7 +4,7 @@
  * settings page) before adding anything else that sends data to another company.
  */
 export type ConsentChoices = {
-  /** Google Analytics and Microsoft Clarity (AnalyticsScripts). */
+  /** Google Analytics, Google Tag Manager and Microsoft Clarity (AnalyticsScripts). */
   analytics: boolean;
   /** Google Maps and YouTube videos (send the visitor's IP address to Google). */
   externalMedia: boolean;
