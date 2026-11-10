@@ -45,7 +45,7 @@ export const RegionPhotoGrid = ({ photos, title }: RegionPhotoGridProps) => {
         ))}
       </ul>
       <PhotoViewer
-        photos={photos.map(({ place, ...photo }) => ({ ...photo, caption: place }))}
+        photos={photos.map(({ place, ...photo }) => ({ ...photo, caption: photo.caption || place }))}
         title={title}
         index={viewerIndex}
         onIndexChange={setViewerIndex}

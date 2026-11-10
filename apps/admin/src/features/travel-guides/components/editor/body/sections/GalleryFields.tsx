@@ -3,6 +3,7 @@ import { Icon } from "@ttn/ui/icon";
 import { ghostIconButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { DragHandle, SortableList } from "@/components/ui/SortableList";
+import { EditPhotoTextButton } from "@/features/photos/components/EditPhotoTextButton";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
@@ -19,7 +20,7 @@ type GalleryFieldsProps = {
   onChange: (photoIds: string[]) => void;
 };
 
-/** "Photo gallery": photos visitors swipe through, in the order dragged here. Their descriptions come from the library. */
+/** "Photo gallery": photos visitors swipe through, in the order dragged here. Their alt text and caption come from the library (the pencil edits them). */
 export const GalleryFields = ({ photoIds, context, field, errors, onChange }: GalleryFieldsProps) => {
   const picked = photoIds.flatMap((id) => context.photos.filter((photo) => photo.id === id)).map((photo) => ({ key: photo.id, photo }));
   const move = (from: number, to: number) => {
@@ -38,6 +39,8 @@ export const GalleryFields = ({ photoIds, context, field, errors, onChange }: Ga
               <PhotoImage photo={photo} alt="" sizes="180px" className="block aspect-4/3 h-auto w-full object-cover" />
               <span className="absolute top-1 right-1 left-1 flex justify-between rounded-md bg-white/90">
                 <DragHandle {...handle} />
+                <span className="flex-1" />
+                <EditPhotoTextButton photo={photo} variant="icon" className="border-transparent bg-transparent" />
                 <button type="button" className={ghostIconButton} aria-label={`Remove photo ${index + 1}`} onClick={() => onChange(photoIds.filter((id) => id !== photo.id))}>
                   <Icon name="close" size={16} />
                 </button>

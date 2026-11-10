@@ -4,10 +4,11 @@ import { Icon } from "@ttn/ui/icon";
 
 import { ghostIconButton } from "@/components/ui/buttonStyles";
 
-import type { Photo } from "../types";
 import { photoAltText } from "../lib/altText";
-import { PhotoPlaceField } from "./PhotoPlaceField";
+import type { Photo, PhotoText } from "../types";
+import { EditPhotoTextButton } from "./EditPhotoTextButton";
 import { PhotoImage } from "./PhotoImage";
+import { PhotoTextSummary } from "./PhotoTextSummary";
 
 type GalleryPhotoCardProps = {
   photo: Photo;
@@ -19,10 +20,11 @@ type GalleryPhotoCardProps = {
   onMove: (to: number) => void;
   onMakeCover: () => void;
   onRemove: () => void;
-  onChangePlace: (place: string) => void;
+  /** After its alt text, caption or place was saved in their window. */
+  onTextSaved: (text: PhotoText) => void;
 };
 
-/** One gallery photo: its number, "taken at", and buttons to reorder, make cover or remove. */
+/** One gallery photo: its number, alt text, caption and place (edited in their window), and buttons to reorder, make cover or remove. */
 export const GalleryPhotoCard = ({
   photo,
   index,
@@ -31,7 +33,7 @@ export const GalleryPhotoCard = ({
   onMove,
   onMakeCover,
   onRemove,
-  onChangePlace,
+  onTextSaved,
 }: GalleryPhotoCardProps) => {
   const number = index + 1;
   return (
@@ -45,9 +47,9 @@ export const GalleryPhotoCard = ({
         />
         <span className="absolute top-2 left-2 rounded-sm bg-navy/85 px-2 py-0.5 text-[11px] font-extrabold text-white">{number}</span>
       </div>
-      <div className="flex flex-col gap-2.5 p-2.5">
-        <PhotoPlaceField photo={photo} onChange={onChangePlace} />
-        <div className="flex items-center gap-0.5">
+      <div className="flex flex-1 flex-col gap-2.5 p-2.5">
+        <PhotoTextSummary text={photo} />
+        <div className="mt-auto flex items-center gap-0.5">
           <button type="button" className={ghostIconButton} aria-label={`Move photo ${number} earlier`} disabled={index === 0} onClick={() => onMove(index - 1)}>
             <Icon name="arrow_back" size={18} />
           </button>
@@ -61,6 +63,7 @@ export const GalleryPhotoCard = ({
             <Icon name="arrow_forward" size={18} />
           </button>
           <span className="flex-1" />
+          <EditPhotoTextButton photo={photo} onSaved={onTextSaved} variant="icon" />
           <button type="button" className={ghostIconButton} aria-label={`Make photo ${number} the cover`} title="Make cover" onClick={onMakeCover}>
             <Icon name="star" size={18} />
           </button>

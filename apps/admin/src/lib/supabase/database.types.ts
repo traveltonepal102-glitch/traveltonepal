@@ -45,6 +45,10 @@ type PhotoRow = {
   height: number;
   placeholder: string;
   place: string;
+  /** What the photo shows, for blind visitors and Google Images; "" until typed (the website then writes one). */
+  alt_text: string;
+  /** The caption shown when the photo is opened full size; "" for none. */
+  description: string;
   original_name: string;
   byte_size: number;
   created_at: string;
@@ -53,7 +57,7 @@ type PhotoRow = {
 };
 
 /** What search_library_photos and photos_named return about a photo. */
-type PickerPhotoRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place" | "original_name">;
+type PickerPhotoRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place" | "alt_text" | "description" | "original_name">;
 
 type RegionPhotoRow = { region_id: string; photo_id: string; position: number };
 

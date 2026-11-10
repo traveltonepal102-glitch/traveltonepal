@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
+import { EditPhotoTextButton } from "@/features/photos/components/EditPhotoTextButton";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
@@ -43,10 +44,13 @@ export const HomeHeroPhotoField = ({ photo, regionId, error, onChange }: HomeHer
             {photo ? "Change photo" : "Add photo"}
           </button>
           {photo && (
-            <button type="button" onClick={() => onChange(null)} className={smallButton}>
-              <Icon name="delete" size={16} />
-              Remove
-            </button>
+            <>
+              <button type="button" onClick={() => onChange(null)} className={smallButton}>
+                <Icon name="delete" size={16} />
+                Remove
+              </button>
+              <EditPhotoTextButton photo={photo} variant="icon" />
+            </>
           )}
         </span>
       </div>

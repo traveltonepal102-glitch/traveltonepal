@@ -19,8 +19,12 @@ const USE_FOLDERS = [
 const ALL = { key: "all", label: "All photos", icon: "photo_library" } as const;
 const RECENT = { key: "recent", label: "Recent uploads", icon: "schedule" } as const;
 const UNUSED = { key: "unused", label: "Not used yet", icon: "link_off" } as const;
+/** Photos nobody has typed alt text for yet (the website writes theirs from the place and the page). */
+const NEEDS_ALT = { key: "needs-alt-text", label: "Needs alt text", icon: "warning" } as const;
 
-export type PhotoFolderKey = (typeof USE_FOLDERS)[number]["key"] | typeof ALL.key | typeof RECENT.key | typeof UNUSED.key;
+export type PhotoFolderKey = (typeof USE_FOLDERS)[number]["key"] | typeof ALL.key | typeof RECENT.key | typeof UNUSED.key | typeof NEEDS_ALT.key;
+
+const needsAltText = (photo: LibraryPhoto) => !photo.altText.trim();
 
 /** The folders shown by upload time (Today, Yesterday… then months) rather than as one list. */
 export const isTimeFolder = (folder: PhotoFolderKey) => folder === ALL.key || folder === RECENT.key;
@@ -39,7 +43,7 @@ export type PhotoFolder = LibraryFolder<PhotoFolderKey>;
 /** The folder the screen opens; unknown values open all photos. */
 export type FolderSelection = LibrarySelection<PhotoFolderKey>;
 
-const FOLDER_KEYS: readonly string[] = [ALL.key, RECENT.key, ...USE_FOLDERS.map((folder) => folder.key), UNUSED.key];
+const FOLDER_KEYS: readonly string[] = [ALL.key, RECENT.key, ...USE_FOLDERS.map((folder) => folder.key), UNUSED.key, NEEDS_ALT.key];
 
 const isFolderKey = (value: unknown): value is PhotoFolderKey => typeof value === "string" && FOLDER_KEYS.includes(value);
 
@@ -95,6 +99,7 @@ export const buildPhotoFolders = (photos: readonly LibraryPhoto[], uses: readonl
       };
     }),
     { ...UNUSED, count: photos.filter((photo) => !used.has(photo.id)).length, items: [] },
+    { ...NEEDS_ALT, count: photos.filter(needsAltText).length, items: [] },
   ];
 };
 
@@ -102,6 +107,8 @@ export const buildPhotoFolders = (photos: readonly LibraryPhoto[], uses: readonl
 export const photosInFolder = (photos: readonly LibraryPhoto[], uses: readonly PhotoUse[], { folder, item }: FolderSelection, now: Date) => {
   if (folder === ALL.key) return [...photos];
   if (folder === RECENT.key) return photos.filter((photo) => isRecent(photo, now));
+
+  if (folder === NEEDS_ALT.key) return photos.filter(needsAltText);
 
   if (folder === UNUSED.key) {
     const used = new Set(uses.map((use) => use.photoId));

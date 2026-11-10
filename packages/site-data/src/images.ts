@@ -14,6 +14,8 @@ export type SiteImageSource = {
   fileName?: string;
   /** Tiny blurred preview shown while the photo loads. */
   placeholder?: string;
+  /** A library photo's caption from the admin, shown when it is opened full size. */
+  caption?: string;
 };
 
 /**
@@ -29,15 +31,19 @@ export const HERO_PHOTO_QUALITY = 60;
 export const imageFileUrl = (image: SiteImageSource, width: number) =>
   image.variantWidths?.length ? photoUrl({ baseUrl: image.src, variantWidths: image.variantWidths, fileName: image.fileName }, width) : image.src;
 
-/** A row's cover photo as a SiteImageSource; `subject` names what it shows, for its image text. */
+/**
+ * A row's cover photo as a SiteImageSource. Its image text: `alt` (typed for this one use, e.g. a guide's cover),
+ * else the photo's own alt text, else its place and `subject` (what the page is about).
+ */
 export const coverImage = (row: CoverColumns, photosBaseUrl: string, subject: string, alt?: string): SiteImageSource | undefined => {
   if (!row.cover_id || !row.cover_variant_widths?.length) return undefined;
   return {
     src: `${photosBaseUrl}/${row.cover_id}`,
-    alt: alt?.trim() || photoAltText({ place: row.cover_place ?? "" }, subject),
+    alt: alt?.trim() || photoAltText({ place: row.cover_place ?? "", altText: row.cover_alt_text }, subject),
     variantWidths: row.cover_variant_widths,
     fileName: row.cover_file_name || undefined,
     placeholder: row.cover_placeholder || undefined,
+    caption: row.cover_caption?.trim() || undefined,
   };
 };
 
@@ -49,6 +55,8 @@ export const sharePhotoImage = (row: ShareColumns, photosBaseUrl: string, subjec
       cover_variant_widths: row.share_variant_widths,
       cover_file_name: row.share_file_name,
       cover_place: row.share_place,
+      cover_alt_text: row.share_alt_text,
+      cover_caption: row.share_caption,
       cover_placeholder: null,
       cover_width: null,
       cover_height: null,

@@ -18,6 +18,13 @@ describe("coverImage", () => {
     expect(coverImage(row, BASE, "Guide", " Snow peaks above Langtang ")?.alt).toBe("Snow peaks above Langtang");
   });
 
+  it("uses the photo's own alt text and caption from the admin, a page's own text still first", () => {
+    const typed = { ...row, cover_alt_text: " Prayer flags above Kyanjin Gompa ", cover_caption: " Built in the 1700s. " };
+    expect(coverImage(typed, BASE, "Langtang region")).toMatchObject({ alt: "Prayer flags above Kyanjin Gompa", caption: "Built in the 1700s." });
+    expect(coverImage(typed, BASE, "Guide", "Snow peaks above Langtang")?.alt).toBe("Snow peaks above Langtang");
+    expect(coverImage({ ...typed, cover_alt_text: "  ", cover_caption: "" }, BASE, "Langtang region")).toMatchObject({ alt: "Kyanjin Gompa, Langtang region", caption: undefined });
+  });
+
   it("has no picture without a photo", () => {
     expect(coverImage({ ...row, cover_id: null }, BASE, "Everest region")).toBeUndefined();
     expect(coverImage({ ...row, cover_variant_widths: [] }, BASE, "Everest region")).toBeUndefined();

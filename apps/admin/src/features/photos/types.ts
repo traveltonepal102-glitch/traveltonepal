@@ -10,9 +10,16 @@ export type Photo = {
   fileName: string | null;
   /** Tiny blurred preview (data URL) shown while loading; "" if none. */
   placeholder: string;
-  /** Optional "taken at", e.g. "Kyanjin Gompa". Also used in the image text (photoAltText). */
+  /** Optional "taken at", e.g. "Kyanjin Gompa". Also used in the image text while there is no alt text (photoAltText). */
   place: string;
+  /** What the photo shows, for blind visitors and Google Images; "" until typed. */
+  altText: string;
+  /** Shown under the photo when a visitor opens it full size; "" for none. */
+  caption: string;
 };
+
+/** What can be typed about a photo itself (Photos screen, "Choose a photo" window). */
+export type PhotoText = Pick<Photo, "altText" | "caption" | "place">;
 
 /** What an editor saves about a photo it uses (the place belongs to the photo itself). */
 export type PhotoDetails = { id: string; place: string };

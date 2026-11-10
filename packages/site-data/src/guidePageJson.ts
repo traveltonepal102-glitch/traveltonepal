@@ -22,6 +22,8 @@ export const coverSchema = z.object({
   cover_file_name: z.string().nullable().catch(null),
   cover_placeholder: z.string().catch(""),
   cover_place: z.string().catch(""),
+  cover_alt_text: z.string().catch(""),
+  cover_caption: z.string().catch(""),
 });
 
 const personSchema = z.object({ name: z.string().trim().min(1), role: text, quote: text, photo: coverSchema.nullable().catch(null) });

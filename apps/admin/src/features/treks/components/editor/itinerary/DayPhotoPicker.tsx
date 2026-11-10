@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { labelClass } from "@/components/ui/formStyles";
+import { EditPhotoTextButton } from "@/features/photos/components/EditPhotoTextButton";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
@@ -33,14 +34,17 @@ export const DayPhotoPicker = ({ photo, trekId, onChange }: DayPhotoPickerProps)
             {photo ? "Change" : "Choose a photo"}
           </button>
           {photo && (
-            <button type="button" onClick={() => onChange(null)} className={smallButton}>
-              <Icon name="close" size={16} />
-              No photo
-            </button>
+            <>
+              <button type="button" onClick={() => onChange(null)} className={smallButton}>
+                <Icon name="close" size={16} />
+                No photo
+              </button>
+              <EditPhotoTextButton photo={photo} variant="icon" />
+            </>
           )}
         </span>
       </div>
-      <span className="text-xs text-muted-foreground">Optional. Its description comes from the photo library.</span>
+      <span className="text-xs text-muted-foreground">Optional. Its alt text and caption belong to the photo: the pencil edits them.</span>
       <input type="hidden" name="dayPhotoId" value={photo?.id ?? ""} />
       {isOpen && (
         <LibraryPhotoDialog

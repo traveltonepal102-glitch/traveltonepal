@@ -127,6 +127,10 @@ export const LibraryPhotoDialog = (props: LibraryPhotoDialogProps) => {
                   setPreviewing(null);
                 }}
                 onBack={() => setPreviewing(null)}
+                onTextSaved={(text) => {
+                  search.updateText(previewing.id, text);
+                  setPreviewing({ ...previewing, ...text });
+                }}
               />
             ) : (
               <PickerGrid

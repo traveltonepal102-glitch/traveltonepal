@@ -9,7 +9,9 @@ import { formatFileSize } from "../lib/formatFileSize";
 import { folderOfUse } from "../lib/photoFolders";
 import { photoUseHref, photoUseLabel } from "../lib/photoUseLinks";
 import type { LibraryPhoto, PhotoUse } from "../types";
+import { EditPhotoTextButton } from "./EditPhotoTextButton";
 import { PhotoImage } from "./PhotoImage";
+import { PhotoTextSummary } from "./PhotoTextSummary";
 
 type LibraryPhotoCardProps = { photo: LibraryPhoto; uses: readonly PhotoUse[]; canDelete: boolean };
 
@@ -32,7 +34,7 @@ const blockersOf = (uses: readonly PhotoUse[]): RemoveBlockerGroup[] => {
   }));
 };
 
-/** One library photo: the picture, its file, where it is used (each a link to change it) and Delete. */
+/** One library photo: the picture, its file, its alt text, caption and place, where it is used (each a link to change it), Edit and Delete. */
 export const LibraryPhotoCard = ({ photo, uses, canDelete }: LibraryPhotoCardProps) => {
   const name = photo.originalName || "Untitled photo";
 
@@ -48,9 +50,10 @@ export const LibraryPhotoCard = ({ photo, uses, canDelete }: LibraryPhotoCardPro
           </p>
           <p className="m-0 mt-0.5 text-xs text-muted-foreground">
             {photo.width} × {photo.height} · {formatFileSize(photo.byteSize)} · {formatDateTime(photo.createdAt)}
-            {photo.place && ` · ${photo.place}`}
           </p>
         </div>
+
+        <PhotoTextSummary text={photo} />
 
         {uses.length > 0 ? (
           <ul aria-label="Used in" className="m-0 flex list-none flex-col gap-1 p-0">
@@ -67,8 +70,9 @@ export const LibraryPhotoCard = ({ photo, uses, canDelete }: LibraryPhotoCardPro
           <p className="m-0 self-start rounded-full bg-muted px-2.5 py-0.5 text-xs font-bold text-muted-foreground">Not used yet</p>
         )}
 
-        {canDelete && (
-          <div className="mt-auto flex justify-end pt-1">
+        <div className="mt-auto flex flex-wrap justify-end gap-2 pt-1">
+          <EditPhotoTextButton photo={photo} />
+          {canDelete && (
             <ConfirmRemoveButton
               name={`“${name}”`}
               verb="delete"
@@ -76,8 +80,8 @@ export const LibraryPhotoCard = ({ photo, uses, canDelete }: LibraryPhotoCardPro
               action={deletePhoto.bind(null, photo.id)}
               blockers={blockersOf(uses)}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </article>
   );

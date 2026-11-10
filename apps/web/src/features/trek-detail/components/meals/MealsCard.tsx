@@ -4,7 +4,6 @@ import { formatUsd } from "@/features/treks/format";
 
 import type { TrekMeals } from "../../types";
 import { PANEL } from "../styles";
-import { MealTipList } from "./MealTipList";
 
 /** Why meals are paid on the trail: the same company policy on every trek. */
 const REASONS = [
@@ -34,7 +33,7 @@ const REASONS = [
   },
 ] as const;
 
-/** "Why don't we include meals in our trekking package?": the reasons, the daily budget and food tips. */
+/** "Why don't we include meals in our trekking package?": the reasons and the daily budget (the tips follow in TrekProTips). */
 export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
   <div className={`${PANEL} mt-1 flex flex-col gap-4 rounded-xl p-4.5 md:p-6`}>
     <div className="flex flex-col gap-2 border-b border-muted pb-3 sm:flex-row sm:items-center sm:justify-between">
@@ -73,18 +72,5 @@ export const MealsCard = ({ meals }: { meals: TrekMeals }) => (
         </span>
       </p>
     )}
-
-    <div className="mt-1 flex flex-col gap-3.5 rounded-xl border border-line bg-page p-4.5 md:p-5">
-      {/* An h2 (SEO): the tips are about the whole trail, not only meals, so they get their own outline entry. */}
-      <h2 className="inline-flex items-center gap-2 border-b border-line pb-2 text-[15px] font-extrabold tracking-wide uppercase">
-        <Icon name="lightbulb" className="text-brand" />
-        Pro tips and important notes
-      </h2>
-      {/* Pro tips first, the important notes below them (one column at every width). */}
-      <div className="grid gap-4">
-        <MealTipList title="Trail pro tips" icon="check_circle" tone="green" points={meals.trailTips} />
-        <MealTipList title="Essential teahouse notes" icon="warning" tone="saffron" points={meals.teahouseNotes} />
-      </div>
-    </div>
   </div>
 );

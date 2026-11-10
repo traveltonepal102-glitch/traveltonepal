@@ -8,6 +8,7 @@ import { secondaryButton } from "@/components/ui/buttonStyles";
 
 import type { PhotoSize } from "../lib/photoSizes";
 import type { Photo } from "../types";
+import { EditPhotoTextButton } from "./EditPhotoTextButton";
 import { LibraryPhotoDialog } from "./LibraryPhotoDialog";
 import { PhotoImage } from "./PhotoImage";
 import { PhotoSizeNote } from "./PhotoSizeNote";
@@ -27,7 +28,7 @@ type LibraryPhotoFieldProps = {
 
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 
-/** A photo from the library (or a new upload) for one place on a page: a preview, Choose/Change and Remove. */
+/** A photo from the library (or a new upload) for one place on a page: a preview, Choose/Change, Remove and its alt text and caption. */
 export const LibraryPhotoField = ({ name, label, size, hint, initial, emptyText = "No photo: the page uses its own default.", onEdit }: LibraryPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const [isOpen, setIsOpen] = useState(false);
@@ -51,10 +52,14 @@ export const LibraryPhotoField = ({ name, label, size, hint, initial, emptyText 
               {photo ? "Change" : "Choose photo"}
             </button>
             {photo && (
-              <button type="button" onClick={() => choose(null)} className={smallButton}>
-                <Icon name="delete" size={16} />
-                Remove
-              </button>
+              <>
+                <button type="button" onClick={() => choose(null)} className={smallButton}>
+                  <Icon name="delete" size={16} />
+                  Remove
+                </button>
+                {/* Saved with the photo itself: shown here, the form stays as it was. */}
+                <EditPhotoTextButton photo={photo} onSaved={(text) => setPhoto({ ...photo, ...text })} className="min-h-8" />
+              </>
             )}
           </div>
         </div>

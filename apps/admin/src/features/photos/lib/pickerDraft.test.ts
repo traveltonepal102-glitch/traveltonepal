@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Photo } from "../types";
 import { addPick, togglePick } from "./pickerDraft";
 
-const photo = (id: string): Photo => ({ id, width: 1600, height: 1200, baseUrl: `https://photos.example/${id}`, variantWidths: [400], fileName: null, placeholder: "", place: "" });
+const photo = (id: string): Photo => ({ id, width: 1600, height: 1200, baseUrl: `https://photos.example/${id}`, variantWidths: [400], fileName: null, placeholder: "", place: "", altText: "", caption: "" });
 const ids = (photos: Photo[]) => photos.map((item) => item.id);
 const [a, b, c] = [photo("a"), photo("b"), photo("c")];
 

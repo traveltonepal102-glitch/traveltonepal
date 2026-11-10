@@ -6,7 +6,7 @@ import { searchPickerPhotos } from "../actions/searchPickerPhotos";
 import { searchKey } from "../lib/pickerFilter";
 import { appendPage, prependPhoto } from "../lib/pickerResults";
 import type { PickerFilter } from "../lib/pickerSearch";
-import type { PickerPhoto } from "../types";
+import type { PhotoText, PickerPhoto } from "../types";
 
 /** Typing waits this long before searching, so each letter isn't a request. */
 const TYPING_PAUSE_MS = 300;
@@ -54,6 +54,10 @@ export const useLibrarySearch = (startFilter: PickerFilter) => {
   /** A photo uploaded in the window shows first, whatever the search. */
   const prepend = (photo: PickerPhoto) => setResults((current) => current && { ...current, photos: prependPhoto(current.photos, photo) });
 
+  /** A photo whose alt text, caption or place was saved in the window shows them without searching again. */
+  const updateText = (photoId: string, text: PhotoText) =>
+    setResults((current) => current && { ...current, photos: current.photos.map((photo) => (photo.id === photoId ? { ...photo, ...text } : photo)) });
+
   return {
     query,
     setQuery,
@@ -67,5 +71,6 @@ export const useLibrarySearch = (startFilter: PickerFilter) => {
     loadMore,
     retry: () => setAttempt((current) => current + 1),
     prepend,
+    updateText,
   };
 };

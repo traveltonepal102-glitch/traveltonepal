@@ -45,7 +45,8 @@ export const PhotoLibrary = ({ folders, selection, photos, usesByPhoto, canDelet
       description={
         <>
           Every photo in the library ({folders[0]?.count ?? 0}), sorted into folders by where it is used. Click where a photo is used to change it there. A
-          photo can be deleted once nothing uses it{canDelete ? "" : " (by a Super admin)"}. Location data is removed from every upload.
+          photo can be deleted once nothing uses it{canDelete ? "" : " (by a Super admin)"}. Location data is removed from every upload. Give each photo
+          its alt text (what it shows) with “Alt text and caption”: “Needs alt text” lists the photos still without it.
         </>
       }
       action={<LibraryUploadButton />}

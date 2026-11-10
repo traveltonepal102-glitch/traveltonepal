@@ -12,6 +12,8 @@ const photo = (id: string, createdAt = "2026-10-29T07:02:00Z"): LibraryPhoto => 
   fileName: null,
   placeholder: "",
   place: "",
+  altText: "",
+  caption: "",
   originalName: `${id}.jpg`,
   byteSize: 1000,
   createdAt,
@@ -27,7 +29,8 @@ const photoUse = (photoId: string, kind: PhotoUse["kind"], itemId: string, itemL
 
 const NOW = new Date("2026-10-29T10:00:00Z");
 // "d" was uploaded in August: not recent.
-const PHOTOS = [photo("a"), photo("b"), photo("c"), photo("d", "2026-08-15T05:00:00Z")];
+// "b" already has its alt text; a blank one still needs it.
+const PHOTOS = [photo("a"), { ...photo("b"), altText: "Everest from Kala Patthar" }, { ...photo("c"), altText: "  " }, photo("d", "2026-08-15T05:00:00Z")];
 const USES = [
   photoUse("a", "trek", "t2", "Mardi Himal Trek"),
   photoUse("a", "trek", "t2", "Mardi Himal Trek", "Day 3"),
@@ -55,6 +58,7 @@ describe("buildPhotoFolders", () => {
       ["people", 1],
       ["company", 0],
       ["unused", 1],
+      ["needs-alt-text", 3],
     ]);
   });
 
@@ -74,6 +78,7 @@ describe("photosInFolder", () => {
     expect(ids(photosInFolder(PHOTOS, USES, { folder: "people", item: null }, NOW))).toEqual(["c"]);
     expect(ids(photosInFolder(PHOTOS, USES, { folder: "all", item: null }, NOW))).toEqual(["a", "b", "c", "d"]);
     expect(ids(photosInFolder(PHOTOS, USES, { folder: "unused", item: null }, NOW))).toEqual(["d"]);
+    expect(ids(photosInFolder(PHOTOS, USES, { folder: "needs-alt-text", item: null }, NOW))).toEqual(["a", "c", "d"]);
     expect(ids(photosInFolder(PHOTOS, USES, { folder: "recent", item: null }, NOW))).toEqual(["a", "b", "c"]);
   });
 });

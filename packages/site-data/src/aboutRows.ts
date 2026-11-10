@@ -128,13 +128,15 @@ const pagePhotoSchema = z.object({
   file_name: z.string().nullable().catch(null),
   placeholder: z.string().nullable().catch(null),
   place: z.string().nullable().catch(null),
+  alt_text: z.string().nullable().catch(null),
+  caption: z.string().nullable().catch(null),
   position: z.number().int(),
 });
 
 /** The page's photos by place (site_page_photos.position): 1 the founder, 2 "flexible", 3–5 the villages. */
 export const PHOTO_PLACES = { founder: 1, flexible: 2, places: [3, 4, 5] } as const;
 
-/** A function giving the photo at a place, described by `alt` (or by where it was taken). */
+/** A function giving the photo at a place, described by `alt` (or by the photo's own alt text, or where it was taken). */
 export const photosByPlace = (value: unknown, photosBaseUrl: string, siteName: string) => {
   const photos = listOf(value, pagePhotoSchema);
   return (position: number, alt: string): SiteImageSource | undefined => {
@@ -142,10 +144,11 @@ export const photosByPlace = (value: unknown, photosBaseUrl: string, siteName: s
     if (!photo) return undefined;
     return {
       src: `${photosBaseUrl}/${photo.id}`,
-      alt: alt || photoAltText({ place: photo.place ?? "" }, siteName),
+      alt: alt || photoAltText({ place: photo.place ?? "", altText: photo.alt_text }, siteName),
       variantWidths: photo.variant_widths,
       fileName: photo.file_name || undefined,
       placeholder: photo.placeholder || undefined,
+      caption: photo.caption?.trim() || undefined,
     };
   };
 };

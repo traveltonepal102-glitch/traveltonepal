@@ -4,15 +4,15 @@ import { photosPublicBaseUrl } from "@/lib/storage/photoOrigins";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import type { Photo } from "../types";
+import type { Photo, PhotoText } from "../types";
 
 type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 
 /** The columns a Photo needs (for embedding in other queries too). */
-export const PHOTO_COLUMNS = "id, width, height, variant_widths, file_name, placeholder, place";
+export const PHOTO_COLUMNS = "id, width, height, variant_widths, file_name, placeholder, place, alt_text, description";
 
 /** A row with PHOTO_COLUMNS, as a query embedding them returns it. */
-export type PhotoColumnsRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place">;
+export type PhotoColumnsRow = Pick<PhotoRow, "id" | "width" | "height" | "variant_widths" | "file_name" | "placeholder" | "place" | "alt_text" | "description">;
 
 export const toPhoto = (row: PhotoColumnsRow): Photo => ({
   id: row.id,
@@ -23,6 +23,8 @@ export const toPhoto = (row: PhotoColumnsRow): Photo => ({
   fileName: row.file_name,
   placeholder: row.placeholder,
   place: row.place,
+  altText: row.alt_text,
+  caption: row.description,
 });
 
 type NewPhoto = {
@@ -70,4 +72,16 @@ export const findRegionSlug = async (regionId: string | null) => {
   const { data, error } = await supabase.from("regions").select("slug").eq("id", regionId).maybeSingle();
   if (error) throw new Error(`Could not read region ${regionId}: ${error.message}`);
   return data?.slug ?? null;
+};
+
+/** Saves what is typed about a photo (alt text, caption, place). False when no such photo (or RLS refused). */
+export const updatePhotoText = async (photoId: string, values: PhotoText): Promise<boolean> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("photos")
+    .update({ alt_text: values.altText, description: values.caption, place: values.place, updated_at: new Date().toISOString() })
+    .eq("id", photoId)
+    .select("id");
+  if (error) throw new Error(`Could not save the text of photo ${photoId}: ${error.code} ${error.message}`);
+  return data.length > 0;
 };

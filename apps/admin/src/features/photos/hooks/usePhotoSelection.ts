@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { MAX_GALLERY_PHOTOS } from "../constants";
 import { replaceGallery } from "../lib/gallerySelection";
-import type { Photo } from "../types";
+import type { Photo, PhotoText } from "../types";
 
 export type PhotoSelection = { cover: Photo | null; gallery: Photo[] };
 
@@ -61,10 +61,14 @@ export const usePhotoSelection = (initial: PhotoSelection, onEdit: () => void) =
       return { cover, gallery: next };
     });
 
-  const updatePlace = (id: string, place: string) =>
-    change(({ cover, gallery }) => ({
-      cover: cover?.id === id ? { ...cover, place } : cover,
-      gallery: gallery.map((photo) => (photo.id === id ? { ...photo, place } : photo)),
+  /**
+   * A photo's alt text, caption and place, just saved in the "Alt text and caption" window. Already saved, so the
+   * form stays as it was (no onEdit); the place still goes with Save (photoPlace.<id>), now the saved one.
+   */
+  const updateText = (id: string, text: PhotoText) =>
+    setSelection(({ cover, gallery }) => ({
+      cover: cover?.id === id ? { ...cover, ...text } : cover,
+      gallery: gallery.map((photo) => (photo.id === id ? { ...photo, ...text } : photo)),
     }));
 
   return {
@@ -78,6 +82,6 @@ export const usePhotoSelection = (initial: PhotoSelection, onEdit: () => void) =
     setGallery,
     removeFromGallery,
     moveInGallery,
-    updatePlace,
+    updateText,
   };
 };

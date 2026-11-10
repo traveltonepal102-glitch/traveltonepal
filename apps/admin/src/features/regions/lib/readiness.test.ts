@@ -25,6 +25,8 @@ const photo = (id: string, place = ""): Photo => ({
   fileName: null,
   placeholder: "",
   place,
+  altText: "",
+  caption: "",
 });
 
 const EMPTY: RegionValues = { ...EMPTY_REGION_VALUES, name: "Langtang", slug: "langtang" };

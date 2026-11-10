@@ -4,7 +4,7 @@ import { MAX_GALLERY_PHOTOS } from "../constants";
 import type { Photo } from "../types";
 import { replaceGallery } from "./gallerySelection";
 
-const photo = (id: string): Photo => ({ id, width: 1600, height: 1200, baseUrl: `https://photos.example/${id}`, variantWidths: [400], fileName: null, placeholder: "", place: "" });
+const photo = (id: string): Photo => ({ id, width: 1600, height: 1200, baseUrl: `https://photos.example/${id}`, variantWidths: [400], fileName: null, placeholder: "", place: "", altText: "", caption: "" });
 const ids = (photos: Photo[]) => photos.map((item) => item.id);
 
 describe("replaceGallery", () => {

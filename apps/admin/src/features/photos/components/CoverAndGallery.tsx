@@ -31,8 +31,9 @@ type CoverAndGalleryProps = {
 
 /**
  * Cover slot + ordered gallery for an editor form. Photos are chosen in the photo library window (uploads are
- * saved to the library right away); which photos the page uses, their order and "taken at" are sent with the
- * form's Save (coverPhotoId, galleryPhotoId, photoPlace.<id>).
+ * saved to the library right away) and their alt text, caption and place typed in the "Alt text and caption"
+ * window (saved right away); which photos the page uses and their order are sent with the form's Save
+ * (coverPhotoId, galleryPhotoId, photoPlace.<id>).
  */
 export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onEdit, error }: CoverAndGalleryProps) => {
   const selection = usePhotoSelection(initial, onEdit);
@@ -52,7 +53,7 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
           onChoose={() => setOpenFor("cover")}
           onMoveToGallery={selection.moveCoverToGallery}
           onRemove={selection.removeCover}
-          onChangePlace={(place) => cover && selection.updatePlace(cover.id, place)}
+          onTextSaved={(text) => cover && selection.updateText(cover.id, text)}
         />
         <PhotoSizeNote size="banner" />
       </FormSection>
@@ -79,7 +80,7 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
                   onMove={(to) => selection.moveInGallery(index, to)}
                   onMakeCover={() => selection.makeCover(photo.id)}
                   onRemove={() => selection.removeFromGallery(photo.id)}
-                  onChangePlace={(place) => selection.updatePlace(photo.id, place)}
+                  onTextSaved={(text) => selection.updateText(photo.id, text)}
                 />
               </li>
             ))}
@@ -121,6 +122,10 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
       <input type="hidden" name="coverPhotoId" value={cover?.id ?? ""} />
       {gallery.map((photo) => (
         <input key={photo.id} type="hidden" name="galleryPhotoId" value={photo.id} />
+      ))}
+      {/* Save also tags new photos with the region; the place sent is the one saved in the "Alt text and caption" window. */}
+      {[...(cover ? [cover] : []), ...gallery].map((photo) => (
+        <input key={photo.id} type="hidden" name={`photoPlace.${photo.id}`} value={photo.place} />
       ))}
     </>
   );

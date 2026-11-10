@@ -4,6 +4,7 @@ import type { IconName } from "@ttn/ui/icon";
 import { TREK_SECTION_IDS } from "../sections";
 import type { TrekDetail, TrekPoint } from "../types";
 import { MealsCard } from "./meals/MealsCard";
+import { TrekProTips } from "./meals/TrekProTips";
 import { SectionHeading } from "./SectionHeading";
 
 const LOOKS = {
@@ -48,12 +49,21 @@ const PointList = ({ title, points, look }: PointListProps) => (
   </div>
 );
 
-/** "Full disclosure": what the price includes, what you pay for yourself, and why meals are extra. */
-export const TrekInclusions = ({ heading, inclusions, meals, hiddenSections }: TrekInclusionsProps) => (
-  <section id={TREK_SECTION_IDS.inclusions} aria-labelledby="trek-inclusions-title" className="flex scroll-mt-16 flex-col gap-4 pt-3">
-    <SectionHeading id="trek-inclusions-title" eyebrow="Full disclosure" title={heading} />
-    <PointList title="Included in the price" points={inclusions.included} look={LOOKS.included} />
-    <PointList title="Not included" points={inclusions.excluded} look={LOOKS.excluded} />
-    {!hiddenSections.includes("meals") && <MealsCard meals={meals} />}
-  </section>
-);
+/**
+ * "Full disclosure": what the price includes, what you pay for yourself, and why meals are extra; then, as a section of
+ * its own (not inside the meals card), the trail's pro tips and teahouse notes. The trek's "meals" switch hides both.
+ */
+export const TrekInclusions = ({ heading, inclusions, meals, hiddenSections }: TrekInclusionsProps) => {
+  const showsMeals = !hiddenSections.includes("meals");
+  return (
+    <>
+      <section id={TREK_SECTION_IDS.inclusions} aria-labelledby="trek-inclusions-title" className="flex scroll-mt-16 flex-col gap-4 pt-3">
+        <SectionHeading id="trek-inclusions-title" eyebrow="Full disclosure" title={heading} />
+        <PointList title="Included in the price" points={inclusions.included} look={LOOKS.included} />
+        <PointList title="Not included" points={inclusions.excluded} look={LOOKS.excluded} />
+        {showsMeals && <MealsCard meals={meals} />}
+      </section>
+      {showsMeals && <TrekProTips meals={meals} />}
+    </>
+  );
+};

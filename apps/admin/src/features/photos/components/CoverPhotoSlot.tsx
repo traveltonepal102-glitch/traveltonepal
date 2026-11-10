@@ -5,10 +5,11 @@ import { cn } from "@ttn/ui/lib/utils";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 
-import type { Photo } from "../types";
 import { photoAltText } from "../lib/altText";
-import { PhotoPlaceField } from "./PhotoPlaceField";
+import type { Photo, PhotoText } from "../types";
+import { EditPhotoTextButton } from "./EditPhotoTextButton";
 import { PhotoImage } from "./PhotoImage";
+import { PhotoTextSummary } from "./PhotoTextSummary";
 
 type CoverPhotoSlotProps = {
   cover: Photo | null;
@@ -19,7 +20,8 @@ type CoverPhotoSlotProps = {
   onChoose: () => void;
   onMoveToGallery: () => void;
   onRemove: () => void;
-  onChangePlace: (place: string) => void;
+  /** After its alt text, caption or place was saved in their window. */
+  onTextSaved: (text: PhotoText) => void;
 };
 
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
@@ -32,7 +34,7 @@ export const CoverPhotoSlot = ({
   onChoose,
   onMoveToGallery,
   onRemove,
-  onChangePlace,
+  onTextSaved,
 }: CoverPhotoSlotProps) => {
   if (!cover) {
     return (
@@ -65,7 +67,7 @@ export const CoverPhotoSlot = ({
         <span className="absolute top-2 left-2 rounded-sm bg-saffron px-2 py-0.5 text-[11px] font-extrabold text-navy">Cover</span>
       </div>
       <div className="flex flex-col gap-3">
-        <PhotoPlaceField photo={cover} onChange={onChangePlace} />
+        <PhotoTextSummary text={cover} />
         <div className="mt-auto flex flex-wrap gap-2">
           <button type="button" onClick={onChoose} className={smallButton}>
             <Icon name="image" size={16} />
@@ -79,6 +81,7 @@ export const CoverPhotoSlot = ({
             <Icon name="delete" size={16} />
             Remove
           </button>
+          <EditPhotoTextButton photo={cover} onSaved={onTextSaved} className="min-h-8" />
         </div>
       </div>
     </div>

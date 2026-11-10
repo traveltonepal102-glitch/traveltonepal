@@ -6,7 +6,8 @@ type Locale = "en" | "de";
 
 /**
  * A view's photo columns (null without a photo). `cover_file_name`: the words in its files' names (PhotoFiles in
- * @ttn/ui/lib/photos), null for a photo without one; optional because photo lists inside jsonb are read leniently.
+ * @ttn/ui/lib/photos), null for a photo without one; `cover_alt_text` and `cover_caption`: what the admin typed for
+ * the photo ("" when nothing). Those three are optional because photo lists inside jsonb are read leniently.
  */
 export type CoverColumns = {
   cover_id: string | null;
@@ -16,6 +17,8 @@ export type CoverColumns = {
   cover_file_name?: string | null;
   cover_placeholder: string | null;
   cover_place: string | null;
+  cover_alt_text?: string | null;
+  cover_caption?: string | null;
 };
 
 /** A page's chosen share photo (null: none chosen); every library photo has a 1200×630 share.jpg. */
@@ -24,6 +27,8 @@ export type ShareColumns = {
   share_variant_widths: number[] | null;
   share_file_name?: string | null;
   share_place: string | null;
+  share_alt_text?: string | null;
+  share_caption?: string | null;
 };
 
 export type WebRegionRow = CoverColumns & {

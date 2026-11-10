@@ -12,6 +12,8 @@ const photo = (id: string, originalName: string): NamedPhoto => ({
   fileName: null,
   placeholder: "",
   place: "",
+  altText: "",
+  caption: "",
   originalName,
 });
 

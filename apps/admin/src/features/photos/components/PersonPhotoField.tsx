@@ -5,6 +5,7 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
+import { EditPhotoTextButton } from "@/features/photos/components/EditPhotoTextButton";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
@@ -58,10 +59,13 @@ export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldN
               {photo ? "Change photo" : "Choose photo"}
             </button>
             {photo && (
-              <button type="button" onClick={() => choose(null)} className={smallButton}>
-                <Icon name="delete" size={16} />
-                Remove
-              </button>
+              <>
+                <button type="button" onClick={() => choose(null)} className={smallButton}>
+                  <Icon name="delete" size={16} />
+                  Remove
+                </button>
+                <EditPhotoTextButton photo={photo} className="min-h-8" />
+              </>
             )}
           </div>
           <span className="text-xs text-muted-foreground">{hint}</span>

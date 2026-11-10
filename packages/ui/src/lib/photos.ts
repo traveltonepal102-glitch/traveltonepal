@@ -37,10 +37,12 @@ export const SHARE_IMAGE_FILE = "share.jpg";
 export const photoShareUrl = (baseUrl: string) => `${baseUrl}/${SHARE_IMAGE_FILE}`;
 
 /**
- * The image text screen readers and Google read, made from what the admin already filled in (there is no
- * separate description to write): "Kyanjin Gompa, Langtang region", or "Langtang region" without a place.
+ * The image text screen readers and Google read: the photo's own alt text typed in the admin's Photos screen, else
+ * made from its place and what the page is about: "Kyanjin Gompa, Langtang region", or "Langtang region".
  */
-export const photoAltText = (photo: { place: string }, subject: string) => {
+export const photoAltText = (photo: { place: string; altText?: string | null }, subject: string) => {
+  const altText = photo.altText?.trim();
+  if (altText) return altText;
   const place = photo.place.trim();
   return place ? `${place}, ${subject}` : subject;
 };

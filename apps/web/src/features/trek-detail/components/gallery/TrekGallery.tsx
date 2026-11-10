@@ -107,7 +107,8 @@ export const TrekGallery = ({ photos, badges, title }: TrekGalleryProps) => {
       )}
 
       <PhotoViewer
-        photos={photos.map((item) => ({ ...item, caption: photoCaption(item) }))}
+        // Full size: the caption typed for the photo in the admin, else where it was taken.
+        photos={photos.map((item) => ({ ...item, caption: item.caption || photoCaption(item) }))}
         title={title}
         index={viewerIndex}
         onIndexChange={setViewerIndex}

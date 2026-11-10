@@ -21,7 +21,7 @@ export const LibraryImageView = ({ node, updateAttributes, deleteNode, selected 
     variantWidths: number[];
     fileName: string | null;
   };
-  const photo = { id: photoId, width, height, baseUrl: `${baseUrl}/${photoId}`, variantWidths, fileName, placeholder: "", place: "" };
+  const photo = { id: photoId, width, height, baseUrl: `${baseUrl}/${photoId}`, variantWidths, fileName, placeholder: "", place: "", altText: "", caption: "" };
 
   return (
     <NodeViewWrapper as="figure" contentEditable={false} data-drag-handle className={cn("my-3 flex flex-col gap-1.5 rounded-lg border border-solid p-2", selected ? "border-brand ring-3 ring-brand/15" : "border-border")}>

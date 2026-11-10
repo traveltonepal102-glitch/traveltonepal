@@ -15,7 +15,8 @@ export { VARIANT_WIDTHS } from "@ttn/ui/lib/photos";
 /** A region's gallery (the cover is separate). */
 export const MAX_GALLERY_PHOTOS = 30;
 
-export const PHOTO_LIMITS = { place: 80, originalName: 200 } as const;
+/** The same as the database checks (place: 20261023160000_photos.sql; alt text and caption: 20261110110000). */
+export const PHOTO_LIMITS = { place: 80, altText: 150, caption: 300, originalName: 200 } as const;
 
 /** How many file names one same-name check looks up (a bigger upload asks in several goes). */
 export const SAME_NAME_BATCH = 50;

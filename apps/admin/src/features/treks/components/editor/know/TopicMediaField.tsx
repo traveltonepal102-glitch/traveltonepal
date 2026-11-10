@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { ghostIconButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
+import { EditPhotoTextButton } from "@/features/photos/components/EditPhotoTextButton";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
@@ -81,6 +82,7 @@ export const TopicMediaField = ({ defaultValue, topicLabel, photos, trekId, vide
             <Icon name="smart_display" size={16} />
             {videoId ? "Change video" : "Choose video"}
           </button>
+          {photo && <EditPhotoTextButton photo={photo} variant="icon" />}
           {value && (
             <button type="button" aria-label={`Remove the photo or video of ${topicLabel}`} onClick={() => change("")} className={ghostIconButton}>
               <Icon name="close" size={18} />

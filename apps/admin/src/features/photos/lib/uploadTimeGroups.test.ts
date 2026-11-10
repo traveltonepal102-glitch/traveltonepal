@@ -12,6 +12,8 @@ const photo = (id: string, createdAt: string): LibraryPhoto => ({
   fileName: null,
   placeholder: "",
   place: "",
+  altText: "",
+  caption: "",
   originalName: "",
   byteSize: 1,
   createdAt,
