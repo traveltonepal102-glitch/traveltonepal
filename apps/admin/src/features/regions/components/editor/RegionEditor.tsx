@@ -100,6 +100,8 @@ export const RegionEditor = ({
         statusTone={statusTone}
         saveLabel={isNew ? "Add region" : "Save changes"}
         isSaving={form.isSaving}
+        isDirty={form.isDirty}
+        saveState={form.state}
       >
         {headerActions}
       </EditorHeader>

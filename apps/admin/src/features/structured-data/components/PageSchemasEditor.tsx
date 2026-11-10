@@ -50,6 +50,8 @@ export const PageSchemasEditor = ({ action, page, blocks, automaticSchemas, page
           statusTone={statusTone}
           saveLabel="Save"
           isSaving={form.isSaving}
+          isDirty={form.isDirty}
+          saveState={form.state}
         />
         {form.state.status === "error" && <FormAlert message={form.state.message} />}
         {!canEdit && <Notice>Only a Super admin can change structured data. You can see it here.</Notice>}

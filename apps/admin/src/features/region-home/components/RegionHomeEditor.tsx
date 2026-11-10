@@ -40,7 +40,7 @@ export const RegionHomeEditor = ({ action, siteName, regionId, treks, homeTrekId
 
   return (
     <form noValidate onSubmit={form.handleSubmit} onChange={form.markDirty} className="flex flex-col gap-5">
-      <EditorHeader back={{ href: PAGES_PATH, label: "Pages" }} title={`Home page · ${siteName}`} status={status} statusTone={statusTone} saveLabel="Publish" isSaving={form.isSaving} />
+      <EditorHeader back={{ href: PAGES_PATH, label: "Pages" }} title={`Home page · ${siteName}`} status={status} statusTone={statusTone} saveLabel="Publish" isSaving={form.isSaving} isDirty={form.isDirty} saveState={form.state} />
       {form.state.status === "error" && <FormAlert message={form.state.message} />}
 
       <div className="flex max-w-215 flex-col gap-4">

@@ -77,6 +77,8 @@ export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, region
         statusTone={statusTone}
         saveLabel={isNew ? "Add trek" : "Save changes"}
         isSaving={form.isSaving}
+        isDirty={form.isDirty}
+        saveState={form.state}
       >
         <TrekStatusSelect defaultValue={values.status} />
       </EditorHeader>

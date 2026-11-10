@@ -92,6 +92,8 @@ export const ArticleEditor = ({ action, article, values, options, feedback = nul
         statusTone={statusTone}
         saveLabel={article ? "Save changes" : "Add travel guide"}
         isSaving={form.isSaving}
+        isDirty={form.isDirty}
+        saveState={form.state}
       >
         <StatusSelect options={ARTICLE_STATUSES} defaultValue={values.status} />
       </EditorHeader>

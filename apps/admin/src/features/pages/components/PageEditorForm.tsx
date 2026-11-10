@@ -48,7 +48,7 @@ export const PageEditorForm = <Key extends string>({ action, title, lastSaved, w
 
   return (
     <form noValidate onSubmit={form.handleSubmit} onChange={form.markDirty} className="flex flex-col gap-5">
-      <EditorHeader back={{ href: PAGES_PATH, label: "Pages" }} title={title} status={status} statusTone={statusTone} saveLabel="Publish" isSaving={form.isSaving}>
+      <EditorHeader back={{ href: PAGES_PATH, label: "Pages" }} title={title} status={status} statusTone={statusTone} saveLabel="Publish" isSaving={form.isSaving} isDirty={form.isDirty} saveState={form.state}>
         {viewHref && (
           <a href={viewHref} target="_blank" rel="noopener noreferrer" className={cn(secondaryButton, "max-tablet:hidden")}>
             <Icon name="open_in_new" size={18} />
