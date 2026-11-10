@@ -30,7 +30,6 @@ describe("toTrekDetail", () => {
     expect(trek.itinerary.days[9].duration).toBeUndefined();
     expect(trek.groupPrices.filter((price) => price.isDefault)).toEqual([expect.objectContaining({ shortLabel: "3–5 Pax", priceUsd: 890 })]);
     expect(trek.faqs.flatMap((group) => group.items)).toHaveLength(10);
-    expect(trek.routeSketch?.pins[0].name).toBe("Syabrubesi");
   });
 
   it("shows the cover first, then the gallery in the admin's order with its places", () => {

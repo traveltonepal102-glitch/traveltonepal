@@ -7,7 +7,7 @@ export type RouteStop = {
   altitudeM: number;
   firstDay: number;
   lastDay: number;
-  kind: Exclude<RoutePinKind, "option">;
+  kind: RoutePinKind;
 };
 
 const samePlace = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();

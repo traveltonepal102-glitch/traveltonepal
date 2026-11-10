@@ -1,15 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { MapConsentGate } from "@/components/shared/MapConsentGate";
 
 type GoogleMapEmbedProps = {
   embedUrl: string;
   /** Names the map for screen readers, e.g. "Google map of the Langtang Valley Trek". */
   title: string;
-  /** Shown until the visitor loads the map (the drawn route map). */
-  preview: ReactNode;
   /**
    * Crops off a My Maps map's title bar (map name, its maker's name and photo, "Made with Google My Maps"), which
    * Google has no setting to hide. The map's own Google logo and attribution stay visible.
@@ -22,7 +18,7 @@ const FRAME_SIZE = "h-90 w-full sm:aspect-1000/560 sm:h-auto";
 const CROPPED_FRAME = "absolute inset-x-0 -top-[67px] h-[calc(100%+67px)] w-full border-0";
 
 /** Click-to-load Google map embed (an iframe; no API key needed). */
-export const GoogleMapEmbed = ({ embedUrl, title, preview, hidesTitleBar = false }: GoogleMapEmbedProps) => {
+export const GoogleMapEmbed = ({ embedUrl, title, hidesTitleBar = false }: GoogleMapEmbedProps) => {
   const frame = (
     <iframe
       src={embedUrl}
@@ -35,7 +31,7 @@ export const GoogleMapEmbed = ({ embedUrl, title, preview, hidesTitleBar = false
   );
 
   return (
-    <MapConsentGate preview={preview ?? <div className="aspect-1000/560 min-h-60" />} previewLabel="Route map">
+    <MapConsentGate preview={<div className="aspect-1000/560 min-h-60" />} previewLabel="Route map">
       {hidesTitleBar ? <div className={`relative overflow-hidden ${FRAME_SIZE}`}>{frame}</div> : frame}
     </MapConsentGate>
   );

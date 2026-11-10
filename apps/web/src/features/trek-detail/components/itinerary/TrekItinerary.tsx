@@ -8,7 +8,6 @@ import type { TrekDetail } from "../../types";
 import { SectionHeading } from "../SectionHeading";
 import { CustomItineraryCard } from "./CustomItineraryCard";
 import { ItineraryDayCard } from "./ItineraryDayCard";
-import { RouteSketch } from "./RouteSketch";
 
 /** "Starts in the Langtang region" / "Into the Manaslu region": where a trek across several regions enters one. */
 const RegionMarker = ({ name, isFirst }: { name: string; isFirst: boolean }) => (
@@ -27,7 +26,7 @@ const enteredRegion = (trek: TrekDetail, index: number) => {
 };
 
 /**
- * "Step-by-step route": route sketch, one card per day and the offer to customize the trip. On a trek across
+ * "Step-by-step route": one card per day and the offer to customize the trip. On a trek across
  * several regions (with the days' regions set), a line marks where it enters each region.
  */
 export const TrekItinerary = ({ trek }: { trek: TrekDetail }) => (
@@ -35,11 +34,6 @@ export const TrekItinerary = ({ trek }: { trek: TrekDetail }) => (
     <SectionHeading id="trek-itinerary-title" eyebrow="Step-by-step route" title={trek.headings.itinerary}>
       {hasRichTextContent(trek.itinerary.intro) && <RichText doc={trek.itinerary.intro} headingLevel="h3" className="flex flex-col gap-2.5" />}
     </SectionHeading>
-    {trek.routeSketch && (
-      <div className="py-2">
-        <RouteSketch sketch={trek.routeSketch} />
-      </div>
-    )}
     <ol className="flex flex-col gap-3">
       {trek.itinerary.days.map((day, index) => {
         const region = enteredRegion(trek, index);

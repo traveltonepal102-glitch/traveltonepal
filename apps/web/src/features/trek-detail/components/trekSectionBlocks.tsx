@@ -53,7 +53,7 @@ export const trekSectionBlocks = ({ trek, reviews, rating }: SectionBlocksOption
     guides: <TrekGuides heading={trek.headings.guides} guides={trek.guides} />,
     inclusions: <TrekInclusions heading={trek.headings.inclusions} inclusions={trek.inclusions} meals={trek.meals} hiddenSections={trek.hiddenSections} />,
     elevation: <TrekElevation heading={trek.headings.elevation} itinerary={trek.itinerary} trailhead={trek.trailhead} />,
-    route_map: <TrekRouteMap heading={trek.headings.routeMap} name={trek.name} routeMap={trek.routeMap} routeSketch={trek.routeSketch} itinerary={trek.itinerary} />,
+    route_map: <TrekRouteMap heading={trek.headings.routeMap} name={trek.name} routeMap={trek.routeMap} itinerary={trek.itinerary} />,
     why_book: shows("why_book") && <WhyBookWithUs />,
     pricing: !isTrekSectionHidden("pricing") && <TrekPricing heading={trek.headings.pricing} intro={trek.pricingIntro} name={trek.name} days={trek.days} route={trek.route} groupPrices={trek.groupPrices} />,
     credentials: shows("credentials") && <TrekCredentials />,

@@ -96,42 +96,8 @@ export type TrekRouteStop = {
   days?: string;
 };
 
-/** Pin colors on the route sketch: start, overnight stop, high point, optional side trip. */
-export type RoutePinKind = "start" | "stop" | "summit" | "option";
-
-/** A place on the route sketch, in the sketch's 1000×560 coordinates. */
-export type RoutePin = {
-  name: string;
-  altitudeM: number;
-  x: number;
-  y: number;
-  kind: RoutePinKind;
-  /** Where the route map prints the name; "below" unless that would cover the trail. */
-  labelSide?: "below" | "left";
-};
-
-/** Place names printed on the route map, styled by what they name. */
-export type MapLabel = { text: string; x: number; y: number; kind: "park" | "peak" | "water" | "road" };
-
-/** Hand-drawn overview of the route (SVG paths in a 1000×560 box), shown above the itinerary. */
-export type RouteSketch = {
-  /** Read by screen readers, e.g. "Sketch map of the route from Syabrubesi to Kyanjin Ri". */
-  description: string;
-  caption: string;
-  groundPath: string;
-  peaksPath: string;
-  riverPath: string;
-  routePath: string;
-  /** Dashed: a day hike off the main route, e.g. up Kyanjin Ri. */
-  sideHikePath?: string;
-  pins: readonly RoutePin[];
-  /** Place names printed on the sketch (not every pin has room for one). */
-  labels: readonly { text: string; x: number; y: number }[];
-  /** Route map only: the road in from Kathmandu, an optional side path (dashed grey) and area names. */
-  approachPath?: string;
-  optionPath?: string;
-  mapLabels?: readonly MapLabel[];
-};
+/** A route stop's pin colour: start, overnight stop, high point. */
+export type RoutePinKind = "start" | "stop" | "summit";
 
 /**
  * The Google map. Content never holds a raw URL: the embed and "open" links are built from these.
@@ -234,7 +200,6 @@ export type TrekDetailContent = {
   itinerary: { intro: RichTextDoc; days: readonly ItineraryDay[] };
   /** "Regions on this route", in route order; empty for a trek in one region (the section is left out). */
   routeStops: readonly TrekRouteStop[];
-  routeSketch?: RouteSketch;
   /** "Custom itinerary and private changes": the pitch and the typical changes people ask for. */
   customization: { pitch: string; options: readonly { label: string; icon: IconName }[] };
   /** "Meet your trek guide": one line about the guides, and the guides who lead this trek. */

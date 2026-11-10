@@ -9,7 +9,6 @@ import type { RegionCard } from "@/features/regions/regionRows";
 import { firstText } from "@/lib/rowText";
 import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow } from "@/lib/supabase/database.types";
 
-import { ROUTE_SKETCHES } from "./content/routeSketches";
 import { highestHighlightDay, topPlaceOf } from "./elevation";
 import { dayRegionSlugs, toRouteStops } from "./routeRegions";
 import { toSectionHeadings } from "./sectionHeadings";
@@ -144,7 +143,6 @@ export const toTrekDetail = (
     suitability: { intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
     itinerary: { intro: toRichTextDoc(page.itinerary_intro), days },
     routeStops: toRouteStops(summary.route, regions, daySlugs),
-    routeSketch: ROUTE_SKETCHES[summary.slug],
     customization: customizationFor(shortName, sideTrip),
     guides: {
       intro: firstText(page.guides_intro) ?? `Licensed local guides who know ${summary.region}, trained in first aid and focused on your safety.`,
