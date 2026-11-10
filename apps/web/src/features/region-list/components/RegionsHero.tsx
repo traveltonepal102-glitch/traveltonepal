@@ -1,15 +1,18 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
-import Image from "next/image";
-
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { SiteImage } from "@/components/ui/SiteImage";
 import { formatAltitude } from "@/features/treks/format";
 import { formatCount } from "@/lib/format";
+import type { SiteImageSource } from "@/lib/images";
 import { HERO_PHOTO_QUALITY } from "@/lib/images";
 import { ROUTES } from "@/lib/routes";
 import type { SitePageTop } from "@/features/site-pages/types";
 
 import { WRAP } from "./styles";
+
+/** Decorative (the title says what the page is), until a photo is picked in Pages › List pages › Regions. */
+const DEFAULT_PHOTO: SiteImageSource = { src: "/images/trekkers-on-trail.jpg", alt: "" };
 
 type RegionsHeroProps = {
   top: SitePageTop;
@@ -31,8 +34,7 @@ export const RegionsHero = ({ top, regionCount, trekCount, altitudeRange }: Regi
 
   return (
     <section aria-labelledby="regions-title" className="relative overflow-hidden bg-navy text-white">
-      {/* Decorative: the title says what the page is. */}
-      <Image src="/images/trekkers-on-trail.jpg" alt="" fill preload fetchPriority="high" quality={HERO_PHOTO_QUALITY} sizes="100vw" className="object-cover object-[50%_45%]" />
+      <SiteImage image={top.cover ? { ...top.cover, alt: "" } : DEFAULT_PHOTO} priority quality={HERO_PHOTO_QUALITY} sizes="100vw" className="object-cover object-[50%_45%]" />
       <div aria-hidden="true" className="absolute inset-0 bg-linear-to-r from-navy/94 via-navy/72 via-55% to-navy/30" />
 
       <div className={`${WRAP} relative flex flex-col gap-4 pt-5.5 pb-12`}>

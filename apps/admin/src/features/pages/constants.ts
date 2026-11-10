@@ -35,7 +35,8 @@ export const LIST_PAGES = [
     label: "Home",
     websitePath: "/",
     icon: "home",
-    hint: "The photo comes from the home page design. Featured treks, regions and reviews fill in by themselves.",
+    hint: "Shown over the photo at the top of the home page. Featured treks, regions and reviews fill in by themselves.",
+    hasTopPhoto: true,
     auto: "Filled in by itself: popular treks, regions, the latest travel guides and reviews.",
   },
   {
@@ -43,7 +44,8 @@ export const LIST_PAGES = [
     label: "Treks",
     websitePath: "/treks",
     icon: "landscape",
-    hint: "Shown above the filters and the trek cards.",
+    hint: "Shown over the photo above the filters and the trek cards.",
+    hasTopPhoto: true,
     auto: "Filled in by itself: every published trek, with its card, price and filters.",
   },
   {
@@ -51,7 +53,8 @@ export const LIST_PAGES = [
     label: "Regions",
     websitePath: "/regions",
     icon: "map",
-    hint: "Shown above the map and the region cards.",
+    hint: "Shown over the photo above the map and the region cards.",
+    hasTopPhoto: true,
     auto: "Filled in by itself: the regions with their map pins, best months and number of treks.",
   },
   {
@@ -60,9 +63,11 @@ export const LIST_PAGES = [
     websitePath: "/travel-guides",
     icon: "article",
     hint: "Shown above the search box. The featured guide and the “Start here” list are set in each travel guide.",
+    // Its top is a plain band with the search box, no photo.
+    hasTopPhoto: false,
     auto: "Filled in by itself: the featured guide, topics, the “Start here” list and the latest guides.",
   },
-] as const satisfies readonly { slug: SitePageSlug; label: string; websitePath: string; icon: IconName; hint: string; auto: string }[];
+] as const satisfies readonly { slug: SitePageSlug; label: string; websitePath: string; icon: IconName; hint: string; auto: string; hasTopPhoto: boolean }[];
 
 export type ListPage = (typeof LIST_PAGES)[number];
 export type ListPageSlug = ListPage["slug"];
@@ -124,7 +129,7 @@ export const PAGE_GROUPS: { title: string; tag?: string; description: string; pa
   },
   {
     title: "List pages",
-    description: "The lists fill themselves from your treks, regions and travel guides. Here you only change the text at the top and how the page shows on Google.",
+    description: "The lists fill themselves from your treks, regions and travel guides. Here you only change the text and photo at the top and how the page shows on Google.",
     tone: "sand",
     pages: ["home", "treks", "regions", "travel-guides"],
   },

@@ -55,6 +55,7 @@ const ListPagesEditorPage = async (site: Site, pageParam: unknown) => {
       pages={listPages}
       siteName={site.name}
       values={Object.fromEntries(listPages.map((page) => [page.slug, pageOf(page.slug)?.top]))}
+      topPhotos={Object.fromEntries(listPages.map((page) => [page.slug, pageOf(page.slug)?.photo ?? null]))}
       sharePhotos={Object.fromEntries(listPages.map((page) => [page.slug, pageOf(page.slug)?.sharePhoto ?? null]))}
       initialPage={initialPage}
       websiteUrl={viewOnSiteUrl(site)}

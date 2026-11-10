@@ -3,6 +3,7 @@
 import { Icon } from "@ttn/ui/icon";
 
 import type { EditorSaveAction } from "@/components/editor/types";
+import { LibraryPhotoField } from "@/features/photos/components/LibraryPhotoField";
 import type { Photo } from "@/features/photos/types";
 
 import { COUNT_TOKENS_HINT } from "../constants";
@@ -21,6 +22,8 @@ type ListPagesEditorProps = {
   /** The site "Working on" shows, e.g. "Manaslu Trek". */
   siteName: string;
   values: ListPagesValues;
+  /** The photo at the top of each page that shows one (Home, Treks, Regions). */
+  topPhotos: Partial<Record<ListPageSlug, Photo | null>>;
   sharePhotos: Partial<Record<ListPageSlug, Photo | null>>;
   /** The page open first, e.g. from the Pages list's row. */
   initialPage: ListPageSlug;
@@ -28,10 +31,10 @@ type ListPagesEditorProps = {
   lastSaved: string;
 };
 
-const FIXED_NOTE = "The lists fill themselves from your treks, regions and travel guides. Only the text at the top and the Google result are edited here.";
+const FIXED_NOTE = "The lists fill themselves from your treks, regions and travel guides. Only the text and photo at the top and the Google result are edited here.";
 
 /** Pages › List pages (design: Admin-pages, "List pages"): the site's list pages, one form, one Publish. */
-export const ListPagesEditor = ({ action, pages, siteName, values, sharePhotos, initialPage, websiteUrl, lastSaved }: ListPagesEditorProps) => (
+export const ListPagesEditor = ({ action, pages, siteName, values, topPhotos, sharePhotos, initialPage, websiteUrl, lastSaved }: ListPagesEditorProps) => (
   <PageEditorForm
     action={action}
     title="List pages"
@@ -61,7 +64,18 @@ export const ListPagesEditor = ({ action, pages, siteName, values, sharePhotos, 
                 fieldPrefix={`${page.slug}.`}
                 hint={`${page.hint} ${COUNT_TOKENS_HINT}`}
                 eyebrow={{ label: page.slug === "home" ? "Small label above the heading (the yellow badge)" : "Small label above the heading", placeholder: page.slug === "regions" ? "{regions} trekking regions" : "" }}
-              />
+              >
+                {page.hasTopPhoto && (
+                  <LibraryPhotoField
+                    name={`${page.slug}.photoId`}
+                    label="Photo behind the heading"
+                    hint="A wide landscape photo works best. The heading sits on its left side."
+                    emptyText="No photo: the page shows its design photo."
+                    initial={topPhotos[page.slug] ?? null}
+                    onEdit={onEdit}
+                  />
+                )}
+              </PageTopCard>
               <PageGoogleCard
                 values={top}
                 errors={errors}
@@ -69,7 +83,7 @@ export const ListPagesEditor = ({ action, pages, siteName, values, sharePhotos, 
                 websitePath={page.websitePath}
                 hint={COUNT_TOKENS_HINT}
                 sharePhoto={sharePhotos[page.slug] ?? null}
-                shareFallback="the share image in Site settings"
+                shareFallback={page.hasTopPhoto ? "the photo behind the heading, else the share image in Site settings" : "the share image in Site settings"}
                 onEdit={onEdit}
                 canHide={page.slug !== "home"}
               />

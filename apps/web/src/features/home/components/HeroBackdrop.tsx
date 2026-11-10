@@ -1,23 +1,20 @@
-import Image from "next/image";
-
+import { SiteImage } from "@/components/ui/SiteImage";
+import type { SiteImageSource } from "@/lib/images";
 import { HERO_PHOTO_QUALITY } from "@/lib/images";
 
+/** The design's photo (Main.dc.html, Gokyo Lake), until one is picked in Pages › List pages › Home. */
+export const DEFAULT_HOME_PHOTO: SiteImageSource = {
+  src: "/images/gokyo-lake-everest.jpg",
+  alt: "Gokyo village and turquoise Gokyo Lake beside the Ngozumpa Glacier, with snow peaks of the Everest region behind",
+};
+
 /**
- * Hero photo (design: Main.dc.html, Gokyo Lake) with navy shading from the top and bottom so white text stays
- * readable, and the white wave at the bottom.
+ * Hero photo with navy shading from the top and bottom so white text stays readable, and the white wave at the
+ * bottom.
  */
-export const HeroBackdrop = () => (
+export const HeroBackdrop = ({ photo }: { photo: SiteImageSource }) => (
   <>
-    <Image
-      src="/images/gokyo-lake-everest.jpg"
-      alt="Gokyo village and turquoise Gokyo Lake beside the Ngozumpa Glacier, with snow peaks of the Everest region behind"
-      fill
-      preload
-      fetchPriority="high"
-      quality={HERO_PHOTO_QUALITY}
-      sizes="100vw"
-      className="object-cover object-[50%_55%]"
-    />
+    <SiteImage image={photo} priority quality={HERO_PHOTO_QUALITY} sizes="100vw" className="object-cover object-[50%_55%]" />
     <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-navy/82 via-navy/45 via-38% to-navy/96" />
     <svg
       aria-hidden="true"

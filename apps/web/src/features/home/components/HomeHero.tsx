@@ -6,16 +6,16 @@ import type { SitePageTop } from "@/features/site-pages/types";
 import { ROUTES } from "@/lib/routes";
 import { SITE_NAME } from "@/lib/site";
 
-import { HeroBackdrop } from "./HeroBackdrop";
+import { DEFAULT_HOME_PHOTO, HeroBackdrop } from "./HeroBackdrop";
 
 /**
  * Home hero (design: Main.dc.html). The overlay header sits on top of it (see app/page.tsx), so the
  * top padding includes the header height: 76px on phones, 112px from md up (utility bar + main bar).
- * The label, heading and text come from Pages › List pages › Home.
+ * The label, heading, text and photo come from Pages › List pages › Home (the design's photo when none is picked).
  */
 export const HomeHero = ({ top }: { top: SitePageTop }) => (
   <section aria-labelledby="home-hero-title" className="relative bg-navy text-white">
-    <HeroBackdrop />
+    <HeroBackdrop photo={top.cover ?? DEFAULT_HOME_PHOTO} />
 
     <div className="relative mx-auto flex max-w-content flex-col gap-5.5 px-4 pt-29 pb-42.5 md:px-6 md:pt-46 md:pb-52.5">
       {top.eyebrow && (
@@ -41,9 +41,12 @@ export const HomeHero = ({ top }: { top: SitePageTop }) => (
       </div>
     </div>
 
-    <p className="absolute right-6 bottom-24 hidden items-center gap-1.5 text-xs text-white/85 md:inline-flex">
-      <Icon name="location_on" size={14} />
-      Gokyo Lake from Gokyo Ri, Everest region
-    </p>
+    {/* The design photo's place; a picked photo describes itself in its image text. */}
+    {!top.cover && (
+      <p className="absolute right-6 bottom-24 hidden items-center gap-1.5 text-xs text-white/85 md:inline-flex">
+        <Icon name="location_on" size={14} />
+        Gokyo Lake from Gokyo Ri, Everest region
+      </p>
+    )}
   </section>
 );

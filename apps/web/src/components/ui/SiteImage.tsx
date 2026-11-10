@@ -12,6 +12,8 @@ type SiteImageProps = {
   className?: string;
   /** The page's main photo (its Largest Contentful Paint): preloaded from the <head> and fetched first. */
   priority?: boolean;
+  /** next/image quality for a /public file, e.g. HERO_PHOTO_QUALITY (library photos have their own prepared files). */
+  quality?: number;
   /** e.g. the photo viewer's tap to zoom. */
   onClick?: () => void;
 };
@@ -20,7 +22,7 @@ type SiteImageProps = {
  * A page picture filling its box: a library photo at the prepared size that fits, or a file in /public.
  * A client component: next/image needs the size picker (a function) in the browser.
  */
-export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteImageProps) => {
+export const SiteImage = ({ image, sizes, className, priority, quality, onClick }: SiteImageProps) => {
   const { variantWidths, fileName } = image;
   return (
     <Image
@@ -28,6 +30,7 @@ export const SiteImage = ({ image, sizes, className, priority, onClick }: SiteIm
       alt={image.alt}
       fill
       sizes={sizes}
+      quality={quality}
       preload={priority}
       fetchPriority={priority ? "high" : undefined}
       // Library photos: their own files for each width (`${src}/<file name>-<width>.webp`), not Next's image service.

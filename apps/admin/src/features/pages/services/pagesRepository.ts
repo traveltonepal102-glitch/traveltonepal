@@ -6,11 +6,13 @@ import type { Database, Json, SitePageSlug } from "@/lib/supabase/database.types
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { legalContentOf } from "../lib/pageContent";
+import { LIST_PAGES } from "../constants";
 import type { LegalPagesValues, ListPagesValues, PageTopValues, SitePage } from "../types";
 
 type PageRow = Database["public"]["Tables"]["site_pages"]["Row"];
 
-/** Selects the page's share photo with the row. */
+/** Selects the page's top photo and share photo with the row. */
+const PHOTO_SELECT = `photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS})` as const;
 const SHARE_COLUMNS = `share:photos!site_pages_share_photo_id_fkey(${PHOTO_COLUMNS})` as const;
 
 /** The top of the page and its Google result, as the forms edit them. */
@@ -39,7 +41,7 @@ export const listPageUpdates = async (siteId: string): Promise<Partial<Record<Si
 export const getSitePage = async (siteId: string, slug: SitePageSlug): Promise<SitePage | null> => {
   const supabase = await createSupabaseServerClient();
   const [page, photos] = await Promise.all([
-    supabase.from("site_pages").select(`*, photo:photos!site_pages_photo_id_fkey(${PHOTO_COLUMNS}), ${SHARE_COLUMNS}`).eq("site_id", siteId).eq("slug", slug).maybeSingle(),
+    supabase.from("site_pages").select(`*, ${PHOTO_SELECT}, ${SHARE_COLUMNS}`).eq("site_id", siteId).eq("slug", slug).maybeSingle(),
     supabase.from("site_page_photos").select(`position, photo:photos!site_page_photos_photo_id_fkey(${PHOTO_COLUMNS})`).eq("site_id", siteId).eq("page_slug", slug).order("position"),
   ]);
   if (page.error) throw new Error(`Could not load the ${slug} page: ${page.error.message}`);
@@ -62,15 +64,15 @@ export const getSitePage = async (siteId: string, slug: SitePageSlug): Promise<S
   };
 };
 
-/** Several of the site's pages without their photos (the list pages have none) but with their share photo, in any order. Throws when the database can't be read. */
+/** Several of the site's pages with their top photo and share photo (not their photos by place), in any order. Throws when the database can't be read. */
 export const getSitePages = async (siteId: string, slugs: readonly SitePageSlug[]): Promise<SitePage[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("site_pages").select(`*, ${SHARE_COLUMNS}`).eq("site_id", siteId).in("slug", [...slugs]);
+  const { data, error } = await supabase.from("site_pages").select(`*, ${PHOTO_SELECT}, ${SHARE_COLUMNS}`).eq("site_id", siteId).in("slug", [...slugs]);
   if (error) throw new Error(`Could not load the pages: ${error.message}`);
   return data.map((row) => ({
     slug: row.slug,
     top: toPageTop(row),
-    photo: null,
+    photo: row.photo ? toPhoto(row.photo) : null,
     sharePhoto: row.share ? toPhoto(row.share) : null,
     founderAuthorId: row.founder_author_id,
     photoSlots: [],
@@ -128,9 +130,12 @@ const saveSitePages = async (siteId: string, pages: Partial<Record<SitePageSlug,
   return toSaveResult("save_site_pages", error);
 };
 
-/** The four list pages: their tops and Google results (no photo, no own parts). */
+/** Whether a list page's top shows a photo (Home, Treks, Regions); the others never keep one. */
+const hasTopPhoto = (slug: string) => LIST_PAGES.some((page) => page.slug === slug && page.hasTopPhoto);
+
+/** The list pages: their tops (with the photo, where the page shows one) and Google results (no own parts). */
 export const saveListPages = (siteId: string, pages: ListPagesValues): Promise<SavePageResult> =>
-  saveSitePages(siteId, Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, { ...page, photoId: null, content: {} }])));
+  saveSitePages(siteId, Object.fromEntries(Object.entries(pages).map(([slug, page]) => [slug, { ...page, photoId: hasTopPhoto(slug) ? page.photoId : null, content: {} }])));
 
 /** The four legal pages: title, intro and their text, lawyer check and date (no photos, no Google result: title and intro). */
 export const saveLegalPages = (siteId: string, pages: LegalPagesValues): Promise<SavePageResult> =>

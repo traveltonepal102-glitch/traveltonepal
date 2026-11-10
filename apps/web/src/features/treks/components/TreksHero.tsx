@@ -1,14 +1,17 @@
 import { Icon } from "@ttn/ui/icon";
 import type { IconName } from "@ttn/ui/icon";
-import Image from "next/image";
-
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { SiteImage } from "@/components/ui/SiteImage";
 import { formatCount } from "@/lib/format";
+import type { SiteImageSource } from "@/lib/images";
 import { HERO_PHOTO_QUALITY } from "@/lib/images";
 import { ROUTES } from "@/lib/routes";
 import type { SitePageTop } from "@/features/site-pages/types";
 
 import { TrekSearchForm } from "./TrekSearchForm";
+
+/** Decorative (the title says what the page is), until a photo is picked in Pages › List pages › Treks. */
+const DEFAULT_PHOTO: SiteImageSource = { src: "/images/langtang-glacier-peaks.jpg", alt: "" };
 
 type TreksHeroProps = {
   /** From Pages › List pages › Treks. */
@@ -29,17 +32,7 @@ export const TreksHero = ({ top, trekCount, regionCount }: TreksHeroProps) => {
 
   return (
     <section aria-labelledby="treks-title" className="relative overflow-hidden bg-navy text-white">
-      {/* Decorative: the title says what the page is. */}
-      <Image
-        src="/images/langtang-glacier-peaks.jpg"
-        alt=""
-        fill
-        preload
-        fetchPriority="high"
-        quality={HERO_PHOTO_QUALITY}
-        sizes="100vw"
-        className="object-cover object-[50%_40%]"
-      />
+      <SiteImage image={top.cover ? { ...top.cover, alt: "" } : DEFAULT_PHOTO} priority quality={HERO_PHOTO_QUALITY} sizes="100vw" className="object-cover object-[50%_40%]" />
       {/* Phones get stronger shading: the text runs across the bright right side of the photo there too. */}
       <div
         aria-hidden="true"

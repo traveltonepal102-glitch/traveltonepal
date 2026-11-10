@@ -22,7 +22,7 @@ const TONES = {
 /** Every page the list shows: where its row opens, and what is edited there. */
 const PAGE_ROWS: { slug: EditablePageSlug | ListPageSlug | LegalPageSlug; label: string; websitePath: string; icon: IconName; what: string; href: string }[] = [
   ...EDITABLE_PAGES.map((page) => ({ ...page, what: page.summary, href: pagePath(page.slug) })),
-  ...LIST_PAGES.map((page) => ({ ...page, what: "Big heading, text under it, Google title and description", href: listPagePath(page.slug) })),
+  ...LIST_PAGES.map((page) => ({ ...page, what: `${page.hasTopPhoto ? "Photo at the top, big" : "Big"} heading, text under it, Google title and description`, href: listPagePath(page.slug) })),
   ...LEGAL_PAGES.map((page) => ({ ...page, href: legalPagePath(page.slug) })),
 ];
 
