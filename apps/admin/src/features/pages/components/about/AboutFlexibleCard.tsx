@@ -19,7 +19,7 @@ export const AboutFlexibleCard = ({ values, photo, errors, onEdit }: AboutFlexib
     <BeliefTextFields base={BASE} values={values} errors={errors} />
     <TextField name={`${BASE}.quoteNote`} label="Line under the quote" labelNote="(optional)" defaultValue={values.quoteNote} maxLength={LIMIT.quoteNote} error={errors[`${BASE}.quoteNote`]} />
     <FieldGroup title="Photo beside the text">
-      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.flexible}`} label="Photo" hint="A tall photo works best." emptyText="No photo: the text uses the full width." initial={photo} onEdit={onEdit} />
+      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.flexible}`} label="Photo" size="tall" emptyText="No photo: the text uses the full width." initial={photo} onEdit={onEdit} />
       <TextField
         name={`${BASE}.photoCaption`}
         label="Caption on the photo"

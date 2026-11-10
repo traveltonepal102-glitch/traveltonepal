@@ -15,6 +15,7 @@ import type { Photo } from "../types";
 import { CoverPhotoSlot } from "./CoverPhotoSlot";
 import { GalleryPhotoCard } from "./GalleryPhotoCard";
 import { LibraryPhotoDialog } from "./LibraryPhotoDialog";
+import { PhotoSizeNote } from "./PhotoSizeNote";
 
 type CoverAndGalleryProps = {
   initial: PhotoSelection;
@@ -53,6 +54,7 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
           onRemove={selection.removeCover}
           onChangePlace={(place) => cover && selection.updatePlace(cover.id, place)}
         />
+        <PhotoSizeNote size="banner" />
       </FormSection>
 
       <FormSection
@@ -87,12 +89,14 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
             No gallery photos yet. Add the photos visitors should scroll through on the region page.
           </p>
         )}
+        <PhotoSizeNote size="landscape" />
         <FieldError id="photos-error" message={error} />
       </FormSection>
 
       {openFor === "cover" && (
         <LibraryPhotoDialog
           title="Cover photo"
+          size="banner"
           selected={cover ? [cover] : []}
           pick={{ kind: "one", onChoose: chooseCover }}
           regionId={regionId}
@@ -103,6 +107,7 @@ export const CoverAndGallery = ({ initial, regionId, subject, trekId = null, onE
       {openFor === "gallery" && (
         <LibraryPhotoDialog
           title="Gallery photos"
+          size="landscape"
           selected={gallery}
           pick={{ kind: "many", max: MAX_GALLERY_PHOTOS, onDone: selection.setGallery }}
           regionId={regionId}

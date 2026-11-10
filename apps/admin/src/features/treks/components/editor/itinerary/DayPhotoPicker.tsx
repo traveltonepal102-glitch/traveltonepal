@@ -45,6 +45,7 @@ export const DayPhotoPicker = ({ photo, trekId, onChange }: DayPhotoPickerProps)
       {isOpen && (
         <LibraryPhotoDialog
           title="Photo for this day"
+          size="landscape"
           selected={photo ? [photo] : []}
           pick={{ kind: "one", onChoose: onChange }}
           trekId={trekId}

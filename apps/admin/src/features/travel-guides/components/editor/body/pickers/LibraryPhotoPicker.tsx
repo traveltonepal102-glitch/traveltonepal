@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
+import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
 import type { Photo } from "@/features/photos/types";
 
 type LibraryPhotoPickerProps = {
@@ -37,9 +38,11 @@ export const LibraryPhotoPicker = ({ label, picked, max, regionId, onChange, onC
         <Icon name="photo_library" size={16} />
         {label}
       </button>
+      <PhotoSizeNote size="landscape" />
       {isOpen && (
         <LibraryPhotoDialog
           title={max === 1 ? "Choose a photo" : `Choose up to ${max} photos`}
+          size="landscape"
           selected={picked}
           pick={max === 1 ? { kind: "one", onChoose: (photo) => keep([photo]) } : { kind: "many", max, onDone: keep }}
           regionId={regionId}

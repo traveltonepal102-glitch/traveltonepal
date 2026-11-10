@@ -7,6 +7,8 @@ import { useState } from "react";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
+import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
+import type { PhotoSize } from "@/features/photos/lib/photoSizes";
 import type { Photo } from "@/features/photos/types";
 
 type PersonPhotoFieldProps = {
@@ -20,6 +22,8 @@ type PersonPhotoFieldProps = {
   onChange?: (photo: Photo | null) => void;
   /** The form field it is sent as (default photoId). */
   fieldName?: string;
+  /** The best size for where the photo goes (default a person's square photo). */
+  size?: PhotoSize;
 };
 
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
@@ -28,7 +32,7 @@ const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
  * A person's photo (a trekking guide, an author), chosen in the photo library window (an upload goes to the
  * library right away, location data removed); which photo the person uses is sent with Save as photoId.
  */
-export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldName = "photoId" }: PersonPhotoFieldProps) => {
+export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldName = "photoId", size = "person" }: PersonPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const [isOpen, setIsOpen] = useState(false);
   const choose = (next: Photo | null) => {
@@ -63,10 +67,12 @@ export const PersonPhotoField = ({ initial, name, hint, onEdit, onChange, fieldN
           <span className="text-xs text-muted-foreground">{hint}</span>
         </div>
       </div>
+      <PhotoSizeNote size={size} />
       <input type="hidden" name={fieldName} value={photo?.id ?? ""} />
       {isOpen && (
         <LibraryPhotoDialog
           title={name.trim() || "Photo"}
+          size={size}
           selected={photo ? [photo] : []}
           pick={{ kind: "one", onChoose: choose }}
           onClose={() => setIsOpen(false)}

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
+import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
 
@@ -49,9 +50,10 @@ export const HomeHeroPhotoField = ({ photo, regionId, error, onChange }: HomeHer
           )}
         </span>
       </div>
+      <PhotoSizeNote size="banner" />
       <FieldError id="home-photo-error" message={error} />
       {isOpen && (
-        <LibraryPhotoDialog title="Photo at the top of the Home page" selected={photo ? [photo] : []} pick={{ kind: "one", onChoose: onChange }} regionId={regionId} onClose={() => setIsOpen(false)} />
+        <LibraryPhotoDialog title="Photo at the top of the Home page" size="banner" selected={photo ? [photo] : []} pick={{ kind: "one", onChoose: onChange }} regionId={regionId} onClose={() => setIsOpen(false)} />
       )}
     </div>
   );

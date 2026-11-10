@@ -34,6 +34,7 @@ export const SocialSettingsCard = ({ values, sharePhoto, errors, onEdit }: Socia
         name="Travel To Nepal"
         hint="Shown when a page without its own photo is shared on WhatsApp or social media. A wide mountain photo works best."
         fieldName="sharePhotoId"
+        size="share"
         onEdit={onEdit}
       />
     </div>

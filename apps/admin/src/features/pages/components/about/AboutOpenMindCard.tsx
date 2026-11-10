@@ -35,8 +35,8 @@ export const AboutOpenMindCard = ({ values, photos, errors, onEdit }: AboutOpenM
               name={`photoIds.${ABOUT_PHOTO_SLOTS.places[index]}`}
               label={`Photo ${index + 1}`}
               emptyText="No photo: the village is left out."
+              size="landscape"
               initial={photos[index] ?? null}
-             
               onEdit={onEdit}
             />
             <TextField name={`${BASE}.places.${index}.title`} label="Place" placeholder="Ghandruk, Annapurna" defaultValue={place.title} maxLength={LIMIT.itemTitle} error={errors[`${BASE}.places.${index}.title`]} />

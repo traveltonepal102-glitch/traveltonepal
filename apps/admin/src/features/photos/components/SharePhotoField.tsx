@@ -20,7 +20,8 @@ export const SharePhotoField = ({ initial, fallback, name = "sharePhotoId", onEd
   <LibraryPhotoField
     name={name}
     label="Photo when the link is shared"
-    hint="Shown on WhatsApp, Facebook, LinkedIn and X, cut to a wide picture (1200 × 630). Keep the subject near the middle."
+    size="share"
+    hint="Shown on WhatsApp, Facebook, LinkedIn and X."
     emptyText={`No photo chosen: ${fallback}.`}
     initial={initial}
     onEdit={onEdit}

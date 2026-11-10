@@ -6,14 +6,18 @@ import { useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 
+import type { PhotoSize } from "../lib/photoSizes";
 import type { Photo } from "../types";
 import { LibraryPhotoDialog } from "./LibraryPhotoDialog";
 import { PhotoImage } from "./PhotoImage";
+import { PhotoSizeNote } from "./PhotoSizeNote";
 
 type LibraryPhotoFieldProps = {
   /** The form field it is sent as (the photo's id, or "" for none). */
   name: string;
   label: string;
+  /** The best size for where the photo goes. */
+  size: PhotoSize;
   hint?: string;
   initial: Photo | null;
   /** Said while no photo is chosen. */
@@ -24,7 +28,7 @@ type LibraryPhotoFieldProps = {
 const smallButton = cn(secondaryButton, "min-h-8 px-3 text-caption");
 
 /** A photo from the library (or a new upload) for one place on a page: a preview, Choose/Change and Remove. */
-export const LibraryPhotoField = ({ name, label, hint, initial, emptyText = "No photo: the page uses its own default.", onEdit }: LibraryPhotoFieldProps) => {
+export const LibraryPhotoField = ({ name, label, size, hint, initial, emptyText = "No photo: the page uses its own default.", onEdit }: LibraryPhotoFieldProps) => {
   const [photo, setPhoto] = useState(initial);
   const [isOpen, setIsOpen] = useState(false);
   const choose = (next: Photo | null) => {
@@ -55,10 +59,11 @@ export const LibraryPhotoField = ({ name, label, hint, initial, emptyText = "No 
           </div>
         </div>
       </div>
+      <PhotoSizeNote size={size} />
       {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
       <input type="hidden" name={name} value={photo?.id ?? ""} />
       {isOpen && (
-        <LibraryPhotoDialog title={label} selected={photo ? [photo] : []} pick={{ kind: "one", onChoose: choose }} onClose={() => setIsOpen(false)} />
+        <LibraryPhotoDialog title={label} size={size} selected={photo ? [photo] : []} pick={{ kind: "one", onChoose: choose }} onClose={() => setIsOpen(false)} />
       )}
     </div>
   );

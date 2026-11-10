@@ -44,7 +44,7 @@ export const AboutStoryCard = ({ values, officeAuthors, founderPhoto, errors, on
         </div>
         <TextField name="founderOrigin" label="Where he is from" placeholder="From Tanahun, near the Annapurna region" defaultValue={values.founderOrigin} maxLength={LIMIT.founderOrigin} error={errors.founderOrigin} />
       </div>
-      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.founder}`} label="Founder's photo" hint="A tall photo of the founder on the trail works best." emptyText="No photo yet." initial={founderPhoto} onEdit={onEdit} />
+      <LibraryPhotoField name={`photoIds.${ABOUT_PHOTO_SLOTS.founder}`} label="Founder's photo" size="tall" hint="The founder on the trail works best." emptyText="No photo yet." initial={founderPhoto} onEdit={onEdit} />
     </FieldGroup>
     <TextField name="storyHeading" label="Heading" labelNote="(H2)" placeholder="Why Sandip Kshetri started Travel To Nepal" defaultValue={values.storyHeading} maxLength={LIMIT.beliefHeading} inputClassName="font-display font-bold" error={errors.storyHeading} />
     <RichTextEditor

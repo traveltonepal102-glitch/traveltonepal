@@ -21,6 +21,7 @@ export const InsertPhotoButton = ({ editor }: { editor: Editor }) => {
       {isOpen && (
         <LibraryPhotoDialog
           title="Add a photo to the text"
+          size="inText"
           selected={[]}
           pick={{ kind: "one", onChoose: (photo) => editor.chain().focus().insertContent(libraryImageContent(photo)).run() }}
           onClose={() => setIsOpen(false)}

@@ -37,7 +37,7 @@ export const AdventureFields = ({ values, photo, errors, onEdit }: AdventureFiel
       />
       <TextField name="summary" label="Text" multiline rows={4} defaultValue={values.summary} maxLength={LIMIT.summary} showCount hint="One or two sentences: what they'll do and why it's special." error={errors.summary} />
       <div className="flex flex-col gap-1">
-        <LibraryPhotoField name="photoId" label="Photo" initial={photo} hint="A wide photo works best. Needed before the card can show on the website." emptyText="No photo yet." onEdit={onEdit} />
+        <LibraryPhotoField name="photoId" label="Photo" size="landscape" initial={photo} hint="Needed before the card can show on the website." emptyText="No photo yet." onEdit={onEdit} />
         <FieldError id="adventure-photo-error" message={errors.photoId} />
       </div>
       <TextField

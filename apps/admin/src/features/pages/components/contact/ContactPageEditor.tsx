@@ -50,7 +50,7 @@ export const ContactPageEditor = ({ action, values, photo, sharePhoto, websiteUr
             errors={errors}
             eyebrow={{ label: "Green line above the heading", placeholder: "Our team is online · Kathmandu", hint: "Shown while the office is open. Outside office hours it says “Office closed now · we reply first thing in the morning” by itself." }}
           >
-            <LibraryPhotoField name="photoId" label="Photo behind the heading" hint="A wide landscape photo works best." initial={photo} onEdit={onEdit} />
+            <LibraryPhotoField name="photoId" label="Photo behind the heading" size="banner" initial={photo} onEdit={onEdit} />
           </PageTopCard>
         </div>
         <div hidden={activeKey !== "ways"}>

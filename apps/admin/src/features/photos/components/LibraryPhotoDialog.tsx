@@ -9,12 +9,14 @@ import { iconButton } from "@/components/ui/buttonStyles";
 import { useLibrarySearch } from "../hooks/useLibrarySearch";
 import { usePhotoUploads } from "../hooks/usePhotoUploads";
 import { addPick, togglePick } from "../lib/pickerDraft";
+import type { PhotoSize } from "../lib/photoSizes";
 import type { NamedPhoto, Photo, PickerPhoto } from "../types";
 import { PickerFooter } from "./picker/PickerFooter";
 import { PickerGrid } from "./picker/PickerGrid";
 import { PickerPreview } from "./picker/PickerPreview";
 import { PickerToolbar } from "./picker/PickerToolbar";
 import { StopUploadDialog } from "./picker/StopUploadDialog";
+import { PhotoSizeNote } from "./PhotoSizeNote";
 import { PhotoUploadButton } from "./PhotoUploadButton";
 import { UploadProgressList } from "./UploadProgressList";
 
@@ -24,6 +26,8 @@ type Pick = { kind: "one"; onChoose: (photo: Photo) => void } | { kind: "many"; 
 type LibraryPhotoDialogProps = {
   /** e.g. "Photo at the top of the About page". */
   title: string;
+  /** The best size for where the photo goes, said beside "Upload". */
+  size: PhotoSize;
   /** The photos chosen now: marked, and a gallery's window starts from them. */
   selected: Photo[];
   pick: Pick;
@@ -43,7 +47,7 @@ type LibraryPhotoDialogProps = {
  * and is chosen when done. Only the choice goes back to the form.
  */
 export const LibraryPhotoDialog = (props: LibraryPhotoDialogProps) => {
-  const { title, selected, pick, regionId = null, trekId = null, startWithTrekPhotos = false, excludedIds = [], onClose } = props;
+  const { title, size, selected, pick, regionId = null, trekId = null, startWithTrekPhotos = false, excludedIds = [], onClose } = props;
   const search = useLibrarySearch(trekId && startWithTrekPhotos ? { kind: "trek", id: trekId } : { kind: "all" });
   const [draft, setDraft] = useState(selected);
   const [previewing, setPreviewing] = useState<PickerPhoto | null>(null);
@@ -108,6 +112,7 @@ export const LibraryPhotoDialog = (props: LibraryPhotoDialogProps) => {
               onFiles={(files) => uploads.upload(pick.kind === "many" ? files.slice(0, pick.max - draft.length) : files.slice(0, 1), "pick")}
               className="self-start"
             />
+            <PhotoSizeNote size={size} />
             <UploadProgressList items={uploads.items} onDismiss={uploads.dismiss} onAnswer={uploads.answer} canUseLibraryPhoto />
           </div>
 

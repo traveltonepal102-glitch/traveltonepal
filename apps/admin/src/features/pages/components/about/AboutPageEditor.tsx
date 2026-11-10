@@ -58,7 +58,7 @@ export const AboutPageEditor = ({ action, values, photo, sharePhoto, photoSlots,
         <>
           <div hidden={activeKey !== "top"} className="flex flex-col gap-4">
             <PageTopCard values={values} errors={errors} eyebrow={{ label: "Small label above the heading", placeholder: "About Travel To Nepal" }}>
-              <LibraryPhotoField name="photoId" label="Photo behind the heading" hint="A wide landscape photo works best." initial={photo} onEdit={onEdit} />
+              <LibraryPhotoField name="photoId" label="Photo behind the heading" size="banner" initial={photo} onEdit={onEdit} />
             </PageTopCard>
             <AboutNumbersCard values={values} facts={facts} errors={errors} />
           </div>

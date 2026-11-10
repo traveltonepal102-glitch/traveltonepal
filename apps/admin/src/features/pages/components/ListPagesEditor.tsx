@@ -69,7 +69,8 @@ export const ListPagesEditor = ({ action, pages, siteName, values, topPhotos, sh
                   <LibraryPhotoField
                     name={`${page.slug}.photoId`}
                     label="Photo behind the heading"
-                    hint="A wide landscape photo works best. The heading sits on its left side."
+                    size="banner"
+                    hint="The heading sits on its left side, so keep the main subject in the middle or on the right."
                     emptyText="No photo: the page shows its design photo."
                     initial={topPhotos[page.slug] ?? null}
                     onEdit={onEdit}

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { LibraryPhotoDialog } from "@/features/photos/components/LibraryPhotoDialog";
+import { PhotoSizeNote } from "@/features/photos/components/PhotoSizeNote";
 import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import type { Photo } from "@/features/photos/types";
 
@@ -68,11 +69,13 @@ export const ArticleCoverField = ({ cover, regionId, tags, error, onChange }: Ar
           )}
         </span>
       </div>
+      <PhotoSizeNote size="banner" />
       <span className="text-xs text-muted-foreground">Tags with a dashed border fill in by themselves: the topic and the main trek’s highest point.</span>
       <FieldError id="cover-photo-error" message={error} />
       {isOpen && (
         <LibraryPhotoDialog
           title="Photo at the top of the guide"
+          size="banner"
           selected={cover ? [cover] : []}
           pick={{ kind: "one", onChoose: onChange }}
           regionId={regionId}

@@ -92,6 +92,7 @@ export const TopicMediaField = ({ defaultValue, topicLabel, photos, trekId, vide
       {openWindow === "photo" && (
         <LibraryPhotoDialog
           title={`Photo for ${topicLabel}`}
+          size="landscape"
           selected={photo ? [photo] : []}
           pick={{ kind: "one", onChoose: choosePhoto }}
           trekId={trekId}

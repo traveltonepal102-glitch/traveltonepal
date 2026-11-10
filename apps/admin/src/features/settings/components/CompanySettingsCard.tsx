@@ -44,6 +44,7 @@ export const CompanySettingsCard = ({ values, certificate, panCertificate, error
           name="Trekking agency licence"
           hint="A clear photo or scan. Visitors can open it full size, so cover any private numbers first."
           fieldName="certificatePhotoId"
+          size="document"
           onEdit={onEdit}
         />
       </div>
@@ -54,6 +55,7 @@ export const CompanySettingsCard = ({ values, certificate, panCertificate, error
           name="PAN registration certificate"
           hint="Shown beside the licence on the About page."
           fieldName="panCertificatePhotoId"
+          size="document"
           onEdit={onEdit}
         />
       </div>
