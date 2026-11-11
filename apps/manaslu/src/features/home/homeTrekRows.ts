@@ -120,7 +120,6 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     shortName,
     days: summary.days ?? days.length,
     difficulty: DIFFICULTY[summary.difficulty],
-    priceFromUsd: prices.length ? Math.min(...prices.map((price) => price.priceUsd)) : summary.price_from_usd,
     place: firstText(page.protected_area, summary.region_name) ?? "",
     photos: toPhotos(summary, photos, photosBaseUrl),
     facts: toFacts(summary, page),

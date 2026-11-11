@@ -2,7 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { photosPublicBaseUrl, trekFilesPublicBaseUrl } from "@/env";
-import { toHomeReviews } from "@/features/home/homeRows";
+import { toHomeReviews, toTrekPageGuides } from "@/features/home/homeRows";
 import { toHomeTrek } from "@/features/home/homeTrekRows";
 import { getHomeData } from "@/features/home/services/homeRepository";
 import { check, readTrekRows } from "@/features/home/services/trekRowsRepository";
@@ -58,7 +58,7 @@ export const getTrekPage = async (slug: string): Promise<TrekPageData | null> =>
     rating: home.rating,
     company: home.company,
     adventures: home.adventures,
-    guides: home.guides,
+    guides: toTrekPageGuides(home.allGuides, rows.page.featured_guide_slug),
     seo: toTrekSeo(summaryRow, rows.page, photosPublicBaseUrl, home.seo.isLive, settings.shareImageBase),
     isHidden: hidden.has(pagePath(slug)),
     canonicalPath: canonicals.get(pagePath(slug)),

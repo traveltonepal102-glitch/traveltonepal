@@ -7,7 +7,7 @@ import { photosPublicBaseUrl, trekFilesPublicBaseUrl } from "@/env";
 import { CACHE_TAGS, DATABASE_CACHE_LIFE, WEBSITE_LOCALE, createDatabaseClient } from "@/lib/database";
 
 import { toHomeAdventures, toHomeCompany } from "../homeCompanyRows";
-import { toHomeGuides, toHomeRating, toHomeReviews, toHomeTop, toLatestGuides } from "../homeRows";
+import { toAllGuides, toHomeRating, toHomeReviews, toHomeTop, toLatestGuides, toTrekPageGuides } from "../homeRows";
 import { toHomeTrek, toTrekCard } from "../homeTrekRows";
 import type { HomeData } from "../types";
 import { check, readTrekRows } from "./trekRowsRepository";
@@ -44,6 +44,7 @@ export const getHomeData = async (): Promise<HomeData> => {
   const summary = trekRows.find((row) => row.slug === homeSlug);
   const homeRows = homeSlug && summary ? await readTrekRows(homeSlug) : null;
   const top = toHomeTop(pageRow, photosPublicBaseUrl);
+  const allGuides = toAllGuides(guideRows, photosPublicBaseUrl);
   const shareId = pageRow.share_id ?? pageRow.cover_id;
 
   return {
@@ -53,7 +54,9 @@ export const getHomeData = async (): Promise<HomeData> => {
     otherTreks: trekRows.filter((row) => row.slug !== homeSlug).map((row) => toTrekCard(row, photosPublicBaseUrl, homeSlug)),
     reviews: toHomeReviews(check(reviews, "the reviews"), photosPublicBaseUrl, new Date()),
     rating: toHomeRating(check(ratings, "the rating")),
-    guides: toHomeGuides(guideRows, photosPublicBaseUrl),
+    // Home is the main trek's page: the post that trek picked comes first, as on the other treks' pages.
+    guides: toTrekPageGuides(allGuides, homeRows?.page?.featured_guide_slug ?? null),
+    allGuides,
     latestGuides: toLatestGuides(guideRows, photosPublicBaseUrl),
     company: toHomeCompany(about.data, photosPublicBaseUrl),
     adventures: toHomeAdventures(adventureSection.data, check(adventures, "the adventures"), photosPublicBaseUrl),

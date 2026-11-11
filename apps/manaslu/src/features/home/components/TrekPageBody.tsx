@@ -15,7 +15,7 @@ type TrekPageBodyProps = { trek: HomeTrek; company: HomeCompany; reviews: readon
 /** A trek at full length under its page's top, on the home page and on a trek's own page: the menu, its sections beside the booking card, and what follows them (`children`). */
 export const TrekPageBody = ({ trek, company, reviews, rating, children }: TrekPageBodyProps) => (
   <BookingProvider prices={trek.pricing.prices}>
-    <SectionMenu sections={reviews.length ? trek.sections : trek.sections.filter((section) => section !== "reviews")} priceFromUsd={trek.priceFromUsd} />
+    <SectionMenu sections={reviews.length ? trek.sections : trek.sections.filter((section) => section !== "reviews")} />
     <div className="wrap flex flex-wrap items-start gap-12 pt-10 pb-22 max-md:pb-14 lg:flex-nowrap">
       {/* Never wider than the page beside the card, so its text fills it (no 72ch gap before the card). */}
       <div className="flex min-w-0 flex-[999_1_600px] flex-col gap-16 [--text-measure:none] max-md:gap-12">

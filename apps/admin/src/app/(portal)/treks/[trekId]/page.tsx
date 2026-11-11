@@ -6,6 +6,7 @@ import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { listPhotosByIds } from "@/features/photos/services/photoPickerRepository";
+import { listPublishedArticleChoices } from "@/features/travel-guides/services/articleOptions";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { deleteTrek } from "@/features/treks/actions/deleteTrek";
@@ -45,10 +46,12 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
   const { trekId } = await params;
   const [trek, site, regions] = await Promise.all([loadTrek(params), getCurrentSite(), listRegionOptions()]);
   if (trek.siteId !== site?.id) redirect(TREKS_PATH);
-  const [similarOptions, guides, usage] = await Promise.all([
+  const [similarOptions, guides, usage, blogOptions] = await Promise.all([
     listSimilarTrekOptions(trek.siteId, trekId),
     listTrekkingGuides(trek.siteId),
     canDelete ? getTrekUsage(trek.id) : [],
+    // Only a region website's trek pages show "Read before you go".
+    site.kind === "region" ? listPublishedArticleChoices(trek.siteId) : null,
   ]);
   // A topic's photo can be any library photo, not only the trek's: loaded for its preview.
   const topicPhotos = await listPhotosByIds(trek.knowTopics.flatMap((topic) => (topic.photoId ? [topic.photoId] : [])));
@@ -64,6 +67,7 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       topicPhotos={topicPhotos}
       regions={regions}
       similarOptions={similarOptions}
+      blogOptions={blogOptions}
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={trek.regionId}
       isNew={false}

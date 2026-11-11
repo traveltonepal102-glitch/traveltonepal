@@ -31,6 +31,7 @@ import { ElevationCard } from "./route/ElevationCard";
 import { RouteMapCard } from "./route/RouteMapCard";
 import { SectionOrderCard } from "./SectionOrderCard";
 import { GoogleSearchCard } from "./seo/GoogleSearchCard";
+import { FeaturedGuideCard } from "./seo/FeaturedGuideCard";
 import { SimilarTreksCard } from "./seo/SimilarTreksCard";
 import { SharedSectionsCard } from "./SharedSectionsCard";
 import { LinesAboveHeadingCard } from "./top/LinesAboveHeadingCard";
@@ -54,6 +55,8 @@ type TrekSectionPanelsProps = {
   regions: RegionOption[];
   similarOptions: SimilarTrekOption[];
   guideOptions: GuideOption[];
+  /** The website's published blog posts for "Blog post shown first"; null where trek pages show no blog posts (Travel To Nepal). */
+  blogOptions: { value: string; label: string }[] | null;
   regionId: string | null;
   isNew: boolean;
   pdfMapUrl: string | null;
@@ -77,6 +80,7 @@ export const TrekSectionPanels = ({
   regions,
   similarOptions,
   guideOptions,
+  blogOptions,
   regionId,
   isNew,
   pdfMapUrl,
@@ -223,6 +227,7 @@ export const TrekSectionPanels = ({
           line={{ name: "similarIntro", defaultValue: values.similarIntro, placeholder: "Treks planned with you and led by local guides.", maxLength: LIMIT.similarIntro, error: errors.similarIntro }}
         />
         <SimilarTreksCard similarTrekIds={values.similarTrekIds} options={similarOptions} error={errors.similarTrekIds} onEdit={onEdit} />
+        {blogOptions && <FeaturedGuideCard featuredArticleId={values.featuredArticleId} options={blogOptions} error={errors.featuredArticleId} />}
       </div>
       <div {...panel("seo")}>
         <GoogleSearchCard values={values} errors={errors} onEdit={onEdit} />

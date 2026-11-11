@@ -1,7 +1,7 @@
 import type { WebReviewRow, WebSitePageRow, WebTravelGuideRow } from "@ttn/site-data/database.types";
 import { describe, expect, it } from "vitest";
 
-import { toHomeGuides, toHomeRating, toHomeReviews, toHomeTop } from "./homeRows";
+import { toAllGuides, toHomeRating, toHomeReviews, toHomeTop, toTrekPageGuides } from "./homeRows";
 
 const pageRow = (content: unknown) =>
   ({ eyebrow: " Season ", heading: "Manaslu Circuit", intro: "Intro", content, cover_id: "p1", cover_variant_widths: [400], cover_file_name: "manaslu", cover_placeholder: "", cover_place: "" }) as unknown as WebSitePageRow;
@@ -38,8 +38,24 @@ const guide = (slug: string, published_on: string, is_featured = false) => ({ sl
 
 describe("guides", () => {
   it("puts the featured guide first, then the newest", () => {
-    const shown = toHomeGuides([guide("old", "2026-01-01"), guide("new", "2026-09-01"), guide("featured", "2025-01-01", true)], "https://photos");
+    const shown = toAllGuides([guide("old", "2026-01-01"), guide("new", "2026-09-01"), guide("featured", "2025-01-01", true)], "https://photos");
     expect(shown.map((item) => item.slug)).toEqual(["featured", "new", "old"]);
     expect(shown[1].meta).toBe("Sep 1, 2026 · 4 min read");
+  });
+
+  const all = toAllGuides(
+    ["a", "b", "c", "d", "e", "f"].map((slug, index) => guide(slug, `2026-0${9 - index}-01`, slug === "a")),
+    "https://photos",
+  );
+  const slugs = (guides: readonly { slug: string }[]) => guides.map((item) => item.slug);
+
+  it("shows the post a trek picked first, then the others in order, five in all", () => {
+    expect(slugs(toTrekPageGuides(all, "f"))).toEqual(["f", "a", "b", "c", "d"]);
+    expect(slugs(toTrekPageGuides(all, "c"))).toEqual(["c", "a", "b", "d", "e"]);
+  });
+
+  it("keeps the website's order without a pick, or with one that isn't published", () => {
+    expect(slugs(toTrekPageGuides(all, null))).toEqual(["a", "b", "c", "d", "e"]);
+    expect(slugs(toTrekPageGuides(all, "unpublished"))).toEqual(["a", "b", "c", "d", "e"]);
   });
 });

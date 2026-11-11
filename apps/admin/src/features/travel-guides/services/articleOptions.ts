@@ -179,3 +179,19 @@ export const getArticleOptions = async (site: Site, exceptArticleId: string | nu
     filesBaseUrl: trekFilesBaseUrl,
   };
 };
+
+/** The website's published travel guides, A–Z, as choices for a trek's "Blog post shown first". */
+export const listPublishedArticleChoices = async (siteId: string): Promise<{ value: string; label: string }[]> => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select("id, article_translations!inner(title)")
+    .eq("site_id", siteId)
+    .eq("status", "published")
+    .eq("article_translations.locale", ARTICLE_LOCALE);
+  if (error) throw new Error(`Could not load the published travel guides of ${siteId}: ${error.message}`);
+  return data
+    .map((row) => ({ value: row.id, label: row.article_translations[0]?.title ?? "" }))
+    .filter((choice) => choice.label)
+    .sort((a, b) => a.label.localeCompare(b.label));
+};

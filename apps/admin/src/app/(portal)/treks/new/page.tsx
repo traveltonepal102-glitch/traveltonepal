@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { getCurrentSite } from "@/features/sites/lib/currentSite";
+import { listPublishedArticleChoices } from "@/features/travel-guides/services/articleOptions";
 import { toGuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRepository";
 import { saveTrek } from "@/features/treks/actions/saveTrek";
@@ -18,7 +19,13 @@ const NewTrekPage = async () => {
   await requireAdmin();
   const site = await getCurrentSite();
   if (!site) notFound();
-  const [regions, similarOptions, guides] = await Promise.all([listRegionOptions(), listSimilarTrekOptions(site.id, null), listTrekkingGuides(site.id)]);
+  const [regions, similarOptions, guides, blogOptions] = await Promise.all([
+    listRegionOptions(),
+    listSimilarTrekOptions(site.id, null),
+    listTrekkingGuides(site.id),
+    // Only a region website's trek pages show "Read before you go".
+    site.kind === "region" ? listPublishedArticleChoices(site.id) : null,
+  ]);
   const today = todayInNepal();
 
   return (
@@ -30,6 +37,7 @@ const NewTrekPage = async () => {
       topicPhotos={[]}
       regions={regions}
       similarOptions={similarOptions}
+      blogOptions={blogOptions}
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={null}
       isNew

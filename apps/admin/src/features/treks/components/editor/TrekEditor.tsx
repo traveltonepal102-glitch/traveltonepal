@@ -32,6 +32,8 @@ type TrekEditorProps = {
   regions: RegionOption[];
   /** Every other trek, to pick similar treks from. */
   similarOptions: SimilarTrekOption[];
+  /** The website's published blog posts for "Blog post shown first"; null where trek pages show none (Travel To Nepal). */
+  blogOptions?: { value: string; label: string }[] | null;
   /** Every trekking guide, to pick the trek's guides from. */
   guideOptions: GuideOption[];
   /** The region's id, to tag new uploads (null when the trek has none yet). */
@@ -51,7 +53,7 @@ type TrekEditorProps = {
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, blogOptions = null, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
@@ -113,6 +115,7 @@ export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, region
               onEdit={markDirty}
               regions={regions}
               similarOptions={similarOptions}
+              blogOptions={blogOptions}
               guideOptions={guideOptions}
               regionId={regionId}
               isNew={isNew}

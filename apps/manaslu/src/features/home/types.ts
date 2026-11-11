@@ -82,7 +82,6 @@ export type HomeTrek = {
   shortName: string;
   days: number;
   difficulty: string;
-  priceFromUsd: number | null;
   place: string;
   photos: SiteImageSource[];
   facts: HomeFact[];
@@ -150,6 +149,8 @@ export type HomeData = {
   reviews: HomeReview[];
   rating: HomeRating | null;
   guides: HomeGuide[];
+  /** Every published guide, the featured one first, then the newest: a trek page picks its own from them. */
+  allGuides: HomeGuide[];
   /** The newest ten, for the menu. */
   latestGuides: HomeGuide[];
   company: HomeCompany;

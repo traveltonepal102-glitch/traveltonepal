@@ -150,9 +150,8 @@ describe("the home page's main trek", () => {
     expect(trek({ distance_km: 160, transport: "Jeep", guide_ratio: "1 : 4" }).facts.map((fact) => fact.value)).toEqual(expect.arrayContaining(["160 km", "Jeep", "1 : 4"]));
   });
 
-  it("starts from the lowest group price, numbers the days and drops a question without an answer", () => {
+  it("numbers the days and drops a question without an answer", () => {
     const result = trek();
-    expect(result.priceFromUsd).toBe(1280);
     expect(result.itinerary.days.map((day) => day.number)).toEqual([1, 2]);
     expect(result.itinerary.days.map((day) => day.topPlace)).toEqual(["Arrive", "The pass"]);
     expect(result.faq.items.map((item) => item.question)).toEqual(["Is it hard?"]);

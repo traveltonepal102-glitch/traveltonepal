@@ -467,6 +467,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   canonicalPath: "",
   hideFromGoogle: false,
   similarTrekIds: [],
+  featuredArticleId: null,
   hiddenSharedSections: [],
   sectionOrder: orderTrekSections([]),
   guidesIntro: "",

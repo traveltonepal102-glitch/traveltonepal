@@ -96,6 +96,10 @@ export const trekSchema = z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
       .refine((ids) => ids.length <= MAX_SIMILAR_TREKS, `Pick up to ${MAX_SIMILAR_TREKS} similar treks.`),
+    featuredArticleId: z
+      .string()
+      .transform((value) => value || null)
+      .pipe(z.uuid("Pick the blog post from the list.").nullable()),
     guidesIntro: text(LIMIT.guidesIntro),
     currentSeason: text(LIMIT.currentSeason),
     category: text(LIMIT.category),
@@ -240,6 +244,7 @@ export const readTrekForm = (formData: FormData) => {
     canonicalPath: readText(formData, "canonicalPath"),
     hideFromGoogle: readText(formData, "hideFromGoogle"),
     similarTrekIds: readList(formData, "similarTrekId"),
+    featuredArticleId: readText(formData, "featuredArticleId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     sectionOrder: readList(formData, "sectionOrder"),
     guidesIntro: readText(formData, "guidesIntro"),

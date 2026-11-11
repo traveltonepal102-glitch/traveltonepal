@@ -66,12 +66,22 @@ const toGuide = (row: WebTravelGuideRow, photosBaseUrl: string): HomeGuide => ({
 });
 
 /** Every guide, the featured one first, then the newest. */
-const toAllGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] =>
+export const toAllGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] =>
   rows.toSorted((a, b) => Number(b.is_featured) - Number(a.is_featured) || b.published_on.localeCompare(a.published_on)).map((row) => toGuide(row, photosBaseUrl));
 
 /** The newest guides, whichever is featured: the menu's ten, or every one for the Blogs page. */
 export const toLatestGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string, count = 10): HomeGuide[] =>
   rows.toSorted((a, b) => b.published_on.localeCompare(a.published_on)).slice(0, count).map((row) => toGuide(row, photosBaseUrl));
 
-/** The guides the home page shows. */
-export const toHomeGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] => toAllGuides(rows, photosBaseUrl).slice(0, 5);
+/** How many guides "Read before you go" shows: one large and four beside and under it. */
+const SHOWN_GUIDES = 5;
+
+/**
+ * The guides a trek page shows: the post its trek picked first (the admin's "Blog post shown first"), then the others
+ * in the website's order. A pick that isn't published (any more) is ignored, as if none was made.
+ */
+export const toTrekPageGuides = (allGuides: readonly HomeGuide[], featuredSlug: string | null): HomeGuide[] => {
+  const picked = allGuides.find((guide) => guide.slug === featuredSlug);
+  const ordered = picked ? [picked, ...allGuides.filter((guide) => guide !== picked)] : allGuides;
+  return ordered.slice(0, SHOWN_GUIDES);
+};

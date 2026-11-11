@@ -225,6 +225,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>, videoTitles
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     routeRegionIds: toRouteRegionIds(row.trek_regions),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
+    featuredArticleId: row.featured_article_id,
   };
 };
 
@@ -350,6 +351,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null, si
       map_place: values.mapPlace,
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
+      featured_article_id: values.featuredArticleId ?? "",
       hidden_shared_sections: values.hiddenSharedSections,
       section_order: values.sectionOrder,
       optional_high_point_m: values.optionalHighPointM,
