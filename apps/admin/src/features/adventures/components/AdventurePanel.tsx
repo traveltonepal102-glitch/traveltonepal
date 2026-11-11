@@ -5,30 +5,30 @@ import { cn } from "@ttn/ui/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
-import type { EditorSaveAction } from "@/components/editor/types";
+import type { EditorSaveAction, RemoveState } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 
-import { removeAdventure } from "../actions/removeAdventure";
 import { ADVENTURES_PATH } from "../constants";
 import type { Adventure, AdventureValues } from "../types";
 import { AdventureFields } from "./AdventureFields";
 
 type AdventurePanelProps = {
-  /** saveAdventure bound to this adventure's id (null for a new one). */
+  /** saveAdventure bound to the website and this adventure's id (null for a new one). */
   action: EditorSaveAction;
   /** The saved adventure; null for a new one. */
   adventure: Adventure | null;
   values: AdventureValues;
-  canRemove: boolean;
+  /** removeAdventure bound to the website and this adventure; null for a new one or an admin who can't remove. */
+  removeAction: (() => Promise<RemoveState>) | null;
 };
 
 const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutral: "text-muted-foreground" } as const;
 
 /** Add or edit one adventure in a drawer over the list. One Save sends everything and closes the drawer. */
-export const AdventurePanel = ({ action, adventure, values, canRemove }: AdventurePanelProps) => {
+export const AdventurePanel = ({ action, adventure, values, removeAction }: AdventurePanelProps) => {
   const form = useEditorForm<"adventure">({
     action,
     firstKey: "adventure",
@@ -62,7 +62,7 @@ export const AdventurePanel = ({ action, adventure, values, canRemove }: Adventu
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
-          {adventure && canRemove && <ConfirmRemoveButton name={adventure.title} action={removeAdventure.bind(null, adventure.id)} />}
+          {adventure && removeAction && <ConfirmRemoveButton name={adventure.title} action={removeAction} />}
           <span className="flex-1" />
           <Dialog.Close type="button" className={secondaryButton}>
             Cancel

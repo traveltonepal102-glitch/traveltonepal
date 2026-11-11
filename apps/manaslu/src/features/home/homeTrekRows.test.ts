@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import { toHomeGuideTeam } from "./homeTrekExtras";
 import { toHomeTrek } from "./homeTrekRows";
 
+const EMPTY_DOC = { type: "doc", content: [{ type: "paragraph" }] };
+
 const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 
 const summary = {
@@ -47,6 +49,9 @@ const page = {
   packing_groups: [],
   packing_heading: "",
   packing_intro: "",
+  packing_line: EMPTY_DOC,
+  route_map_line: EMPTY_DOC,
+  months_line: EMPTY_DOC,
   faqs: [{ title: "Trek", icon: "info", items: [{ question: "Is it hard?", answer: doc("Yes.") }, { question: "No answer", answer: doc("") }] }],
   faq_heading: "",
   region_month_ratings: ["avoid", "avoid", "best", "best", "best", "possible", "avoid", "avoid", "best", "best", "best", "possible"],
@@ -81,6 +86,14 @@ describe("the home page's main trek", () => {
     expect(sections).not.toContain("guides");
     expect(sections).not.toContain("route_map");
     expect(sections).not.toContain("field_guide");
+  });
+
+  it("passes on the lines under the packing list's and route map's headings as rich text, links kept", () => {
+    const linked = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Permits", marks: [{ type: "link", attrs: { href: "/permits" } }] }] }] };
+    const result = trek({ packing_line: linked, route_map_line: linked, map_place: "Samagaun" });
+    expect(result.packing.line).toEqual(linked);
+    expect(result.routeMap?.line).toEqual(linked);
+    expect(trek().packing.line.content).toEqual([{ type: "paragraph" }]);
   });
 
   it("shows the company's sections unless the trek hides them", () => {
@@ -141,6 +154,7 @@ describe("the home page's main trek", () => {
     const result = trek();
     expect(result.priceFromUsd).toBe(1280);
     expect(result.itinerary.days.map((day) => day.number)).toEqual([1, 2]);
+    expect(result.itinerary.days.map((day) => day.topPlace)).toEqual(["Arrive", "The pass"]);
     expect(result.faq.items.map((item) => item.question)).toEqual(["Is it hard?"]);
   });
 

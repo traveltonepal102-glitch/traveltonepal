@@ -17,7 +17,7 @@ export const BookingBand = ({ name, shortName }: { name: string; shortName: stri
         </h2>
         <p className="text-on-forest-muted">Get a personal itinerary, packing advice and a confirmed price for your group, straight from our team.</p>
       </div>
-      <div className="flex flex-wrap gap-3">
+      <div className="actions max-sm:w-full">
         <a href={getWhatsAppUrl(`Hello! I would like to book the ${name}.`)} className={whatsAppButton}>
           <WhatsAppLogo />
           Ask on WhatsApp

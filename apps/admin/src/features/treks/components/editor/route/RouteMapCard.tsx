@@ -17,7 +17,7 @@ import { PageHeadingFields } from "../PageHeadingFields";
 import { PdfMapField } from "./PdfMapField";
 
 type RouteMapCardProps = {
-  values: Pick<TrekValues, "mapPlace" | "myMapsId" | "itinerary" | "trekStart" | "trekEnd" | "pdfMapPath" | "routeMapHeading">;
+  values: Pick<TrekValues, "mapPlace" | "myMapsId" | "itinerary" | "trekStart" | "trekEnd" | "pdfMapPath" | "routeMapHeading" | "routeMapLine">;
   /** Where the saved PDF map downloads from (null without one). */
   pdfMapUrl: string | null;
   errors: FieldErrors;
@@ -47,6 +47,7 @@ export const RouteMapCard = ({ values, pdfMapUrl, errors, onEdit }: RouteMapCard
         eyebrow="Route and GPS waypoints"
         level="H2"
         heading={{ name: "routeMapHeading", defaultValue: values.routeMapHeading, placeholder: "Langtang Valley Trek route map", error: errors.routeMapHeading }}
+        richLine={{ name: "routeMapLine", defaultValue: values.routeMapLine, error: errors.routeMapLine, onEdit }}
       />
       <FormSection
         title="Route map"

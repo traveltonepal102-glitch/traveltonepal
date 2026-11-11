@@ -11,6 +11,8 @@ import { PhotoRejectedError, processPhoto } from "./processPhoto";
 type ImportPhotoInput = {
   /** uploads/<uuid>, where the browser put the file. */
   uploadKey: string;
+  /** The website the photo goes to: its library only. */
+  siteId: string;
   regionId: string | null;
   originalName: string;
   createdBy: string;
@@ -35,7 +37,7 @@ const step = async <Result>(message: string, run: () => Promise<Result>) => {
  * publicly, then add the row. Whatever happens, the raw upload is deleted; if saving fails halfway, the files
  * already written are removed again.
  */
-export const importPhoto = async ({ uploadKey, regionId, originalName, createdBy }: ImportPhotoInput): Promise<Photo> => {
+export const importPhoto = async ({ uploadKey, siteId, regionId, originalName, createdBy }: ImportPhotoInput): Promise<Photo> => {
   const storage = await step("The photo storage can't be reached right now. Try again in a moment.", createPhotoStorage);
 
   try {
@@ -60,6 +62,7 @@ export const importPhoto = async ({ uploadKey, regionId, originalName, createdBy
       return await step("The photo was prepared but couldn't be added to the library. Try again in a moment.", () =>
         insertPhoto({
           id,
+          siteId,
           regionId,
           masterKey,
           variantWidths,

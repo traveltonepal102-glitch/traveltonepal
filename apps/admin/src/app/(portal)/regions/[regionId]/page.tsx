@@ -43,7 +43,8 @@ const RegionPage = async ({ params, searchParams }: RegionPageProps) => {
   const [region, treks, guides, regions, { added }] = await Promise.all([
     loadRegion(params),
     listSimilarTrekOptions(MAIN_SITE_ID, null),
-    listTrekkingGuides(),
+    // Regions are Travel To Nepal's: its guides.
+    listTrekkingGuides(MAIN_SITE_ID),
     listRegionOptions(),
     searchParams,
   ]);

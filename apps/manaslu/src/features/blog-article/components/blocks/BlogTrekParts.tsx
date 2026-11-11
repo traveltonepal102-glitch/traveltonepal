@@ -5,10 +5,14 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { AltitudeChart } from "@/features/home/components/AltitudeChart";
 import { ItineraryDayCard } from "@/features/home/components/ItineraryDayCard";
+import { topPlaceOf } from "@/features/home/topPlace";
 import { trekFacts } from "@/features/home/trekFacts";
 import type { HomeDay, HomeTrekCard } from "@/features/home/types";
 
-const toHomeDay = ({ dayNumber, title, subtitle, duration, altitudeM, isHighPoint, body }: GuideDay): HomeDay => ({ number: dayNumber, title, subtitle, duration, altitudeM, isHighPoint, body });
+const toHomeDay = (day: GuideDay): HomeDay => {
+  const { dayNumber, title, subtitle, duration, altitudeM, isHighPoint, body } = day;
+  return { number: dayNumber, title, subtitle, duration, altitudeM, topPlace: topPlaceOf(day), isHighPoint, body };
+};
 
 /** A trek named in the blog, as one link. */
 export const BlogTrekCard = ({ trek }: { trek: HomeTrekCard }) => {

@@ -67,7 +67,7 @@ const Block = ({ block, headingLevel }: { block: RichTextBlock; headingLevel: He
     const [first, ...others] = block.content;
     const hasHead = Boolean(first?.content.every((cell) => cell.type === "tableHeader"));
     return (
-      <div role="group" aria-label="Table, scrolls sideways" tabIndex={0} className="overflow-x-auto rounded-xl border border-solid border-line">
+      <div role="group" aria-label="Table, scrolls sideways" tabIndex={0} className="table-scroll rounded-xl border border-solid border-line">
         <table className="w-full border-collapse text-[15px] leading-[22px]">
           {hasHead && first && (
             <thead className="bg-stone">
@@ -119,7 +119,7 @@ const Block = ({ block, headingLevel }: { block: RichTextBlock; headingLevel: He
 type RichTextProps = {
   doc: RichTextDoc;
   className?: string;
-  /** 4 when the text sits under an h3 (an itinerary day); else its headings are h3. */
+  /** 4 when the text sits under an h3 (an itinerary day, a trek guide topic); else its headings are h3. */
   headingLevel?: HeadingLevel;
 };
 

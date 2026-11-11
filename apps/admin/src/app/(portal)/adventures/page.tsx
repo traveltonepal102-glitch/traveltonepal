@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
+import { removeAdventure } from "@/features/adventures/actions/removeAdventure";
 import { saveAdventure } from "@/features/adventures/actions/saveAdventure";
+import { saveAdventureSection } from "@/features/adventures/actions/saveAdventureSection";
 import { AdventurePanel } from "@/features/adventures/components/AdventurePanel";
 import { AdventuresOverview } from "@/features/adventures/components/AdventuresOverview";
 import { ADVENTURE_LIMITS, EMPTY_ADVENTURE_VALUES, SAVED_NOTICES } from "@/features/adventures/constants";
 import { getAdventureSection, listAdventures } from "@/features/adventures/services/adventuresRepository";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 
 export const metadata: Metadata = { title: ADMIN_SECTIONS.adventures.label };
 
 /**
- * Adventures: the home page's custom adventures section, its words and its cards. "?adventure=<id>" opens a card's
+ * Adventures of the website "Working on" shows (each website has its own): its home page's custom adventures section,
+ * its words and its cards. "?adventure=<id>" opens a card's
  * edit panel beside the list, "?adventure=new" an empty one; "?saved=…" says what the last save did.
  */
 const AdventuresPage = async ({ searchParams }: PageProps<"/adventures">) => {
   const admin = await requireAdmin();
-  const [adventures, section, { adventure: openParam, saved }] = await Promise.all([listAdventures(), getAdventureSection(), searchParams]);
+  const site = await getCurrentSite();
+  if (!site) notFound();
+  const [adventures, section, { adventure: openParam, saved }] = await Promise.all([listAdventures(site.id), getAdventureSection(site.id), searchParams]);
 
   const openId = typeof openParam === "string" ? openParam : null;
   const open = adventures.find((adventure) => adventure.id === openId) ?? null;
@@ -28,10 +35,10 @@ const AdventuresPage = async ({ searchParams }: PageProps<"/adventures">) => {
     <AdventurePanel
       // A fresh form for each card (nothing typed for one carries over to another).
       key={open?.id ?? "new"}
-      action={saveAdventure.bind(null, open?.id ?? null)}
+      action={saveAdventure.bind(null, site.id, open?.id ?? null)}
       adventure={open}
       values={open ?? { ...EMPTY_ADVENTURE_VALUES, position: nextPosition }}
-      canRemove={admin.role === "super_admin"}
+      removeAction={open && admin.role === "super_admin" ? removeAdventure.bind(null, site.id, open.id) : null}
     />
   );
 
@@ -41,6 +48,7 @@ const AdventuresPage = async ({ searchParams }: PageProps<"/adventures">) => {
     <AdventuresOverview
       adventures={adventures}
       section={section}
+      saveSectionAction={saveAdventureSection.bind(null, site.id)}
       openId={open?.id ?? (isAdding ? "new" : null)}
       panel={panel || null}
       savedNotice={panel ? null : savedNotice}

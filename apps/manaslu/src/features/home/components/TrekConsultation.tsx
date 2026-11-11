@@ -16,7 +16,7 @@ export const TrekConsultation = ({ name }: { name: string }) => (
       </p>
       <p className="text-base leading-6.5">Message us on WhatsApp or by email, and someone from our team answers you personally.</p>
     </div>
-    <div className="flex flex-wrap gap-3">
+    <div className="actions">
       <a href={getWhatsAppUrl(`Hello! I have a question about the ${name}.`)} className={whatsAppButton}>
         <WhatsAppLogo />
         Chat on WhatsApp

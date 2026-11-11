@@ -20,7 +20,7 @@ export const BlogMonths = ({ heading, view, months }: BlogMonthsProps) => (
     {view === "strip" ? (
       <MonthTiles ratings={months.ratings} />
     ) : (
-      <div role="group" aria-label="Months, scrolls sideways" tabIndex={0} className="overflow-x-auto rounded-[14px] border border-solid border-line">
+      <div role="group" aria-label="Months, scrolls sideways" tabIndex={0} className="table-scroll rounded-[14px] border border-solid border-line">
         <table className="w-full min-w-120 border-collapse text-[15px] leading-5.5">
           <thead className="bg-stone text-left font-semibold text-ink">
             <tr>

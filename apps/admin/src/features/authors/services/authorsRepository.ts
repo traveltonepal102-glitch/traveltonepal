@@ -21,10 +21,10 @@ const AUTHOR_COLUMNS = `*,
 /** Stored languages as the form knows them (the database checks the same values). */
 const writesInSchema = z.array(z.enum(AUTHOR_LANGUAGE_VALUES)).catch(["en"]);
 
-/** Every author with their English text (the list sorts them by the name shown, see filterAuthors). */
-export const listAuthors = async (): Promise<Author[]> => {
+/** The website's authors (each website has its own) with their English text (the list sorts them by the name shown, see filterAuthors). */
+export const listAuthors = async (siteId: string): Promise<Author[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("authors").select(AUTHOR_COLUMNS).eq("author_translations.locale", AUTHOR_LOCALE);
+  const { data, error } = await supabase.from("authors").select(AUTHOR_COLUMNS).eq("site_id", siteId).eq("author_translations.locale", AUTHOR_LOCALE);
   if (error) throw new Error(`Could not load authors: ${error.message}`);
 
   return data.map((row): Author => {
@@ -52,13 +52,17 @@ export type SaveAuthorResult =
   | { ok: true; authorId: string }
   | { ok: false; reason: "guide_taken" | "guide_not_agreed" | "missing_link" | "not_found" | "forbidden" | "failed" };
 
-/** Adds (authorId null) or updates an author and their English text in one transaction (save_author). */
-export const saveAuthor = async (values: AuthorFormValues, authorId: string | null): Promise<SaveAuthorResult> => {
+/**
+ * Adds (authorId null) an author to the website `siteId`, or updates one (they stay on their website), with their English
+ * text in one transaction (save_author). A trekking guide of another website fails as "missing_link".
+ */
+export const saveAuthor = async (values: AuthorFormValues, authorId: string | null, siteId: string): Promise<SaveAuthorResult> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_author", {
     p_author_id: authorId,
     p_locale: AUTHOR_LOCALE,
     p_author: {
+      site_id: siteId,
       kind: values.kind,
       guide_id: values.guideId ?? "",
       name: values.name,
@@ -85,12 +89,12 @@ export const saveAuthor = async (values: AuthorFormValues, authorId: string | nu
 };
 
 /**
- * Removes an author. "not_removed": no such author, or not allowed (RLS: Super admins only); "has_articles":
- * they wrote travel guides (another author is picked on those first).
+ * Removes one of the website's authors. "not_removed": no such author on this website, or not allowed (RLS: Super admins
+ * only); "has_articles": they wrote travel guides or are the About page's founder (changed there first).
  */
-export const removeAuthor = async (authorId: string): Promise<"removed" | "not_removed" | "has_articles"> => {
+export const removeAuthor = async (authorId: string, siteId: string): Promise<"removed" | "not_removed" | "has_articles"> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("authors").delete().eq("id", authorId).select("id");
+  const { data, error } = await supabase.from("authors").delete().eq("id", authorId).eq("site_id", siteId).select("id");
   if (error?.code === FOREIGN_KEY_VIOLATION) return "has_articles";
   if (error) throw new Error(`Could not remove author ${authorId}: ${error.message}`);
   return data.length > 0 ? "removed" : "not_removed";

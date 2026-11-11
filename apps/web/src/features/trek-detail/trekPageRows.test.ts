@@ -8,6 +8,13 @@ const detail = (page: Parameters<typeof langtangSource>[0] = {}) => toTrekDetail
 const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
 
 describe("toTrekDetail", () => {
+  it("passes on the lines under the packing list's and route map's headings as rich text, links kept", () => {
+    const trek = detail();
+    expect(JSON.stringify(trek.packing.line)).toContain("/travel-guides/langtang-permits");
+    expect(detail({ route_map_line: doc("See the permit guide") }).routeMap.line).toEqual(doc("See the permit guide"));
+    expect(detail({ packing_line: null }).packing.line.content).toEqual([{ type: "paragraph" }]);
+  });
+
   it("maps the Langtang page from its database rows", () => {
     const trek = detail();
     expect(trek).toMatchObject({

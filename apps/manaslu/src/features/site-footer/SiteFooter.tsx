@@ -63,10 +63,10 @@ export const SiteFooter = async () => {
             )}
           </div>
           {COLUMNS.map((column) => (
-            <nav key={column.title} aria-label={column.title} className="flex flex-[1_1_150px] flex-col gap-2">
+            <nav key={column.title} aria-label={column.title} className="flex flex-[1_1_150px] flex-col sm:gap-2">
               <span className="text-eyebrow font-semibold tracking-[0.12em] text-saffron uppercase">{column.title}</span>
               {column.links.map((link) => (
-                <Link key={link.label} href={link.href} className="py-0.5 text-on-forest-muted no-underline hover:text-snow">
+                <Link key={link.label} href={link.href} className="py-2 text-on-forest-muted no-underline hover:text-snow sm:py-0.5">
                   {link.label}
                 </Link>
               ))}
@@ -92,7 +92,7 @@ export const SiteFooter = async () => {
           {social.length > 0 && (
             <span className="flex flex-wrap gap-4">
               {social.map((link) => (
-                <a key={link.label} href={link.href} rel="noopener noreferrer" className="inline-flex min-h-6 items-center text-on-forest-muted hover:text-snow">
+                <a key={link.label} href={link.href} rel="noopener noreferrer" className="inline-flex min-h-10 items-center text-on-forest-muted hover:text-snow sm:min-h-6">
                   {link.label}
                 </a>
               ))}

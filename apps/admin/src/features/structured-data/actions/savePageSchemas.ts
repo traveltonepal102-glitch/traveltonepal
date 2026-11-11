@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { STRUCTURED_DATA_PATH, pageSchemasPath } from "../constants";
 import { toPageRef } from "../lib/pageRef";
@@ -23,14 +24,17 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Saves one page's JSON-LD blocks. The page (kind, key) comes from the browser (bound arguments), so it is checked
- * here. Only a Super admin may save (checked here and by Row Level Security).
+ * Saves one page's JSON-LD blocks on the website `siteId`. The website and the page (kind, key) come from the browser
+ * (bound arguments), so they are checked here: the save is refused when "Working on" changed since, and the database
+ * refuses another website's page. Only a Super admin may save (checked here and by Row Level Security).
  */
-export const savePageSchemas = async (kind: string, key: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const savePageSchemas = async (siteId: string, kind: string, key: string, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   const admin = await requireAdmin();
   if (admin.role !== "super_admin") return failure(FAILURE_MESSAGES.forbidden);
   const page = toPageRef(kind, key);
   if (!page) return failure(FAILURE_MESSAGES.not_found);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = pageSchemasSchema.safeParse(readPageSchemasForm(formData));
   if (!parsed.success) {
@@ -39,10 +43,10 @@ export const savePageSchemas = async (kind: string, key: string, _previous: Edit
     return failure(`${count} schema field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const result = await savePageSchemasToDatabase(page, parsed.data.schemas);
+  const result = await savePageSchemasToDatabase(page, parsed.data.schemas, siteId);
   if (!result.ok) return failure(FAILURE_MESSAGES[result.reason]);
 
-  refreshWebsite([WEBSITE_CACHE_TAGS.structuredData]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.structuredData]);
   revalidatePath(STRUCTURED_DATA_PATH);
   revalidatePath(pageSchemasPath(page));
   return { status: "saved" };

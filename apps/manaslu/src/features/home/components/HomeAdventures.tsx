@@ -8,7 +8,7 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { HomeAdventures as HomeAdventuresSection } from "../types";
 
-/** The adventure section shared by all the websites (admin › Adventures), and the card to ask for your own idea. Hidden while it has no cards. */
+/** This website's own adventure section (admin › Adventures, each website has its own), and the card to ask for your own idea. Hidden while it has no cards. */
 export const HomeAdventures = ({ section }: { section: HomeAdventuresSection }) =>
   section.cards.length > 0 && (
     <section aria-labelledby="adventures-h" className="wrap flex flex-col gap-7 pt-22 max-md:pt-14">

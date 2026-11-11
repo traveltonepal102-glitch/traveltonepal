@@ -29,14 +29,20 @@
 
   --text-eyebrow: 13px;
   --text-eyebrow--line-height: 18px;
-  --text-h1: 48px;
-  --text-h1--line-height: 54px;
-  --text-h2: 36px;
-  --text-h2--line-height: 42px;
-  --text-h3: 22px;
-  --text-h3--line-height: 28px;
+  /* Headings grow with the screen, from a phone (375px) to a laptop (1024px), instead of jumping at one width. */
+  --text-h1: clamp(34px, 2.6vw + 24px, 48px);
+  --text-h1--line-height: 1.15;
+  --text-h2: clamp(28px, 1.6vw + 22px, 36px);
+  --text-h2--line-height: 1.18;
+  --text-h3: clamp(20px, 0.4vw + 18.5px, 22px);
+  --text-h3--line-height: 1.28;
   --text-body: 17px;
   --text-body--line-height: 27px;
+}
+
+/* The space between the screen's edge and the content: 16px on a phone, growing to 24px. The header lines up with it. */
+:root {
+  --gutter: clamp(16px, 4vw, 24px);
 }
 
 /* The page's width and side gutters. */
@@ -44,9 +50,41 @@
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
-  padding-inline: 24px;
-  @media (max-width: 700px) {
-    padding-inline: 16px;
+  padding-inline: var(--gutter);
+}
+
+/*
+ * A row of buttons. Below Tailwind's sm (640px) they stack, each as wide as the column: easy to tap, and no ragged rows.
+ * A group that pairs small buttons on a phone sets max-sm:grid-cols-2 and spans the wide ones (max-sm:col-span-2).
+ */
+@utility actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  @media (width < 40rem) {
+    display: grid;
+    align-items: stretch;
+  }
+}
+
+/*
+ * The box around a table. A table of four or more columns keeps its cells readable and scrolls sideways when the
+ * screen is too narrow, instead of breaking words onto one line each; a shadow at an edge shows there is more.
+ */
+@utility table-scroll {
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--color-snow) 30%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--color-snow) 30%, transparent) right / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(23 36 30 / 0.16), transparent) left / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(23 36 30 / 0.16), transparent) right / 12px 100% no-repeat scroll;
+  background-color: var(--color-snow);
+  & table:has(tr > :nth-child(4)) :is(th, td) {
+    min-width: 7rem;
+  }
+  & table:has(tr > :nth-child(4)) :is(th, td):first-child {
+    min-width: 4.5rem;
   }
 }
 

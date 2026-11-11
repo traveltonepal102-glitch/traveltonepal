@@ -11,6 +11,7 @@ import { formatAltitude, formatDays } from "@/lib/format";
 import { ROUTES, pagePath } from "@/lib/routes";
 
 import { toHomeFieldGuide, toHomeGuideTeam, toHomeMeals, toHomeRouteMap } from "./homeTrekExtras";
+import { topPlaceOf } from "./topPlace";
 import type { HomeFact, HomeSectionKey, HomeTrek, HomeTrekCard } from "./types";
 
 const DIFFICULTY: Record<WebTrekRow["difficulty"], string> = { easy: "Easy", moderate: "Moderate", challenging: "Challenging", strenuous: "Strenuous" };
@@ -105,6 +106,7 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     subtitle: day.subtitle,
     duration: day.duration || undefined,
     altitudeM: day.altitude_m,
+    topPlace: topPlaceOf({ title: day.title, place: day.place, highPlace: day.high_place, sleepAltitudeM: day.sleep_altitude_m }),
     isHighPoint: day.is_high_point,
     body: toRichTextDoc(day.description),
   }));
@@ -132,8 +134,8 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     inclusions: { heading: firstText(page.inclusions_heading) ?? "What’s included", included: readPoints(page.included), excluded: readPoints(page.excluded) },
     meals: page.hidden_shared_sections.includes("meals") ? null : toHomeMeals(page),
     routeMap: toHomeRouteMap(page, pdfMapUrl, shortName),
-    months: ratings && { heading: `Best months for the ${shortName}`, ratings },
-    packing: { heading: firstText(page.packing_heading) ?? "Packing list", intro: page.packing_intro.trim(), groups: readPackingGroups(page.packing_groups).map(({ title, items }) => ({ title, items })) },
+    months: ratings && { heading: `Best months for the ${shortName}`, line: toRichTextDoc(page.months_line), ratings },
+    packing: { heading: firstText(page.packing_heading) ?? "Packing list", line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups).map(({ title, items }) => ({ title, items })) },
     fieldGuide: toHomeFieldGuide(page, summary.name, photosBaseUrl),
     faq: {
       heading: firstText(page.faq_heading) ?? `Questions about the ${shortName}`,

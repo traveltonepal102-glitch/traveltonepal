@@ -25,6 +25,7 @@ import { VideosCard } from "./photos/VideosCard";
 import { PhotoBadgesCard } from "./PhotoBadgesCard";
 import { PackingListCard } from "./practical/PackingListCard";
 import { GroupPricesCard } from "./prices/GroupPricesCard";
+import { MonthsLineCard } from "./prices/MonthsLineCard";
 import { StartDateCard } from "./prices/StartDateCard";
 import { ElevationCard } from "./route/ElevationCard";
 import { RouteMapCard } from "./route/RouteMapCard";
@@ -193,13 +194,14 @@ export const TrekSectionPanels = ({
         />
         <GroupPricesCard prices={values.groupPrices} errors={errors} onEdit={onEdit} />
         <StartDateCard regions={routeRegions} />
+        <MonthsLineCard values={values} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("packing")}>
         <PageHeadingFields
           eyebrow="Gear and essentials"
           level="H2"
           heading={{ name: "packingHeading", defaultValue: values.packingHeading, placeholder: "Langtang Trek packing list", error: errors.packingHeading }}
-          line={{ name: "packingIntro", defaultValue: values.packingIntro, placeholder: "Tested gear for the valley: −10 °C nights to 25 °C days in the forest.", maxLength: LIMIT.packingIntro, error: errors.packingIntro }}
+          richLine={{ name: "packingLine", defaultValue: values.packingLine, error: errors.packingLine, onEdit }}
         />
         <PackingListCard groups={values.packingGroups} errors={errors} onEdit={onEdit} />
       </div>

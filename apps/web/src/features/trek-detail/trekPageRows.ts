@@ -160,8 +160,9 @@ export const toTrekDetail = (
       myMapsId: page.my_maps_id ?? undefined,
       // The database only takes pdf-maps/<uuid>.pdf, so the path is safe to add to the address.
       pdfUrl: page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined,
+      line: toRichTextDoc(page.route_map_line),
     },
-    packing: { intro: page.packing_intro.trim(), groups: readPackingGroups(page.packing_groups) },
+    packing: { line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups) },
     fieldGuide: {
       heading: firstText(page.know_heading) ?? `${summary.name} guide: best season, facilities and safety`,
       intro: page.know_intro.trim(),

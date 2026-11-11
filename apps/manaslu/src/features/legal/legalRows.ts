@@ -50,7 +50,7 @@ const cookieTable = () =>
     ["Name", "Purpose", "Stored for"],
     [
       [CONSENT_STORAGE_KEY, "Remembers your choice on this page (stored in your browser, not a cookie)", CONSENT_MAX_AGE_LABEL],
-      ["Google Maps", "The interactive route map (only with your consent or after you click to load it)", "Set by Google"],
+      ["Google Maps", "The route maps on trek pages and in blogs (they load with the page); the office map on the Contact page only with your consent or after you click to load it", "Set by Google"],
     ],
   );
 

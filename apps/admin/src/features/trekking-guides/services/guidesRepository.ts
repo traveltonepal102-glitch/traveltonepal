@@ -33,11 +33,11 @@ const trekNames = async () => {
   return new Map(data.map((trek) => [trek.id, trek.trek_translations[0]?.name ?? ""]));
 };
 
-/** Every guide with its English text, A–Z. Throws when the database can't be read. */
-export const listTrekkingGuides = async (): Promise<TrekkingGuide[]> => {
+/** The website's guides (each website has its own) with their English text, A–Z. Throws when the database can't be read. */
+export const listTrekkingGuides = async (siteId: string): Promise<TrekkingGuide[]> => {
   const supabase = await createSupabaseServerClient();
   const [{ data, error }, names] = await Promise.all([
-    supabase.from("trekking_guides").select(GUIDE_COLUMNS).eq("trekking_guide_translations.locale", GUIDE_LOCALE),
+    supabase.from("trekking_guides").select(GUIDE_COLUMNS).eq("site_id", siteId).eq("trekking_guide_translations.locale", GUIDE_LOCALE),
     trekNames(),
   ]);
   if (error) throw new Error(`Could not load trekking guides: ${error.message}`);
@@ -79,13 +79,14 @@ export const listTrekkingGuides = async (): Promise<TrekkingGuide[]> => {
 
 export type SaveGuideResult = { ok: true; guideId: string } | { ok: false; reason: "missing_link" | "not_found" | "forbidden" | "failed" };
 
-/** Adds (guideId null) or updates a guide, its English text and its regions in one transaction. */
-export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId: string | null): Promise<SaveGuideResult> => {
+/** Adds (guideId null) a guide to the website `siteId`, or updates one (it stays on its website), with its English text and regions in one transaction. */
+export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId: string | null, siteId: string): Promise<SaveGuideResult> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_trekking_guide", {
     p_guide_id: guideId,
     p_locale: GUIDE_LOCALE,
     p_guide: {
+      site_id: siteId,
       name: values.name,
       photo_id: values.photoId ?? "",
       photo_consent: values.photoConsent,
@@ -118,12 +119,12 @@ export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId
 };
 
 /**
- * Removes a guide (and takes it off every trek). "not_removed": no such guide, or not allowed (RLS);
- * "in_use": the guide is an author, checks a travel guide, or is shown in one (changed there first).
+ * Removes one of the website's guides (and takes it off every trek). "not_removed": no such guide on this website, or not
+ * allowed (RLS); "in_use": the guide is an author, checks a travel guide, or is shown in one (changed there first).
  */
-export const removeTrekkingGuide = async (guideId: string): Promise<"removed" | "not_removed" | "in_use"> => {
+export const removeTrekkingGuide = async (guideId: string, siteId: string): Promise<"removed" | "not_removed" | "in_use"> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("trekking_guides").delete().eq("id", guideId).select("id");
+  const { data, error } = await supabase.from("trekking_guides").delete().eq("id", guideId).eq("site_id", siteId).select("id");
   if (error?.code === FOREIGN_KEY_VIOLATION) return "in_use";
   if (error) throw new Error(`Could not remove guide ${guideId}: ${error.message}`);
   return data.length > 0 ? "removed" : "not_removed";

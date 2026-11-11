@@ -20,12 +20,13 @@ const toSteps = (value: unknown) => {
   return [...steps, ...Array.from({ length: STEP_COUNT - steps.length }, () => ({ title: "", text: "" }))];
 };
 
-/** Every card, in carousel order. Throws when the database can't be read. */
-export const listAdventures = async (): Promise<Adventure[]> => {
+/** The website's cards (each website has its own), in carousel order. Throws when the database can't be read. */
+export const listAdventures = async (siteId: string): Promise<Adventure[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("adventures")
     .select(`*, photo:photos!adventures_photo_id_fkey(${PHOTO_COLUMNS})`)
+    .eq("site_id", siteId)
     .order("position")
     .order("title");
   if (error) throw new Error(`Could not load adventures: ${error.message}`);
@@ -43,10 +44,10 @@ export const listAdventures = async (): Promise<Adventure[]> => {
   }));
 };
 
-/** The section's words. Throws when the database can't be read or the row is missing. */
-export const getAdventureSection = async (): Promise<AdventureSectionValues> => {
+/** The website's section words (one row each, made with the website). Throws when the database can't be read or the row is missing. */
+export const getAdventureSection = async (siteId: string): Promise<AdventureSectionValues> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("adventure_section").select("*").single();
+  const { data, error } = await supabase.from("adventure_section").select("*").eq("site_id", siteId).single();
   if (error) throw new Error(`Could not load the adventures section: ${error.message}`);
   return {
     eyebrow: data.eyebrow,
@@ -60,10 +61,11 @@ export const getAdventureSection = async (): Promise<AdventureSectionValues> => 
   };
 };
 
-/** Saves the section's words (save_adventure_section). False when the save failed. */
-export const saveAdventureSection = async (values: AdventureSectionValues): Promise<boolean> => {
+/** Saves the website's section words (save_adventure_section). False when the save failed. */
+export const saveAdventureSection = async (values: AdventureSectionValues, siteId: string): Promise<boolean> => {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc("save_adventure_section", {
+    p_site_id: siteId,
     p_section: {
       eyebrow: values.eyebrow,
       heading: values.heading,
@@ -81,12 +83,13 @@ export const saveAdventureSection = async (values: AdventureSectionValues): Prom
 
 export type SaveAdventureResult = { ok: true; adventureId: string } | { ok: false; reason: "missing_photo" | "not_found" | "forbidden" | "failed" };
 
-/** Adds (adventureId null) or updates a card (save_adventure). */
-export const saveAdventure = async (values: AdventureValues, adventureId: string | null): Promise<SaveAdventureResult> => {
+/** Adds (adventureId null) a card to the website `siteId`, or updates one of its cards (save_adventure); a photo of another website is "missing_photo". */
+export const saveAdventure = async (values: AdventureValues, adventureId: string | null, siteId: string): Promise<SaveAdventureResult> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_adventure", {
     p_adventure_id: adventureId,
     p_adventure: {
+      site_id: siteId,
       title: values.title,
       tag: values.tag,
       summary: values.summary,
@@ -104,10 +107,10 @@ export const saveAdventure = async (values: AdventureValues, adventureId: string
   return { ok: false, reason: "failed" };
 };
 
-/** Removes a card. False: no such card, or not allowed (RLS: Super admins only). */
-export const removeAdventure = async (adventureId: string): Promise<boolean> => {
+/** Removes one of the website's cards. False: no such card on this website, or not allowed (RLS: Super admins only). */
+export const removeAdventure = async (adventureId: string, siteId: string): Promise<boolean> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("adventures").delete().eq("id", adventureId).select("id");
+  const { data, error } = await supabase.from("adventures").delete().eq("id", adventureId).eq("site_id", siteId).select("id");
   if (error) throw new Error(`Could not remove adventure ${adventureId}: ${error.message}`);
   return data.length > 0;
 };

@@ -182,8 +182,8 @@ export type TrekValues = {
   mapPlace: string;
   /** From a Google My Maps share link: the map then draws the GPS trail. */
   myMapsId: string | null;
-  /** One line above the packing cards, e.g. "Tested gear for the valley: −10 °C nights…". */
-  packingIntro: string;
+  /** The line under the packing list's heading, rich text so it can link to other pages, e.g. "Tested gear for the valley…". */
+  packingLine: RichTextDoc;
   packingGroups: PackingGroup[];
   /** "Frequently asked questions": topics in order, each with its questions. */
   faqs: FaqTopic[];
@@ -240,6 +240,10 @@ export type TrekValues = {
   /** Next to the altitude chart, e.g. "You sleep no higher than 3,870 m …". */
   elevationNote: string;
   routeMapHeading: string;
+  /** The line under the route map's heading (rich text, links welcome); empty shows none. */
+  routeMapLine: RichTextDoc;
+  /** The line under the best months' heading (rich text, links welcome); empty shows none. */
+  monthsLine: RichTextDoc;
   trekStart: string;
   trekEnd: string;
   pricingHeading: string;

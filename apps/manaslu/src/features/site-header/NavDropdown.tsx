@@ -1,6 +1,5 @@
 "use client";
 
-import type { SiteImageSource } from "@ttn/site-data/images";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -8,17 +7,13 @@ import { useEffect, useId, useRef, useState } from "react";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 
+import type { NavMenu } from "./types";
+
 const ONE_COLUMN_PANEL = "left-0 w-100 max-sm:fixed max-sm:inset-x-4 max-sm:top-auto max-sm:w-auto";
 /** Centred under its button where the menu has one row, as wide as the screen where it hasn't (the button may sit near an edge). */
 const TWO_COLUMN_PANEL = "lg:left-1/2 lg:w-190 lg:-translate-x-1/2 max-lg:fixed max-lg:inset-x-4 max-lg:top-auto";
 
-type NavDropdownProps = {
-  label: string;
-  items: readonly { href: string; title: string; text?: string; image?: SiteImageSource }[];
-  /** The last link, under the list. */
-  more: { href: string; label: string };
-  /** A small title above the list, saying what it is. */
-  heading?: string;
+type NavDropdownProps = NavMenu & {
   /** Wider, the list running down one column and then the other; one column on a phone. */
   hasTwoColumns?: boolean;
 };
@@ -66,7 +61,7 @@ export const NavDropdown = ({ label, items, more, heading, hasTwoColumns = false
         aria-expanded={isOpen}
         aria-controls={isOpen ? panelId : undefined}
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent whitespace-nowrap text-ink hover:text-forest"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-0 bg-transparent whitespace-nowrap text-snow hover:text-saffron"
       >
         {label}
         <TrailIcon name="chevron" size={14} className={isOpen ? "rotate-180" : ""} />

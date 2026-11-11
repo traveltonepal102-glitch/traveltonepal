@@ -36,6 +36,8 @@ type RegionRow = {
 
 type PhotoRow = {
   id: string;
+  /** The website the photo belongs to (sites.id): only its own pages show it. */
+  site_id: string;
   region_id: string | null;
   master_key: string;
   variant_widths: number[];
@@ -132,7 +134,11 @@ type TrekTranslationRow = {
   excluded: Json;
   meal_trail_tips: Json;
   meal_teahouse_notes: Json;
+  /** Retired for packing_line (20261112100000): no longer read or written. */
   packing_intro: string;
+  packing_line: Json;
+  route_map_line: Json;
+  months_line: Json;
   /** [{ title, icon, items: [{ title, text }] }] */
   packing_groups: Json;
   /** [{ title, icon, items: [{ question, answer }] }] */
@@ -194,6 +200,8 @@ export type GuideBadgeValue = "local" | "culture" | "solo" | "rescue" | "family"
 
 type TrekkingGuideRow = {
   id: string;
+  /** The website the guide works for (sites.id); never changes. */
+  site_id: string;
   name: string;
   photo_id: string | null;
   /** The guide agreed that we show their photo and name. */
@@ -249,7 +257,8 @@ export type ReviewRow = {
 
 /** The home page's custom adventures section, one row (supabase/migrations/20261028110000_custom_adventures.sql). */
 export type AdventureSectionRow = {
-  id: boolean;
+  /** One row per website (sites.id), made with the website. */
+  site_id: string;
   eyebrow: string;
   heading: string;
   intro: string;
@@ -266,6 +275,8 @@ export type AdventureSectionRow = {
 /** One custom adventure card. */
 export type AdventureRow = {
   id: string;
+  /** The website whose home page shows the card (sites.id); never changes. */
+  site_id: string;
   title: string;
   tag: string;
   summary: string;
@@ -314,7 +325,7 @@ export type SiteRow = {
 /** One custom JSON-LD block on a page (supabase/migrations/20261029155000_page_schemas.sql): exactly one page column is set. */
 export type PageSchemaRow = {
   id: string;
-  /** The main site for now ('ttn'); a fixed page's schemas belong to that site's page. */
+  /** The website of the page: a fixed page's, a trek's or a travel guide's (regions are the main site's). */
   site_id: string;
   site_page_slug: SitePageSlug | null;
   trek_id: string | null;
@@ -411,6 +422,8 @@ type SitePagePhotoRow = { site_id: string; page_slug: SitePageSlug; position: nu
 
 type AuthorRow = {
   id: string;
+  /** The website the author writes for (sites.id); never changes. */
+  site_id: string;
   kind: AuthorKindValue;
   /** Only for kind "guide". */
   guide_id: string | null;
@@ -1096,7 +1109,7 @@ export type Database = {
         Returns: undefined;
       };
       save_adventure_section: {
-        Args: { p_section: Json };
+        Args: { p_section: Json; p_site_id: string };
         Returns: undefined;
       };
       save_adventure: {
@@ -1112,7 +1125,7 @@ export type Database = {
         Returns: undefined;
       };
       save_page_schemas: {
-        Args: { p_page_kind: "page" | "trek" | "region" | "guide"; p_page_key: string; p_schemas: Json };
+        Args: { p_page_kind: "page" | "trek" | "region" | "guide"; p_page_key: string; p_schemas: Json; p_site_id: string };
         Returns: undefined;
       };
       contact_click_totals: {
@@ -1132,11 +1145,11 @@ export type Database = {
         Returns: { photo_id: string; kind: string; item_id: string; item_label: string; detail: string }[];
       };
       search_library_photos: {
-        Args: { p_query?: string; p_region_id?: string; p_trek_id?: string; p_limit?: number; p_offset?: number };
+        Args: { p_query?: string; p_region_id?: string; p_trek_id?: string; p_limit?: number; p_offset?: number; p_site_id: string };
         Returns: (PickerPhotoRow & { use_count: number })[];
       };
       photos_named: {
-        Args: { p_names: string[] };
+        Args: { p_names: string[]; p_site_id: string };
         Returns: PickerPhotoRow[];
       };
       delete_unused_photo: {

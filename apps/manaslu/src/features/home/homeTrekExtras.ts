@@ -4,6 +4,7 @@ import { googleMapLinks } from "@ttn/site-data/googleMapLinks";
 import { certBadgeOf, certificationsOf } from "@ttn/site-data/guideCredentials";
 import { firstText } from "@ttn/site-data/rowText";
 import { readKnowTopics, readPoints } from "@ttn/site-data/trekPageJson";
+import { toRichTextDoc } from "@ttn/ui/lib/richText";
 
 import type { HomeTrek } from "./types";
 
@@ -42,7 +43,7 @@ export const toHomeRouteMap = (page: WebTrekPageRow, pdfUrl: string | undefined,
   const myMapsId = page.my_maps_id?.trim() || undefined;
   const place = page.map_place?.trim() ?? "";
   if (!myMapsId && !place) return null;
-  return { heading: firstText(page.route_map_heading) ?? `${shortName} route map`, pdfUrl, ...googleMapLinks({ place, myMapsId }) };
+  return { heading: firstText(page.route_map_heading) ?? `${shortName} route map`, line: toRichTextDoc(page.route_map_line), pdfUrl, ...googleMapLinks({ place, myMapsId }) };
 };
 
 /** What meals cost and how they work on the trail; null when the trek says nothing about it. */

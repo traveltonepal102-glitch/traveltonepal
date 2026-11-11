@@ -2,6 +2,7 @@ import { Icon } from "@ttn/ui/icon";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import type { EditorSaveState } from "@/components/editor/types";
 import { primaryButton } from "@/components/ui/buttonStyles";
 
 import { NEW_ADVENTURE_PATH } from "../constants";
@@ -12,6 +13,8 @@ import { SectionTextCard } from "./SectionTextCard";
 type AdventuresOverviewProps = {
   adventures: Adventure[];
   section: AdventureSectionValues;
+  /** saveAdventureSection bound to the website. */
+  saveSectionAction: (previous: EditorSaveState, formData: FormData) => Promise<EditorSaveState>;
   /** The adventure whose panel is open ("new" while adding). */
   openId: string | null;
   /** The edit drawer, when one is open (it shows over the list). */
@@ -21,7 +24,7 @@ type AdventuresOverviewProps = {
 };
 
 /** The Adventures screen: the section's words, then every card in carousel order, and the edit drawer. */
-export const AdventuresOverview = ({ adventures, section, openId, panel, savedNotice }: AdventuresOverviewProps) => {
+export const AdventuresOverview = ({ adventures, section, saveSectionAction, openId, panel, savedNotice }: AdventuresOverviewProps) => {
   const onWebsite = adventures.filter((adventure) => adventure.isShown).length;
 
   return (
@@ -52,7 +55,7 @@ export const AdventuresOverview = ({ adventures, section, openId, panel, savedNo
           {savedNotice} The website shows the change within seconds.
         </p>
       )}
-      <SectionTextCard values={section} />
+      <SectionTextCard values={section} saveAction={saveSectionAction} />
 
       <ul className="m-0 grid list-none gap-3.5 p-0 tablet:grid-cols-2 desktop:grid-cols-3">
         {adventures.map((adventure) => (

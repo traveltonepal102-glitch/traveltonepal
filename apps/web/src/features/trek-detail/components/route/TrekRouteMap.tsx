@@ -1,6 +1,8 @@
 import { Icon } from "@ttn/ui/icon";
+import { isRichTextEmpty } from "@ttn/ui/lib/richText";
 import Link from "next/link";
 
+import { RichText } from "@/components/shared/RichText";
 import { ROUTES } from "@/lib/routes";
 
 import { googleMapLinks } from "../../routeMap";
@@ -28,7 +30,9 @@ export const TrekRouteMap = ({ heading, name, routeMap, itinerary }: TrekRouteMa
   return (
     <section id={TREK_SECTION_IDS.routeMap} aria-labelledby="trek-route-map-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SectionHeading id="trek-route-map-title" eyebrow="Route and GPS waypoints" title={heading} />
+        <SectionHeading id="trek-route-map-title" eyebrow="Route and GPS waypoints" title={heading}>
+          {!isRichTextEmpty(routeMap.line) && <RichText doc={routeMap.line} className="flex flex-col gap-2" />}
+        </SectionHeading>
         <div className="flex flex-none flex-wrap gap-2 self-start">
           <a href={links.openUrl} target="_blank" rel="noopener noreferrer" className={MAP_LINK}>
             <Icon name="open_in_new" size={16} className="text-brand" />

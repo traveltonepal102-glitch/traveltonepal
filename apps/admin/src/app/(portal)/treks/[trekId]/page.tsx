@@ -43,9 +43,13 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
   const admin = await requireAdmin();
   const canDelete = admin.role === "super_admin";
   const { trekId } = await params;
-  const [trek, site, regions, guides] = await Promise.all([loadTrek(params), getCurrentSite(), listRegionOptions(), listTrekkingGuides()]);
+  const [trek, site, regions] = await Promise.all([loadTrek(params), getCurrentSite(), listRegionOptions()]);
   if (trek.siteId !== site?.id) redirect(TREKS_PATH);
-  const [similarOptions, usage] = await Promise.all([listSimilarTrekOptions(trek.siteId, trekId), canDelete ? getTrekUsage(trek.id) : []]);
+  const [similarOptions, guides, usage] = await Promise.all([
+    listSimilarTrekOptions(trek.siteId, trekId),
+    listTrekkingGuides(trek.siteId),
+    canDelete ? getTrekUsage(trek.id) : [],
+  ]);
   // A topic's photo can be any library photo, not only the trek's: loaded for its preview.
   const topicPhotos = await listPhotosByIds(trek.knowTopics.flatMap((topic) => (topic.photoId ? [topic.photoId] : [])));
   const today = todayInNepal();

@@ -3,6 +3,7 @@
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 
 import { PHOTO_LIMITS } from "../constants";
 import { importPhoto, PhotoImportError } from "../services/importPhoto";
@@ -20,14 +21,16 @@ export type FinishPhotoUploadInput = z.input<typeof inputSchema>;
 
 export type FinishPhotoUploadResult = { ok: true; photo: Photo } | { ok: false; message: string };
 
-/** Step 2 of an upload: process the file the browser sent and add it to the photo library. */
+/** Step 2 of an upload: process the file the browser sent and add it to the photo library of the website "Working on" shows. */
 export const finishPhotoUpload = async (input: FinishPhotoUploadInput): Promise<FinishPhotoUploadResult> => {
   const admin = await requireAdmin();
   const parsed = inputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, message: "This upload can't be used. Try adding the photo again." };
+  const site = await getCurrentSite();
+  if (!site) return { ok: false, message: "There is no website to add the photo to. Reload the page." };
 
   try {
-    return { ok: true, photo: await importPhoto({ ...parsed.data, createdBy: admin.id }) };
+    return { ok: true, photo: await importPhoto({ ...parsed.data, siteId: site.id, createdBy: admin.id }) };
   } catch (error) {
     if (error instanceof PhotoRejectedError) return { ok: false, message: error.message };
     console.error("finishPhotoUpload failed:", error instanceof PhotoImportError ? error.cause : error);

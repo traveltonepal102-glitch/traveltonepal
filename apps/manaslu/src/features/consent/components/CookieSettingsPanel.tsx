@@ -70,7 +70,7 @@ export const CookieSettingsPanel = () => {
         <ConsentRow name="Necessary" text="Keeps the site working and remembers this choice. Always on." isOn />
         <ConsentRow
           name="External media"
-          text="Google Maps. It sends data to Google when it loads, so without this each map asks first."
+          text="The office map on the Contact page, and videos and embeds in blogs. They send data to Google or another service when they load, so without this each one asks first. Route maps on trek pages always load."
           isOn={shown.externalMedia}
           onToggle={() => {
             setDraft({ analytics: false, externalMedia: !shown.externalMedia });

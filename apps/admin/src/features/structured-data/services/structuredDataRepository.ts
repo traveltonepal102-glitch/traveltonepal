@@ -1,13 +1,12 @@
 import "server-only";
 
-import { MAIN_SITE_ID } from "@ttn/config/sites";
-
 import { REGION_LOCALE } from "@/features/regions/constants";
+import type { Site } from "@/features/sites/types";
 import { ARTICLE_LOCALE } from "@/features/travel-guides/constants";
 import { TREK_LOCALE } from "@/features/treks/constants";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { FIXED_PAGES, itemWebsitePath } from "../constants";
+import { fixedPagesFor, itemWebsitePath } from "../constants";
 import { pageColumn } from "../lib/pageRef";
 import { formatSchemaJson } from "../lib/schemaJson";
 import type { PageRef, SchemaBlock, SchemaBlockValues, SchemaPage } from "../types";
@@ -40,15 +39,24 @@ const toSchemaPage = (ref: PageRef, name: string, websitePath: string, status: s
   ...(counts.get(countKey(ref)) ?? { schemaCount: 0, shownCount: 0 }),
 });
 
-/** Every page that can have schemas: fixed pages first, then treks, regions and guides A–Z. Throws on a database error. */
-export const listSchemaPages = async (): Promise<SchemaPage[]> => {
+/** Regions are the main site's pages; a region website has none. */
+const listRegionRows = async (site: Site) => {
+  if (site.kind !== "main") return { data: [], error: null };
+  const supabase = await createSupabaseServerClient();
+  return supabase.from("regions").select("id, slug, region_translations!inner(name)").eq("region_translations.locale", REGION_LOCALE);
+};
+
+/**
+ * Every page of the website that can have schemas (each website has its own): fixed pages first, then treks, regions
+ * (the main site's) and guides A–Z. Throws on a database error.
+ */
+export const listSchemaPages = async (site: Site): Promise<SchemaPage[]> => {
   const supabase = await createSupabaseServerClient();
   const [schemas, treks, regions, articles] = await Promise.all([
-    supabase.from("page_schemas").select("site_page_slug, trek_id, region_id, article_id, is_shown"),
-    // Structured data is Travel To Nepal's only (not in a region website's menu).
-    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("site_id", MAIN_SITE_ID).eq("trek_translations.locale", TREK_LOCALE),
-    supabase.from("regions").select("id, slug, region_translations!inner(name)").eq("region_translations.locale", REGION_LOCALE),
-    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("site_id", MAIN_SITE_ID).eq("article_translations.locale", ARTICLE_LOCALE),
+    supabase.from("page_schemas").select("site_page_slug, trek_id, region_id, article_id, is_shown").eq("site_id", site.id),
+    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("site_id", site.id).eq("trek_translations.locale", TREK_LOCALE),
+    listRegionRows(site),
+    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("site_id", site.id).eq("article_translations.locale", ARTICLE_LOCALE),
   ]);
   if (schemas.error || treks.error || regions.error || articles.error) {
     const error = schemas.error ?? treks.error ?? regions.error ?? articles.error;
@@ -63,26 +71,29 @@ export const listSchemaPages = async (): Promise<SchemaPage[]> => {
   }
 
   const byName = (a: SchemaPage, b: SchemaPage) => a.name.localeCompare(b.name);
+  // A region website's main trek is its Home: its page is "/" (its own address moves there).
+  const trekPath = (id: string, slug: string) => (id === site.homeTrekId ? "/" : itemWebsitePath("trek", slug, site.kind));
   return [
-    ...FIXED_PAGES.map((page) => toSchemaPage({ kind: "page", key: page.slug }, page.label, page.websitePath, null, counts)),
+    ...fixedPagesFor(site.kind).map((page) => toSchemaPage({ kind: "page", key: page.slug }, page.label, page.websitePath, null, counts)),
     ...treks.data
-      .map((row) => toSchemaPage({ kind: "trek", key: row.id }, row.trek_translations[0]?.name ?? row.slug, itemWebsitePath("trek", row.slug), row.status, counts))
+      .map((row) => toSchemaPage({ kind: "trek", key: row.id }, row.trek_translations[0]?.name ?? row.slug, trekPath(row.id, row.slug), row.status, counts))
       .sort(byName),
     ...regions.data
-      .map((row) => toSchemaPage({ kind: "region", key: row.id }, row.region_translations[0]?.name ?? row.slug, itemWebsitePath("region", row.slug), null, counts))
+      .map((row) => toSchemaPage({ kind: "region", key: row.id }, row.region_translations[0]?.name ?? row.slug, itemWebsitePath("region", row.slug, site.kind), null, counts))
       .sort(byName),
     ...articles.data
-      .map((row) => toSchemaPage({ kind: "guide", key: row.id }, row.article_translations[0]?.title || row.slug, itemWebsitePath("guide", row.slug), row.status, counts))
+      .map((row) => toSchemaPage({ kind: "guide", key: row.id }, row.article_translations[0]?.title || row.slug, itemWebsitePath("guide", row.slug, site.kind), row.status, counts))
       .sort(byName),
   ];
 };
 
-/** One page's blocks in order, as the form shows them, with when they were last saved. Throws on a database error. */
-export const getPageSchemas = async (ref: PageRef): Promise<{ blocks: SchemaBlock[]; updatedAt: string | null }> => {
+/** One page's blocks on the website in order, as the form shows them, with when they were last saved. Throws on a database error. */
+export const getPageSchemas = async (ref: PageRef, siteId: string): Promise<{ blocks: SchemaBlock[]; updatedAt: string | null }> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("page_schemas")
     .select("label, data, is_shown, updated_at")
+    .eq("site_id", siteId)
     .eq(pageColumn(ref), ref.key)
     .order("position");
   if (error) throw new Error(`Could not load the page's structured data: ${error.message}`);
@@ -95,10 +106,11 @@ export const getPageSchemas = async (ref: PageRef): Promise<{ blocks: SchemaBloc
 
 export type SavePageSchemasResult = { ok: true } | { ok: false; reason: "not_found" | "forbidden" | "failed" };
 
-/** Replaces one page's blocks (save_page_schemas, one transaction). */
-export const savePageSchemas = async (ref: PageRef, blocks: SchemaBlockValues[]): Promise<SavePageSchemasResult> => {
+/** Replaces one page's blocks on the website (save_page_schemas, one transaction); another website's page is "not_found". */
+export const savePageSchemas = async (ref: PageRef, blocks: SchemaBlockValues[], siteId: string): Promise<SavePageSchemasResult> => {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc("save_page_schemas", {
+    p_site_id: siteId,
     p_page_kind: ref.kind,
     p_page_key: ref.key,
     p_schemas: blocks.map((block) => ({ label: block.label, data: block.data, is_shown: block.isShown })),

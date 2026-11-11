@@ -56,13 +56,26 @@ describe("the menu per site", () => {
     expect(navGroupsFor("main")).toBe(NAV_GROUPS);
   });
 
-  it("gives a region site only its own sections and Sites", () => {
-    expect(labels("region")).toEqual(["Pages", "Treks", "Travel guides", "Photos and videos", "Reviews", "Sites"]);
+  it("gives a region site only its own sections, its own people and structured data, and Sites", () => {
+    expect(labels("region")).toEqual([
+      "Pages",
+      "Treks",
+      "Travel guides",
+      "Adventures",
+      "Photos and videos",
+      "Trekking guides",
+      "Authors",
+      "Reviews",
+      "Structured data",
+      "Sites",
+    ]);
   });
 
   it("knows which screens a region site has (Site settings too)", () => {
     expect(isInSiteMenu("/treks/abc", "region")).toBe(true);
     expect(isInSiteMenu("/settings", "region")).toBe(true);
+    expect(isInSiteMenu("/authors", "region")).toBe(true);
+    expect(isInSiteMenu("/structured-data/page/about", "region")).toBe(true);
     expect(isInSiteMenu("/regions", "region")).toBe(false);
     expect(isInSiteMenu("/", "region")).toBe(false);
     expect(isInSiteMenu("/regions", "main")).toBe(true);

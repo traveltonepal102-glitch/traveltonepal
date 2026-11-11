@@ -26,15 +26,15 @@ export const ADMIN_SECTIONS = {
     label: "Adventures",
     href: "/adventures",
     icon: "travel_explore",
-    summary: "Experiences beyond trekking, shown in a carousel on the home page.",
+    summary: "This website's experiences beyond trekking, shown in a carousel on its home page. Each website has its own.",
   },
   trekkingGuides: {
     label: "Trekking guides",
     href: "/trekking-guides",
     icon: "hiking",
-    summary: "The guides who lead the treks. Add them once, pick them from a list anywhere.",
+    summary: "This website's guides who lead its treks. Each website has its own: add them once, pick them from a list anywhere.",
   },
-  authors: { label: "Authors", href: "/authors", icon: "person", summary: "The people who write the travel guides." },
+  authors: { label: "Authors", href: "/authors", icon: "person", summary: "The people who write this website's travel guides. Each website has its own, its founder too." },
   reviews: { label: "Reviews", href: "/reviews", icon: "rate_review", summary: "Traveller reviews shown on treks and regions." },
   searchPerformance: {
     label: "Search performance",
@@ -98,13 +98,16 @@ export const isActivePath = (pathname: string, href: string) =>
 
 /**
  * A region site's menu (decided 2026-11-02): only what belongs to that website, plus Sites. Site settings sit at the
- * bottom of the sidebar for every site. Regions, adventures, people and growth belong to the main site.
+ * bottom of the sidebar for every site. Regions and search performance belong to the main site; people, adventures
+ * and structured data are each website's own (decided 2026-11-11).
  */
 export const REGION_NAV_GROUPS: NavGroup[] = [
   {
     title: "This website",
-    items: [ADMIN_SECTIONS.pages, ADMIN_SECTIONS.treks, ADMIN_SECTIONS.travelGuides, ADMIN_SECTIONS.photos, ADMIN_SECTIONS.reviews],
+    items: [ADMIN_SECTIONS.pages, ADMIN_SECTIONS.treks, ADMIN_SECTIONS.travelGuides, ADMIN_SECTIONS.adventures, ADMIN_SECTIONS.photos],
   },
+  { title: "People", items: [ADMIN_SECTIONS.trekkingGuides, ADMIN_SECTIONS.authors, ADMIN_SECTIONS.reviews] },
+  { title: "Growth", items: [ADMIN_SECTIONS.structuredData] },
   { title: "All websites", items: [ADMIN_SECTIONS.sites] },
 ];
 

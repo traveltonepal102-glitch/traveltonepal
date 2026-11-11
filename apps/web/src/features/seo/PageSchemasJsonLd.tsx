@@ -10,6 +10,6 @@ type PageSchemasJsonLdProps = { kind: "page"; slug: SitePageSlug } | { kind: Exc
 
 /** The SEO person's own JSON-LD for this page (admin › Structured data), after what the page writes by itself. */
 export const PageSchemasJsonLd = async ({ kind, slug }: PageSchemasJsonLdProps) => {
-  const data = toPageSchemasJsonLd(await listPageSchemas(), kind, slug);
+  const data = toPageSchemasJsonLd(await listPageSchemas(), { kind, slug });
   return data && <JsonLd data={data} />;
 };

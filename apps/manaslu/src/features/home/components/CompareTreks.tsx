@@ -13,7 +13,7 @@ type CompareTreksProps = { current?: HomeTrekCard; others: readonly HomeTrekCard
 export const CompareTreks = ({ current, others }: CompareTreksProps) => (
   <div id={current ? "compare" : undefined} className="flex flex-col gap-3">
     <h3>Compare at a glance</h3>
-    <div className="relative overflow-x-auto rounded-[14px] border border-solid border-line bg-snow">
+    <div className="table-scroll relative rounded-[14px] border border-solid border-line">
       <table className="w-full min-w-[720px] border-collapse text-[15px] leading-5.5">
         <thead>
           <tr className="text-left text-eyebrow tracking-[0.06em] text-muted uppercase">

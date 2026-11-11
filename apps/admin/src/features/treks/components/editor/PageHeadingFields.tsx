@@ -2,7 +2,10 @@ import { SourceNote } from "@/components/editor/SourceNote";
 import { FormSection } from "@/components/ui/FormSection";
 import { TextField } from "@/components/ui/TextField";
 
+import type { RichTextDoc } from "@/lib/richText/richText";
+
 import { TREK_LIMITS as LIMIT } from "../../constants";
+import { HeadingLineEditor } from "./HeadingLineEditor";
 
 type HeadingField = {
   name: string;
@@ -23,15 +26,17 @@ type PageHeadingFieldsProps = {
   headingPrefix?: string;
   /** Where the fixed words come from, e.g. "“10-day” is counted from the days below." */
   headingPrefixNote?: string;
-  /** The line under the heading, when the section has one. */
+  /** The line under the heading, when the section has one as plain text. */
   line?: HeadingField & { label?: string; maxLength: number };
+  /** The line under the heading as rich text (links to other pages), instead of `line`. */
+  richLine?: { name: string; defaultValue: RichTextDoc; error?: string; onEdit: () => void };
 };
 
 /**
  * A section's heading as the trek page shows it (design: the block at the top of each section): the fixed small
  * label, the heading (amber past 70 characters, a little long for Google) and the line under it.
  */
-export const PageHeadingFields = ({ title = "Heading on the page", eyebrow, level, heading, headingPrefix, headingPrefixNote, line }: PageHeadingFieldsProps) => (
+export const PageHeadingFields = ({ title = "Heading on the page", eyebrow, level, heading, headingPrefix, headingPrefixNote, line, richLine }: PageHeadingFieldsProps) => (
   <FormSection title={title} hint={eyebrow ? `The small label above it, “${eyebrow}”, is the same on every trek.` : undefined}>
     <div className="flex items-end gap-2">
       {headingPrefix && <span className="mb-2.5 flex-none font-display text-lg font-bold text-ink">{headingPrefix}</span>}
@@ -61,5 +66,6 @@ export const PageHeadingFields = ({ title = "Heading on the page", eyebrow, leve
         error={line.error}
       />
     )}
+    {richLine && <HeadingLineEditor {...richLine} />}
   </FormSection>
 );

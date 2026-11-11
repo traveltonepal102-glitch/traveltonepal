@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
 import { FormGroup } from "@/components/editor/FormGroup";
-import type { EditorSaveAction } from "@/components/editor/types";
+import type { EditorSaveAction, RemoveState } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { PhotoAndNameFields } from "@/components/shared/PhotoAndNameFields";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
@@ -15,7 +15,6 @@ import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 import { TextField } from "@/components/ui/TextField";
 
-import { removeAuthor } from "../../actions/removeAuthor";
 import { AUTHOR_LIMITS as LIMIT, AUTHORS_PATH } from "../../constants";
 import { useAuthorDraft } from "../../hooks/useAuthorDraft";
 import { authorPerson } from "../../lib/authorRules";
@@ -27,7 +26,7 @@ import { AuthorVisibilityFields } from "./AuthorVisibilityFields";
 import { ProfileLinksField } from "./ProfileLinksField";
 
 type AuthorPanelProps = {
-  /** saveAuthor bound to this author's id (null for a new author). */
+  /** saveAuthor bound to the website and this author's id (null for a new author). */
   action: EditorSaveAction;
   /** The saved author; null for a new one. */
   author: Author | null;
@@ -35,7 +34,8 @@ type AuthorPanelProps = {
   guides: AuthorGuide[];
   /** Guides that are already another author. */
   takenGuideIds: string[];
-  canRemove: boolean;
+  /** removeAuthor bound to the website and this author; null for a new author or an admin who can't remove. */
+  removeAction: (() => Promise<RemoveState>) | null;
   isJustAdded: boolean;
 };
 
@@ -46,7 +46,7 @@ const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutr
  * everything. For a trekking guide, the photo, name, bio and links come from Trekking guides: those fields are
  * hidden and not sent.
  */
-export const AuthorPanel = ({ action, author, values, guides, takenGuideIds, canRemove, isJustAdded }: AuthorPanelProps) => {
+export const AuthorPanel = ({ action, author, values, guides, takenGuideIds, removeAction, isJustAdded }: AuthorPanelProps) => {
   const form = useEditorForm<"author">({
     action,
     firstKey: "author",
@@ -128,7 +128,7 @@ export const AuthorPanel = ({ action, author, values, guides, takenGuideIds, can
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
-          {author && canRemove && <ConfirmRemoveButton name={title} action={removeAuthor.bind(null, author.id)} />}
+          {author && removeAction && <ConfirmRemoveButton name={title} action={removeAction} />}
           <span className="flex-1" />
           <Dialog.Close type="button" className={secondaryButton}>
             Cancel

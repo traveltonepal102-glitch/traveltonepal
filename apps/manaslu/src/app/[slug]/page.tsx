@@ -6,6 +6,7 @@ import { blogMetadata } from "@/features/blog-article/seo";
 import { getBlogArticle } from "@/features/blog-article/services/blogArticleRepository";
 import { listBlogPages } from "@/features/blogs/services/blogsRepository";
 import { getHomeData } from "@/features/home/services/homeRepository";
+import { PageSchemasJsonLd } from "@/features/site-pages/components/PageSchemasJsonLd";
 import { TrekPage } from "@/features/trek-page/components/TrekPage";
 import { trekPageMetadata } from "@/features/trek-page/seo";
 import { findMovedPath, getTrekPage } from "@/features/trek-page/services/trekPageRepository";
@@ -38,9 +39,23 @@ export const generateMetadata = async ({ params }: SlugPageProps): Promise<Metad
 const SlugPage = async ({ params }: SlugPageProps) => {
   const { slug } = await params;
   const trek = await getTrekPage(slug);
-  if (trek) return <TrekPage data={trek} />;
+  if (trek) {
+    return (
+      <>
+        <TrekPage data={trek} />
+        <PageSchemasJsonLd pages={[{ kind: "trek", slug }]} />
+      </>
+    );
+  }
   const blog = await getBlogArticle(slug);
-  if (blog) return <BlogArticlePage blog={blog} />;
+  if (blog) {
+    return (
+      <>
+        <BlogArticlePage blog={blog} />
+        <PageSchemasJsonLd pages={[{ kind: "guide", slug }]} />
+      </>
+    );
+  }
 
   // The main trek's page is the home page; a renamed trek's or blog's old address moves on to today's; anything else is a 404.
   const { trekCard } = await getHomeData();

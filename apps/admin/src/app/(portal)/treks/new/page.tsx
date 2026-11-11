@@ -18,7 +18,7 @@ const NewTrekPage = async () => {
   await requireAdmin();
   const site = await getCurrentSite();
   if (!site) notFound();
-  const [regions, similarOptions, guides] = await Promise.all([listRegionOptions(), listSimilarTrekOptions(site.id, null), listTrekkingGuides()]);
+  const [regions, similarOptions, guides] = await Promise.all([listRegionOptions(), listSimilarTrekOptions(site.id, null), listTrekkingGuides(site.id)]);
   const today = todayInNepal();
 
   return (

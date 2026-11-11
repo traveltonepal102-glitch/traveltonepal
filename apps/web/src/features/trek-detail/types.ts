@@ -110,6 +110,8 @@ export type TrekRouteMap = {
   myMapsId?: string;
   /** The printable map's public address ("Download PDF map"); left out without one. */
   pdfUrl?: string;
+  /** The line under the heading, rich text (it may link to other pages); empty shows none. */
+  line: RichTextDoc;
 };
 
 /** "Why don't we include meals": the food budget and the trek's practical tips. */
@@ -210,8 +212,8 @@ export type TrekDetailContent = {
   /** Where trekking starts, for the elevation summary, e.g. Syabrubesi at 1,503 m. */
   trailhead: { name: string; altitudeM: number };
   routeMap: TrekRouteMap;
-  /** "Gear and essentials": one line about the conditions and the packing cards. */
-  packing: { intro: string; groups: readonly PackingGroup[] };
+  /** "Gear and essentials": the line under the heading (rich text, may link; empty shows none) and the packing cards. */
+  packing: { line: RichTextDoc; groups: readonly PackingGroup[] };
   /** "Practical field knowledge": an SEO title (best season, facilities, safety), the line under it and the topics. */
   fieldGuide: { heading: string; intro: string; topics: readonly FieldGuideTopic[] };
   faqs: readonly FaqGroup[];

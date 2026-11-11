@@ -39,7 +39,7 @@ export const TrekSections = ({ trek, company, reviews, rating }: TrekSectionsPro
     pricing: (
       <>
         {trek.pricing.prices.length > 0 && <TrekPrices pricing={trek.pricing} />}
-        {trek.months && <BestMonths heading={trek.months.heading} ratings={trek.months.ratings} />}
+        {trek.months && <BestMonths heading={trek.months.heading} line={trek.months.line} ratings={trek.months.ratings} />}
       </>
     ),
     inclusions: <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} />,

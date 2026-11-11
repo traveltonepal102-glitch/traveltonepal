@@ -22,7 +22,8 @@ export const SectionMenu = ({ sections, priceFromUsd }: SectionMenuProps) => (
   <section aria-label="This trek's sections and price" className="sticky top-0 z-20 mt-7 border-y border-solid border-line bg-white/97 backdrop-blur-sm">
     <div className="wrap flex items-center justify-between gap-6">
       <PageSectionLinks links={sections.flatMap((section) => (LABELS[section] ? [{ id: section, label: LABELS[section] }] : []))} />
-      <div className="hidden flex-none items-center gap-3.5 md:flex">
+      {/* Below lg the bar at the bottom of the screen (MobileBookingBar) has the price and the way to book. */}
+      <div className="hidden flex-none items-center gap-3.5 lg:flex">
         {priceFromUsd !== null && (
           <span className="text-right text-sm leading-4.5 text-muted">
             From

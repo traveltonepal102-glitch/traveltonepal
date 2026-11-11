@@ -6,12 +6,13 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ARTICLE_LOCALE } from "../constants";
 import type { ArticleOptions } from "../types";
 
-/** Every trekking guide, A–Z, for the guide sections (with the regions they lead, to suggest them first). */
-export const listSectionGuides = async (): Promise<ArticleOptions["guides"]> => {
+/** The website's trekking guides, A–Z, for the guide sections (with the regions they lead, to suggest them first). */
+export const listSectionGuides = async (siteId: string): Promise<ArticleOptions["guides"]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("trekking_guides")
     .select(`id, name, photo_consent, photo:photos!trekking_guides_photo_id_fkey(${PHOTO_COLUMNS}), trekking_guide_translations!inner(role), trekking_guide_regions(region_id)`)
+    .eq("site_id", siteId)
     .eq("trekking_guide_translations.locale", ARTICLE_LOCALE);
   if (error) throw new Error(`Could not load trekking guides: ${error.message}`);
 

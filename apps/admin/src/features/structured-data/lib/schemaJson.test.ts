@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { automaticSchemas } from "../constants";
+import { automaticSchemas, fixedPagesFor, itemWebsitePath } from "../constants";
 import { toPageRef } from "./pageRef";
 import { formatSchemaJson, mainTypes, parseSchemaJson } from "./schemaJson";
 
@@ -82,10 +82,35 @@ describe("toPageRef", () => {
 });
 
 describe("automaticSchemas", () => {
-  it("lists what each page already writes, TravelAgency everywhere", () => {
-    const types = (kind: "page" | "trek", key: string) => automaticSchemas({ kind, key }).map((schema) => schema.type);
+  it("lists what each page of the main site already writes, TravelAgency everywhere", () => {
+    const types = (kind: "page" | "trek", key: string) => automaticSchemas({ kind, key }, "main").map((schema) => schema.type);
     expect(types("trek", "id")).toEqual(["BreadcrumbList", "TouristTrip", "FAQPage", "TravelAgency"]);
     expect(types("page", "contact")).toEqual(["ContactPage", "BreadcrumbList", "FAQPage", "TravelAgency"]);
     expect(types("page", "home")).toEqual(["WebSite", "TravelAgency"]);
+  });
+
+  it("lists what a region website writes: its main trek on Home, blogs as BlogPosting", () => {
+    const types = (kind: "page" | "trek" | "guide", key: string) => automaticSchemas({ kind, key }, "region").map((schema) => schema.type);
+    expect(types("page", "home")).toEqual(["WebPage", "TouristTrip", "FAQPage", "TravelAgency"]);
+    expect(types("guide", "id")).toEqual(["BlogPosting", "BreadcrumbList", "FAQPage", "TravelAgency"]);
+    expect(types("page", "privacy")).toEqual(["WebPage", "TravelAgency"]);
+  });
+});
+
+describe("fixedPagesFor", () => {
+  it("gives a region website its own fixed pages at its own addresses", () => {
+    const pages = fixedPagesFor("region");
+    expect(pages.map((page) => page.slug)).not.toContain("treks");
+    expect(pages.map((page) => page.slug)).not.toContain("regions");
+    expect(pages.find((page) => page.slug === "travel-guides")?.websitePath).toBe("/blogs");
+    expect(fixedPagesFor("main").find((page) => page.slug === "travel-guides")?.websitePath).toBe("/travel-guides");
+  });
+});
+
+describe("itemWebsitePath", () => {
+  it("puts a region website's treks and blogs at its root", () => {
+    expect(itemWebsitePath("trek", "manaslu-circuit", "main")).toBe("/treks/manaslu-circuit");
+    expect(itemWebsitePath("trek", "tsum-valley", "region")).toBe("/tsum-valley");
+    expect(itemWebsitePath("guide", "permits", "region")).toBe("/permits");
   });
 });

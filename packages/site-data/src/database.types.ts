@@ -193,7 +193,12 @@ export type WebTrekPageRow = ShareColumns & {
   trek_start: string;
   map_place: string;
   my_maps_id: string | null;
+  /** Retired for packing_line: no longer written. */
   packing_intro: string;
+  /** The lines under the packing list's, route map's and best months' headings: rich text (@ttn/ui/lib/richText). */
+  packing_line: unknown;
+  route_map_line: unknown;
+  months_line: unknown;
   /** [{ title, icon, items: [{ title, text }] }]. */
   packing_groups: unknown;
   know_heading: string;

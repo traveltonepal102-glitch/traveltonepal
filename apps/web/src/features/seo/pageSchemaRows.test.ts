@@ -20,14 +20,22 @@ describe("toPageSchemasJsonLd", () => {
       row({ page_slug: "everest-base-camp", data: { "@type": "Other" } }),
       row({ page_kind: "page", page_slug: "langtang-valley", data: { "@type": "Other" } }),
     ];
-    expect(toPageSchemasJsonLd(rows, "trek", "langtang-valley")).toEqual({
+    expect(toPageSchemasJsonLd(rows, { kind: "trek", slug: "langtang-valley" })).toEqual({
       "@context": "https://schema.org",
       "@graph": [{ "@type": "VideoObject", name: "Video" }, { "@type": "HowTo" }, { "@type": "Event" }],
     });
   });
 
+  it("joins several pages' blocks page by page (a region website's Home and its main trek)", () => {
+    const rows = [row({ data: { "@type": "VideoObject" } }), row({ page_kind: "page", page_slug: "home", data: { "@type": "Event" } })];
+    expect(toPageSchemasJsonLd(rows, { kind: "page", slug: "home" }, { kind: "trek", slug: "langtang-valley" })?.["@graph"]).toEqual([
+      { "@type": "Event" },
+      { "@type": "VideoObject" },
+    ]);
+  });
+
   it("is null for a page without blocks, and skips data that isn't an object", () => {
-    expect(toPageSchemasJsonLd([row({})], "page", "home")).toBeNull();
-    expect(toPageSchemasJsonLd([row({ data: "text" }), row({ data: [1] })], "trek", "langtang-valley")).toBeNull();
+    expect(toPageSchemasJsonLd([row({})], { kind: "page", slug: "home" })).toBeNull();
+    expect(toPageSchemasJsonLd([row({ data: "text" }), row({ data: [1] })], { kind: "trek", slug: "langtang-valley" })).toBeNull();
   });
 });

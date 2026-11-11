@@ -16,8 +16,8 @@ export const invalidPageForm = (error: z.ZodError): EditorSaveState => {
 
 const FAILURE_MESSAGES: Record<Exclude<SavePageResult, { ok: true }>["reason"], string> = {
   forbidden: "You can't change this page. Ask a Super admin.",
-  missing_photo: "A photo no longer exists. Reload the page and pick it again.",
-  founder: "The founder must be an office author. Pick them again.",
+  missing_photo: "A photo or the founder no longer exists on this website. Reload the page and pick them again.",
+  founder: "The founder must be one of this website's office authors. Pick them again.",
   failed: "The page couldn't be saved. Nothing was lost on this page: try Save again in a moment.",
 };
 

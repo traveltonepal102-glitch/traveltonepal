@@ -13,7 +13,7 @@ import { deleteSite as deleteSiteFromDatabase } from "../services/sitesRepositor
 const MESSAGES: Record<DeleteSiteFailure, string> = {
   main_site: "The main site can't be deleted.",
   site_is_live: "This site is live. Switch it off and save first, then delete it.",
-  has_content: "This site still has treks, guides or pages. Delete them first.",
+  has_content: "This site still has treks, travel guides, reviews, adventures, trekking guides or authors. Delete them first.",
   not_found: "This site no longer exists.",
   forbidden: "Only a Super admin can delete a site.",
   failed: "The site couldn't be deleted. Try again in a moment.",

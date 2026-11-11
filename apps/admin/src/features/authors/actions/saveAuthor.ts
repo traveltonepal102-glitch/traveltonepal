@@ -7,9 +7,10 @@ import { z } from "zod";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { AUTHORS_PATH, authorPath } from "../constants";
 import { authorSchema, readAuthorForm } from "../schemas/authorSchema";
@@ -25,12 +26,14 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Saves the author form. authorId null adds an author and opens them; otherwise updates them.
- * authorId comes from the browser (bound argument), so it is checked here; access is enforced by RLS.
+ * Saves the author form. authorId null adds an author to the website `siteId` and opens them; otherwise updates them.
+ * Both are bound by the page; the save is refused when "Working on" changed since, and access is enforced by RLS.
  */
-export const saveAuthor = async (authorId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const saveAuthor = async (siteId: string, authorId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
   if (authorId !== null && !z.uuid().safeParse(authorId).success) return failure(FAILURE_MESSAGES.not_found);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = authorSchema.safeParse(readAuthorForm(formData));
   if (!parsed.success) {
@@ -39,7 +42,7 @@ export const saveAuthor = async (authorId: string | null, _previous: EditorSaveS
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const result = await saveAuthorToDatabase(parsed.data, authorId);
+  const result = await saveAuthorToDatabase(parsed.data, authorId, siteId);
   if (!result.ok) {
     if (result.reason === "guide_taken") return failure("That guide is already an author.", { guideId: "This trekking guide already has an author profile." });
     if (result.reason === "guide_not_agreed") {
@@ -49,7 +52,7 @@ export const saveAuthor = async (authorId: string | null, _previous: EditorSaveS
   }
 
   // Authors show in travel guide bylines, and on the About page (team, founder) and trek pages (founder).
-  refreshWebsite([WEBSITE_CACHE_TAGS.travelGuides, WEBSITE_CACHE_TAGS.pages]);
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.travelGuides, WEBSITE_CACHE_TAGS.pages]);
   revalidatePath(AUTHORS_PATH);
   if (authorId === null) redirect(`${authorPath(result.authorId)}&added=1`);
   return { status: "saved" };

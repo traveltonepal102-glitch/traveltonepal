@@ -7,11 +7,11 @@ import { ROUTES } from "@/lib/routes";
 
 type MainTrekLinkProps = { name: string; className: string };
 
-/** The main trek in the menu (it is the home page), underlined while it is the page shown. */
+/** The main trek in the menu (it is the home page), underlined in its text colour while it is the page shown. */
 export const MainTrekLink = ({ name, className }: MainTrekLinkProps) => {
   const isCurrent = usePathname() === ROUTES.home;
   return (
-    <Link href={ROUTES.home} aria-current={isCurrent ? "page" : undefined} className={`${className} ${isCurrent ? "shadow-[inset_0_-2px_0_var(--color-forest)]" : ""}`}>
+    <Link href={ROUTES.home} aria-current={isCurrent ? "page" : undefined} className={`${className} ${isCurrent ? "shadow-[inset_0_-2px_0_currentColor]" : ""}`}>
       {name}
     </Link>
   );

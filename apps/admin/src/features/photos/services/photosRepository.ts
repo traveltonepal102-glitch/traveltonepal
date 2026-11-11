@@ -29,6 +29,8 @@ export const toPhoto = (row: PhotoColumnsRow): Photo => ({
 
 type NewPhoto = {
   id: string;
+  /** The website it is uploaded to ("Working on"). */
+  siteId: string;
   regionId: string | null;
   masterKey: string;
   variantWidths: number[];
@@ -48,6 +50,7 @@ export const insertPhoto = async (photo: NewPhoto): Promise<Photo> => {
     .from("photos")
     .insert({
       id: photo.id,
+      site_id: photo.siteId,
       region_id: photo.regionId,
       master_key: photo.masterKey,
       variant_widths: photo.variantWidths,
@@ -75,12 +78,13 @@ export const findRegionSlug = async (regionId: string | null) => {
 };
 
 /** Saves what is typed about a photo (alt text, caption, place). False when no such photo (or RLS refused). */
-export const updatePhotoText = async (photoId: string, values: PhotoText): Promise<boolean> => {
+export const updatePhotoText = async (photoId: string, siteId: string, values: PhotoText): Promise<boolean> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("photos")
     .update({ alt_text: values.altText, description: values.caption, place: values.place, updated_at: new Date().toISOString() })
     .eq("id", photoId)
+    .eq("site_id", siteId)
     .select("id");
   if (error) throw new Error(`Could not save the text of photo ${photoId}: ${error.code} ${error.message}`);
   return data.length > 0;

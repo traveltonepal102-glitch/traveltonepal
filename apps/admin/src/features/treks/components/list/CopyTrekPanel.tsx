@@ -68,7 +68,7 @@ export const CopyTrekPanel = ({ options, regionId, action, onClose }: CopyTrekPa
               ),
           )}
           {shown.length === 0 && <p className="m-0 px-1 py-6 text-center text-caption text-muted-foreground">No trek has that name.</p>}
-          <p className="m-0 rounded-md bg-page px-3 py-2 text-xs text-muted-foreground">Everything is copied except similar treks, the printable PDF map, the canonical address and “Hide from Google”.</p>
+          <p className="m-0 rounded-md bg-page px-3 py-2 text-xs text-muted-foreground">Everything is copied except the photos and trekking guides (add this website’s own), similar treks, the printable PDF map, the canonical address and “Hide from Google”.</p>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
           <Dialog.Close type="button" className={secondaryButton}>

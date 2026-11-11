@@ -12,7 +12,7 @@ export const MobileBookingBar = () => {
   const chosen = prices[chosenIndex];
 
   return (
-    <section aria-label="Your booking" className="sticky bottom-0 z-30 flex items-center justify-between gap-3 border-t border-solid border-line bg-snow px-4 py-3 shadow-[0_-8px_24px_-12px_rgba(23,36,30,0.3)] lg:hidden">
+    <section aria-label="Your booking" className="sticky bottom-0 z-30 flex items-center justify-between gap-3 border-t border-solid border-line bg-snow px-(--gutter) py-3 shadow-[0_-8px_24px_-12px_rgba(23,36,30,0.3)] lg:hidden">
       <span className="flex flex-col text-eyebrow text-muted">
         {chosen ? `${travellersText(travellers)} · total` : "Private trek"}
         {chosen && <strong className="font-display text-[22px] leading-6.5 font-[640] text-ink">{formatUsd(chosen.priceUsd * travellers)}</strong>}

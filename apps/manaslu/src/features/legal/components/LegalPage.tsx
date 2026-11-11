@@ -56,7 +56,7 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
             <span className="font-semibold text-ink">Questions about this page?</span>
             <span className="text-[15px] leading-5.5">Write to us and we will explain anything that is not clear.</span>
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="actions">
             <a href={getEmailUrl({ subject: `Question about: ${doc.title}` })} className={outlineButton}>
               <TrailIcon name="mail" />
               Email

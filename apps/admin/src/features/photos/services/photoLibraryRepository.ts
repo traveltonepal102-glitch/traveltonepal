@@ -9,12 +9,13 @@ import { PHOTO_COLUMNS, toPhoto } from "./photosRepository";
 
 const isUseKind = (value: string): value is PhotoUseKind => (PHOTO_USE_KINDS as readonly string[]).includes(value);
 
-/** Every library photo with its sizes ready, newest first (RLS: admins only). Throws when the database can't be read. */
-export const listAllPhotos = async (): Promise<LibraryPhoto[]> => {
+/** The website's library photos with their sizes ready, newest first (RLS: admins only). Throws when the database can't be read. */
+export const listAllPhotos = async (siteId: string): Promise<LibraryPhoto[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("photos")
     .select(`${PHOTO_COLUMNS}, original_name, byte_size, created_at`)
+    .eq("site_id", siteId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(`Could not load the photo library: ${error.message}`);
   return data
@@ -45,4 +46,12 @@ export const deleteUnusedPhotoRow = async (photoId: string) => {
   if (error) throw new Error(`Could not delete photo ${photoId}: ${error.code} ${error.message}`);
   const [row] = data;
   return row ? { masterKey: row.master_key, publicKeys: publicPhotoKeys(photoId, row.file_name, row.variant_widths) } : null;
+};
+
+/** Whether this photo is in the website's library (a photo is deleted only from its own website's Photos screen). */
+export const isPhotoOfSite = async (photoId: string, siteId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("photos").select("id").eq("id", photoId).eq("site_id", siteId).maybeSingle();
+  if (error) throw new Error(`Could not look up photo ${photoId}: ${error.message}`);
+  return data !== null;
 };

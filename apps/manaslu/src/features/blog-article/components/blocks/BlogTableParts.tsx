@@ -1,4 +1,4 @@
-const SCROLLER = "overflow-x-auto rounded-[14px] border border-solid border-line";
+const SCROLLER = "table-scroll rounded-[14px] border border-solid border-line";
 const CELL = "p-3 text-left align-top";
 
 type BlogTableProps = { heading: string; header: readonly string[]; rows: readonly (readonly string[])[]; footer: readonly string[]; hasRowHeadings: boolean };

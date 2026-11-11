@@ -38,7 +38,7 @@ export const NotFoundPage = async () => {
           <span className="eyebrow">Error 404</span>
           <h1>We can’t find that page</h1>
           <p className="max-w-[62ch] text-[19px] leading-7.5">The address may be mistyped, or the page may have moved. Everything else on the website is still here.</p>
-          <div className="mt-2 flex flex-wrap gap-3">
+          <div className="actions mt-2 max-sm:w-full">
             <Link href={ROUTES.home} className={primaryButton}>
               Back to the home page
             </Link>

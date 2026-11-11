@@ -15,7 +15,7 @@ const TravelGuidesPage = async () => {
   await requireAdmin();
   const site = await getCurrentSite();
   if (!site) notFound();
-  const [articles, authors] = await Promise.all([listArticles(site.id), listAuthorOptions()]);
+  const [articles, authors] = await Promise.all([listArticles(site.id), listAuthorOptions(site.id)]);
 
   return <ArticlesOverview siteName={site.name} articles={articles} authors={authors} today={todayInNepal()} />;
 };

@@ -25,12 +25,13 @@ const listGuideRegions = async (): Promise<ArticleOptions["regions"]> => {
   return byName(data.map((region) => ({ id: region.id, name: region.region_translations[0]?.name ?? "" })));
 };
 
-/** Authors A–Z (a guide author named by their guide), with what the editor checks. */
-export const listAuthorOptions = async (): Promise<ArticleOptions["authors"]> => {
+/** The website's authors A–Z (a guide author named by their guide), with what the editor checks. */
+export const listAuthorOptions = async (siteId: string): Promise<ArticleOptions["authors"]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("authors")
     .select("id, kind, name, writes_in, guide:trekking_guides!authors_guide_id_fkey(name), author_translations!inner(job_title)")
+    .eq("site_id", siteId)
     .eq("author_translations.locale", ARTICLE_LOCALE);
   if (error) throw new Error(`Could not load authors: ${error.message}`);
   return byName(
@@ -45,7 +46,7 @@ export const listAuthorOptions = async (): Promise<ArticleOptions["authors"]> =>
   );
 };
 
-/** Everything else the editor offers: the website's treks and other travel guides, and guides who can check travel guides. */
+/** Everything else the editor offers: the website's treks, its other travel guides, and its guides who can check travel guides. */
 const listArticleOptions = async (siteId: string, exceptArticleId: string | null): Promise<Omit<ArticleOptions, "site" | "regions" | "authors" | "guides" | "photos" | "filesBaseUrl">> => {
   const supabase = await createSupabaseServerClient();
   const [treks, checkers, articles] = await Promise.all([
@@ -60,6 +61,7 @@ const listArticleOptions = async (siteId: string, exceptArticleId: string | null
     supabase
       .from("trekking_guides")
       .select("id, name, trekking_guide_translations!inner(role)")
+      .eq("site_id", siteId)
       .eq("can_fact_check", true)
       .eq("photo_consent", true)
       .eq("trekking_guide_translations.locale", ARTICLE_LOCALE),
@@ -157,9 +159,9 @@ export const listRegionArticles = async (regionId: string): Promise<RegionArticl
 export const getArticleOptions = async (site: Site, exceptArticleId: string | null, photoIds: string[] = []): Promise<ArticleOptions> => {
   const [regions, authors, rest, guides, photos] = await Promise.all([
     listGuideRegions(),
-    listAuthorOptions(),
+    listAuthorOptions(site.id),
     listArticleOptions(site.id, exceptArticleId),
-    listSectionGuides(),
+    listSectionGuides(site.id),
     listPhotosByIds(photoIds),
   ]);
   const domain = siteDomain(site) ?? `[${site.name} website]`;

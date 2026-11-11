@@ -8,7 +8,6 @@ import type { EditorSaveState } from "@/components/editor/types";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { TextField } from "@/components/ui/TextField";
 
-import { saveAdventureSection } from "../actions/saveAdventureSection";
 import { SECTION_LIMITS as LIMIT } from "../constants";
 import { stepField } from "../schemas/adventureSchema";
 import type { AdventureSectionValues } from "../types";
@@ -19,8 +18,14 @@ const IDLE: EditorSaveState = { status: "idle" };
  * "Section text": the words around the cards on the home page (heading, the last card, "How it works", the note),
  * folded until opened. Not <form action>: React would empty the fields after saving.
  */
-export const SectionTextCard = ({ values }: { values: AdventureSectionValues }) => {
-  const [state, action, isSaving] = useActionState(saveAdventureSection, IDLE);
+type SectionTextCardProps = {
+  values: AdventureSectionValues;
+  /** saveAdventureSection bound to the website. */
+  saveAction: (previous: EditorSaveState, formData: FormData) => Promise<EditorSaveState>;
+};
+
+export const SectionTextCard = ({ values, saveAction }: SectionTextCardProps) => {
+  const [state, action, isSaving] = useActionState(saveAction, IDLE);
   const errors = state.status === "error" ? state.fieldErrors : {};
 
   const submit = (event: FormEvent<HTMLFormElement>) => {

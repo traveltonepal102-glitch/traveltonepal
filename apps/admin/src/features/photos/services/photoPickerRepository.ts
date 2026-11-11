@@ -10,10 +10,11 @@ import type { PickerSearch } from "../lib/pickerSearch";
 import type { NamedPhoto, Photo, PickerPhoto } from "../types";
 import { PHOTO_COLUMNS, toPhoto } from "./photosRepository";
 
-/** One page of the "Choose a photo" window (public.search_library_photos). Throws when the database can't be read. */
-export const searchLibraryPhotos = async ({ query, filter, offset }: PickerSearch): Promise<{ photos: PickerPhoto[]; hasMore: boolean }> => {
+/** One page of the "Choose a photo" window: the website's photos only (public.search_library_photos). Throws when the database can't be read. */
+export const searchLibraryPhotos = async (siteId: string, { query, filter, offset }: PickerSearch): Promise<{ photos: PickerPhoto[]; hasMore: boolean }> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("search_library_photos", {
+    p_site_id: siteId,
     p_query: query,
     ...(filter.kind === "region" && { p_region_id: filter.id }),
     ...(filter.kind === "trek" && { p_trek_id: filter.id }),
@@ -28,11 +29,11 @@ export const searchLibraryPhotos = async ({ query, filter, offset }: PickerSearc
   };
 };
 
-/** Library photos uploaded from a file with one of these names (public.photos_named), newest first. */
-export const listPhotosNamed = async (names: string[]): Promise<NamedPhoto[]> => {
+/** The website's photos uploaded from a file with one of these names (public.photos_named), newest first. */
+export const listPhotosNamed = async (siteId: string, names: string[]): Promise<NamedPhoto[]> => {
   if (!names.length) return [];
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("photos_named", { p_names: names });
+  const { data, error } = await supabase.rpc("photos_named", { p_names: names, p_site_id: siteId });
   if (error) throw new Error(`Could not look for photos with the same name: ${error.message}`);
   return data.map((row) => ({ ...toPhoto(row), originalName: row.original_name }));
 };

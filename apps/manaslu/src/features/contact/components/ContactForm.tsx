@@ -75,12 +75,12 @@ export const ContactForm = ({ trekNames }: { trekNames: readonly string[] }) => 
         <TextField name="startDate" label="Preferred start date" type="date" onFocus={(event) => (event.currentTarget.min = todayInNepal())} isOptional error={errors.startDate} />
       </div>
       <TextAreaField name="message" label="Your message" rows={5} maxLength={MAX_MESSAGE_LENGTH} placeholder="What would you like to know?" error={errors.message} />
-      <div className="flex flex-wrap gap-3">
-        <button type="submit" value="whatsapp" className={`${whatsAppButton} flex-1 cursor-pointer border-0 sm:flex-none`}>
+      <div className="actions">
+        <button type="submit" value="whatsapp" className={`${whatsAppButton} cursor-pointer border-0`}>
           <WhatsAppLogo />
           Send on WhatsApp
         </button>
-        <button type="submit" value="email" className={`${outlineButton} flex-1 cursor-pointer sm:flex-none`}>
+        <button type="submit" value="email" className={`${outlineButton} cursor-pointer`}>
           <TrailIcon name="mail" />
           Send by email
         </button>

@@ -241,9 +241,21 @@ describe("trekSchema", () => {
     expect(errorsOf({ myMapsLink: "javascript:alert(1)" }).myMapsId).toMatch(/share link/);
   });
 
+  it("keeps links in the lines under the packing list, route map and best months headings", () => {
+    const linked: RichTextDoc = {
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "Read the permit guide", marks: [{ type: "link", attrs: { href: "/permits" } }] }] }],
+    };
+    const result = parse({ packingLine: JSON.stringify(linked), routeMapLine: JSON.stringify(linked), monthsLine: JSON.stringify(linked) });
+    expect(result.data?.packingLine).toEqual(linked);
+    expect(result.data?.routeMapLine).toEqual(linked);
+    expect(result.data?.monthsLine).toEqual(linked);
+    expect(errorsOf({ monthsLine: JSON.stringify(doc("x".repeat(601))) }).monthsLine).toBeTruthy();
+  });
+
   it("reads packing cards with their own items, skipping empty cards", () => {
     const result = parse({
-      packingIntro: "Tested gear for the valley.",
+      packingLine: JSON.stringify(doc("Tested gear for the valley.")),
       packingGroupTitle: ["Clothing and layering", "", "Gear and packs"],
       packingGroupIcon: ["apparel", "backpack", "backpack"],
       packingItem0Title: ["Base layers"],
@@ -251,7 +263,7 @@ describe("trekSchema", () => {
       packingItem2Title: ["Daypack", ""],
       packingItem2Text: ["25–35 L.", ""],
     });
-    expect(result.data?.packingIntro).toBe("Tested gear for the valley.");
+    expect(result.data?.packingLine).toEqual(doc("Tested gear for the valley."));
     expect(result.data?.packingGroups).toEqual([
       { title: "Clothing and layering", icon: "apparel", items: [{ title: "Base layers", text: "2–3 merino tops." }] },
       { title: "Gear and packs", icon: "backpack", items: [{ title: "Daypack", text: "25–35 L." }] },

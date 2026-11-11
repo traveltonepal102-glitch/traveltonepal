@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
+import { removeTrekkingGuide } from "@/features/trekking-guides/actions/removeTrekkingGuide";
 import { saveTrekkingGuide } from "@/features/trekking-guides/actions/saveTrekkingGuide";
 import { GuidePanel } from "@/features/trekking-guides/components/editor/GuidePanel";
 import { GuidesOverview } from "@/features/trekking-guides/components/list/GuidesOverview";
@@ -13,12 +16,14 @@ import { todayInNepal } from "@/utils/formatDateTime";
 export const metadata: Metadata = { title: ADMIN_SECTIONS.trekkingGuides.label };
 
 /**
- * Trekking guides (design: Admin-people.dc.html). "?guide=<id>" opens a guide's edit panel beside the list,
+ * Trekking guides of the website "Working on" shows (each website has its own; design: Admin-people.dc.html). "?guide=<id>" opens a guide's edit panel beside the list,
  * "?guide=new" an empty one; "&added=1" right after adding.
  */
 const TrekkingGuidesPage = async ({ searchParams }: PageProps<"/trekking-guides">) => {
   const admin = await requireAdmin();
-  const [guides, regions, { guide: openParam, added }] = await Promise.all([listTrekkingGuides(), listRegionOptions(), searchParams]);
+  const site = await getCurrentSite();
+  if (!site) notFound();
+  const [guides, regions, { guide: openParam, added }] = await Promise.all([listTrekkingGuides(site.id), listRegionOptions(), searchParams]);
   const today = todayInNepal();
 
   const openId = typeof openParam === "string" ? openParam : null;
@@ -29,12 +34,12 @@ const TrekkingGuidesPage = async ({ searchParams }: PageProps<"/trekking-guides"
     <GuidePanel
       // A fresh form for each guide (nothing typed for one guide carries over to another).
       key={open?.id ?? "new"}
-      action={saveTrekkingGuide.bind(null, open?.id ?? null)}
+      action={saveTrekkingGuide.bind(null, site.id, open?.id ?? null)}
       guide={open}
       values={open ?? EMPTY_GUIDE_VALUES}
       regions={regions}
       today={today}
-      canRemove={admin.role === "super_admin"}
+      removeAction={open && admin.role === "super_admin" ? removeTrekkingGuide.bind(null, site.id, open.id) : null}
       isJustAdded={added === "1"}
     />
   );

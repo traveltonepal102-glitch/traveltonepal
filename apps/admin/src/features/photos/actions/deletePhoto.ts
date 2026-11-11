@@ -5,10 +5,11 @@ import { z } from "zod";
 
 import type { RemoveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 import { createPhotoStorage } from "@/lib/storage/createPhotoStorage";
 
-import { deleteUnusedPhotoRow, PhotoInUseError } from "../services/photoLibraryRepository";
+import { deleteUnusedPhotoRow, isPhotoOfSite, PhotoInUseError } from "../services/photoLibraryRepository";
 
 /**
  * Deletes a library photo nothing uses, for good: its row, then its files (the sizes, the share picture and the private master).
@@ -20,7 +21,11 @@ export const deletePhoto = async (photoId: string): Promise<RemoveState> => {
   if (admin.role !== "super_admin") return { error: "Only a Super admin can delete a photo." };
   if (!z.uuid().safeParse(photoId).success) return { error: "This photo no longer exists." };
 
+  const site = await getCurrentSite();
+
   try {
+    // Only from its own website's library (the Photos screen lists only those).
+    if (!site || !(await isPhotoOfSite(photoId, site.id))) return { error: "This photo isn't in this website's library." };
     const files = await deleteUnusedPhotoRow(photoId);
     if (files) {
       const storage = await createPhotoStorage();

@@ -7,9 +7,10 @@ import { z } from "zod";
 
 import type { EditorSaveState } from "@/components/editor/types";
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
+import { checkCurrentSite } from "@/features/sites/lib/checkCurrentSite";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import { toFieldErrors } from "@/lib/forms/fieldErrors";
-import { refreshWebsite } from "@/lib/website/refreshWebsite";
+import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKKING_GUIDES_PATH, guidePath } from "../constants";
 import { guideSchema, readGuideForm } from "../schemas/guideSchema";
@@ -25,12 +26,14 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Saves the guide form. guideId null adds a guide and opens it; otherwise updates it.
- * guideId comes from the browser (bound argument), so it is checked here; access is enforced by RLS.
+ * Saves the guide form. guideId null adds a guide to the website `siteId` and opens it; otherwise updates it. Both are
+ * bound by the page; the save is refused when "Working on" changed since, and access is enforced by RLS.
  */
-export const saveTrekkingGuide = async (guideId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
+export const saveTrekkingGuide = async (siteId: string, guideId: string | null, _previous: EditorSaveState, formData: FormData): Promise<EditorSaveState> => {
   await requireAdmin();
   if (guideId !== null && !z.uuid().safeParse(guideId).success) return failure(FAILURE_MESSAGES.not_found);
+  const wrongSite = await checkCurrentSite(siteId);
+  if (wrongSite) return wrongSite;
 
   const parsed = guideSchema.safeParse(readGuideForm(formData));
   if (!parsed.success) {
@@ -39,11 +42,11 @@ export const saveTrekkingGuide = async (guideId: string | null, _previous: Edito
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const result = await saveGuideToDatabase(parsed.data, guideId);
+  const result = await saveGuideToDatabase(parsed.data, guideId, siteId);
   if (!result.ok) return failure(FAILURE_MESSAGES[result.reason]);
 
-  // Region pages show the guides who lead treks there.
-  refreshWebsite([WEBSITE_CACHE_TAGS.trekkingGuides]);
+  // The guide's website shows them on its treks, About page and travel guides (Travel To Nepal on its regions too).
+  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.trekkingGuides]);
   revalidatePath(TREKKING_GUIDES_PATH);
   if (guideId === null) redirect(`${guidePath(result.guideId)}&added=1`);
   return { status: "saved" };

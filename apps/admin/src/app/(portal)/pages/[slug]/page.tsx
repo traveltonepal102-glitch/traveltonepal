@@ -103,7 +103,8 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
     return <ContactPageEditor action={saveContactPage.bind(null, site.id)} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
   }
 
-  const [authors, guides, settings, regions] = await Promise.all([listAuthors(), listTrekkingGuides(), getSiteSettings(site.id), listRegions()]);
+  // The website's own people: its founder is one of its office authors, its team its own authors and guides.
+  const [authors, guides, settings, regions] = await Promise.all([listAuthors(site.id), listTrekkingGuides(site.id), getSiteSettings(site.id), listRegions()]);
   return (
     <AboutPageEditor
       action={saveAboutPage.bind(null, site.id)}

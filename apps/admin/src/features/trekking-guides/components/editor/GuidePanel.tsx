@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { ConfirmRemoveButton } from "@/components/editor/ConfirmRemoveButton";
 import { FormGroup } from "@/components/editor/FormGroup";
-import type { EditorSaveAction } from "@/components/editor/types";
+import type { EditorSaveAction, RemoveState } from "@/components/editor/types";
 import { useEditorForm } from "@/components/editor/useEditorForm";
 import { PhotoAndNameFields } from "@/components/shared/PhotoAndNameFields";
 import { primaryButton, secondaryButton } from "@/components/ui/buttonStyles";
@@ -15,7 +15,6 @@ import { FormAlert } from "@/components/ui/FormAlert";
 import { SideDrawer } from "@/components/ui/SideDrawer";
 import { TextField } from "@/components/ui/TextField";
 
-import { removeTrekkingGuide } from "../../actions/removeTrekkingGuide";
 import { GUIDE_LIMITS as LIMIT, TREKKING_GUIDES_PATH } from "../../constants";
 import { useGuideDraft } from "../../hooks/useGuideDraft";
 import { guideCardView } from "../../lib/guideCard";
@@ -26,7 +25,7 @@ import { GuideLicenceFields } from "./GuideLicenceFields";
 import { GuideVisibilityFields } from "./GuideVisibilityFields";
 
 type GuidePanelProps = {
-  /** saveTrekkingGuide bound to this guide's id (null for a new guide). */
+  /** saveTrekkingGuide bound to the website and this guide's id (null for a new guide). */
   action: EditorSaveAction;
   /** The saved guide; null for a new one. */
   guide: TrekkingGuide | null;
@@ -34,7 +33,8 @@ type GuidePanelProps = {
   regions: { id: string; name: string }[];
   /** "YYYY-MM-DD" in Nepal. */
   today: string;
-  canRemove: boolean;
+  /** removeTrekkingGuide bound to the website and this guide; null for a new guide or an admin who can't remove. */
+  removeAction: (() => Promise<RemoveState>) | null;
   isJustAdded: boolean;
 };
 
@@ -44,7 +44,7 @@ const STATUS_TONE = { saved: "text-whatsapp", unsaved: "text-saffron-ink", neutr
  * Add or edit one guide in a drawer over the list (design: the edit drawer; full screen on phones and tablets).
  * One Save sends everything. Closing goes back to the list, after asking when there are unsaved changes.
  */
-export const GuidePanel = ({ action, guide, values, regions, today, canRemove, isJustAdded }: GuidePanelProps) => {
+export const GuidePanel = ({ action, guide, values, regions, today, removeAction, isJustAdded }: GuidePanelProps) => {
   const form = useEditorForm<"guide">({
     action,
     firstKey: "guide",
@@ -122,11 +122,11 @@ export const GuidePanel = ({ action, guide, values, regions, today, canRemove, i
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-solid border-border px-6 py-3 max-tablet:px-5">
-          {guide && canRemove && (
+          {guide && removeAction && (
             <ConfirmRemoveButton
               name={guide.name}
               consequence={guide.treks.length ? `They also leave the ${guide.treks.length} trek${guide.treks.length === 1 ? "" : "s"} they are on.` : undefined}
-              action={removeTrekkingGuide.bind(null, guide.id)}
+              action={removeAction}
             />
           )}
           <span className="flex-1" />

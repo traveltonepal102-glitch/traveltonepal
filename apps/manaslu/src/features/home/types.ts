@@ -26,6 +26,8 @@ export type HomeDay = {
   subtitle: string;
   duration?: string;
   altitudeM: number;
+  /** The name of the point altitudeM measures (topPlaceOf), for the altitude chart. */
+  topPlace: string;
   isHighPoint: boolean;
   body: RichTextDoc;
 };
@@ -95,9 +97,10 @@ export type HomeTrek = {
   inclusions: { heading: string; included: HomePoint[]; excluded: HomePoint[] };
   /** Left out when the trek hides it or says nothing about meals. */
   meals: { budget: { min: number; max: number } | null; trailTips: HomePoint[]; teahouseNotes: HomePoint[] } | null;
-  routeMap: { heading: string; embedUrl: string; openUrl: string; hasTrailLine: boolean; pdfUrl?: string } | null;
-  months: { heading: string; ratings: MonthRating[] } | null;
-  packing: { heading: string; intro: string; groups: HomePackingGroup[] };
+  /** `line`: the rich text under the heading (links to other pages), empty when there is none; the same for months and packing. */
+  routeMap: { heading: string; line: RichTextDoc; embedUrl: string; openUrl: string; hasTrailLine: boolean; pdfUrl?: string } | null;
+  months: { heading: string; line: RichTextDoc; ratings: MonthRating[] } | null;
+  packing: { heading: string; line: RichTextDoc; groups: HomePackingGroup[] };
   fieldGuide: { heading: string; intro: string; topics: HomeFieldTopic[] };
   faq: { heading: string; items: HomeFaq[] };
 };

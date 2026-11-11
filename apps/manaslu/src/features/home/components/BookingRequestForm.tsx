@@ -73,7 +73,7 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
         For {travellersText(travellers)}
         {startDate ? `, starting ${formatStartDate(startDate)}` : ""}. Change the group and the day in the booking card.
       </p>
-      <div className="flex flex-wrap gap-3">
+      <div className="actions">
         <button type="submit" value="whatsapp" className={`${whatsAppButton} cursor-pointer border-0`}>
           <WhatsAppLogo />
           Send on WhatsApp

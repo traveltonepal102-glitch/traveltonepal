@@ -494,6 +494,20 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
   "map_place": "Kyanjin Gompa, Langtang, Nepal",
   "my_maps_id": null,
   "packing_intro": "Tested gear for the valley: −10 °C nights at Kyanjin to 25 °C days in the forest.",
+  "packing_line": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          { "type": "text", "text": "Tested gear for the valley. Read the " },
+          { "type": "text", "text": "permit guide", "marks": [{ "type": "link", "attrs": { "href": "/travel-guides/langtang-permits" } }] }
+        ]
+      }
+    ]
+  },
+  "route_map_line": { "type": "doc", "content": [{ "type": "paragraph" }] },
+  "months_line": { "type": "doc", "content": [{ "type": "paragraph" }] },
   "packing_groups": [
     {
       "title": "Clothing and layering",

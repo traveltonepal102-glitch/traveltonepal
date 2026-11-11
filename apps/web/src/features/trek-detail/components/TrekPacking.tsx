@@ -1,4 +1,7 @@
 import { Icon } from "@ttn/ui/icon";
+import { isRichTextEmpty } from "@ttn/ui/lib/richText";
+
+import { RichText } from "@/components/shared/RichText";
 
 import { TREK_SECTION_IDS } from "../sections";
 import type { TrekDetail } from "../types";
@@ -10,7 +13,9 @@ type TrekPackingProps = Pick<TrekDetail, "packing"> & { heading: string };
 /** "Gear and essentials": what to pack, in four cards. */
 export const TrekPacking = ({ heading, packing }: TrekPackingProps) => (
   <section id={TREK_SECTION_IDS.usefulInfo} aria-labelledby="trek-packing-title" className="flex scroll-mt-16 flex-col gap-4 pt-2">
-    <SectionHeading id="trek-packing-title" eyebrow="Gear and essentials" title={heading} description={packing.intro} />
+    <SectionHeading id="trek-packing-title" eyebrow="Gear and essentials" title={heading}>
+      {!isRichTextEmpty(packing.line) && <RichText doc={packing.line} className="flex flex-col gap-2" />}
+    </SectionHeading>
     <div className="grid gap-4 md:grid-cols-2">
       {packing.groups.map((group) => (
         <div key={group.title} className={`${PANEL} flex flex-col gap-3 p-5`}>
