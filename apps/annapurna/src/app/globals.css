@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "../styles/theme.css";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--color-snow);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+
+  /* Text stays easy to read however wide the page is. A column that is narrow enough already (the trek beside its
+     booking card, a blog) sets --text-measure: none, so its text fills it instead of leaving a gap. */
+  p {
+    max-width: var(--text-measure, 72ch);
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+  }
+
+  /* An h4 sits under an h3 (a heading inside an itinerary day) and looks like one. */
+  h3,
+  h4 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+  }
+
+  a {
+    color: var(--color-forest);
+  }
+
+  a:hover {
+    color: var(--color-forest-deep);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Don't let the sticky section menu cover a heading it jumps to. */
+  [id] {
+    scroll-margin-top: 80px;
+  }
+}

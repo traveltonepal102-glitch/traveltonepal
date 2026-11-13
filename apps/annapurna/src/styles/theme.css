@@ -1,0 +1,134 @@
+/*
+ * Annapurna Trekking's own look (design: canvas "Annapurna Trekking Home Page"): the five prayer-flag colours of the
+ * logo (navy, white, ember red, pine green and sun yellow) on white and cloud grey, with Archivo headings and Inter
+ * text. Everything visual on this website comes from these tokens.
+ */
+@theme {
+  /* Navy: headings, the main buttons and the dark bands. */
+  --color-navy: #15233f;
+  --color-navy-deep: #101b33;
+  /* Pale blue: tints, chips and marked rows; azure: links and the altitude line. */
+  --color-sky: #eef2fb;
+  --color-azure: #2f55c8;
+  --color-on-navy-muted: #c3cbda;
+  /* Ember red: the section labels, "Check dates" and the high point. */
+  --color-ember: #c23a22;
+  --color-ember-deep: #a32f1b;
+  /* Sun yellow: stars, labels on navy and the "possible" months. */
+  --color-sun: #f2c230;
+  --color-cream: #fef8e4;
+  --color-cream-line: #f0dc99;
+  --color-cream-ink: #6b4e00;
+  --color-ink: #15233f;
+  --color-text: #2a3752;
+  --color-muted: #4e5a70;
+  --color-line: #dfe3ea;
+  --color-field: #c9d0dc;
+  --color-cloud: #f2f4f7;
+  --color-snow: #ffffff;
+  --color-whatsapp: #2e7d4f;
+  --color-focus: #2f55c8;
+
+  --font-display: var(--font-archivo), "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(21, 35, 63, 0.05), 0 6px 18px -10px rgba(21, 35, 63, 0.18);
+  --shadow-raised: 0 12px 32px rgba(21, 35, 63, 0.1);
+
+  --text-eyebrow: 13px;
+  --text-eyebrow--line-height: 18px;
+  /* Headings grow with the screen, from a phone (375px) to a laptop (1024px), instead of jumping at one width. */
+  --text-h1: clamp(36px, 3vw + 24px, 56px);
+  --text-h1--line-height: 1.08;
+  --text-h2: clamp(28px, 1.6vw + 22px, 38px);
+  --text-h2--line-height: 1.15;
+  --text-h3: clamp(20px, 0.4vw + 18.5px, 22px);
+  --text-h3--line-height: 1.28;
+  --text-body: 17px;
+  --text-body--line-height: 27px;
+}
+
+/* The space between the screen's edge and the content: 16px on a phone, growing to 24px. The header lines up with it. */
+:root {
+  --gutter: clamp(16px, 4vw, 24px);
+}
+
+/* The page's width and side gutters. */
+@utility wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/*
+ * A row of buttons. Below Tailwind's sm (640px) they stack, each as wide as the column: easy to tap, and no ragged rows.
+ * A group that pairs small buttons on a phone sets max-sm:grid-cols-2 and spans the wide ones (max-sm:col-span-2).
+ */
+@utility actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  @media (width < 40rem) {
+    display: grid;
+    align-items: stretch;
+  }
+}
+
+/*
+ * The box around a table. A table of four or more columns keeps its cells readable and scrolls sideways when the
+ * screen is too narrow, instead of breaking words onto one line each; a shadow at an edge shows there is more.
+ */
+@utility table-scroll {
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--color-snow) 30%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--color-snow) 30%, transparent) right / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(21 35 63 / 0.16), transparent) left / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(21 35 63 / 0.16), transparent) right / 12px 100% no-repeat scroll;
+  background-color: var(--color-snow);
+  & table:has(tr > :nth-child(4)) :is(th, td) {
+    min-width: 7rem;
+  }
+  & table:has(tr > :nth-child(4)) :is(th, td):first-child {
+    min-width: 4.5rem;
+  }
+}
+
+/* Small capitals above a heading, in ember red; on navy they turn sun yellow (eyebrow-on-dark). */
+@utility eyebrow {
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow--line-height);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ember);
+}
+
+@utility eyebrow-on-dark {
+  color: var(--color-sun);
+}
+
+/* The five prayer-flag colours as a thin band: the top of the page and the start of the footer. */
+@utility flag-stripe {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  height: 5px;
+  background: none;
+  & > span:nth-child(1) {
+    background: var(--color-azure);
+  }
+  & > span:nth-child(2) {
+    background: #e6e9ef;
+  }
+  & > span:nth-child(3) {
+    background: var(--color-ember);
+  }
+  & > span:nth-child(4) {
+    background: var(--color-whatsapp);
+  }
+  & > span:nth-child(5) {
+    background: var(--color-sun);
+  }
+}
