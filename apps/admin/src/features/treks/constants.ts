@@ -49,7 +49,7 @@ export const TREK_LIMITS = {
   dayDescription: 3000,
   mapPlace: 120,
   /** The lines under the packing list's, route map's and best months' headings: words, not formatting. */
-  headingLine: 600,
+  headingLine: 1500,
   packingGroupTitle: 60,
   faqTopicTitle: 60,
   faqQuestion: 200,

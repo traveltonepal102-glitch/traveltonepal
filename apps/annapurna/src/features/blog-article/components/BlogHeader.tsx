@@ -15,7 +15,7 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
 
   return (
     <header className="wrap flex flex-col gap-7 pt-6">
-      <div className="flex max-w-220 flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Blogs", href: ROUTES.blogs }, { label: topicLabel, href: `${ROUTES.blogs}?topic=${topic}` }]} />
         <p className="flex flex-wrap gap-2">
           <span className={`${TAG} bg-sky text-navy-deep`}>{topicLabel}</span>

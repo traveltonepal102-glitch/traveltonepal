@@ -44,14 +44,22 @@ export const BlogChecklist = ({ heading, items }: { heading: string; items: read
 );
 
 /** A question to us in the middle of the blog: the admin's words start the WhatsApp message. Left out without a number in Site settings. */
+/** "Ask us" in the middle of a blog: the heading typed in the editor, who answers, and the WhatsApp button. Left out without a number in Site settings. */
 export const BlogCta = async ({ heading, buttonText, message }: { heading: string; buttonText: string; message: string }) => {
   const { phoneDisplay } = await getSiteSettings();
   if (!phoneDisplay) return null;
 
   return (
-    <aside aria-label={heading} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-navy-deep p-5 md:p-6">
-      <p className="max-w-[40ch] font-display text-[22px] leading-7.5 font-semibold text-snow">{heading}</p>
-      <a href={getWhatsAppUrl(message)} className={whatsAppButton}>
+    <aside aria-label={heading} className="flex flex-wrap items-center gap-x-8 gap-y-5 rounded-2xl border border-solid border-line bg-cloud p-6 md:p-7">
+      <span aria-hidden="true" className="inline-flex size-14 flex-none items-center justify-center rounded-2xl bg-whatsapp text-snow">
+        <WhatsAppLogo size={28} />
+      </span>
+      <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-1">
+        <span className="eyebrow">Ask our team</span>
+        <p className="font-display text-[22px] leading-7.5 font-bold text-ink">{heading}</p>
+        <p className="text-[15px] leading-5.75 text-muted">A guide from our team answers you personally on WhatsApp, usually within a few hours.</p>
+      </div>
+      <a href={getWhatsAppUrl(message)} className={`${whatsAppButton} max-sm:w-full`}>
         <WhatsAppLogo />
         {buttonText}
       </a>

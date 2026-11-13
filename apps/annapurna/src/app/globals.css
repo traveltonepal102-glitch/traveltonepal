@@ -28,7 +28,7 @@
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: -0.015em;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
   /* Text stays easy to read however wide the page is. A column that is narrow enough already (the trek beside its
