@@ -16,7 +16,7 @@ import { TrekTop } from "./TrekTop";
  */
 export const HomePage = ({ data }: { data: HomeData }) => {
   const { top, trek, trekCard, otherTreks, reviews, rating, guides, company, adventures } = data;
-  const breadcrumbs = trek ? [{ label: "Home", href: ROUTES.home }, ...(trekCard ? [{ label: trekCard.region }] : []), { label: trek.name }] : [];
+  const breadcrumbs = trek ? [{ label: "Home", href: ROUTES.home }, { label: trek.name }] : [];
 
   return (
     <main id="main">

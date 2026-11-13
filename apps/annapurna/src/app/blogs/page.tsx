@@ -8,7 +8,7 @@ export const generateMetadata = async () => sitePageMetadata((await getBlogsPage
 
 const Blogs = () => (
   <>
-    <BlogsPage />
+    <BlogsPage listPage={1} />
     <PageSchemasJsonLd pages={[{ kind: "page", slug: "travel-guides" }]} />
   </>
 );

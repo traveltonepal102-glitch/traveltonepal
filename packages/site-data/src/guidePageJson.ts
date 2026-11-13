@@ -58,6 +58,11 @@ const authorSchema = z.object({
   name: z.string().trim().min(1),
   job_title: text,
   bio: text,
+  /** Web addresses only, the main one first; none from a view that doesn't send them yet. */
+  profile_links: z
+    .array(z.string())
+    .catch([])
+    .transform((links) => links.filter((link) => /^https?:\/\//.test(link))),
   photo: coverSchema.nullable().catch(null),
 });
 

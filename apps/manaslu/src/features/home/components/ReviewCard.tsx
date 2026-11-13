@@ -5,7 +5,7 @@ import type { HomeReview } from "../types";
 
 const SITE_NAMES = { google: "Google", tripadvisor: "Tripadvisor" } as const;
 
-/** One review from Google or Tripadvisor, word for word: five lines, then the link to the original. */
+/** One review from Google or Tripadvisor, word for word, cut after five lines. */
 export const ReviewCard = ({ review }: { review: HomeReview }) => (
   <article className="flex h-full flex-col gap-3 rounded-[14px] border border-solid border-line bg-snow p-5.5 shadow-card">
     <div className="flex items-center gap-3">
@@ -30,8 +30,5 @@ export const ReviewCard = ({ review }: { review: HomeReview }) => (
       ))}
     </p>
     <p className="line-clamp-5 text-base leading-6.25">{review.text}</p>
-    <a href={review.url} rel="noopener noreferrer" className="mt-auto text-[15px] font-semibold">
-      Read more on {SITE_NAMES[review.source]}
-    </a>
   </article>
 );

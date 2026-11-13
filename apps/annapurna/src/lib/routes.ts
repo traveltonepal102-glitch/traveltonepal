@@ -12,5 +12,8 @@ export const ROUTES = {
   review: "/review",
 } as const;
 
+/** A page of the blog list: the first is the Blogs page itself, the rest have an address of their own, built ahead. */
+export const blogsPagePath = (page: number) => (page <= 1 ? ROUTES.blogs : `${ROUTES.blogs}/page/${page}`);
+
 /** A trek's or a travel guide's address. */
 export const pagePath = (slug: string) => `/${slug}`;

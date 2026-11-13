@@ -1,3 +1,4 @@
+import { authorJsonLd } from "@ttn/site-data/authorJsonLd";
 import { imageFileUrl } from "@ttn/site-data/images";
 import { datesJsonLd } from "@ttn/site-data/pageDates";
 import { richTextToPlainText } from "@ttn/ui/lib/richText";
@@ -34,7 +35,7 @@ export const blogJsonLd = ({ slug, title, seo, image, author, faqs }: BlogArticl
         description: seo.description,
         image: absoluteUrl(imageFileUrl(image, IMAGE_WIDTH)),
         ...datesJsonLd(seo.dates),
-        author: { "@type": "Person", name: author.name, ...(author.role ? { jobTitle: author.role } : {}) },
+        author: authorJsonLd(author),
         publisher: { "@id": organizationId() },
         mainEntityOfPage: url,
       },

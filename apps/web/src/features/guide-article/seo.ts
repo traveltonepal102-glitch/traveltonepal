@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { authorJsonLd } from "@ttn/site-data/authorJsonLd";
 import { richTextToPlainText } from "@ttn/ui/lib/richText";
 
 import type { BreadcrumbItem } from "@/components/shared/Breadcrumbs";
@@ -57,7 +58,7 @@ export const articleJsonLd = (article: GuideArticle): JsonLdData => {
         description: article.seo.description,
         image: absoluteUrl(imageFileUrl(article.image, SHARE_IMAGE_WIDTH)),
         ...datesJsonLd({ published: article.publishedOn, modified: article.updatedOn }),
-        author: { "@type": "Person", name: article.author.name, ...(article.author.role ? { jobTitle: article.author.role } : {}) },
+        author: authorJsonLd(article.author),
         publisher: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl(ROUTES.home) },
         mainEntityOfPage: url,
       },

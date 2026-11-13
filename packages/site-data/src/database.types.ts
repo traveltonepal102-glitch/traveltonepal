@@ -323,7 +323,7 @@ export type WebTravelGuidePageRow = CoverColumns & ShareColumns & {
   /** Published treks only. */
   main_trek_slug: string | null;
   photo_trek_slug: string | null;
-  /** { kind, name, job_title, bio, photo }. */
+  /** { kind, name, job_title, bio, profile_links, photo }. */
   author: unknown;
   /** { name, role, photo }, or null without a checker who agreed to be shown. */
   checker: unknown;

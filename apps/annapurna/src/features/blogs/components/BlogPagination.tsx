@@ -1,63 +1,81 @@
-import type { MouseEvent } from "react";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { TrailIcon } from "@/components/ui/TrailIcon";
 
 import { pageNumbers } from "../blogFiltering";
-import { isPlainClick } from "../isPlainClick";
 
-const ITEM = "inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-[10px] border border-solid px-3 font-semibold no-underline";
+const ITEM = "inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-[10px] border border-solid px-3 font-semibold no-underline";
 const LINK = `${ITEM} border-line bg-snow text-ink hover:border-navy hover:text-navy`;
+const CURRENT = `${ITEM} border-navy bg-navy text-snow hover:text-snow`;
 
 type BlogPaginationProps = {
   page: number;
   pageCount: number;
-  hrefFor: (page: number) => string;
-  /** Called with the page chosen; without it the links simply load their address. */
+  /** A page's own address: the whole list's pages are real pages, so these are links. */
+  hrefFor?: (page: number) => string;
+  /** Without addresses (a search's or a topic's pages, which exist only in the browser): buttons that call this. */
   onChoose?: (page: number) => void;
 };
 
-/** Previous, the page numbers and Next, as real links. Hidden with a single page. */
+/** Previous, the page numbers and Next: links to the list's pages, or buttons through what a search found. Hidden with a single page. */
 export const BlogPagination = ({ page, pageCount, hrefFor, onChoose }: BlogPaginationProps) => {
   if (pageCount <= 1) return null;
 
-  const choose = (target: number) => (event: MouseEvent) => {
-    if (!onChoose || !isPlainClick(event)) return;
-    event.preventDefault();
-    onChoose(target);
+  const item = (target: number, children: ReactNode, rel?: "prev" | "next") => {
+    const isCurrent = !rel && target === page;
+    const shared = { "aria-label": rel ? undefined : `Page ${target}`, "aria-current": isCurrent ? ("page" as const) : undefined, className: isCurrent ? CURRENT : LINK };
+    if (hrefFor) {
+      return (
+        <Link href={hrefFor(target)} rel={rel} {...shared}>
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <button type="button" onClick={() => onChoose?.(target)} {...shared}>
+        {children}
+      </button>
+    );
   };
 
   return (
-    <nav aria-label="Pages of blogs" className="flex flex-wrap items-center justify-center gap-2">
-      {page > 1 && (
-        <a href={hrefFor(page - 1)} rel="prev" onClick={choose(page - 1)} className={LINK}>
-          <TrailIcon name="arrow" size={16} className="rotate-180" />
-          Previous
-        </a>
-      )}
-      {pageNumbers(page, pageCount).map((number, index) =>
-        number === "gap" ? (
-          <span key={`gap-${index}`} aria-hidden="true" className="px-1 text-muted">
-            …
-          </span>
-        ) : (
-          <a
-            key={number}
-            href={hrefFor(number)}
-            aria-label={`Page ${number}`}
-            aria-current={number === page ? "page" : undefined}
-            onClick={choose(number)}
-            className={number === page ? `${ITEM} border-navy bg-navy text-snow hover:text-snow` : LINK}
-          >
-            {number}
-          </a>
-        ),
-      )}
-      {page < pageCount && (
-        <a href={hrefFor(page + 1)} rel="next" onClick={choose(page + 1)} className={LINK}>
-          Next
-          <TrailIcon name="arrow" size={16} />
-        </a>
-      )}
+    <nav aria-label="Pages of blogs">
+      <ul className="m-0 flex list-none flex-wrap items-center justify-center gap-2 p-0">
+        {page > 1 && (
+          <li>
+            {item(
+              page - 1,
+              <>
+                <TrailIcon name="arrow" size={16} className="rotate-180" />
+                Previous
+              </>,
+              "prev",
+            )}
+          </li>
+        )}
+        {pageNumbers(page, pageCount).map((number, index) =>
+          number === "gap" ? (
+            <li key={`gap-${index}`} aria-hidden="true" className="px-1 text-muted">
+              …
+            </li>
+          ) : (
+            <li key={number}>{item(number, number)}</li>
+          ),
+        )}
+        {page < pageCount && (
+          <li>
+            {item(
+              page + 1,
+              <>
+                Next
+                <TrailIcon name="arrow" size={16} />
+              </>,
+              "next",
+            )}
+          </li>
+        )}
+      </ul>
     </nav>
   );
 };

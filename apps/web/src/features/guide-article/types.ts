@@ -27,6 +27,8 @@ export type ArticleAuthor = {
   /** Job title under the name, e.g. "Senior trek leader, Langtang". */
   role: string;
   bio: string;
+  /** For the structured data only (never shown): the author's profile links from the admin, the main one first. */
+  profileLinks: string[];
   photo?: SiteImageSource;
   /** Office team and trekking guides get the blue tick; guest writers don't. */
   isVerified: boolean;

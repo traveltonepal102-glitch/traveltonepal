@@ -1,26 +1,17 @@
 "use client";
 
-import type { MouseEvent } from "react";
-
 import { GuideCard } from "@/features/home/components/GuideCard";
 import type { HomeGuide } from "@/features/home/types";
-import { ROUTES } from "@/lib/routes";
+import { blogsPagePath } from "@/lib/routes";
 
-import { EMPTY_BLOG_FILTERS, blogTopics, serializeBlogFilters, toBlogPage } from "../blogFiltering";
+import { EMPTY_BLOG_FILTERS, blogTopics, toBlogPage } from "../blogFiltering";
 import type { BlogFilters } from "../blogFiltering";
 import { useBlogFilters } from "../hooks/useBlogFilters";
-import { isPlainClick } from "../isPlainClick";
 import { BlogPagination } from "./BlogPagination";
 import { BlogSearchBox } from "./BlogSearchBox";
 
 const LIST_ID = "blog-list";
 const CHIP = "inline-flex min-h-10 items-center rounded-full border border-solid px-4 text-[15px] font-semibold no-underline";
-
-/** A link to these filters; with none, the page's own address. */
-const hrefOf = (filters: BlogFilters) => {
-  const query = serializeBlogFilters(filters);
-  return query ? `${ROUTES.blogs}?${query}` : ROUTES.blogs;
-};
 
 const countWords = (total: number) => `${total} ${total === 1 ? "blog" : "blogs"}`;
 
@@ -31,25 +22,30 @@ const statusLine = (total: number, q: string, topicLabel: string | undefined, pa
   return `${countWords(total)}${where}${pageCount > 1 ? `, page ${page} of ${pageCount}` : ""}`;
 };
 
-type ViewProps = { guides: readonly HomeGuide[]; filters: BlogFilters; onChange?: (next: BlogFilters, history: "push" | "replace") => void };
+type ViewProps = {
+  guides: readonly HomeGuide[];
+  /** The page of the whole list this address is (1 on the Blogs page itself). */
+  listPage: number;
+  filters: BlogFilters;
+  onChange?: (next: BlogFilters, history: "push" | "replace") => void;
+};
 
-const BlogExplorerView = ({ guides, filters, onChange }: ViewProps) => {
+/**
+ * The whole list is real pages, each with its address and links to the others, so a crawler gets on every address what a
+ * visitor sees. A search or a topic narrows the list in the browser only: its controls are buttons, so no address is
+ * offered for something the server doesn't build.
+ */
+const BlogExplorerView = ({ guides, listPage, filters, onChange }: ViewProps) => {
   const topics = blogTopics(guides);
-  const { items, page, pageCount, total, isFiltering } = toBlogPage(guides, filters);
+  const isNarrowed = Boolean(filters.q || filters.topic);
+  const { items, page, pageCount, total, isFiltering } = toBlogPage(guides, isNarrowed ? filters : { ...EMPTY_BLOG_FILTERS, page: listPage });
   const topicLabel = topics.find((topic) => topic.id === filters.topic)?.label;
   // By name while narrowed down; otherwise the list is newest first.
   const listHeading = filters.q ? "Search results" : (topicLabel ?? "Latest blogs");
 
-  const chooseTopic = (topic: string | null) => (event: MouseEvent) => {
-    if (!onChange || !isPlainClick(event)) return;
-    event.preventDefault();
-    onChange({ ...filters, topic, page: 1 }, "replace");
-  };
-
-  const clearAll = (event: MouseEvent) => {
-    if (!onChange || !isPlainClick(event)) return;
-    event.preventDefault();
-    onChange(EMPTY_BLOG_FILTERS, "replace");
+  const showPage = (number: number) => {
+    onChange?.({ ...filters, page: number }, "push");
+    document.getElementById(LIST_ID)?.scrollIntoView();
   };
 
   return (
@@ -62,14 +58,14 @@ const BlogExplorerView = ({ guides, filters, onChange }: ViewProps) => {
                 const isCurrent = filters.topic === id;
                 return (
                   <li key={label}>
-                    <a
-                      href={hrefOf({ ...filters, topic: id, page: 1 })}
-                      aria-current={isCurrent ? "true" : undefined}
-                      onClick={chooseTopic(id)}
-                      className={`${CHIP} ${isCurrent ? "border-forest bg-forest text-snow hover:text-snow" : "border-line bg-snow text-ink hover:border-forest hover:text-forest"}`}
+                    <button
+                      type="button"
+                      aria-pressed={isCurrent}
+                      onClick={() => onChange?.({ ...filters, topic: id, page: 1 }, "replace")}
+                      className={`${CHIP} cursor-pointer ${isCurrent ? "border-forest bg-forest text-snow hover:text-snow" : "border-line bg-snow text-ink hover:border-forest hover:text-forest"}`}
                     >
                       {label}
-                    </a>
+                    </button>
                   </li>
                 );
               })}
@@ -90,9 +86,9 @@ const BlogExplorerView = ({ guides, filters, onChange }: ViewProps) => {
             <h3>No blogs found</h3>
             <p>{isFiltering ? "Try a shorter word, or look through all of them." : "New blogs will be listed here."}</p>
             {isFiltering && (
-              <a href={ROUTES.blogs} onClick={clearAll} className={`${CHIP} border-forest bg-forest text-snow hover:text-snow`}>
+              <button type="button" onClick={() => onChange?.(EMPTY_BLOG_FILTERS, "replace")} className={`${CHIP} cursor-pointer border-forest bg-forest text-snow hover:text-snow`}>
                 See all blogs
-              </a>
+              </button>
             )}
           </div>
         ) : (
@@ -103,29 +99,18 @@ const BlogExplorerView = ({ guides, filters, onChange }: ViewProps) => {
           </div>
         )}
       </div>
-      <BlogPagination
-        page={page}
-        pageCount={pageCount}
-        hrefFor={(number) => hrefOf({ ...filters, page: number })}
-        onChoose={
-          onChange &&
-          ((number) => {
-            onChange({ ...filters, page: number }, "push");
-            document.getElementById(LIST_ID)?.scrollIntoView();
-          })
-        }
-      />
+      {isNarrowed ? <BlogPagination page={page} pageCount={pageCount} onChoose={showPage} /> : <BlogPagination page={page} pageCount={pageCount} hrefFor={blogsPagePath} />}
     </section>
   );
 };
 
-type BlogExplorerProps = { guides: readonly HomeGuide[] };
+type BlogExplorerProps = { guides: readonly HomeGuide[]; listPage: number };
 
-/** The blogs with search, topics and pages, following the address. */
-export const BlogExplorer = ({ guides }: BlogExplorerProps) => {
+/** The blogs with their pages, and a search and topics that follow the address's query. */
+export const BlogExplorer = ({ guides, listPage }: BlogExplorerProps) => {
   const { filters, go } = useBlogFilters(blogTopics(guides).map((topic) => topic.id));
-  return <BlogExplorerView guides={guides} filters={filters} onChange={go} />;
+  return <BlogExplorerView guides={guides} listPage={listPage} filters={filters} onChange={go} />;
 };
 
-/** The pre-rendered version (no address yet): page 1 of every blog, with links that load their address. */
-export const BlogExplorerStatic = ({ guides }: BlogExplorerProps) => <BlogExplorerView guides={guides} filters={EMPTY_BLOG_FILTERS} />;
+/** The pre-rendered version (the query isn't known when the page is built): this page of the whole list. */
+export const BlogExplorerStatic = ({ guides, listPage }: BlogExplorerProps) => <BlogExplorerView guides={guides} listPage={listPage} filters={EMPTY_BLOG_FILTERS} />;

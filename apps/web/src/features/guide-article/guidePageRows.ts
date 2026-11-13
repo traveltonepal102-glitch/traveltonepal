@@ -50,10 +50,11 @@ export const toGuideArticle = ({ page, treks }: GuidePageSource, photosBaseUrl: 
           name: author.name,
           role: author.job_title,
           bio: author.bio,
+          profileLinks: author.profile_links,
           photo: author.photo ? coverImage(author.photo, photosBaseUrl, author.name, author.name) : undefined,
           isVerified: author.kind !== "guest",
         }
-      : { name: `${SITE_NAME} team`, role: "", bio: "", isVerified: true },
+      : { name: `${SITE_NAME} team`, role: "", bio: "", profileLinks: [], isVerified: true },
     checker: checker ? toPerson({ ...checker, quote: "" }, photosBaseUrl) : undefined,
     trek: trekOf(page.main_trek_slug) ?? trekOf(page.photo_trek_slug),
     months,

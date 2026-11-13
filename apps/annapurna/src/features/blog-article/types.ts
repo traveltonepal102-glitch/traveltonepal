@@ -9,7 +9,8 @@ import type { HomeGuide, HomeSeo, HomeTrekCard } from "@/features/home/types";
 
 export type BlogBlock = GuideBlock<HomeTrekCard>;
 
-export type BlogAuthor = { name: string; role: string; bio: string; photo?: SiteImageSource; isOurTeam: boolean };
+/** `profileLinks`: for the structured data only (never shown), the author's profile links from the admin, the main one first. */
+export type BlogAuthor = { name: string; role: string; bio: string; profileLinks: string[]; photo?: SiteImageSource; isOurTeam: boolean };
 
 export type BlogTocLink = { id: string; label: string };
 

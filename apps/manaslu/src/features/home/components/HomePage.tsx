@@ -22,7 +22,7 @@ export const HomePage = ({ data }: { data: HomeData }) => {
     <main id="main">
       {trek && <JsonLd data={homeJsonLd(trek, data.seo)} />}
       <section aria-label="Top of the page" className="wrap flex flex-col gap-5 pt-7">
-        {trek && <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, ...(trekCard ? [{ label: trekCard.region }] : []), { label: trek.name }]} />}
+        {trek && <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: trek.name }]} />}
         <HomeTitle top={top} trek={trek} rating={rating} hasReviews={Boolean(trek?.sections.includes("reviews")) && reviews.length > 0} />
         <HomeGallery main={top.photo} photos={trek?.photos ?? []} />
       </section>

@@ -87,8 +87,8 @@ export const toBlogArticle = ({ page, treks, guides, photosBaseUrl, filesBaseUrl
     updatedLabel: laterUpdate && formatGuideDate(laterUpdate),
     readMinutes: page.read_minutes,
     author: author
-      ? { name: author.name, role: author.job_title, bio: author.bio, photo: author.photo ? coverImage(author.photo, photosBaseUrl, author.name, author.name) : undefined, isOurTeam: author.kind !== "guest" }
-      : { name: `${SITE_NAME} team`, role: "", bio: "", isOurTeam: true },
+      ? { name: author.name, role: author.job_title, bio: author.bio, profileLinks: author.profile_links, photo: author.photo ? coverImage(author.photo, photosBaseUrl, author.name, author.name) : undefined, isOurTeam: author.kind !== "guest" }
+      : { name: `${SITE_NAME} team`, role: "", bio: "", profileLinks: [], isOurTeam: true },
     checker: checker ? toPerson({ ...checker, quote: "" }, photosBaseUrl) : undefined,
     trek: trekOf(page.main_trek_slug) ?? trekOf(page.photo_trek_slug),
     months,

@@ -154,9 +154,15 @@ describe("toGuideArticle", () => {
     ]);
   });
 
+  it("passes on the author's profile links, web addresses only", () => {
+    const author = { kind: "office", name: "Anita Shrestha", job_title: "", bio: "", profile_links: ["https://www.linkedin.com/in/anita", "javascript:alert(1)"], photo: null };
+    expect(toGuideArticle({ page: page({ author }), treks }, BASE, FILES)?.author.profileLinks).toEqual(["https://www.linkedin.com/in/anita"]);
+  });
+
   it("marks a guest writer as not verified, and has no page without a cover photo", () => {
     const guest = toGuideArticle({ page: page({ author: { kind: "guest", name: "Tom Fletcher", job_title: "", bio: "", photo: null } }), treks }, BASE, FILES);
     expect(guest?.author.isVerified).toBe(false);
+    expect(guest?.author.profileLinks).toEqual([]);
     expect(toGuideArticle({ page: page({ cover_id: null }), treks }, BASE, FILES)).toBeUndefined();
   });
 

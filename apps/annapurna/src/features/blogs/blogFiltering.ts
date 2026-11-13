@@ -2,7 +2,10 @@ import type { HomeGuide } from "@/features/home/types";
 
 export const BLOGS_PER_PAGE = 9;
 
-/** The list's state, kept in the address so links, sharing and the back button work. */
+/** How many pages the whole list has (each with an address of its own, see `blogsPagePath`). */
+export const blogPageCount = (total: number, perPage = BLOGS_PER_PAGE) => Math.max(1, Math.ceil(total / perPage));
+
+/** A search or a topic narrowing the list, kept in the address so sharing and the back button work; `page` is the page of what they found. */
 export type BlogFilters = { q: string; topic: string | null; page: number };
 
 export const EMPTY_BLOG_FILTERS: BlogFilters = { q: "", topic: null, page: 1 };
@@ -42,7 +45,7 @@ export const blogTopics = (guides: readonly HomeGuide[]) => [...new Map(guides.m
 /** What one page of the list shows. A page past the end shows the last one. */
 export const toBlogPage = (guides: readonly HomeGuide[], { q, topic, page }: BlogFilters, perPage = BLOGS_PER_PAGE) => {
   const matches = guides.filter((guide) => (!topic || guide.topic === topic) && matchesBlogSearch(guide, q));
-  const pageCount = Math.max(1, Math.ceil(matches.length / perPage));
+  const pageCount = blogPageCount(matches.length, perPage);
   const current = Math.min(page, pageCount);
   return {
     items: matches.slice((current - 1) * perPage, current * perPage),

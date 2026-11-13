@@ -17,7 +17,7 @@ export const TrekPage = ({ data }: { data: TrekPageData }) => {
     <main id="main">
       <JsonLd data={trekPageJsonLd(data)} />
       <TrekTop
-        breadcrumbs={[{ label: "Home", href: ROUTES.home }, { label: card.region }, { label: trek.name }]}
+        breadcrumbs={[{ label: "Home", href: ROUTES.home }, { label: trek.name }]}
         top={top}
         trek={trek}
         rating={rating}

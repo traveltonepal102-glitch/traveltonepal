@@ -9,7 +9,7 @@ const blog = {
   slug: "permits",
   title: "Permits",
   image: { src: "https://photos/cover", alt: "", variantWidths: [1280] },
-  author: { name: "Rajan", role: "Permits manager", bio: "", isOurTeam: true },
+  author: { name: "Rajan", role: "Permits manager", bio: "", profileLinks: [], isOurTeam: true },
   faqs: [{ question: "Why?", body: doc }],
   seo: { title: "Permits for 2026", description: "All three permits", shareImageBase: "https://photos/share.jpg", isLive: true, dates },
   isHidden: false,
@@ -47,6 +47,13 @@ describe("blogJsonLd", () => {
     expect(types(data)).toEqual(["BlogPosting", "BreadcrumbList", "FAQPage"]);
     expect(data["@graph"][0]).toMatchObject({ headline: "Permits", datePublished: dates.published, dateModified: dates.modified, author: { name: "Rajan", jobTitle: "Permits manager" } });
     expect(JSON.stringify(data["@graph"][1])).toContain('"position":3,"name":"Permits"');
+  });
+
+  it("gives the author's profile links: the main one as the address, all of them as the same person", () => {
+    const links = ["https://www.linkedin.com/in/rajan", "https://www.facebook.com/rajan"];
+    const withLinks = blogJsonLd({ ...blog, author: { ...blog.author, profileLinks: links } })["@graph"][0];
+    expect(withLinks).toMatchObject({ author: { "@type": "Person", name: "Rajan", url: links[0], sameAs: links } });
+    expect(JSON.stringify(blogJsonLd(blog)["@graph"][0])).not.toContain("sameAs");
   });
 
   it("answers each question in plain text, and leaves the questions out without any", () => {

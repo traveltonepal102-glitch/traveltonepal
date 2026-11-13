@@ -19,7 +19,7 @@ export const TrekPage = ({ data }: { data: TrekPageData }) => {
     <main id="main">
       <JsonLd data={trekPageJsonLd(data)} />
       <section aria-label="Top of the page" className="wrap flex flex-col gap-5 pt-7">
-        <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: card.region }, { label: trek.name }]} />
+        <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: trek.name }]} />
         <HomeTitle top={top} trek={trek} rating={rating} hasReviews={trek.sections.includes("reviews") && reviews.length > 0} />
         <HomeGallery photos={trek.photos} />
       </section>
