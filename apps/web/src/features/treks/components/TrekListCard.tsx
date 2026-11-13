@@ -60,7 +60,7 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
               {trek.name}
             </Link>
           ) : (
-            <a href={trekInquiryUrl(trek)} target="_blank" rel="noopener noreferrer" data-trek-link className={STRETCHED_LINK}>
+            <a href={trekInquiryUrl(trek)} target="_blank" rel="nofollow noopener noreferrer" data-trek-link className={STRETCHED_LINK}>
               {trek.name}
               <span className="sr-only">: ask about it on WhatsApp</span>
             </a>
@@ -98,7 +98,7 @@ export const TrekListCard = ({ trek }: { trek: TrekSummary }) => {
             <a
               href={trekInquiryUrl(trek)}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               aria-label={`Ask about the ${trek.name} on WhatsApp`}
               className="relative z-10 inline-flex min-h-11 flex-none items-center gap-1.5 rounded-md border border-green-line bg-green-tint px-3.5 text-body-sm font-bold text-whatsapp transition-colors hover:bg-green-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >

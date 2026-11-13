@@ -16,7 +16,7 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => (
                 {item.label}
               </Link>
             ) : (
-              <span aria-current={isLast ? "page" : undefined} className={isLast ? "font-medium text-ink" : undefined}>
+              <span aria-current={isLast ? "page" : undefined} className={isLast ? "font-semibold text-ink" : undefined}>
                 {item.label}
               </span>
             )}

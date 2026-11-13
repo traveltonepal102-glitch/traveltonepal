@@ -14,7 +14,7 @@ describe("the company's words on the home page", () => {
   });
 
   it("says nothing when the page has no row", () => {
-    expect(toHomeCompany(null, "https://photos")).toEqual({ storyTeaser: "", founder: null, promises: [] });
+    expect(toHomeCompany(null, "https://photos")).toEqual({ storyTeaser: "", founder: null, promisesHeading: "", promisesIntro: "", promises: [] });
   });
 
   it("gives the founder a photo only with its sizes", () => {

@@ -20,14 +20,14 @@ export const FooterContactBand = () => (
         <a
           href={getWhatsAppUrl()}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           className="inline-flex min-h-12 flex-none items-center justify-center gap-2.5 rounded-full bg-whatsapp px-5.5 font-bold whitespace-nowrap text-white transition-colors hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:w-full"
         >
           <WhatsAppLogo />
           Plan my trek on WhatsApp
         </a>
         <a
-          href={getEmailUrl()}
+          href={getEmailUrl()} rel="nofollow"
           className="inline-flex min-h-12 flex-none items-center justify-center gap-2.5 rounded-full border border-white/35 px-5.5 font-bold whitespace-nowrap text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:w-full"
         >
           <Icon name="mail" size={20} />

@@ -1100,6 +1100,7 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
   "hidden_shared_sections": [],
   "section_order": [],
   "pdf_map_path": null,
+  "gpx_track_path": null,
   "intro_heading": "",
   "overview_heading": "",
   "regions_heading": "",

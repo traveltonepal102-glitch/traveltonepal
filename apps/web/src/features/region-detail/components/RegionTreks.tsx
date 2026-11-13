@@ -38,7 +38,7 @@ const RegionTrekCard = ({ pick: { trek, label, note } }: { pick: RegionTrekPick 
       {content}
     </Link>
   ) : (
-    <a href={trekInquiryUrl(trek)} target="_blank" rel="noopener noreferrer" className={CARD_LINK}>
+    <a href={trekInquiryUrl(trek)} target="_blank" rel="nofollow noopener noreferrer" className={CARD_LINK}>
       {content}
     </a>
   );
@@ -65,12 +65,12 @@ export const RegionTreks = ({ region }: { region: RegionDetail }) => (
               <a
                 href={regionInquiryUrl(region.name)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
                 className="rounded-sm font-bold text-whatsapp hover:underline focus-visible:outline-2 focus-visible:outline-ring"
               >
                 Plan it on WhatsApp →
               </a>
-              <a href={regionInquiryEmailUrl(region.name)} className="rounded-sm font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-ring">
+              <a href={regionInquiryEmailUrl(region.name)} rel="nofollow" className="rounded-sm font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-ring">
                 Or email us →
               </a>
             </p>

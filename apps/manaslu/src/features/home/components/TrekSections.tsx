@@ -38,13 +38,13 @@ export const TrekSections = ({ trek, company, reviews, rating }: TrekSectionsPro
     // The best months follow the prices: both are about when and how much.
     pricing: (
       <>
-        {trek.pricing.prices.length > 0 && <TrekPrices pricing={trek.pricing} />}
+        {trek.pricing.prices.length > 0 && <TrekPrices pricing={trek.pricing} trekName={trek.name} days={trek.days} />}
         {trek.months && <BestMonths heading={trek.months.heading} line={trek.months.line} ratings={trek.months.ratings} />}
       </>
     ),
     inclusions: <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} />,
     route_map: trek.routeMap && <TrekRouteMap name={trek.name} routeMap={trek.routeMap} />,
-    why_book: <WhyBookWithUs promises={company.promises} />,
+    why_book: <WhyBookWithUs company={company} />,
     credentials: <TrekCredentials />,
     packing: <TrekPacking packing={trek.packing} />,
     field_guide: <TrekFieldGuide fieldGuide={trek.fieldGuide} />,

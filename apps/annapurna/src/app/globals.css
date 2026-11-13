@@ -69,6 +69,16 @@
     outline-offset: 2px;
   }
 
+  /* The line icons (TrailIcon): drawn from the sprite, styled here once instead of on every <svg>. */
+  .trail-icon {
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   /* Don't let the sticky section menu cover a heading it jumps to. */
   [id] {
     scroll-margin-top: 80px;

@@ -35,7 +35,9 @@ const nextConfig: NextConfig = {
   // before the build gives up.
   experimental: {
     // Most visitors arrive once from Google: the CSS comes inside the page instead of as a render-blocking request.
-    inlineCss: true,
+    // The stylesheet is one cached file: inlined, its 60 KB sat in the HTML and twice more in React's payload (180 KB of
+    // every page, 3 s of parsing on a phone), and the first paint on a cached visit was no faster.
+    inlineCss: false,
     staticGenerationMaxConcurrency: 2,
     staticGenerationMinPagesPerWorker: 1000,
     staticGenerationRetryCount: 3,

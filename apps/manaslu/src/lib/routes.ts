@@ -4,6 +4,8 @@ export const ROUTES = {
   blogs: "/blogs",
   about: "/about",
   contact: "/contact",
+  /** The blog post with the latest news from the Manaslu trails, linked from the menu as "Manaslu Updates". */
+  updates: "/manaslu-trek-latest-update-news",
   terms: "/terms",
   privacy: "/privacy",
   impressum: "/impressum",

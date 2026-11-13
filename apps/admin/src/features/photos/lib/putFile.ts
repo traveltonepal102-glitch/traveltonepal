@@ -8,14 +8,15 @@ export class UploadStoppedError extends Error {}
  * can't report upload progress. Rejects with a message for the editor on a network error or a non-2xx answer,
  * and with UploadStoppedError when `signal` stops it (storage then keeps nothing).
  */
-export const putFile = (url: string, file: File, onProgress: (fraction: number) => void, signal?: AbortSignal) =>
+/** `contentType` when the browser may not know the file's type (a GPX file): it must match what the upload link was signed for. */
+export const putFile = (url: string, file: File, onProgress: (fraction: number) => void, signal?: AbortSignal, contentType = file.type) =>
   new Promise<void>((resolve, reject) => {
     if (signal?.aborted) return reject(new UploadStoppedError());
     const request = new XMLHttpRequest();
     signal?.addEventListener("abort", () => request.abort(), { once: true });
     request.onabort = () => reject(new UploadStoppedError());
     request.open("PUT", url);
-    request.setRequestHeader("content-type", file.type);
+    request.setRequestHeader("content-type", contentType);
     request.setRequestHeader("x-upsert", "false");
     request.upload.onprogress = (event) => {
       if (event.lengthComputable) onProgress(event.loaded / event.total);

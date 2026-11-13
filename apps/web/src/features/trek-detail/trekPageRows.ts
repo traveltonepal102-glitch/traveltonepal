@@ -158,8 +158,9 @@ export const toTrekDetail = (
     routeMap: {
       place: firstText(page.map_place) ?? `${summary.name}, Nepal`,
       myMapsId: page.my_maps_id ?? undefined,
-      // The database only takes pdf-maps/<uuid>.pdf, so the path is safe to add to the address.
+      // The database only takes pdf-maps/<uuid>.pdf and gpx-tracks/<uuid>.gpx, so the paths are safe to add to the address.
       pdfUrl: page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined,
+      gpxUrl: page.gpx_track_path ? `${trekFilesBaseUrl}/${page.gpx_track_path}` : undefined,
       line: toRichTextDoc(page.route_map_line),
     },
     packing: { line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups) },

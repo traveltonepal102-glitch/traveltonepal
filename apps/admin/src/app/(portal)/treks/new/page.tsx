@@ -41,7 +41,7 @@ const NewTrekPage = async () => {
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={null}
       isNew
-      pdfMapUrl={null}
+      trekFileUrls={{ pdfMap: null, gpxTrack: null }}
     />
   );
 };

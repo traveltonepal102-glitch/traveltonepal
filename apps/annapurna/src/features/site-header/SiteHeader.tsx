@@ -61,7 +61,7 @@ export const SiteHeader = async () => {
             </p>
             <p className="flex flex-none gap-x-5">
               {phoneDisplay && (
-                <a href={getWhatsAppUrl()} className={BAR_LINK}>
+                <a href={getWhatsAppUrl()} rel="nofollow" className={BAR_LINK}>
                   <span className="text-whatsapp">
                     <WhatsAppLogo size={14} />
                   </span>
@@ -69,7 +69,7 @@ export const SiteHeader = async () => {
                 </a>
               )}
               {email && (
-                <a href={getEmailUrl()} className={BAR_LINK}>
+                <a href={getEmailUrl()} rel="nofollow" className={BAR_LINK}>
                   {email}
                 </a>
               )}
@@ -99,7 +99,7 @@ export const SiteHeader = async () => {
               {(phoneDisplay || email) && (
                 <p className="mb-1 flex flex-col gap-1 text-[15px]">
                   {phoneDisplay && (
-                    <a href={getWhatsAppUrl()} className={MENU_CONTACT_LINK}>
+                    <a href={getWhatsAppUrl()} rel="nofollow" className={MENU_CONTACT_LINK}>
                       <span className="inline-flex text-whatsapp">
                         <WhatsAppLogo size={18} />
                       </span>
@@ -107,7 +107,7 @@ export const SiteHeader = async () => {
                     </a>
                   )}
                   {email && (
-                    <a href={getEmailUrl()} className={MENU_CONTACT_LINK}>
+                    <a href={getEmailUrl()} rel="nofollow" className={MENU_CONTACT_LINK}>
                       <TrailIcon name="mail" size={18} className="text-azure" />
                       {email}
                     </a>
@@ -116,7 +116,7 @@ export const SiteHeader = async () => {
               )}
               <PlanTrekButton hasWhatsApp={Boolean(phoneDisplay)} className="w-full" />
               {email && (
-                <a href={emailHref} className={`${outlineButton} w-full`}>
+                <a href={emailHref} rel="nofollow" className={`${outlineButton} w-full`}>
                   <TrailIcon name="mail" />
                   Email us
                 </a>

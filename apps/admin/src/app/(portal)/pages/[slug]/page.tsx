@@ -104,7 +104,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
   }
 
   // The website's own people: its founder is one of its office authors, its team its own authors and guides.
-  const [authors, guides, settings, regions] = await Promise.all([listAuthors(site.id), listTrekkingGuides(site.id), getSiteSettings(site.id), listRegions()]);
+  const [authors, guides, settings, regions] = await Promise.all([listAuthors(site.id), listTrekkingGuides(site.id), getSiteSettings(site.id), site.kind === "main" ? listRegions() : null]);
   return (
     <AboutPageEditor
       action={saveAboutPage.bind(null, site.id)}
@@ -114,7 +114,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
       photoSlots={page.photoSlots}
       officeAuthors={authors.filter((author) => author.kind === "office").map((author) => ({ id: author.id, name: author.name, jobTitle: author.jobTitle }))}
       team={aboutTeamPeople(authors, guides, { authorHref: authorPath, guideHref: guidePath })}
-      facts={aboutFactsFrom(settings, regions.length)}
+      facts={aboutFactsFrom(settings, regions?.length ?? null)}
       websiteUrl={websiteUrl}
       lastSaved={lastSaved}
     />

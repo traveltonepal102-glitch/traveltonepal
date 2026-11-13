@@ -11,7 +11,7 @@ import type { BlogBlock } from "../../types";
 type BlogEmbedProps = Omit<Extract<BlogBlock, { type: "embed" }>, "type">;
 
 /**
- * A map or video from an allowed service (@ttn/config/embeds). Nothing is requested from the service until the visitor
+ * A frame from any https address (@ttn/config/embeds): a map, a video or a widget. Nothing is requested from the service until the visitor
  * loads it here or allows "External media" in Cookie settings. The frame only runs its own scripts and opens links in a new tab.
  */
 export const BlogEmbed = ({ url, service, height, title, caption }: BlogEmbedProps) => {
@@ -24,7 +24,7 @@ export const BlogEmbed = ({ url, service, height, title, caption }: BlogEmbedPro
         {isLoaded || consent?.externalMedia ? (
           <iframe
             src={url}
-            title={`${service.name} ${service.kind}: ${title}`}
+            title={`${service.kind === "content" ? `Content from ${service.name}` : `${service.name} ${service.kind}`}: ${title}`}
             loading="lazy"
             allow="fullscreen; picture-in-picture"
             allowFullScreen
@@ -40,7 +40,7 @@ export const BlogEmbed = ({ url, service, height, title, caption }: BlogEmbedPro
               Loading it connects to {service.company}, which can see your IP address and may set cookies.
             </p>
             <button type="button" onClick={() => setIsLoaded(true)} className={`${primaryButton} cursor-pointer border-0`}>
-              Load {service.name} {service.kind}
+              {service.kind === "content" ? `Load content from ${service.name}` : `Load ${service.name} ${service.kind}`}
             </button>
           </div>
         )}

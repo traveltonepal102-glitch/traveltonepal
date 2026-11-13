@@ -56,6 +56,7 @@ const page = {
   faq_heading: "",
   region_month_ratings: ["avoid", "avoid", "best", "best", "best", "possible", "avoid", "avoid", "best", "best", "best", "possible"],
   pdf_map_path: null,
+  gpx_track_path: null,
   guides_heading: "",
   guides_intro: "",
   meal_budget_min_usd: null,

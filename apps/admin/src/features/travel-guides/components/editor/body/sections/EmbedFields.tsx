@@ -1,4 +1,4 @@
-import { EMBED_HEIGHTS, EMBED_PROVIDERS, toEmbed } from "@ttn/config/embeds";
+import { EMBED_HEIGHTS, toEmbed } from "@ttn/config/embeds";
 import type { EmbedHeight } from "@ttn/config/embeds";
 import { Icon } from "@ttn/ui/icon";
 
@@ -27,9 +27,7 @@ const HEIGHTS: { value: EmbedHeight; label: string }[] = [
   { value: "tall", label: `Tall (${EMBED_HEIGHTS.tall} px)` },
 ];
 
-const SERVICES = EMBED_PROVIDERS.map((provider) => provider.name).join(", ");
-
-/** "Embed": a map or video from an allowed service, loaded on the website only after a click (privacy rules). */
+/** "Embed": a frame from any https address (a map, a video, a widget), loaded on the website only after a click or consent (privacy rules). */
 export const EmbedFields = ({ code, height, title, caption, field, errors, onChange }: EmbedFieldsProps) => {
   const embed = toEmbed(code);
   return (
@@ -38,7 +36,7 @@ export const EmbedFields = ({ code, height, title, caption, field, errors, onCha
         <TextField
           name="sectionEmbedCode"
           label="Embed code or link"
-          hint={`From ${SERVICES}: use the service’s Share › Embed and copy the code. A Google My Maps or Vimeo link works too.`}
+          hint="Use the service’s Share › Embed and copy the code, or paste an https link. Google Maps, Vimeo, Komoot and Wikiloc are named on the website; anything else by its domain."
           multiline
           rows={3}
           value={code}
@@ -51,7 +49,7 @@ export const EmbedFields = ({ code, height, title, caption, field, errors, onCha
         {embed && (
           <p className="m-0 inline-flex items-center gap-1.5 text-caption font-semibold text-whatsapp">
             <Icon name="check_circle" size={16} />
-            {embed.provider.name} {embed.provider.kind}: visitors load it with a click, or once they allow external media.
+            {embed.provider.kind === "content" ? `Content from ${embed.provider.name}` : `${embed.provider.name} ${embed.provider.kind}`}: visitors load it with a click, or once they allow external media.
           </p>
         )}
       </div>

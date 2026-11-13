@@ -70,13 +70,13 @@ export const NotFoundPage = async () => {
               <p className="text-base leading-6.5">Tell us what you were looking for and we will send you the right link.</p>
               <div className="mt-2 flex flex-col gap-2.5">
                 {phoneDisplay && (
-                  <a href={getWhatsAppUrl("Hello! I was looking for a page on your website and could not find it.")} className={whatsAppButton}>
+                  <a href={getWhatsAppUrl("Hello! I was looking for a page on your website and could not find it.")} rel="nofollow" className={whatsAppButton}>
                     <WhatsAppLogo />
                     Ask on WhatsApp
                   </a>
                 )}
                 {email && (
-                  <a href={getEmailUrl({ subject: "A page I could not find on your website" })} className={`${outlineButton} bg-snow!`}>
+                  <a href={getEmailUrl({ subject: "A page I could not find on your website" })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
                     <TrailIcon name="mail" />
                     Email us
                   </a>

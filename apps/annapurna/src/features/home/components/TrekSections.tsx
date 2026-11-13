@@ -39,7 +39,7 @@ export const TrekSections = ({ trek, company, reviews, rating }: TrekSectionsPro
     pricing: trek.months && <BestMonths heading={trek.months.heading} line={trek.months.line} ratings={trek.months.ratings} />,
     inclusions: <TrekInclusions inclusions={trek.inclusions} meals={trek.meals} />,
     route_map: trek.routeMap && <TrekRouteMap name={trek.name} routeMap={trek.routeMap} />,
-    why_book: <WhyBookWithUs promises={company.promises} />,
+    why_book: <WhyBookWithUs company={company} />,
     credentials: <TrekCredentials />,
     packing: <TrekPacking packing={trek.packing} />,
     field_guide: <TrekFieldGuide fieldGuide={trek.fieldGuide} />,

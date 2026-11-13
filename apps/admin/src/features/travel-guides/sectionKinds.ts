@@ -40,10 +40,9 @@ export const SECTION_LIMITS = {
   videoTitle: 100,
   tableCell: 200,
   embedTitle: 100,
-  embedCode: 4000,
+  embedCode: 10000,
   fileTitle: 100,
   fileDescription: 200,
-  customHtml: 20000,
 } as const;
 
 export const CROWDS: { value: Crowds; label: string }[] = [
@@ -180,8 +179,8 @@ export const SECTION_KINDS: SectionKind[] = [
     type: "embed",
     group: "media",
     name: "Embed",
-    description: "A Google My Maps route, a Komoot or Wikiloc track or a Vimeo video, with a “Load” button first (privacy rules).",
-    goodFor: "Your own route maps and GPS tracks.",
+    description: "A frame from any website (a Google My Maps route, a Komoot or Wikiloc track, a Vimeo video, a widget), with a “Load” button first (privacy rules).",
+    goodFor: "Route maps, GPS tracks, videos and other embedded widgets.",
     youFillIn: ["Embed code or link", "Title", "Height"],
     icon: "code_blocks",
   },

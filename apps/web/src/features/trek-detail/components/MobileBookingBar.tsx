@@ -18,7 +18,7 @@ export const MobileBookingBar = ({ trek }: { trek: TrekDetail }) => (
     )}
     <div className="flex items-center gap-2">
       <a
-        href={trekInquiryEmailUrl(trek)}
+        href={trekInquiryEmailUrl(trek)} rel="nofollow"
         aria-label={`Email us about the ${trek.name}`}
         className="inline-flex size-11.5 items-center justify-center rounded-md border border-line-strong bg-surface text-brand hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
@@ -27,7 +27,7 @@ export const MobileBookingBar = ({ trek }: { trek: TrekDetail }) => (
       <a
         href={trekInquiryUrl(trek)}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="nofollow noopener noreferrer"
         className="inline-flex min-h-11.5 items-center gap-2 rounded-md bg-whatsapp px-4.5 text-caption font-extrabold tracking-wide text-white uppercase hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <WhatsAppLogo size={18} />

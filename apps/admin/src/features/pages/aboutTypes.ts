@@ -61,6 +61,8 @@ export type AboutSafety = { eyebrow: string; heading: string; facts: TitledText[
 /** Pages › About (the team is not here: it comes from Authors and Trekking guides). */
 export type AboutPageValues = PageTopValues & {
   trekkersGuided: string;
+  /** A region website's own "Trekking regions" number, typed (Travel To Nepal counts its regions instead). */
+  trekkingRegions: string;
   /** The fourth number under the heading, e.g. "All" · "Guides from their own valleys". */
   statValue: string;
   statLabel: string;
@@ -89,7 +91,9 @@ export type AboutPageValues = PageTopValues & {
   voiceText: string;
   /** The page's photos by place (ABOUT_PHOTO_SLOTS); null for an empty place. */
   photoIds: (string | null)[];
-  /** Not on the About page: every trek page's "Why book your trek with us". */
+  /** Not on the About page: every trek page's "Why book your trek with us" (the heading and the line under it, blank = the page's own words). */
+  promisesHeading: string;
+  promisesIntro: string;
   promises: PromiseValues[];
   teamHeading: string;
   teamIntro: string;

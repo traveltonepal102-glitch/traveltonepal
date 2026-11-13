@@ -4,10 +4,17 @@ import { SectionHeading } from "@/components/shared/SectionHeading";
 import { formatUsd } from "@/lib/format";
 
 import type { HomeTrek } from "../types";
+import { BookingContactButtons } from "./BookingContactButtons";
 import { useBooking } from "./BookingContext";
 
-/** Price per person by group size; "Select" sets the booking card. */
-export const TrekPrices = ({ pricing }: { pricing: HomeTrek["pricing"] }) => {
+type TrekPricesProps = {
+  pricing: HomeTrek["pricing"];
+  trekName: string;
+  days: number;
+};
+
+/** Price per person by group size; "Select" sets the booking card, and the buttons under the list book the selected group. */
+export const TrekPrices = ({ pricing, trekName, days }: TrekPricesProps) => {
   const { chosenIndex, choose } = useBooking();
 
   return (
@@ -43,6 +50,9 @@ export const TrekPrices = ({ pricing }: { pricing: HomeTrek["pricing"] }) => {
             </div>
           );
         })}
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <BookingContactButtons trekName={trekName} days={days} />
       </div>
     </section>
   );

@@ -16,7 +16,7 @@ type PlanTrekButtonProps = {
 /** "Plan my trek": opens WhatsApp with the logo on it; with no number in Site settings, the contact form. */
 export const PlanTrekButton = ({ hasWhatsApp, isOnDark = false, className = "" }: PlanTrekButtonProps) =>
   hasWhatsApp ? (
-    <a href={getWhatsAppUrl("Hello! I would like to plan a trek in the Manaslu region.")} className={`${isOnDark ? whatsAppButton : primaryButton} whitespace-nowrap ${className}`}>
+    <a href={getWhatsAppUrl("Hello! I would like to plan a trek in the Manaslu region.")} rel="nofollow" className={`${isOnDark ? whatsAppButton : primaryButton} whitespace-nowrap ${className}`}>
       <WhatsAppLogo />
       Plan my trek
     </a>

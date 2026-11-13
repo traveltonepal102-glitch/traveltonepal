@@ -46,14 +46,14 @@ export const PlanTrekCard = ({ trek, guideTitle }: { trek: TrekSummary; guideTit
           <a
             href={getWhatsAppUrl(datesQuestion)}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${ACTION} border border-green-line bg-green-tint text-[#0f5e2e] hover:border-whatsapp`}
           >
             <WhatsAppLogo size={18} className="text-whatsapp" />
             Ask about dates
           </a>
           <a
-            href={getEmailUrl({ subject: `Dates for the ${trek.name}`, body: datesQuestion })}
+            href={getEmailUrl({ subject: `Dates for the ${trek.name}`, body: datesQuestion })} rel="nofollow"
             className={`${ACTION} border border-line-strong px-3.5 text-ink hover:bg-page`}
           >
             <Icon name="mail" size={18} className="text-brand" />

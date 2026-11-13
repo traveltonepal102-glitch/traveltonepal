@@ -11,7 +11,6 @@ import { getSiteSettings } from "@/features/site-settings/services/siteSettingsR
 import { ROUTES, pagePath } from "@/lib/routes";
 import { SITE_NAME } from "@/lib/site";
 
-import { MainTrekLink } from "./MainTrekLink";
 import { MobileMenu } from "./MobileMenu";
 import { NavDropdown } from "./NavDropdown";
 import { PlanTrekButton } from "./PlanTrekButton";
@@ -23,6 +22,7 @@ const BAR_LINK = "inline-flex min-h-6 items-center gap-1.5 whitespace-nowrap tex
 /** A button that shows only its icon until there is room for its word. */
 const ICON_FIRST = "w-12 px-0! xl:w-auto xl:px-5!";
 const PAGE_LINKS = [
+  { href: ROUTES.updates, label: "Manaslu Updates" },
   { href: ROUTES.about, label: "About" },
   { href: ROUTES.contact, label: "Contact" },
 ] as const;
@@ -35,12 +35,13 @@ const PAGE_LINKS = [
  * The columns line up with the page's 1392px content (`wrap`: the logo's 214px and the 1178px beside it).
  */
 export const SiteHeader = async () => {
-  const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trek, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
+  const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trekCard, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasBar = Boolean(phoneDisplay || email || licence || tourismRegistration || memberships.length);
   const otherTreksMenu: NavMenu = {
     label: "Other treks",
-    items: otherTreks.map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image })),
-    more: trek ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" },
+    // The main trek (the home page) first, then the others.
+    items: [...(trekCard ? [trekCard] : []), ...otherTreks].map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image })),
+    more: trekCard ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" },
   };
   const blogsMenu: NavMenu = {
     label: "Blogs",
@@ -66,13 +67,13 @@ export const SiteHeader = async () => {
             </p>
             <p className="flex flex-none gap-x-5">
               {phoneDisplay && (
-                <a href={getWhatsAppUrl()} className={BAR_LINK}>
+                <a href={getWhatsAppUrl()} rel="nofollow" className={BAR_LINK}>
                   <WhatsAppLogo size={14} />
                   {phoneDisplay}
                 </a>
               )}
               {email && (
-                <a href={getEmailUrl()} className={BAR_LINK}>
+                <a href={getEmailUrl()} rel="nofollow" className={BAR_LINK}>
                   {email}
                 </a>
               )}
@@ -81,8 +82,7 @@ export const SiteHeader = async () => {
         </>
       )}
       <div className="contents lg:col-start-3 lg:row-start-2 lg:flex lg:items-center lg:justify-between lg:gap-4 lg:py-3.5 lg:pl-5">
-        <nav aria-label="Main" className="flex flex-wrap items-center gap-x-4 font-medium max-lg:hidden xl:gap-x-6.5">
-          {trek && <MainTrekLink name={trek.name} className={NAV_LINK} />}
+        <nav aria-label="Main" className="flex flex-wrap items-center gap-x-4 font-semibold max-lg:hidden xl:gap-x-6.5">
           <NavDropdown {...otherTreksMenu} />
           <NavDropdown {...blogsMenu} hasTwoColumns />
           {PAGE_LINKS.map((link) => (
@@ -94,18 +94,18 @@ export const SiteHeader = async () => {
         <div className="col-start-3 row-start-2 flex items-center gap-2 self-center sm:gap-2.5">
           {/* On phones the menu has the address and this button. */}
           {email && (
-            <a href={emailHref} className={`${outlineOnDarkButton} ${ICON_FIRST} max-sm:hidden`}>
+            <a href={emailHref} rel="nofollow" className={`${outlineOnDarkButton} ${ICON_FIRST} max-sm:hidden`}>
               <TrailIcon name="mail" />
               <span className="sr-only xl:not-sr-only">Email</span>
             </a>
           )}
           {/* Below 360px it covers the logo: the menu has the number and this button. */}
           <PlanTrekButton hasWhatsApp={Boolean(phoneDisplay)} isOnDark className="max-sm:px-3.5! max-[359px]:hidden" />
-          <MobileMenu mainTrekName={trek?.name} menus={[otherTreksMenu, blogsMenu]} links={PAGE_LINKS}>
+          <MobileMenu menus={[otherTreksMenu, blogsMenu]} links={PAGE_LINKS}>
             {(phoneDisplay || email) && (
               <p className="mb-1 flex flex-col gap-1 text-[15px]">
                 {phoneDisplay && (
-                  <a href={getWhatsAppUrl()} className={MENU_CONTACT_LINK}>
+                  <a href={getWhatsAppUrl()} rel="nofollow" className={MENU_CONTACT_LINK}>
                     <span className="inline-flex text-whatsapp">
                       <WhatsAppLogo size={18} />
                     </span>
@@ -113,7 +113,7 @@ export const SiteHeader = async () => {
                   </a>
                 )}
                 {email && (
-                  <a href={getEmailUrl()} className={MENU_CONTACT_LINK}>
+                  <a href={getEmailUrl()} rel="nofollow" className={MENU_CONTACT_LINK}>
                     <TrailIcon name="mail" size={18} className="text-forest" />
                     {email}
                   </a>
@@ -122,7 +122,7 @@ export const SiteHeader = async () => {
             )}
             <PlanTrekButton hasWhatsApp={Boolean(phoneDisplay)} className="w-full" />
             {email && (
-              <a href={emailHref} className={`${outlineButton} w-full`}>
+              <a href={emailHref} rel="nofollow" className={`${outlineButton} w-full`}>
                 <TrailIcon name="mail" />
                 Email us
               </a>

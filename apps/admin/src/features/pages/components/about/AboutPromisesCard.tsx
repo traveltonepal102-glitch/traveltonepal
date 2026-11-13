@@ -7,6 +7,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { PAGE_LIMITS as LIMIT, PROMISE_ICONS, PROMISE_ROWS } from "../../constants";
 import type { AboutPageValues } from "../../types";
+import { SectionHeadingFields } from "../SectionHeadingFields";
 
 type AboutPromisesCardProps = { values: AboutPageValues; errors: FieldErrors };
 
@@ -20,6 +21,12 @@ export const AboutPromisesCard = ({ values, errors }: AboutPromisesCardProps) =>
         here and can’t be removed. Change them once, here.
       </span>
     </p>
+    <SectionHeadingFields
+      eyebrow="Why book with us"
+      heading={{ name: "promisesHeading", value: values.promisesHeading, placeholder: "Why book your trek with us" }}
+      intro={{ name: "promisesIntro", value: values.promisesIntro, placeholder: "Local leadership, honest pricing and careful safety standards, straight from our team." }}
+      errors={errors}
+    />
     {Array.from({ length: PROMISE_ROWS }, (_, index) => {
       const promise = values.promises[index];
       return (
@@ -27,7 +34,7 @@ export const AboutPromisesCard = ({ values, errors }: AboutPromisesCardProps) =>
           <SelectField name="promiseIcon" label={`Icon ${index + 1}`} options={PROMISE_ICONS} defaultValue={promise?.icon || PROMISE_ICONS[index % PROMISE_ICONS.length].value} error={errors[`promises.${index}.icon`]} />
           <div className="flex flex-col gap-2">
             <TextField name="promiseTitle" label={`Promise ${index + 1}`} labelNote="(H3)" defaultValue={promise?.title ?? ""} maxLength={LIMIT.promiseTitle} inputClassName="font-bold" error={errors[`promises.${index}.title`]} />
-            <TextField name="promiseText" label="Text" isLabelHidden multiline rows={2} defaultValue={promise?.text ?? ""} maxLength={LIMIT.promiseText} error={errors[`promises.${index}.text`]} />
+            <TextField name="promiseText" label="Text" isLabelHidden multiline rows={4} defaultValue={promise?.text ?? ""} maxLength={LIMIT.promiseText} error={errors[`promises.${index}.text`]} />
           </div>
         </div>
       );

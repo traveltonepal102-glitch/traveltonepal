@@ -18,7 +18,7 @@ export const getTrekUsage = async (trekId: string): Promise<TrekUsageItem[]> => 
 };
 
 export type DeleteTrekResult =
-  | { status: "deleted"; pdfMapPath: string | null }
+  | { status: "deleted" }
   | { status: "in_use" | "not_found" | "forbidden" };
 
 /**
@@ -27,8 +27,8 @@ export type DeleteTrekResult =
  */
 export const deleteTrek = async (trekId: string, siteId: string): Promise<DeleteTrekResult> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("delete_trek", { p_trek_id: trekId, p_site_id: siteId });
-  if (!error) return { status: "deleted", pdfMapPath: data };
+  const { error } = await supabase.rpc("delete_trek", { p_trek_id: trekId, p_site_id: siteId });
+  if (!error) return { status: "deleted" };
   if (error.code === FOREIGN_KEY_VIOLATION) return { status: "in_use" };
   if (error.code === NOT_FOUND) return { status: "not_found" };
   if (error.code === RLS_VIOLATION) return { status: "forbidden" };

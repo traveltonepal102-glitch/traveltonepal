@@ -1,4 +1,4 @@
-import { EMBED_PROVIDERS, toEmbed } from "@ttn/config/embeds";
+import { toEmbed } from "@ttn/config/embeds";
 import type { EmbedHeight } from "@ttn/config/embeds";
 import { z } from "zod";
 
@@ -25,17 +25,16 @@ const NOT_SHOWN: { pattern: RegExp; message: string }[] = [
 export const htmlSection = z.object({
   id: sectionId,
   type: z.literal("html"),
-  html: requiredText(LIMIT.customHtml, "Write the HTML, or remove this section.").superRefine((html, context) => {
+  // No length limit (decided 2026-11-13): the admin's own markup, however long; the cleaner keeps it safe.
+  html: z.string().trim().min(1, "Write the HTML, or remove this section.").superRefine((html, context) => {
     const problem = NOT_SHOWN.find((item) => item.pattern.test(html));
     if (problem) context.addIssue({ code: "custom", message: problem.message });
   }),
 });
 
-const SERVICES = EMBED_PROVIDERS.map((provider) => provider.name).join(", ");
-
 const HEIGHTS = ["short", "medium", "tall"] as const satisfies readonly EmbedHeight[];
 
-/** "Embed": the pasted code or link is saved as the frame's address, from one of the allowed services only. */
+/** "Embed": the pasted code or link is saved as the frame's address: any https address (decided 2026-11-13), loaded on the website only after a click or consent. */
 export const embedSection = z.object({
   id: sectionId,
   type: z.literal("embed"),
@@ -45,7 +44,7 @@ export const embedSection = z.object({
     .transform((value, context) => {
       const embed = toEmbed(value);
       if (embed) return embed.url;
-      context.addIssue({ code: "custom", message: value.trim() ? `Paste the embed code from ${SERVICES}.` : "Paste the embed code or link." });
+      context.addIssue({ code: "custom", message: value.trim() ? "Paste an embed code or an https link (no http, passwords or ports)." : "Paste the embed code or link." });
       return z.NEVER;
     }),
   height: z.enum(HEIGHTS, "Pick how tall it shows."),

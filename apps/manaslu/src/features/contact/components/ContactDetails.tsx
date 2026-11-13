@@ -36,14 +36,14 @@ export const ContactDetails = async ({ replyTimes }: { replyTimes: ContactConten
       <ul className="flex flex-col divide-y divide-solid divide-line">
         {phoneDisplay && (
           <Detail icon={<WhatsAppLogo size={20} />} title="WhatsApp" note={replyTimes.whatsApp}>
-            <a href={getWhatsAppUrl("Hello! I'd like to ask about a trek.")} className={LINK}>
+            <a href={getWhatsAppUrl("Hello! I'd like to ask about a trek.")} rel="nofollow" className={LINK}>
               {phoneDisplay}
             </a>
           </Detail>
         )}
         {email && (
           <Detail icon={<TrailIcon name="mail" size={20} />} title="Email" note={replyTimes.email}>
-            <a href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} className={LINK}>
+            <a href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} rel="nofollow" className={LINK}>
               {email}
             </a>
           </Detail>

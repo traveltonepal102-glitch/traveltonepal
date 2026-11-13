@@ -34,8 +34,8 @@ export const ArticleHero = ({ article }: { article: GuideArticle }) => (
             </li>
           )}
         </ul>
-        <h1 className="max-w-250 text-h1-sm tracking-tight text-white md:text-display">{article.title}</h1>
-        <p className="max-w-195 text-body-lg text-white/85 md:text-xl md:leading-[1.55]">{article.intro}</p>
+        <h1 className="text-h1-sm tracking-tight text-white md:text-display">{article.title}</h1>
+        <p className="max-w-none text-body-lg text-white/85 md:text-xl md:leading-[1.55]">{article.intro}</p>
         <ArticleByline article={article} />
       </div>
     </div>

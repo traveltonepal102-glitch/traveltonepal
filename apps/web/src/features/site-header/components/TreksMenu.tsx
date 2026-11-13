@@ -22,11 +22,11 @@ const TrekAdviceCard = () => (
       Tell us your dates and fitness. A local expert suggests the right route.
     </span>
     <span className="relative flex flex-wrap gap-2">
-      <a href={getWhatsAppUrl(ADVICE_MESSAGE)} target="_blank" rel="noopener noreferrer" className={`${ADVICE_ACTION} bg-whatsapp hover:bg-whatsapp/90`}>
+      <a href={getWhatsAppUrl(ADVICE_MESSAGE)} target="_blank" rel="nofollow noopener noreferrer" className={`${ADVICE_ACTION} bg-whatsapp hover:bg-whatsapp/90`}>
         <WhatsAppLogo size={16} />
         WhatsApp
       </a>
-      <a href={getEmailUrl({ subject: "Which trek fits me?", body: ADVICE_MESSAGE })} className={`${ADVICE_ACTION} border border-white/55 hover:bg-white/10`}>
+      <a href={getEmailUrl({ subject: "Which trek fits me?", body: ADVICE_MESSAGE })} rel="nofollow" className={`${ADVICE_ACTION} border border-white/55 hover:bg-white/10`}>
         <Icon name="mail" size={16} />
         Email
       </a>

@@ -26,7 +26,7 @@ export const BlogBlock = ({ block, blog }: { block: Block; blog: BlogArticle }) 
           <h2 id="quick-answer-h" className="text-xl! leading-6.5! text-forest-deep!">
             Quick answer
           </h2>
-          <RichText doc={block.body} className="flex flex-col gap-3 font-medium text-ink" />
+          <RichText doc={block.body} className="flex flex-col gap-3 font-semibold text-ink" />
         </section>
       );
     case "faq":

@@ -28,11 +28,11 @@ export const ContactCta = ({ titleId, title, text, message, emailSubject, button
       <p className="text-body-sm text-text">{text}</p>
     </div>
     <div className="flex flex-none flex-col gap-2.5 sm:flex-row">
-      <a href={getWhatsAppUrl(message)} target="_blank" rel="noopener noreferrer" className={`${BUTTON} bg-whatsapp text-white hover:bg-whatsapp/90`}>
+      <a href={getWhatsAppUrl(message)} target="_blank" rel="nofollow noopener noreferrer" className={`${BUTTON} bg-whatsapp text-white hover:bg-whatsapp/90`}>
         <WhatsAppLogo size={18} />
         {buttonLabel}
       </a>
-      <a href={getEmailUrl({ subject: emailSubject, body: message })} className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}>
+      <a href={getEmailUrl({ subject: emailSubject, body: message })} rel="nofollow" className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}>
         <Icon name="mail" size={18} className="text-brand" />
         Email us
       </a>

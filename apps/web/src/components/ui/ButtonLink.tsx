@@ -74,17 +74,20 @@ export const ButtonLink = ({
     </>
   );
 
+  // /whatsapp, /email and /review only redirect (and count the click): crawlers are told not to follow them.
+  const isRedirect = isContactRedirect(href);
+
   if (isExternal) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a href={href} target="_blank" rel={isRedirect ? "nofollow noopener noreferrer" : "noopener noreferrer"} className={classes}>
         {content}
       </a>
     );
   }
 
-  if (isContactRedirect(href)) {
+  if (isRedirect) {
     return (
-      <a href={href} className={classes}>
+      <a href={href} rel="nofollow" className={classes}>
         {content}
       </a>
     );

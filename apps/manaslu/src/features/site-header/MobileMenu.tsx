@@ -7,12 +7,9 @@ import { useEffect, useId, useRef, useState } from "react";
 import { outlineOnDarkButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 
-import { MainTrekLink } from "./MainTrekLink";
 import type { NavMenu } from "./types";
 
 type MobileMenuProps = {
-  /** The main trek, first in the menu (it is the home page). */
-  mainTrekName?: string;
   menus: readonly NavMenu[];
   links: readonly { href: string; label: string }[];
   /** At the bottom of the panel: "Plan my trek" and the email button. */
@@ -28,14 +25,13 @@ const ROW = "flex min-h-13 w-full items-center justify-between gap-3 border-0 bo
  * dialog: focus stays in it, Escape closes it and focus goes back to the button). "Other treks" and "Blogs" fold open
  * one at a time. A link chosen, a tap beside the panel, or the screen growing wide enough for the full menu closes it.
  */
-export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuProps) => {
+export const MobileMenu = ({ menus, links, children }: MobileMenuProps) => {
   const dialog = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
-  const open = () => {
-    dialog.current?.showModal();
-    setIsOpen(true);
-  };
+  // The panel's contents are rendered only while it is open (they would weigh on every page otherwise), so the dialog
+  // opens once they are there: that is where showModal() puts the focus (the close button).
+  const open = () => setIsOpen(true);
   const close = () => dialog.current?.close();
   // The panel fills the dialog, so a click on the dialog itself landed on the dimmed page beside it.
   const closeOnLinkOrBackdrop = (event: MouseEvent<HTMLDialogElement>) => {
@@ -44,6 +40,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
   useEffect(() => {
     if (!isOpen) return;
+    if (!dialog.current?.open) dialog.current?.showModal();
     const wide = window.matchMedia(WIDE_SCREEN);
     const closeWhenWide = () => wide.matches && dialog.current?.close();
     wide.addEventListener("change", closeWhenWide);
@@ -63,6 +60,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
         onClick={closeOnLinkOrBackdrop}
         className="m-0 ml-auto h-dvh max-h-none w-[min(24rem,calc(100%-3rem))] max-w-none overscroll-contain border-0 bg-snow p-0 text-ink transition-transform duration-200 backdrop:overflow-hidden backdrop:overscroll-contain backdrop:bg-ink/50 starting:translate-x-full motion-reduce:transition-none"
       >
+        {isOpen && (
         <div className="flex min-h-full flex-col gap-6 px-5 pt-3 pb-6">
           <div className="flex items-center justify-between">
             <p className="eyebrow">Menu</p>
@@ -74,11 +72,6 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
           <nav aria-label="Main">
             <ul className="m-0 flex list-none flex-col p-0">
-              {mainTrekName && (
-                <li>
-                  <MainTrekLink name={mainTrekName} className={ROW} />
-                </li>
-              )}
               {menus
                 .filter((menu) => menu.items.length > 0)
                 .map((menu) => (
@@ -119,6 +112,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
           <div className="mt-auto flex flex-col gap-2.5">{children}</div>
         </div>
+        )}
       </dialog>
     </>
   );

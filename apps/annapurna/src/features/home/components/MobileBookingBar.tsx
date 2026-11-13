@@ -25,7 +25,7 @@ export const MobileBookingBar = ({ trekName, days }: MobileBookingBarProps) => {
         {chosen && <strong className="font-display text-[20px] leading-6 font-bold text-ink">{formatUsd(chosen.priceUsd)}</strong>}
       </span>
       <span className="flex gap-2">
-        <a href={getWhatsAppUrl(message)} aria-label="Book on WhatsApp" className={`${whatsAppButton} min-h-11 w-12 px-0`}>
+        <a href={getWhatsAppUrl(message)} rel="nofollow" aria-label="Book on WhatsApp" className={`${whatsAppButton} min-h-11 w-12 px-0`}>
           <WhatsAppLogo />
         </a>
         <a href="#book" className={`${ctaButton} min-h-11 text-[15px]`}>

@@ -110,6 +110,8 @@ export type TrekRouteMap = {
   myMapsId?: string;
   /** The printable map's public address ("Download PDF map"); left out without one. */
   pdfUrl?: string;
+  /** The GPS track's public address ("Download the GPS track", a GPX file); left out without one. */
+  gpxUrl?: string;
   /** The line under the heading, rich text (it may link to other pages); empty shows none. */
   line: RichTextDoc;
 };

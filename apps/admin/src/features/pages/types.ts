@@ -79,7 +79,8 @@ export type AboutTeamPerson = { id: string; name: string; role: string; group: "
 /** What the About editor shows from elsewhere (read-only): the numbers and licences that fill in by themselves. */
 export type AboutFacts = {
   foundedYear: number | null;
-  regionCount: number;
+  /** Travel To Nepal's regions, counted; null on a region website, which types its own number. */
+  regionCount: number | null;
   licences: { label: string; value: string }[];
   hasCertificate: boolean;
   hasPanCertificate: boolean;

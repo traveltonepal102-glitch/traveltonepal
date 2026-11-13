@@ -62,6 +62,8 @@ export const toAboutPage = (row: WebSitePageRow, photosBaseUrl: string): AboutPa
       voice: { eyebrow: field("voiceEyebrow"), heading: field("voiceHeading"), paragraphs: paragraphsOf(field("voiceText")) },
     },
     founder,
+    promisesHeading: field("promisesHeading"),
+    promisesIntro: field("promisesIntro"),
     promises: listOf(content.promises, promiseSchema)
       .slice(0, MAX_PROMISES)
       .map((promise, index) => ({

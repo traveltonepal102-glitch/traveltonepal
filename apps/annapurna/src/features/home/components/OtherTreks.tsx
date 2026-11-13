@@ -34,7 +34,7 @@ export const OtherTreks = ({ current, treks, eyebrow = "More treks in the region
               <p className="text-base leading-6.25 text-on-navy-muted">Tell us how many days you have and how high you want to go. We suggest a route and send a price for your group.</p>
             </div>
             <div className="flex flex-col gap-2.5">
-              <a href={getWhatsAppUrl("Hello! Which Annapurna trek fits me?")} className={whatsAppButton}>
+              <a href={getWhatsAppUrl("Hello! Which Annapurna trek fits me?")} rel="nofollow" className={whatsAppButton}>
                 <WhatsAppLogo />
                 Ask on WhatsApp
               </a>

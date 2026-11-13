@@ -51,6 +51,7 @@ const cookieTable = () =>
     [
       [CONSENT_STORAGE_KEY, "Remembers your choice on this page (stored in your browser, not a cookie)", CONSENT_MAX_AGE_LABEL],
       ["Google Maps", "The route maps on trek pages and in blogs (they load with the page); the office map on the Contact page only with your consent or after you click to load it", "Set by Google"],
+      ["Embedded videos, maps and widgets", "YouTube, Vimeo, Komoot, Wikiloc and other services embedded in a blog, only with your consent or after you click to load them", "Set by each service"],
     ],
   );
 

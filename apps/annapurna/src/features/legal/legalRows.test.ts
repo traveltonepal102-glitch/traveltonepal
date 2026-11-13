@@ -39,8 +39,9 @@ describe("a legal page", () => {
   it("lists only what this website loads in the cookie table", () => {
     const table = JSON.stringify(toLegalDoc("cookies", row([text("{cookieTable}")]), settings).lead);
     expect(table).toContain("Google Maps");
+    // Videos and embeds in the blogs load only after a click or consent, but they are listed.
+    expect(table).toContain("YouTube, Vimeo, Komoot, Wikiloc and other services");
     expect(table).not.toContain("Analytics");
-    expect(table).not.toContain("YouTube");
   });
 
   it("dates the page by its Last updated day, and falls back to the page's words for Google", () => {

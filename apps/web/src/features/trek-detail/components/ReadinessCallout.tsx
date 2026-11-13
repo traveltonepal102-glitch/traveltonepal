@@ -22,10 +22,10 @@ export const ReadinessCallout = async ({ trekName }: { trekName: string }) => {
       </p>
     </div>
     <div className="flex flex-none flex-wrap gap-2">
-      <a href={trekReadinessCheckUrl({ name: trekName }, contactName)} target="_blank" rel="noopener noreferrer" className={ACTION}>
+      <a href={trekReadinessCheckUrl({ name: trekName }, contactName)} target="_blank" rel="nofollow noopener noreferrer" className={ACTION}>
         {founder ? `Ask ${founder.shortName} on WhatsApp` : "Ask us on WhatsApp"}
       </a>
-      <a href={trekReadinessCheckEmailUrl({ name: trekName }, contactName)} className={ACTION}>
+      <a href={trekReadinessCheckEmailUrl({ name: trekName }, contactName)} rel="nofollow" className={ACTION}>
         Email
       </a>
     </div>

@@ -24,14 +24,14 @@ export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
             .join(" · ")}
         </p>
         <div className="flex items-center gap-4.5">
-          <a href={getEmailUrl()} className={LINK}>
+          <a href={getEmailUrl()} rel="nofollow" className={LINK}>
             <Icon name="mail" size={15} />
             {contact.email}
           </a>
           <a
             href={getWhatsAppUrl()}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${LINK} font-semibold text-whatsapp-on-dark`}
           >
             <WhatsAppLogo size={15} />

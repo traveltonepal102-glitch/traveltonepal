@@ -85,7 +85,7 @@ export const ContactForm = ({ trekNames }: { trekNames: readonly string[] }) => 
           Send by email
         </button>
       </div>
-      <p role="status" className={opened ? "rounded-[10px] bg-forest-tint px-4 py-3 text-[15px] leading-5.75 font-medium text-forest-deep" : "sr-only"}>
+      <p role="status" className={opened ? "rounded-[10px] bg-forest-tint px-4 py-3 text-[15px] leading-5.75 font-semibold text-forest-deep" : "sr-only"}>
         {opened && `Your message is ready in ${opened}. Press send there to reach us.`}
       </p>
       <p className="flex items-start gap-1.5 text-sm leading-5 text-muted">

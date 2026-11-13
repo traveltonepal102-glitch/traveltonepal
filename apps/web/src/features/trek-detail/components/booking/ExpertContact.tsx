@@ -46,7 +46,7 @@ export const ExpertContact = async () => {
         </div>
       </div>
       <a
-        href={getEmailUrl()}
+        href={getEmailUrl()} rel="nofollow"
         className="flex items-center justify-center gap-1.5 rounded-md border border-line bg-muted px-3 py-2.5 text-xs font-bold break-all text-ink hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <Icon name="mail" size={17} className="flex-none text-brand" />

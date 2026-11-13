@@ -222,6 +222,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>, videoTitles
     similarIntro: text.similar_intro,
     videos: videosSchema.parse(text.videos).map((video) => ({ ...video, title: videoTitles.get(video.youtubeId) ?? "" })),
     pdfMapPath: row.pdf_map_path,
+    gpxTrackPath: row.gpx_track_path,
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     routeRegionIds: toRouteRegionIds(row.trek_regions),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
@@ -311,12 +312,12 @@ export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
   return data ? toTrek(data, regionNames, videoTitles) : null;
 });
 
-/** The trek's saved printable map (null without one), to delete it once a save replaces or removes it. */
-export const getTrekPdfMapPath = async (trekId: string): Promise<string | null> => {
+/** The trek's saved files (its printable map and GPS track, null without one), to delete them once a save or a delete no longer points to them. */
+export const getTrekFilePaths = async (trekId: string): Promise<string[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("treks").select("pdf_map_path").eq("id", trekId).maybeSingle();
+  const { data, error } = await supabase.from("treks").select("pdf_map_path, gpx_track_path").eq("id", trekId).maybeSingle();
   if (error) throw new Error(`Could not load trek ${trekId}: ${error.message}`);
-  return data?.pdf_map_path ?? null;
+  return [data?.pdf_map_path, data?.gpx_track_path].filter((path): path is string => Boolean(path));
 };
 
 export type SaveTrekResult =
@@ -356,6 +357,7 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null, si
       section_order: values.sectionOrder,
       optional_high_point_m: values.optionalHighPointM,
       pdf_map_path: values.pdfMapPath ?? "",
+      gpx_track_path: values.gpxTrackPath ?? "",
       guide_ids: values.guideIds,
       route_region_ids: values.routeRegionIds,
     },

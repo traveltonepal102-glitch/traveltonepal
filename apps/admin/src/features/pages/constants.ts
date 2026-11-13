@@ -144,6 +144,7 @@ export const PAGE_LIMITS = {
   seoDescription: 200,
   seoKeyword: 80,
   trekkersGuided: 20,
+  trekkingRegions: 20,
   /** A section's H2 on the page (the design counts to 70). */
   sectionHeading: 70,
   /** The line under a section's heading. */
@@ -168,7 +169,7 @@ export const PAGE_LIMITS = {
   note: 400,
   founderOrigin: 80,
   promiseTitle: 60,
-  promiseText: 200,
+  promiseText: 500,
   replyTime: 60,
   officeDirections: 160,
   timeNote: 160,

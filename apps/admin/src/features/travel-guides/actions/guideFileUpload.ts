@@ -4,7 +4,7 @@ import { GUIDE_FILE_PATH, MAX_GUIDE_FILE_BYTES } from "@ttn/config/guideFiles";
 import { z } from "zod";
 
 import { requireAdmin } from "@/features/auth/lib/currentAdmin";
-import { createTrekFileStorage, keepIfPdf } from "@/lib/storage/trekFiles";
+import { TREK_FILE_KINDS, createTrekFileStorage, keepIfPdf } from "@/lib/storage/trekFiles";
 
 import { guideFilePath } from "../lib/guideFilePath";
 
@@ -18,7 +18,7 @@ export const startGuideFileUpload = async (fileName: string, byteSize: number): 
 
   const path = guideFilePath(crypto.randomUUID(), z.string().catch("").parse(fileName));
   try {
-    return { ok: true, path, uploadUrl: await (await createTrekFileStorage()).createUploadUrl(path, byteSize) };
+    return { ok: true, path, uploadUrl: await (await createTrekFileStorage()).createUploadUrl(path, byteSize, TREK_FILE_KINDS.pdfMap.contentType) };
   } catch (error) {
     console.error("startGuideFileUpload failed:", error);
     return { ok: false, message: "Uploads aren't working right now. Try again in a moment." };

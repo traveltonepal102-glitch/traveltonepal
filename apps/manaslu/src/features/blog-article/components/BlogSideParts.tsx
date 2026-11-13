@@ -34,7 +34,7 @@ export const PlanThisTrek = async ({ trek }: { trek: HomeTrekCard }) => {
       </Link>
     ) : (
       phoneDisplay && (
-        <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} className={`${whatsAppButton} min-h-11!`}>
+        <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} rel="nofollow" className={`${whatsAppButton} min-h-11!`}>
           <WhatsAppLogo />
           Ask about it
         </a>
@@ -57,13 +57,13 @@ export const BlogHelpBox = async ({ box, blogTitle }: { box: GuideHelpBox; blogT
     <p className="text-[15px] leading-5.5 text-on-forest-muted">{box.text}</p>
     <div className={`mt-1 grid gap-2 ${phoneDisplay && email ? "grid-cols-2" : ""}`}>
       {phoneDisplay && (
-        <a href={getWhatsAppUrl(box.message)} className={`${whatsAppButton} min-h-11! px-3!`}>
+        <a href={getWhatsAppUrl(box.message)} rel="nofollow" className={`${whatsAppButton} min-h-11! px-3!`}>
           <WhatsAppLogo />
           WhatsApp
         </a>
       )}
       {email && (
-        <a href={getEmailUrl({ subject: `Question about: ${blogTitle}`, body: box.message })} className={`${outlineOnDarkButton} min-h-11! px-3!`}>
+        <a href={getEmailUrl({ subject: `Question about: ${blogTitle}`, body: box.message })} rel="nofollow" className={`${outlineOnDarkButton} min-h-11! px-3!`}>
           <TrailIcon name="mail" />
           Email
         </a>

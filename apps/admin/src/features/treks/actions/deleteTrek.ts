@@ -13,6 +13,7 @@ import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKS_PATH } from "../constants";
 import { deleteTrek as deleteTrekFromDatabase } from "../services/trekDeletionRepository";
+import { getTrekFilePaths } from "../services/treksRepository";
 
 const FAILURE_MESSAGES = {
   forbidden: "Only a Super admin can delete a trek.",
@@ -34,9 +35,11 @@ export const deleteTrek = async (siteId: string, trekId: string): Promise<Remove
   if (!z.uuid().safeParse(trekId).success) return { error: FAILURE_MESSAGES.not_found };
 
   try {
+    // Its printable map and GPS track go with it (read first: the row is gone after).
+    const files = await getTrekFilePaths(trekId);
     const result = await deleteTrekFromDatabase(trekId, siteId);
     if (result.status !== "deleted") return { error: FAILURE_MESSAGES[result.status] };
-    if (result.pdfMapPath) await removeUnusedTrekFile(result.pdfMapPath);
+    await Promise.all(files.map(removeUnusedTrekFile));
   } catch (error) {
     console.error(error);
     return { error: FAILURE_MESSAGES.failed };

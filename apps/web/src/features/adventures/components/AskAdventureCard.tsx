@@ -28,14 +28,14 @@ export const AskAdventureCard = ({ title, text }: { title: string; text: string 
         <a
           href={getWhatsAppUrl(IDEA_MESSAGE)}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           aria-label="Share my idea on WhatsApp"
           className={`${ROUND_BUTTON} bg-whatsapp text-white hover:opacity-90`}
         >
           <WhatsAppLogo size={20} />
         </a>
         <a
-          href={getEmailUrl({ subject: `My adventure idea for ${SITE_NAME}`, body: IDEA_MESSAGE })}
+          href={getEmailUrl({ subject: `My adventure idea for ${SITE_NAME}`, body: IDEA_MESSAGE })} rel="nofollow"
           aria-label="Share my idea by email"
           className={`${ROUND_BUTTON} border border-line-strong bg-surface text-ink hover:border-brand hover:text-brand`}
         >

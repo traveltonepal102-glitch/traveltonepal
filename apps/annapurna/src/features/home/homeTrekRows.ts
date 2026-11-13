@@ -109,9 +109,11 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     topPlace: topPlaceOf({ title: day.title, place: day.place, highPlace: day.high_place, sleepAltitudeM: day.sleep_altitude_m }),
     isHighPoint: day.is_high_point,
     body: toRichTextDoc(day.description),
+    photo: day.photo ? coverImage(day.photo, photosBaseUrl, day.place || day.title) : undefined,
   }));
-  // The database only takes pdf-maps/<uuid>.pdf, so the path is safe to add to the address.
+  // The database only takes pdf-maps/<uuid>.pdf and gpx-tracks/<uuid>.gpx, so the paths are safe to add to the address.
   const pdfMapUrl = page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined;
+  const gpxUrl = page.gpx_track_path ? `${trekFilesBaseUrl}/${page.gpx_track_path}` : undefined;
   const prices = readGroupPrices(page.group_prices).map((price) => ({ label: price.label, shortLabel: price.short_label, priceUsd: price.price_usd, team: price.team, isDefault: price.is_default }));
 
   const trek: Omit<HomeTrek, "sections"> = {
@@ -132,7 +134,7 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     guides: { heading: firstText(page.guides_heading) ?? "Meet your trek guide", intro: page.guides_intro.trim(), team: toHomeGuideTeam(guides, summary.region_name, photosBaseUrl) },
     inclusions: { heading: firstText(page.inclusions_heading) ?? "What’s included", included: readPoints(page.included), excluded: readPoints(page.excluded) },
     meals: page.hidden_shared_sections.includes("meals") ? null : toHomeMeals(page),
-    routeMap: toHomeRouteMap(page, pdfMapUrl, shortName),
+    routeMap: toHomeRouteMap(page, { pdfUrl: pdfMapUrl, gpxUrl }, shortName),
     months: ratings && { heading: `Best months for the ${shortName}`, line: toRichTextDoc(page.months_line), ratings },
     packing: { heading: firstText(page.packing_heading) ?? "Packing list", line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups).map(({ title, items }) => ({ title, items })) },
     fieldGuide: toHomeFieldGuide(page, summary.name, photosBaseUrl),

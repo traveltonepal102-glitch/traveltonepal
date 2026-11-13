@@ -24,11 +24,11 @@ export const GuideHelpCard = ({ box, guideTitle }: GuideHelpCardProps) => (
     </h2>
     <p className="text-caption font-normal text-navy-text">{box.text}</p>
     <div className="mt-1 flex flex-wrap gap-2">
-      <a href={getWhatsAppUrl(box.message)} target="_blank" rel="noopener noreferrer" className={`${BUTTON} bg-whatsapp text-white hover:bg-whatsapp/90`}>
+      <a href={getWhatsAppUrl(box.message)} target="_blank" rel="nofollow noopener noreferrer" className={`${BUTTON} bg-whatsapp text-white hover:bg-whatsapp/90`}>
         <WhatsAppLogo size={16} />
         WhatsApp
       </a>
-      <a href={getEmailUrl({ subject: `Question about: ${guideTitle}`, body: box.message })} className={`${BUTTON} border border-white/40 text-white hover:border-white`}>
+      <a href={getEmailUrl({ subject: `Question about: ${guideTitle}`, body: box.message })} rel="nofollow" className={`${BUTTON} border border-white/40 text-white hover:border-white`}>
         <Icon name="mail" size={16} />
         Email
       </a>

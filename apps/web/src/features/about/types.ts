@@ -50,6 +50,9 @@ export type AboutPageContent = {
   };
   founder?: Founder;
   /** Every trek page's "Why book your trek with us" (not shown on the About page). */
+  /** "Why book your trek with us" on trek pages: the heading and the line under it, blank = the page's own words. */
+  promisesHeading: string;
+  promisesIntro: string;
   promises: AboutPromise[];
   /** The sections' headings and the lines under them, as typed in Pages › About ("" uses the design's wording). */
   headings: Record<"team" | "licences", SectionHeading>;

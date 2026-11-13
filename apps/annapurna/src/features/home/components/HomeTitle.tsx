@@ -49,10 +49,10 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
         )}
       </p>
     )}
-    {top.intro && <p className="max-w-[60ch] text-[19px] leading-7.5 text-muted">{top.intro}</p>}
+    {top.intro && <p className="max-w-none text-[19px] leading-7.5 text-muted">{top.intro}</p>}
     {/* On a phone: the two main buttons full width, then "Trip PDF" and "Share" side by side. */}
     <div className="actions max-sm:grid-cols-2">
-      <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} className={`${whatsAppButton} max-sm:col-span-2`}>
+      <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
         <WhatsAppLogo />
         {top.buttonLabel}
       </a>

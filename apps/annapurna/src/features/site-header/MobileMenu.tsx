@@ -32,10 +32,9 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
   const dialog = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
-  const open = () => {
-    dialog.current?.showModal();
-    setIsOpen(true);
-  };
+  // The panel's contents are rendered only while it is open (they would weigh on every page otherwise), so the dialog
+  // opens once they are there: that is where showModal() puts the focus (the close button).
+  const open = () => setIsOpen(true);
   const close = () => dialog.current?.close();
   // The panel fills the dialog, so a click on the dialog itself landed on the dimmed page beside it.
   const closeOnLinkOrBackdrop = (event: MouseEvent<HTMLDialogElement>) => {
@@ -44,6 +43,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
   useEffect(() => {
     if (!isOpen) return;
+    if (!dialog.current?.open) dialog.current?.showModal();
     const wide = window.matchMedia(WIDE_SCREEN);
     const closeWhenWide = () => wide.matches && dialog.current?.close();
     wide.addEventListener("change", closeWhenWide);
@@ -63,6 +63,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
         onClick={closeOnLinkOrBackdrop}
         className="m-0 ml-auto h-dvh max-h-none w-[min(24rem,calc(100%-3rem))] max-w-none overscroll-contain border-0 bg-snow p-0 text-ink transition-transform duration-200 backdrop:overflow-hidden backdrop:overscroll-contain backdrop:bg-ink/50 starting:translate-x-full motion-reduce:transition-none"
       >
+        {isOpen && (
         <div className="flex min-h-full flex-col gap-6 px-5 pt-3 pb-6">
           <div className="flex items-center justify-between">
             <p className="eyebrow">Menu</p>
@@ -119,6 +120,7 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
           <div className="mt-auto flex flex-col gap-2.5">{children}</div>
         </div>
+        )}
       </dialog>
     </>
   );

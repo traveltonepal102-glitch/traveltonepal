@@ -159,6 +159,7 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   mapPlace: "route",
   myMapsId: "route",
   pdfMapPath: "route",
+  gpxTrackPath: "route",
   pricingHeading: "pricing",
   pricingIntro: "pricing",
   monthsLine: "pricing",

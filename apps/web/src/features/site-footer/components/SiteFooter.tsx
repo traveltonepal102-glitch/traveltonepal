@@ -56,12 +56,12 @@ export const SiteFooter = async () => {
               <a
                 href={getWhatsAppUrl()}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
                 className={`${FOOTER_LINK} self-start font-bold text-whatsapp-on-dark`}
               >
                 WhatsApp {contact.phoneDisplay}
               </a>
-              <a href={getEmailUrl()} className={`${FOOTER_LINK} self-start`}>
+              <a href={getEmailUrl()} rel="nofollow" className={`${FOOTER_LINK} self-start`}>
                 {contact.email}
               </a>
               <span>{contact.officeAddress}</span>

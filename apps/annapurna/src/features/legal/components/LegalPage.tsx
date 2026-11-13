@@ -57,11 +57,11 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
             <span className="text-[15px] leading-5.5">Write to us and we will explain anything that is not clear.</span>
           </p>
           <div className="actions">
-            <a href={getEmailUrl({ subject: `Question about: ${doc.title}` })} className={outlineButton}>
+            <a href={getEmailUrl({ subject: `Question about: ${doc.title}` })} rel="nofollow" className={outlineButton}>
               <TrailIcon name="mail" />
               Email
             </a>
-            <a href={getWhatsAppUrl(`Hello! I have a question about your ${doc.title.toLowerCase()}.`)} className={whatsAppButton}>
+            <a href={getWhatsAppUrl(`Hello! I have a question about your ${doc.title.toLowerCase()}.`)} rel="nofollow" className={whatsAppButton}>
               <WhatsAppLogo />
               WhatsApp
             </a>

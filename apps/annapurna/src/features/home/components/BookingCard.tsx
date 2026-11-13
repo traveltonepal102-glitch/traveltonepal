@@ -91,11 +91,11 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
         )}
 
         <div className="flex flex-col gap-2 border-t border-solid border-line pt-4">
-          <a href={getWhatsAppUrl(message)} className={whatsAppButton}>
+          <a href={getWhatsAppUrl(message)} rel="nofollow" className={whatsAppButton}>
             <WhatsAppLogo />
             Book on WhatsApp
           </a>
-          <a href={getEmailUrl({ subject: `Booking the ${trekName}`, body: message })} className={outlineButton}>
+          <a href={getEmailUrl({ subject: `Booking the ${trekName}`, body: message })} rel="nofollow" className={outlineButton}>
             <TrailIcon name="mail" />
             Book by email
           </a>

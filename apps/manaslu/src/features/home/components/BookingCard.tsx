@@ -1,15 +1,12 @@
 "use client";
 
-import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { useId } from "react";
 
-import { outlineButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
-import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { formatUsd } from "@/lib/format";
 
-import { buildBookingMessage } from "../bookingMessage";
 import { MAX_TRAVELLERS, nextGroupTip, travellersText } from "../groupSizes";
+import { BookingContactButtons } from "./BookingContactButtons";
 import { useBooking } from "./BookingContext";
 
 type BookingCardProps = { trekName: string; shortName: string; days: number };
@@ -25,7 +22,6 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
   const id = useId();
   const chosen = prices[chosenIndex];
   const tip = nextGroupTip(ranges, prices, travellers);
-  const message = buildBookingMessage({ trekName, days, groupSize: travellersText(travellers), startDate });
 
   return (
     <div className="overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-raised">
@@ -91,14 +87,7 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
         )}
 
         <div className="flex flex-col gap-2 border-t border-solid border-line pt-4">
-          <a href={getWhatsAppUrl(message)} className={whatsAppButton}>
-            <WhatsAppLogo />
-            Book on WhatsApp
-          </a>
-          <a href={getEmailUrl({ subject: `Booking the ${trekName}`, body: message })} className={outlineButton}>
-            <TrailIcon name="mail" />
-            Book by email
-          </a>
+          <BookingContactButtons trekName={trekName} days={days} />
           <p className="text-center text-eyebrow text-muted">Nothing to pay now: this only starts the conversation.</p>
         </div>
       </div>

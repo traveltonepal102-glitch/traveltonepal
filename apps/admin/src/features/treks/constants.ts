@@ -49,7 +49,7 @@ export const TREK_LIMITS = {
   dayDescription: 3000,
   mapPlace: 120,
   /** The lines under the packing list's, route map's and best months' headings: words, not formatting. */
-  headingLine: 1500,
+  headingLine: 3000,
   packingGroupTitle: 60,
   faqTopicTitle: 60,
   faqQuestion: 200,
@@ -507,6 +507,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   similarIntro: "Treks planned with you and led by local guides.",
   videos: [],
   pdfMapPath: null,
+  gpxTrackPath: null,
 };
 
 export const NO_TREK_PHOTOS: TrekPhotos = { cover: null, gallery: [] };

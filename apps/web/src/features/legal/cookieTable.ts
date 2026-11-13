@@ -4,8 +4,8 @@ import { CONSENT_MAX_AGE_LABEL, CONSENT_STORAGE_KEY } from "@/features/consent/c
 
 import { legalTable } from "./legalCompany";
 
-/** The embed services other than Google (already listed), e.g. "Vimeo, Komoot and Wikiloc". */
-const EMBEDDED_SERVICES = new Intl.ListFormat("en", { type: "conjunction" }).format(EMBED_PROVIDERS.filter((provider) => provider.company !== "Google").map((provider) => provider.name));
+/** The embed services other than Google (already listed), e.g. "Vimeo, Komoot, Wikiloc and other services embedded in a travel guide". */
+const EMBEDDED_SERVICES = new Intl.ListFormat("en", { type: "conjunction" }).format([...EMBED_PROVIDERS.filter((provider) => provider.company !== "Google").map((provider) => provider.name), "other services embedded in a travel guide"]);
 
 /** "What we use" on Cookie settings ({cookieTable}): only what this website really uses (keep in step with ConsentOptions). */
 export const cookieTable = () =>

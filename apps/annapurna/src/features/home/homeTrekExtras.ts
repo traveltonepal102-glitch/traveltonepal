@@ -39,11 +39,13 @@ export const toHomeGuideTeam = (rows: readonly WebTrekGuideRow[], region: string
     });
 
 /** The map from its My Maps id, else the place; null when the trek has neither. */
-export const toHomeRouteMap = (page: WebTrekPageRow, pdfUrl: string | undefined, shortName: string): HomeTrek["routeMap"] => {
+type RouteFiles = { pdfUrl?: string; gpxUrl?: string };
+
+export const toHomeRouteMap = (page: WebTrekPageRow, files: RouteFiles, shortName: string): HomeTrek["routeMap"] => {
   const myMapsId = page.my_maps_id?.trim() || undefined;
   const place = page.map_place?.trim() ?? "";
   if (!myMapsId && !place) return null;
-  return { heading: firstText(page.route_map_heading) ?? `${shortName} route map`, line: toRichTextDoc(page.route_map_line), pdfUrl, ...googleMapLinks({ place, myMapsId }) };
+  return { heading: firstText(page.route_map_heading) ?? `${shortName} route map`, line: toRichTextDoc(page.route_map_line), ...files, ...googleMapLinks({ place, myMapsId }) };
 };
 
 /** What meals cost and how they work on the trail; null when the trek says nothing about it. */

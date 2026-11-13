@@ -22,6 +22,11 @@ describe("the About page", () => {
     expect(toAboutContent(row({ statValue: "All" }), "https://photos").stat).toBeUndefined();
   });
 
+  it("reads this website's own typed number of trekking regions, empty when none is typed", () => {
+    expect(toAboutContent(row({ trekkingRegions: "3" }), "https://photos").trekkingRegions).toBe("3");
+    expect(toAboutContent(row({}), "https://photos").trekkingRegions).toBe("");
+  });
+
   it("splits typed text into paragraphs at the empty lines", () => {
     expect(toAboutContent(row({ voiceHeading: "Our voice", voiceText: "One.\n\nTwo." }), "https://photos").story.voice.paragraphs).toEqual(["One.", "Two."]);
   });

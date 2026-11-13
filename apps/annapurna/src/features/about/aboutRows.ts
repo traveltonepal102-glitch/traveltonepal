@@ -21,6 +21,7 @@ export const toAboutContent = (row: WebSitePageRow, photosBaseUrl: string): Abou
   return {
     top: toSitePageTop(row, photosBaseUrl, `${SITE_NAME}'s team`),
     trekkersGuided: field("trekkersGuided"),
+    trekkingRegions: field("trekkingRegions"),
     stat: statValue && statLabel ? { value: statValue, label: statLabel } : undefined,
     safetyLine: { lead: field("safetyLead"), text: field("safetyText") },
     listen: listenOf(content.listen),

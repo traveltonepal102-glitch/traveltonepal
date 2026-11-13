@@ -260,7 +260,12 @@ export type TrekValues = {
   videos: TrekVideo[];
   /** The printable map (trek-files bucket), or null: "Download PDF map" shows only with one. */
   pdfMapPath: string | null;
+  /** The GPS track (trek-files bucket, gpx-tracks/<uuid>.gpx), or null: "Download the GPS track" shows only with one. */
+  gpxTrackPath: string | null;
 };
+
+/** Where a trek's saved files download from, for the editor's "Open" links (null without the file). */
+export type TrekFileUrls = Record<"pdfMap" | "gpxTrack", string | null>;
 
 export type TrekPhotos = PhotoSelection;
 

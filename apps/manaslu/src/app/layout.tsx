@@ -12,12 +12,12 @@ import { SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // This website's own fonts, served from here (no requests to Google) and cut down to Latin letters: Mukta's Devanagari alone was 400 KB.
+// Three files in all (Fraunces variable, Mukta regular and semibold): every preloaded font competes with the first photo on a phone.
 // "optional": a font that is late is simply not swapped in, so text never jumps while the page is being read (it was 0.3 of layout shift).
 const fraunces = localFont({ src: "../fonts/FrauncesSoft-Variable.woff2", weight: "100 900", variable: "--font-fraunces", display: "optional" });
 const mukta = localFont({
   src: [
     { path: "../fonts/Mukta-Regular.woff2", weight: "400" },
-    { path: "../fonts/Mukta-Medium.woff2", weight: "500" },
     { path: "../fonts/Mukta-SemiBold.woff2", weight: "600" },
   ],
   variable: "--font-mukta",

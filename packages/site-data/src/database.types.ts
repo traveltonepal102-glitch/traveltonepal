@@ -221,6 +221,8 @@ export type WebTrekPageRow = ShareColumns & {
   section_order: string[];
   /** The printable map in the trek-files bucket (pdf-maps/<uuid>.pdf), or null without one. */
   pdf_map_path: string | null;
+  /** The GPS track in the trek-files bucket (gpx-tracks/<uuid>.gpx), or null without one. */
+  gpx_track_path: string | null;
   /** Section headings as written in the trek editor ("" = the page's own words); itinerary_heading follows "10-day". */
   intro_heading: string;
   overview_heading: string;

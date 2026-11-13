@@ -102,6 +102,7 @@ export const EmailFallback = ({ href }: { href: string }) => (
   <div className="flex flex-col gap-2.5">
     <a
       href={href}
+      rel="nofollow"
       className="flex min-h-11 items-center justify-center gap-2 rounded-md border-2 border-brand bg-surface px-4 font-display text-body-sm font-extrabold tracking-[0.06em] text-brand uppercase hover:bg-brand-tint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       <Icon name="mail" size={18} />

@@ -26,14 +26,14 @@ export const NoResults = ({ onClearAll }: { onClearAll: () => void }) => (
       <a
         href={getWhatsAppUrl()}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="nofollow noopener noreferrer"
         className="inline-flex min-h-10.5 items-center gap-1.5 rounded-md bg-whatsapp px-4 font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <WhatsAppLogo size={18} />
         Ask on WhatsApp
       </a>
       <a
-        href={getEmailUrl({ subject: "A trek that isn't on your list" })}
+        href={getEmailUrl({ subject: "A trek that isn't on your list" })} rel="nofollow"
         className="inline-flex min-h-10.5 items-center gap-1.5 rounded-md border border-line-strong bg-surface px-4 font-bold text-ink hover:bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <Icon name="mail" size={18} className="text-brand" />

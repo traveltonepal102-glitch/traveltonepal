@@ -15,14 +15,14 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
 
   return (
     <header className="wrap flex flex-col gap-7 pt-6">
-      <div className="flex max-w-220 flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Blogs", href: ROUTES.blogs }, { label: topicLabel, href: `${ROUTES.blogs}?topic=${topic}` }]} />
         <p className="flex flex-wrap gap-2">
           <span className={`${TAG} bg-forest-tint text-forest-deep`}>{topicLabel}</span>
           {highlightTag && <span className={`${TAG} bg-saffron-tint text-saffron-ink`}>{highlightTag}</span>}
         </p>
         <h1>{title}</h1>
-        {intro && <p className="max-w-[62ch] text-[19px] leading-7.5">{intro}</p>}
+        {intro && <p className="max-w-none text-[19px] leading-7.5">{intro}</p>}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-0 border-y border-solid border-line py-4">
         <div className="flex items-center gap-3">

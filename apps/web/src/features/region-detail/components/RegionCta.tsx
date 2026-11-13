@@ -19,13 +19,13 @@ export const RegionCta = ({ regionName }: { regionName: string }) => (
         <a
           href={regionInquiryUrl(regionName)}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           className={`${PILL} bg-whatsapp text-white hover:bg-whatsapp/90 focus-visible:outline-white`}
         >
           <WhatsAppLogo />
           Plan {regionName} on WhatsApp
         </a>
-        <a href={regionInquiryEmailUrl(regionName)} className={`${PILL} border-[1.5px] border-white/55 text-white hover:bg-white/10 focus-visible:outline-white`}>
+        <a href={regionInquiryEmailUrl(regionName)} rel="nofollow" className={`${PILL} border-[1.5px] border-white/55 text-white hover:bg-white/10 focus-visible:outline-white`}>
           <Icon name="mail" />
           Email us
         </a>

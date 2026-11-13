@@ -12,14 +12,14 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { TREK_LIMITS as LIMIT } from "../../../constants";
 import { googleMapsUrl, myMapsViewerUrl, parseMyMapsId } from "../../../lib/googleMaps";
-import type { TrekValues } from "../../../types";
+import type { TrekFileUrls, TrekValues } from "../../../types";
 import { PageHeadingFields } from "../PageHeadingFields";
-import { PdfMapField } from "./PdfMapField";
+import { TrekFileField } from "./TrekFileField";
 
 type RouteMapCardProps = {
-  values: Pick<TrekValues, "mapPlace" | "myMapsId" | "itinerary" | "trekStart" | "trekEnd" | "pdfMapPath" | "routeMapHeading" | "routeMapLine">;
-  /** Where the saved PDF map downloads from (null without one). */
-  pdfMapUrl: string | null;
+  values: Pick<TrekValues, "mapPlace" | "myMapsId" | "itinerary" | "trekStart" | "trekEnd" | "pdfMapPath" | "gpxTrackPath" | "routeMapHeading" | "routeMapLine">;
+  /** Where the saved printable map and GPS track download from (null without one). */
+  trekFileUrls: TrekFileUrls;
   errors: FieldErrors;
   onEdit: () => void;
 };
@@ -30,9 +30,9 @@ const routeStops = (itinerary: TrekValues["itinerary"]) =>
 
 /**
  * "Route and GPS waypoints" on the trek page: its heading, where the trek starts and ends, the Google map (a place
- * to centre on, or a My Maps map with the GPS trail), the stops, and the printable PDF map.
+ * to centre on, or a My Maps map with the GPS trail), the stops, the printable PDF map and the GPS track.
  */
-export const RouteMapCard = ({ values, pdfMapUrl, errors, onEdit }: RouteMapCardProps) => {
+export const RouteMapCard = ({ values, trekFileUrls, errors, onEdit }: RouteMapCardProps) => {
   const [place, setPlace] = useState(values.mapPlace);
   const [link, setLink] = useState(values.myMapsId ? myMapsViewerUrl(values.myMapsId) : "");
   const parsed = parseMyMapsId(link);
@@ -113,7 +113,8 @@ export const RouteMapCard = ({ values, pdfMapUrl, errors, onEdit }: RouteMapCard
           )}
           <SourceNote shownIn="the stops beside the route map (each day's “Sleep at”, as last saved)" from={{ section: "itinerary" }} />
         </div>
-        <PdfMapField path={values.pdfMapPath} url={pdfMapUrl} error={errors.pdfMapPath} onEdit={onEdit} />
+        <TrekFileField kind="pdfMap" path={values.pdfMapPath} url={trekFileUrls.pdfMap} error={errors.pdfMapPath} onEdit={onEdit} />
+        <TrekFileField kind="gpxTrack" path={values.gpxTrackPath} url={trekFileUrls.gpxTrack} error={errors.gpxTrackPath} onEdit={onEdit} />
       </FormSection>
     </>
   );

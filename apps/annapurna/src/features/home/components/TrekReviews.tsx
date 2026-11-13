@@ -38,7 +38,7 @@ export const TrekReviews = async ({ reviews, rating }: TrekReviewsProps) => {
         )}
         {googleProfileUrl && " · "}
         {(googleWriteUrl || googleProfileUrl) && (
-          <a href={ROUTES.review} className="underline">
+          <a href={ROUTES.review} rel="nofollow" className="underline">
             Write a review
           </a>
         )}

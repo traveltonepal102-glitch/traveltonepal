@@ -66,7 +66,7 @@ export const FeaturedTrekCard = ({ pick }: { pick: RegionTrekPick }) => {
             <a
               href={trekInquiryUrl(trek)}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className={`${PILL} focus-visible:outline-ring ${
                 hasPage ? "border border-whatsapp bg-surface text-whatsapp hover:bg-green-tint" : "bg-whatsapp text-white hover:bg-whatsapp/90"
               }`}

@@ -127,6 +127,12 @@ describe("toTrekDetail", () => {
     expect(detail().routeMap.pdfUrl).toBeUndefined();
   });
 
+  it("links the GPS track from the trek files address, and leaves it out without one", () => {
+    const path = "gpx-tracks/236645ef-00d2-4eb7-8d03-78c117be5477.gpx";
+    expect(detail({ gpx_track_path: path }).routeMap.gpxUrl).toBe(`${TREK_FILES_BASE}/${path}`);
+    expect(detail().routeMap.gpxUrl).toBeUndefined();
+  });
+
   it("shows a field guide topic's photo, and drops a note's own leading asterisk (the page adds one)", () => {
     const photo = { cover_id: "k1", cover_width: 800, cover_height: 600, cover_variant_widths: [400, 800], cover_placeholder: "", cover_place: "Manang" };
     const know_topics = [

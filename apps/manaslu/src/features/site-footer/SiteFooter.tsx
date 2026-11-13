@@ -77,11 +77,11 @@ export const SiteFooter = async () => {
         <div className="flex flex-wrap items-center justify-between gap-3.5 rounded-[14px] bg-white/6 px-6 py-5">
           <span className="font-display text-[22px] leading-7 font-semibold text-snow">Questions about your trek?</span>
           <span className="flex flex-wrap gap-3">
-            <a href={getWhatsAppUrl()} className={`${whatsAppButton} min-h-11 rounded-full`}>
+            <a href={getWhatsAppUrl()} rel="nofollow" className={`${whatsAppButton} min-h-11 rounded-full`}>
               <WhatsAppLogo />
               WhatsApp
             </a>
-            <a href={getEmailUrl()} className={`${outlineOnDarkButton} min-h-11 rounded-full`}>
+            <a href={getEmailUrl()} rel="nofollow" className={`${outlineOnDarkButton} min-h-11 rounded-full`}>
               Email
             </a>
           </span>

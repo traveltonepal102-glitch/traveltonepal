@@ -66,13 +66,13 @@ export const RegionHero = ({ region }: { region: RegionDetail }) => {
           <a
             href={regionInquiryUrl(region.name)}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${PILL} bg-whatsapp text-white hover:bg-whatsapp/90 focus-visible:outline-white`}
           >
             <WhatsAppLogo />
             Plan {region.name} on WhatsApp
           </a>
-          <a href={regionInquiryEmailUrl(region.name)} className={`${PILL} border-[1.5px] border-white/55 text-white hover:bg-white/10 focus-visible:outline-white`}>
+          <a href={regionInquiryEmailUrl(region.name)} rel="nofollow" className={`${PILL} border-[1.5px] border-white/55 text-white hover:bg-white/10 focus-visible:outline-white`}>
             <Icon name="mail" />
             Email us
           </a>

@@ -71,7 +71,7 @@ export const SiteHeader = async ({ variant = "solid" }: SiteHeaderProps) => {
 
           <div className="flex items-center gap-2.5">
             <a
-              href={getEmailUrl()}
+              href={getEmailUrl()} rel="nofollow"
               className={`hidden min-h-11.5 items-center gap-2 rounded-full border-[1.5px] px-4.5 text-body font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 lg:inline-flex ${
                 isOverlay
                   ? "border-white/55 text-white hover:bg-white/12 focus-visible:outline-white"
@@ -84,7 +84,7 @@ export const SiteHeader = async ({ variant = "solid" }: SiteHeaderProps) => {
             <a
               href={getWhatsAppUrl()}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className={`inline-flex min-h-11.5 items-center gap-2 rounded-full px-4.5 text-body font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${
                 isOverlay
                   ? "bg-white text-brand hover:bg-brand-tint focus-visible:outline-white"

@@ -50,7 +50,7 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
           <Icon name="arrow_forward" size={18} />
         </span>
         <a
-          href={trekInquiryEmailUrl(trek)}
+          href={trekInquiryEmailUrl(trek)} rel="nofollow"
           aria-label={`Email us about the ${trek.name}`}
           className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full bg-brand text-on-brand transition-colors hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
@@ -59,7 +59,7 @@ export const TrekCard = ({ trek }: { trek: TrekSummary }) => (
         <a
           href={trekInquiryUrl(trek)}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           aria-label={`Ask about the ${trek.name} on WhatsApp`}
           className="relative z-10 inline-flex size-12 flex-none items-center justify-center rounded-full bg-whatsapp text-white transition-colors hover:bg-whatsapp/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >

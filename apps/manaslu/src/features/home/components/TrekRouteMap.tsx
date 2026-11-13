@@ -28,6 +28,12 @@ export const TrekRouteMap = ({ name, routeMap }: { name: string; routeMap: NonNu
             Printable map (PDF)
           </a>
         )}
+        {routeMap.gpxUrl && (
+          <a href={routeMap.gpxUrl} download className={MAP_LINK}>
+            <TrailIcon name="route" />
+            GPS track (GPX)
+          </a>
+        )}
       </div>
     </div>
     <RouteMapFrame embedUrl={routeMap.embedUrl} title={`Google map of the ${name}`} hidesTitleBar={routeMap.hasTrailLine} />

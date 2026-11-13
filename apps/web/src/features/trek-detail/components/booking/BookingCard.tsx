@@ -41,7 +41,7 @@ export const BookingCard = async ({ trek }: { trek: TrekDetail }) => {
           <a
             href={trekInquiryUrl(trek)}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${CTA} min-h-11.5 border border-green-line bg-green-tint text-xs text-whatsapp hover:bg-green-line/60`}
           >
             <WhatsAppLogo size={18} />

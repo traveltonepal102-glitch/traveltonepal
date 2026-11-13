@@ -67,6 +67,7 @@ export const aboutSectionErrors = createSectionErrorLookup<AboutSectionKey>(ABOU
   intro: "top",
   photoId: "top",
   trekkersGuided: "top",
+  trekkingRegions: "top",
   statValue: "top",
   statLabel: "top",
   safetyLead: "top",

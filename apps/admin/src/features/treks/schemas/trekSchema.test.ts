@@ -250,7 +250,7 @@ describe("trekSchema", () => {
     expect(result.data?.packingLine).toEqual(linked);
     expect(result.data?.routeMapLine).toEqual(linked);
     expect(result.data?.monthsLine).toEqual(linked);
-    expect(errorsOf({ monthsLine: JSON.stringify(doc("x".repeat(601))) }).monthsLine).toBeTruthy();
+    expect(errorsOf({ monthsLine: JSON.stringify(doc("x".repeat(3001))) }).monthsLine).toBeTruthy();
   });
 
   it("reads packing cards with their own items, skipping empty cards", () => {
@@ -355,6 +355,13 @@ describe("trekSchema", () => {
     expect(parse({ pdfMapPath: path }).data?.pdfMapPath).toBe(path);
     expect(parse({ pdfMapPath: "" }).data?.pdfMapPath).toBeNull();
     expect(errorsOf({ pdfMapPath: "../photos/secret.pdf" }).pdfMapPath).toBe("Upload the PDF map again.");
+  });
+
+  it("keeps the GPS track's path only in the gpx-tracks folder", () => {
+    const path = "gpx-tracks/0b8f9a52-6f43-4d2a-9d9e-3c1f2b7a8e10.gpx";
+    expect(parse({ gpxTrackPath: path }).data?.gpxTrackPath).toBe(path);
+    expect(parse({ gpxTrackPath: "" }).data?.gpxTrackPath).toBeNull();
+    expect(errorsOf({ gpxTrackPath: "pdf-maps/0b8f9a52-6f43-4d2a-9d9e-3c1f2b7a8e10.gpx" }).gpxTrackPath).toBe("Upload the GPS track again.");
   });
 
   it("reads videos as library YouTube ids, with where each one shows", () => {

@@ -24,13 +24,13 @@ export const AboutCta = () => (
           <a
             href={getWhatsAppUrl("Hello! I'd like to plan a trek with you.")}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${BUTTON} bg-surface text-ink hover:bg-brand-tint`}
           >
             <WhatsAppLogo size={18} className="text-whatsapp" />
             Plan my trek my way
           </a>
-          <a href={getEmailUrl({ subject: `Planning a trek with ${SITE_NAME}` })} className={`${BUTTON} border-[1.5px] border-white/55 text-white hover:bg-white/12`}>
+          <a href={getEmailUrl({ subject: `Planning a trek with ${SITE_NAME}` })} rel="nofollow" className={`${BUTTON} border-[1.5px] border-white/55 text-white hover:bg-white/12`}>
             Email us
           </a>
         </div>

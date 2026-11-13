@@ -71,7 +71,7 @@ const TrekPage = async ({ params, searchParams }: TrekPageProps) => {
       guideOptions={guides.map((guide) => toGuideOption(guide, today))}
       regionId={trek.regionId}
       isNew={false}
-      pdfMapUrl={trek.pdfMapPath ? trekFileUrl(trek.pdfMapPath) : null}
+      trekFileUrls={{ pdfMap: trek.pdfMapPath ? trekFileUrl(trek.pdfMapPath) : null, gpxTrack: trek.gpxTrackPath ? trekFileUrl(trek.gpxTrackPath) : null }}
       lastSaved={`Saved ${formatDateTime(trek.updatedAt)} Nepal time`}
       isJustAdded={added === "1"}
       isJustCopied={copied === "1"}

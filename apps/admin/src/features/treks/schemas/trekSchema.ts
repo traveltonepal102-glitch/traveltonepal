@@ -138,6 +138,10 @@ export const trekSchema = z
       .string()
       .transform((value) => value || null)
       .pipe(z.string().regex(/^pdf-maps\/[0-9a-f-]{36}\.pdf$/, "Upload the PDF map again.").nullable()),
+    gpxTrackPath: z
+      .string()
+      .transform((value) => value || null)
+      .pipe(z.string().regex(/^gpx-tracks\/[0-9a-f-]{36}\.gpx$/, "Upload the GPS track again.").nullable()),
     guideIds: z
       .array(z.uuid("Pick the guides from the list."))
       .transform(unique)
@@ -281,6 +285,7 @@ export const readTrekForm = (formData: FormData) => {
       "similarHeading",
       "similarIntro",
       "pdfMapPath",
+      "gpxTrackPath",
     ]),
     knowTopics: readKnowTopics(formData),
     videos: readVideos(formData),

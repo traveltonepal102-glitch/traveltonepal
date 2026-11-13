@@ -31,6 +31,7 @@ const belief = {
 export const aboutPageSchema = z.object({
   ...pageTopFields,
   trekkersGuided: text(LIMIT.trekkersGuided),
+  trekkingRegions: text(LIMIT.trekkingRegions),
   statValue: text(LIMIT.statValue),
   statLabel: text(LIMIT.statLabel),
   safetyLead: text(LIMIT.safetyLine),
@@ -79,6 +80,8 @@ export const aboutPageSchema = z.object({
   voiceHeading: text(LIMIT.beliefHeading),
   voiceText: text(LIMIT.beliefBody),
   photoIds: z.array(optionalId).length(ABOUT_PHOTO_SLOT_COUNT),
+  promisesHeading: text(LIMIT.sectionHeading),
+  promisesIntro: text(LIMIT.sectionIntro),
   promises: optionalRows(promise, PROMISE_ROWS, "Give the promise a title, or clear its text."),
   teamHeading: text(LIMIT.sectionHeading),
   teamIntro: text(LIMIT.sectionIntro),
@@ -103,6 +106,7 @@ const TITLED = ["title", "text"] as const;
 export const readAboutForm = (formData: FormData) => ({
   ...readPageTop(formData),
   trekkersGuided: readText(formData, "trekkersGuided"),
+  trekkingRegions: readText(formData, "trekkingRegions"),
   statValue: readText(formData, "statValue"),
   statLabel: readText(formData, "statLabel"),
   safetyLead: readText(formData, "safetyLead"),
@@ -139,6 +143,8 @@ export const readAboutForm = (formData: FormData) => ({
   voiceHeading: readText(formData, "voiceHeading"),
   voiceText: readText(formData, "voiceText"),
   photoIds: readLines(formData, "photoIds", ABOUT_PHOTO_SLOT_COUNT),
+  promisesHeading: readText(formData, "promisesHeading"),
+  promisesIntro: readText(formData, "promisesIntro"),
   promises: readRows(formData, "promise", ["icon", "title", "text"] as const),
   teamHeading: readText(formData, "teamHeading"),
   teamIntro: readText(formData, "teamIntro"),

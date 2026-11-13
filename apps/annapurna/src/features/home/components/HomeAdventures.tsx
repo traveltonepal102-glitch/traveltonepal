@@ -32,7 +32,7 @@ export const HomeAdventures = ({ section }: { section: HomeAdventuresSection }) 
           </span>
           <h3 className="text-2xl! leading-7.5!">{section.askTitle}</h3>
           <p className="text-base leading-6.25">{section.askText}</p>
-          <a href={getWhatsAppUrl("Hello! I have an idea for something to do in Nepal.")} className={whatsAppButton}>
+          <a href={getWhatsAppUrl("Hello! I have an idea for something to do in Nepal.")} rel="nofollow" className={whatsAppButton}>
             <WhatsAppLogo />
             Ask on WhatsApp
           </a>

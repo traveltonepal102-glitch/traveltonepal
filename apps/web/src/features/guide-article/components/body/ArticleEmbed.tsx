@@ -11,7 +11,7 @@ import { FOCUS } from "../styles";
 type ArticleEmbedProps = Omit<Extract<ArticleBlock, { type: "embed" }>, "type">;
 
 /**
- * "Embed": a map or video from an allowed service (@ttn/config/embeds). Nothing is requested from the service until
+ * "Embed": a frame from any https address (@ttn/config/embeds): a map, a video or a widget. Nothing is requested from the service until
  * the visitor loads it here or allows "External media" in the cookie settings (GDPR: it sees their IP address and may
  * set cookies). The frame can't reach this page: it only runs its own scripts and opens links in a new tab.
  */
@@ -26,7 +26,7 @@ export const ArticleEmbed = ({ url, service, height, title, caption }: ArticleEm
         {isAllowed ? (
           <iframe
             src={url}
-            title={`${service.name} ${service.kind}: ${title}`}
+            title={`${service.kind === "content" ? `Content from ${service.name}` : `${service.name} ${service.kind}`}: ${title}`}
             loading="lazy"
             allow="fullscreen; picture-in-picture"
             allowFullScreen
@@ -47,7 +47,7 @@ export const ArticleEmbed = ({ url, service, height, title, caption }: ArticleEm
               className={`inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-brand px-4 text-caption font-bold text-on-brand hover:bg-brand-hover ${FOCUS}`}
             >
               <Icon name={service.kind === "video" ? "play_circle" : "pin_drop"} size={18} />
-              Load {service.name} {service.kind}
+              {service.kind === "content" ? `Load content from ${service.name}` : `Load ${service.name} ${service.kind}`}
             </button>
           </div>
         )}

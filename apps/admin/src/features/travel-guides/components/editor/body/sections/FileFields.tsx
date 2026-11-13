@@ -8,7 +8,7 @@ import { useId } from "react";
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
 import { TextField } from "@/components/ui/TextField";
-import { usePdfUpload } from "@/hooks/usePdfUpload";
+import { PDF_ACCEPT, useFileUpload } from "@/hooks/useFileUpload";
 import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { finishGuideFileUpload, startGuideFileUpload } from "../../../../actions/guideFileUpload";
@@ -42,7 +42,8 @@ const titleFromFileName = (fileName: string) => {
 /** "File to download": a PDF uploaded straight to storage and checked to really be a PDF, with its title for visitors. */
 export const FileFields = ({ path, byteSize, title, description, filesBaseUrl, field, errors, onChange }: FileFieldsProps) => {
   const id = useId();
-  const { upload, isUploading, progress, message } = usePdfUpload({
+  const { upload, isUploading, progress, message } = useFileUpload({
+    accept: PDF_ACCEPT,
     start: (chosen) => startGuideFileUpload(chosen.name, chosen.size),
     finish: finishGuideFileUpload,
     onUploaded: (uploaded) => onChange({ path: uploaded.path, byteSize: uploaded.byteSize, title: title.trim() ? title : titleFromFileName(fileNameOf(uploaded.path)) }),

@@ -32,11 +32,11 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
               <TrailIcon name="star" size={16} className="fill-saffron text-saffron" />
               {rating.rating.toFixed(1)}
               {hasReviews ? (
-                <a href="#reviews" className="font-medium">
+                <a href="#reviews" className="font-semibold">
                   ({rating.count} Google reviews)
                 </a>
               ) : (
-                <span className="font-medium">({rating.count} Google reviews)</span>
+                <span className="font-semibold">({rating.count} Google reviews)</span>
               )}
             </span>
           )}
@@ -48,11 +48,11 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
           )}
         </p>
       )}
-      {top.intro && <p className="max-w-190 text-[19px] leading-7.5">{top.intro}</p>}
+      {top.intro && <p className="max-w-none text-[19px] leading-7.5">{top.intro}</p>}
     </div>
     {/* On a phone: the two main buttons full width, then "Trip PDF" and "Share" side by side. */}
     <div className="actions max-sm:w-full max-sm:grid-cols-2">
-      <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} className={`${whatsAppButton} max-sm:col-span-2`}>
+      <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
         <WhatsAppLogo />
         {top.buttonLabel}
       </a>

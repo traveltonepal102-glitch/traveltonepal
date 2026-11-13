@@ -38,14 +38,14 @@ export const MobileMenuContent = () => (
     <a
       href={getWhatsAppUrl()}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="nofollow noopener noreferrer"
       className={`flex min-h-13 items-center justify-center gap-2 rounded-md bg-whatsapp font-extrabold text-on-brand ${FOCUS_RING}`}
     >
       <WhatsAppLogo />
       Plan my trek on WhatsApp
     </a>
     <a
-      href={getEmailUrl()}
+      href={getEmailUrl()} rel="nofollow"
       className={`mt-2.5 flex min-h-12 items-center justify-center gap-2 rounded-md border border-line-strong font-bold text-ink ${FOCUS_RING}`}
     >
       <Icon name="mail" size={18} className="text-brand" />

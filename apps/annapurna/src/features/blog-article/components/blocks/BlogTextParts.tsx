@@ -1,8 +1,8 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import { RichText } from "@/components/shared/RichText";
-import { whatsAppButton } from "@/components/ui/buttonStyles";
+import { outlineButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
@@ -44,10 +44,10 @@ export const BlogChecklist = ({ heading, items }: { heading: string; items: read
 );
 
 /** A question to us in the middle of the blog: the admin's words start the WhatsApp message. Left out without a number in Site settings. */
-/** "Ask us" in the middle of a blog: the heading typed in the editor, who answers, and the WhatsApp button. Left out without a number in Site settings. */
+/** "Ask us" in the middle of a blog: the heading typed in the editor, who answers, WhatsApp and email (each only with its detail in Site settings). */
 export const BlogCta = async ({ heading, buttonText, message }: { heading: string; buttonText: string; message: string }) => {
-  const { phoneDisplay } = await getSiteSettings();
-  if (!phoneDisplay) return null;
+  const { phoneDisplay, email } = await getSiteSettings();
+  if (!phoneDisplay && !email) return null;
 
   return (
     <aside aria-label={heading} className="flex flex-wrap items-center gap-x-8 gap-y-5 rounded-2xl border border-solid border-line bg-cloud p-6 md:p-7">
@@ -57,12 +57,22 @@ export const BlogCta = async ({ heading, buttonText, message }: { heading: strin
       <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-1">
         <span className="eyebrow">Ask our team</span>
         <p className="font-display text-[22px] leading-7.5 font-bold text-ink">{heading}</p>
-        <p className="text-[15px] leading-5.75 text-muted">A guide from our team answers you personally on WhatsApp, usually within a few hours.</p>
+        <p className="text-[15px] leading-5.75 text-muted">A guide from our team answers you personally, usually within a few hours.</p>
       </div>
-      <a href={getWhatsAppUrl(message)} className={`${whatsAppButton} max-sm:w-full`}>
-        <WhatsAppLogo />
-        {buttonText}
-      </a>
+      <div className="actions max-sm:w-full">
+        {phoneDisplay && (
+          <a href={getWhatsAppUrl(message)} rel="nofollow" className={whatsAppButton}>
+            <WhatsAppLogo />
+            {buttonText}
+          </a>
+        )}
+        {email && (
+          <a href={getEmailUrl({ subject: heading, body: message })} rel="nofollow" className={outlineButton}>
+            <TrailIcon name="mail" />
+            Email us
+          </a>
+        )}
+      </div>
     </aside>
   );
 };

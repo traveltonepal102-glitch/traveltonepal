@@ -12,7 +12,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { TREK_LIMITS as LIMIT } from "../../constants";
 import { dayAltitudesId, toDayAltitude, useItineraryDays } from "../../hooks/useItineraryDays";
-import type { RegionOption, SimilarTrekOption, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
+import type { RegionOption, SimilarTrekOption, TrekFileUrls, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
 import { TrekFaqSection } from "./faq/TrekFaqSection";
 import { TrekGuidesSection } from "./guides/TrekGuidesSection";
 import { TrekItinerarySection } from "./itinerary/TrekItinerarySection";
@@ -59,7 +59,7 @@ type TrekSectionPanelsProps = {
   blogOptions: { value: string; label: string }[] | null;
   regionId: string | null;
   isNew: boolean;
-  pdfMapUrl: string | null;
+  trekFileUrls: TrekFileUrls;
   /** The page's order of sections, kept by the editor so its section list follows it. */
   sectionOrder: TrekPageSection[];
   onSectionOrderChange: (order: TrekPageSection[]) => void;
@@ -83,7 +83,7 @@ export const TrekSectionPanels = ({
   blogOptions,
   regionId,
   isNew,
-  pdfMapUrl,
+  trekFileUrls,
   sectionOrder,
   onSectionOrderChange,
 }: TrekSectionPanelsProps) => {
@@ -187,7 +187,7 @@ export const TrekSectionPanels = ({
           onSelectDay={openDay}
           onEditDays={() => links?.show("itinerary")}
         />
-        <RouteMapCard values={values} pdfMapUrl={pdfMapUrl} errors={errors} onEdit={onEdit} />
+        <RouteMapCard values={values} trekFileUrls={trekFileUrls} errors={errors} onEdit={onEdit} />
       </div>
       <div {...panel("pricing")}>
         <PageHeadingFields

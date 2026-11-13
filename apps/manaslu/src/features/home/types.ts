@@ -30,6 +30,8 @@ export type HomeDay = {
   topPlace: string;
   isHighPoint: boolean;
   body: RichTextDoc;
+  /** The day's photo from the trek editor, beside its text. */
+  photo?: SiteImageSource;
 };
 
 export type HomeGroupPrice = { label: string; shortLabel: string; priceUsd: number; team: string; isDefault: boolean };
@@ -97,7 +99,7 @@ export type HomeTrek = {
   /** Left out when the trek hides it or says nothing about meals. */
   meals: { budget: { min: number; max: number } | null; trailTips: HomePoint[]; teahouseNotes: HomePoint[] } | null;
   /** `line`: the rich text under the heading (links to other pages), empty when there is none; the same for months and packing. */
-  routeMap: { heading: string; line: RichTextDoc; embedUrl: string; openUrl: string; hasTrailLine: boolean; pdfUrl?: string } | null;
+  routeMap: { heading: string; line: RichTextDoc; embedUrl: string; openUrl: string; hasTrailLine: boolean; pdfUrl?: string; gpxUrl?: string } | null;
   months: { heading: string; line: RichTextDoc; ratings: MonthRating[] } | null;
   packing: { heading: string; line: RichTextDoc; groups: HomePackingGroup[] };
   fieldGuide: { heading: string; intro: string; topics: HomeFieldTopic[] };
@@ -130,6 +132,9 @@ export type HomeGuide = { slug: string; title: string; text: string; topic: stri
 export type HomeCompany = {
   storyTeaser: string;
   founder: { name: string; role: string; photo?: SiteImageSource } | null;
+  /** "Why book your trek with us": the heading and the line under it, blank = the page's own words. */
+  promisesHeading: string;
+  promisesIntro: string;
   promises: HomePoint[];
 };
 

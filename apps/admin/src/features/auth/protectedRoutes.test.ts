@@ -12,7 +12,8 @@ const SRC = path.resolve(import.meta.dirname, "../..");
 const APP = path.join(SRC, "app");
 
 /** Pages anyone may open (signed out). Everything else under app/ is protected. */
-const PUBLIC_ROUTE_FILES = ["login/page.tsx"];
+// The icon sprite holds only the icons' shapes, so it needs no sign-in.
+const PUBLIC_ROUTE_FILES = ["login/page.tsx", "icons.svg/route.ts"];
 
 /** Server Actions that run before there is an admin session. */
 const PUBLIC_ACTIONS = [

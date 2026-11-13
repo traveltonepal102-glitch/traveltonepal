@@ -38,14 +38,14 @@ export const TrekChoiceBar = ({ trekName, days, groupPrices }: TrekChoiceBarProp
         <a
           href={getWhatsAppUrl(message)}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           className={`${ACTION} bg-whatsapp text-white hover:bg-whatsapp/90`}
         >
           <WhatsAppLogo size={18} />
           Check this date on WhatsApp
           <span className="sr-only">(opens WhatsApp)</span>
         </a>
-        <a href={getEmailUrl({ subject: `${trekName} on ${start}`, body: message })} className={`${ACTION} border border-line-strong bg-surface text-ink hover:bg-page`}>
+        <a href={getEmailUrl({ subject: `${trekName} on ${start}`, body: message })} rel="nofollow" className={`${ACTION} border border-line-strong bg-surface text-ink hover:bg-page`}>
           <Icon name="mail" size={18} className="text-brand" />
           Email
         </a>

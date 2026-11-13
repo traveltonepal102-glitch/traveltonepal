@@ -66,7 +66,7 @@ export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
             <TrailIcon name="arrow" size={16} />
           </Link>
         ) : (
-          <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} className={whatsAppButton}>
+          <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} rel="nofollow" className={whatsAppButton}>
             <WhatsAppLogo />
             Ask us
           </a>

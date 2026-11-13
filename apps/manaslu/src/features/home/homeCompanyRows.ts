@@ -27,6 +27,8 @@ export const toHomeCompany = (about: WebSitePageRow | null, photosBaseUrl: strin
           photo: photoId && widths?.length ? { src: `${photosBaseUrl}/${photoId}`, alt: "", variantWidths: widths, fileName: about?.founder_photo_file_name || undefined } : undefined,
         }
       : null,
+    promisesHeading: textOf(content, "promisesHeading"),
+    promisesIntro: textOf(content, "promisesIntro"),
     promises: readPoints(promises),
   };
 };

@@ -14,8 +14,9 @@ const TILE = "flex flex-col gap-1.5 rounded-xl border border-solid border-border
 const VALUE = "font-display text-xl font-extrabold text-ink";
 
 /**
- * "Four numbers under the heading": the year and the regions fill in by themselves; "trekkers guided" and the fourth
- * number are typed here. Then the line under the four beliefs' cards.
+ * "Four numbers under the heading": the year fills in by itself, and so do Travel To Nepal's regions (a region website
+ * types its own number, never Travel To Nepal's); "trekkers guided" and the fourth number are typed here. Then the line
+ * under the four beliefs' cards.
  */
 export const AboutNumbersCard = ({ values, facts, errors }: AboutNumbersCardProps) => (
   <FormSection title="Four numbers, and the line under the four beliefs" hint="Keep the numbers true. A number left empty is left out.">
@@ -28,9 +29,13 @@ export const AboutNumbersCard = ({ values, facts, errors }: AboutNumbersCardProp
         </Link>
       </div>
       <div className={TILE}>
-        <span className={VALUE}>{facts.regionCount}</span>
+        {facts.regionCount === null ? (
+          <TextField name="trekkingRegions" label="Trekking regions" isLabelHidden defaultValue={values.trekkingRegions} placeholder="3" maxLength={LIMIT.trekkingRegions} inputClassName="font-display text-xl font-extrabold" error={errors.trekkingRegions} />
+        ) : (
+          <span className={VALUE}>{facts.regionCount}</span>
+        )}
         <span className="text-caption text-text">Trekking regions</span>
-        <span className="text-xs text-muted-foreground">Counted from Regions</span>
+        <span className="text-xs text-muted-foreground">{facts.regionCount === null ? "Typed here, for this website only" : "Counted from Regions"}</span>
       </div>
       <div className={TILE}>
         <TextField name="trekkersGuided" label="Trekkers guided" isLabelHidden defaultValue={values.trekkersGuided} placeholder="50+" maxLength={LIMIT.trekkersGuided} inputClassName="font-display text-xl font-extrabold" error={errors.trekkersGuided} />

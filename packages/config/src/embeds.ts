@@ -1,21 +1,24 @@
 /*
- * What a travel guide's "Embed" section may show: a frame from one of these services only, loaded on the website
- * after a click or the visitor's "External media" consent. Checked when saved (admin) and again when read (website).
- * A new service needs a line in the Privacy policy, and shows in the cookie table by itself (cookieTable.ts).
+ * What a travel guide's "Embed" section may show: a frame from any https address (decided 2026-11-13; before,
+ * the services below only), loaded on the website after a click or the visitor's "External media" consent. The
+ * services below are known by name (and Vimeo is asked not to track); any other address is named by its domain.
+ * Checked when saved (admin) and again when read (website): only https, no credentials, no port, no fragment.
+ * The cookie table names the known services and "other services embedded in the blogs" (cookieTable.ts).
  */
 
 export type EmbedProvider = {
-  id: "google-maps" | "vimeo" | "komoot" | "wikiloc";
+  id: "google-maps" | "vimeo" | "komoot" | "wikiloc" | "other";
   /** As the website names it, e.g. "Load Komoot map". */
   name: string;
   /** Who sees the visitor's IP address, e.g. "Google". */
   company: string;
-  /** "map" or "video", for the button and the frame's title. */
-  kind: "map" | "video";
-  isEmbedUrl: (url: URL) => boolean;
+  /** "map" or "video" for the known services, "content" for any other address; for the button and the frame's title. */
+  kind: "map" | "video" | "content";
 };
 
-export const EMBED_PROVIDERS: readonly EmbedProvider[] = [
+type KnownProvider = EmbedProvider & { isEmbedUrl: (url: URL) => boolean };
+
+export const EMBED_PROVIDERS: readonly KnownProvider[] = [
   {
     id: "google-maps",
     name: "Google Maps",
@@ -56,19 +59,21 @@ const fromPageLink = (url: URL) => {
   return url;
 };
 
+/** Any other address: named by its site, e.g. "Load content from maps.example.com". */
+const otherProvider = (url: URL): EmbedProvider => ({ id: "other", name: url.hostname.replace(/^www\./, ""), company: url.hostname.replace(/^www\./, ""), kind: "content" });
+
 /**
- * The embed from what was pasted: the service's whole `<iframe …>` code (its Share › Embed) or a link. Null when it
- * isn't from one of the services above. Vimeo is asked not to track the visitor.
+ * The embed from what was pasted: an `<iframe …>` code (a service's Share › Embed) or a link. Null when it isn't a
+ * plain https address (credentials, a port, http or anything else). Vimeo is asked not to track the visitor.
  */
 export const toEmbed = (pasted: string): Embed | null => {
   const text = pasted.trim();
   const src = /<iframe[^>]*\ssrc\s*=\s*["']([^"']+)["']/i.exec(text)?.[1] ?? text;
   const parsed = parse(src.trim().replace(/&amp;/g, "&"));
-  if (!parsed || parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port) return null;
+  if (!parsed || parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port || !parsed.hostname.includes(".")) return null;
 
   const url = fromPageLink(parsed);
-  const provider = EMBED_PROVIDERS.find((item) => item.isEmbedUrl(url));
-  if (!provider) return null;
+  const provider = EMBED_PROVIDERS.find((item) => item.isEmbedUrl(url)) ?? otherProvider(url);
   if (provider.id === "vimeo") url.searchParams.set("dnt", "1");
   url.hash = "";
   return { url: url.toString(), provider };

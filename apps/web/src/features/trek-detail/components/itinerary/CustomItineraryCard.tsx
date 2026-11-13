@@ -71,14 +71,14 @@ export const CustomItineraryCard = async ({
           <a
             href={trekCustomizeUrl({ name })}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className={`${BUTTON} bg-whatsapp text-white shadow-[0_4px_10px_rgba(21,128,61,0.2)] hover:bg-whatsapp/90`}
           >
             <WhatsAppLogo size={18} />
             Customize on WhatsApp
           </a>
           <a
-            href={getEmailUrl()}
+            href={getEmailUrl()} rel="nofollow"
             className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}
           >
             <Icon name="mail" size={18} className="text-brand" />

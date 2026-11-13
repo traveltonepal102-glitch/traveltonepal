@@ -5,7 +5,8 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { RouteMapFrame } from "@/features/home/components/RouteMapFrame";
 
-const COLUMN_SIZES = "(min-width: 1024px) 780px, 100vw";
+/** The article column: the page (1440px at most) less its gutters, the gap and the 340px rail. */
+const COLUMN_SIZES = "(min-width: 1440px) 996px, (min-width: 1024px) calc(100vw - 444px), 100vw";
 
 /** A photo with its caption. */
 export const BlogImage = ({ image, caption }: { image: SiteImageSource; caption: string }) => (

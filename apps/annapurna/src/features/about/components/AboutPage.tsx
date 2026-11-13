@@ -27,6 +27,7 @@ export const AboutPage = async () => {
   const [about, team, { foundedYear }] = await Promise.all([getAboutContent(), listTeam(), getSiteSettings()]);
   const stats: AboutStat[] = [
     ...(foundedYear ? [{ value: String(foundedYear), label: "Founded" }] : []),
+    ...(about.trekkingRegions ? [{ value: about.trekkingRegions, label: "Trekking regions" }] : []),
     ...(about.trekkersGuided ? [{ value: about.trekkersGuided, label: "Trekkers guided" }] : []),
     ...(about.stat ? [about.stat] : []),
   ];

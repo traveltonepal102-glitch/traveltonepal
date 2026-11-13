@@ -2,8 +2,11 @@ import type { SiteSettings } from "@/features/settings/types";
 
 import type { AboutFacts } from "../types";
 
-/** What the About page fills in by itself from Site settings and Regions, as the About editor shows it (read-only). */
-export const aboutFactsFrom = (settings: SiteSettings, regionCount: number): AboutFacts => ({
+/**
+ * What the About page fills in by itself from Site settings and Regions, as the About editor shows it (read-only).
+ * The regions are Travel To Nepal's: a region website passes null and types its own number.
+ */
+export const aboutFactsFrom = (settings: SiteSettings, regionCount: number | null): AboutFacts => ({
   foundedYear: settings.foundedYear,
   regionCount,
   licences: [

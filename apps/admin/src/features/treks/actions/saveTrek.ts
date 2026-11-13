@@ -15,7 +15,7 @@ import { refreshSiteWebsite } from "@/lib/website/refreshWebsite";
 
 import { TREKS_PATH, trekPath } from "../constants";
 import { readTrekForm, trekSchema } from "../schemas/trekSchema";
-import { getTrekPdfMapPath, saveTrek as saveTrekToDatabase } from "../services/treksRepository";
+import { getTrekFilePaths, saveTrek as saveTrekToDatabase } from "../services/treksRepository";
 
 const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveState => ({ status: "error", message, fieldErrors });
 
@@ -44,7 +44,7 @@ export const saveTrek = async (siteId: string, trekId: string | null, _previous:
     return failure(`${count} field${count === 1 ? " needs" : "s need"} fixing before saving.`, fieldErrors);
   }
 
-  const previousPdfMap = trekId ? await getTrekPdfMapPath(trekId) : null;
+  const previousFiles = trekId ? await getTrekFilePaths(trekId) : [];
   const result = await saveTrekToDatabase(parsed.data, trekId, siteId);
   if (!result.ok) {
     if (result.reason === "slug_taken") {
@@ -53,8 +53,9 @@ export const saveTrek = async (siteId: string, trekId: string | null, _previous:
     return failure(FAILURE_MESSAGES[result.reason]);
   }
 
-  // A replaced or removed printable map is public, so it is deleted once the trek no longer points to it.
-  if (previousPdfMap && previousPdfMap !== parsed.data.pdfMapPath) await removeUnusedTrekFile(previousPdfMap);
+  // A replaced or removed printable map or GPS track is public, so it is deleted once the trek no longer points to it.
+  const kept = [parsed.data.pdfMapPath, parsed.data.gpxTrackPath];
+  await Promise.all(previousFiles.filter((path) => !kept.includes(path)).map(removeUnusedTrekFile));
 
   refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.treks]);
   revalidatePath(TREKS_PATH);

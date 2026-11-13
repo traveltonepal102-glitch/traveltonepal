@@ -44,6 +44,12 @@ export const TrekRouteMap = ({ heading, name, routeMap, itinerary }: TrekRouteMa
               Download PDF map
             </a>
           )}
+          {routeMap.gpxUrl && (
+            <a href={routeMap.gpxUrl} download className={MAP_LINK}>
+              <Icon name="route" size={16} className="text-brand" />
+              Download the GPS track (GPX)
+            </a>
+          )}
         </div>
       </div>
 

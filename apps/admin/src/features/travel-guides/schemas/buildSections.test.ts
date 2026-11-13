@@ -60,7 +60,7 @@ describe("table, custom HTML, embed and altitude chart sections", () => {
         table({ rows: [["Lama Hotel"]] }),
         { id: null, type: "html", html: '<p>Map</p><iframe src="https://x.example"></iframe>' },
         { id: null, type: "html", html: '<a href="#" onclick="go()">Go</a>' },
-        { id: null, type: "embed", code: "https://example.com/map", height: "medium", title: "", caption: "" },
+        { id: null, type: "embed", code: "http://example.com/map", height: "medium", title: "", caption: "" },
         { id: null, type: "altitude", trekId: null, heading: "" },
       ]),
     ).toMatchObject({
@@ -69,7 +69,7 @@ describe("table, custom HTML, embed and altitude chart sections", () => {
       "sections.2.rows": "The table's rows don't line up. Reload the page and try again.",
       "sections.3.html": "Take out the frame: use an “Embed” section for maps and videos.",
       "sections.4.html": expect.stringContaining("Take out the script"),
-      "sections.5.code": "Paste the embed code from Google Maps, Vimeo, Komoot, Wikiloc.",
+      "sections.5.code": "Paste an embed code or an https link (no http, passwords or ports).",
       "sections.5.title": expect.stringContaining("Write a title"),
       "sections.6.trekId": "Pick the trek.",
     });

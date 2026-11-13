@@ -20,7 +20,7 @@ export const LegalSidebar = ({ doc }: { doc: LegalDoc }) => (
               <Link
                 href={page.path}
                 aria-current={isCurrent ? "page" : undefined}
-                className={`flex min-h-11 items-center gap-2.5 rounded-[10px] px-3 text-[15px] no-underline ${isCurrent ? "bg-forest-tint font-semibold text-forest-deep" : "font-medium text-text hover:bg-stone"}`}
+                className={`flex min-h-11 items-center gap-2.5 rounded-[10px] px-3 text-[15px] no-underline ${isCurrent ? "bg-forest-tint font-semibold text-forest-deep" : "font-semibold text-text hover:bg-stone"}`}
               >
                 <TrailIcon name={page.icon} />
                 {page.label}

@@ -37,7 +37,7 @@ export const TrekItinerary = ({ name, itinerary }: TrekItineraryProps) => (
             <p className="text-base leading-6.25">Want an extra rest day or a different finish? Every trek is private, so we can change it for your group.</p>
           </div>
         </div>
-        <a href={getWhatsAppUrl(`Hello! I would like to change the ${name} route for my group.`)} className={whatsAppButton}>
+        <a href={getWhatsAppUrl(`Hello! I would like to change the ${name} route for my group.`)} rel="nofollow" className={whatsAppButton}>
           <WhatsAppLogo />
           Plan my route
         </a>

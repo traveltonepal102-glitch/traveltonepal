@@ -22,7 +22,7 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
           {highlightTag && <span className={`${TAG} bg-cream text-cream-ink`}>{highlightTag}</span>}
         </p>
         <h1>{title}</h1>
-        {intro && <p className="max-w-[62ch] text-[19px] leading-7.5">{intro}</p>}
+        {intro && <p className="max-w-none text-[19px] leading-7.5">{intro}</p>}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-0 border-y border-solid border-line py-4">
         <div className="flex items-center gap-3">

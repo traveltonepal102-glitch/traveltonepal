@@ -14,7 +14,7 @@ const Field = ({ name, label, error, isOptional, hint, children }: FieldProps & 
     </label>
     {children}
     {error ? (
-      <p id={`contact-${name}-error`} className="text-sm leading-5 font-medium text-[#b42318]">
+      <p id={`contact-${name}-error`} className="text-sm leading-5 font-semibold text-[#b42318]">
         {error}
       </p>
     ) : (

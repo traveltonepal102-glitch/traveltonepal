@@ -51,14 +51,14 @@ export const ArticleCta = ({ heading, buttonText, message }: { heading: string; 
       <a
         href={getWhatsAppUrl(message)}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="nofollow noopener noreferrer"
         className={`inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-5 text-body-sm font-bold text-white hover:bg-whatsapp/90 ${FOCUS}`}
       >
         <WhatsAppLogo size={18} />
         {buttonText}
       </a>
       <a
-        href={getEmailUrl({ subject: heading, body: message })}
+        href={getEmailUrl({ subject: heading, body: message })} rel="nofollow"
         className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-green-line bg-surface px-5 text-body-sm font-bold text-ink hover:bg-page ${FOCUS}`}
       >
         <Icon name="mail" size={18} className="text-brand" />

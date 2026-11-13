@@ -99,6 +99,8 @@ type TrekRow = {
   optional_high_point_m: number | null;
   /** pdf-maps/<uuid>.pdf in the trek-files bucket. */
   pdf_map_path: string | null;
+  /** gpx-tracks/<uuid>.gpx in the trek-files bucket. */
+  gpx_track_path: string | null;
   /** The guide (articles.id, same website) its page shows first in "Read before you go"; null: the website's featured one. */
   featured_article_id: string | null;
   /** The first time it was published (set by a trigger); null until then. The website's "published" date. */

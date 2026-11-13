@@ -17,6 +17,8 @@ export type AboutContent = {
   top: SitePageTop;
   /** Hero stat, e.g. "50+"; "" leaves the stat out. */
   trekkersGuided: string;
+  /** Hero stat typed in Pages › About for this website, e.g. "3"; "" leaves the stat out. */
+  trekkingRegions: string;
   stat?: { value: string; label: string };
   safetyLine: { lead: string; text: string };
   listen: AboutListen;

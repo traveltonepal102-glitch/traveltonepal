@@ -19,3 +19,10 @@
     }
   }
 }
+
+@layer base {
+  /* The icons (Icon): drawn from the sprite, coloured here once instead of on every <svg>. */
+  .icon {
+    fill: currentColor;
+  }
+}

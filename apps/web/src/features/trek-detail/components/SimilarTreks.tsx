@@ -28,7 +28,7 @@ const TrekAction = ({ trek }: { trek: TrekSummary }) =>
       <Icon name="arrow_forward" size={14} />
     </Link>
   ) : (
-    <a href={trekInquiryUrl(trek)} target="_blank" rel="noopener noreferrer" className={ACTION}>
+    <a href={trekInquiryUrl(trek)} target="_blank" rel="nofollow noopener noreferrer" className={ACTION}>
       Ask on WhatsApp
       <span className="sr-only">about the {trek.name}</span>
       <Icon name="arrow_forward" size={14} />

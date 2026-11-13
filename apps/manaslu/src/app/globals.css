@@ -28,7 +28,7 @@
     font-family: var(--font-display);
     font-variation-settings: "SOFT" 100, "WONK" 0;
     font-weight: 600;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
   /* Text stays easy to read however wide the page is. A column that is narrow enough already (the trek beside its
@@ -66,6 +66,16 @@
   :focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
+  }
+
+  /* The line icons (TrailIcon): drawn from the sprite, styled here once instead of on every <svg>. */
+  .trail-icon {
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   /* Don't let the sticky section menu cover a heading it jumps to. */

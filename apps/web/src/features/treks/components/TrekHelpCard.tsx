@@ -16,11 +16,11 @@ export const TrekHelpCard = () => (
       <span className="font-display font-bold">Not sure which trek?</span>
       <span className="text-caption font-normal text-text">Tell us your dates and fitness. We suggest the right one.</span>
       <span className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-        <a href={getWhatsAppUrl(HELP_MESSAGE)} target="_blank" rel="noopener noreferrer" className={`${ACTION} text-whatsapp`}>
+        <a href={getWhatsAppUrl(HELP_MESSAGE)} target="_blank" rel="nofollow noopener noreferrer" className={`${ACTION} text-whatsapp`}>
           <WhatsAppLogo size={16} />
           Ask on WhatsApp
         </a>
-        <a href={getEmailUrl({ subject: "Which trek suits me?", body: HELP_MESSAGE })} className={`${ACTION} text-brand`}>
+        <a href={getEmailUrl({ subject: "Which trek suits me?", body: HELP_MESSAGE })} rel="nofollow" className={`${ACTION} text-brand`}>
           <Icon name="mail" size={16} />
           Email us
         </a>

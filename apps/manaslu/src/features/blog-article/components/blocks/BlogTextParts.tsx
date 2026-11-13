@@ -1,8 +1,8 @@
-import { getWhatsAppUrl } from "@ttn/config/contact";
+import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
 
 import { RichText } from "@/components/shared/RichText";
-import { whatsAppButton } from "@/components/ui/buttonStyles";
+import { outlineOnDarkButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
@@ -44,17 +44,28 @@ export const BlogChecklist = ({ heading, items }: { heading: string; items: read
 );
 
 /** A question to us in the middle of the blog: the admin's words start the WhatsApp message. Left out without a number in Site settings. */
+/** "Ask us" in the middle of a blog: the heading typed in the editor, WhatsApp and email (each only with its detail in Site settings). */
 export const BlogCta = async ({ heading, buttonText, message }: { heading: string; buttonText: string; message: string }) => {
-  const { phoneDisplay } = await getSiteSettings();
-  if (!phoneDisplay) return null;
+  const { phoneDisplay, email } = await getSiteSettings();
+  if (!phoneDisplay && !email) return null;
 
   return (
     <aside aria-label={heading} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-forest-deep p-5 md:p-6">
       <p className="max-w-[40ch] font-display text-[22px] leading-7.5 font-semibold text-snow">{heading}</p>
-      <a href={getWhatsAppUrl(message)} className={whatsAppButton}>
-        <WhatsAppLogo />
-        {buttonText}
-      </a>
+      <div className="actions max-sm:w-full">
+        {phoneDisplay && (
+          <a href={getWhatsAppUrl(message)} rel="nofollow" className={whatsAppButton}>
+            <WhatsAppLogo />
+            {buttonText}
+          </a>
+        )}
+        {email && (
+          <a href={getEmailUrl({ subject: heading, body: message })} rel="nofollow" className={outlineOnDarkButton}>
+            <TrailIcon name="mail" />
+            Email us
+          </a>
+        )}
+      </div>
     </aside>
   );
 };

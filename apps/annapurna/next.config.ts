@@ -21,7 +21,9 @@ const nextConfig: NextConfig = {
   images: { deviceSizes: VARIANT_WIDTHS, imageSizes: [], qualities: [60, 75] },
   headers: async () => [{ source: "/:path*", headers: SECURITY_HEADERS }],
   experimental: {
-    inlineCss: true,
+    // The stylesheet is one cached file: inlined, its 60 KB sat in the HTML and twice more in React's payload (180 KB of
+    // every page, 3 s of parsing on a phone), and the first paint on a cached visit was no faster.
+    inlineCss: false,
     // The database's small compute plan: see apps/web/next.config.ts.
     staticGenerationMaxConcurrency: 2,
     staticGenerationMinPagesPerWorker: 1000,

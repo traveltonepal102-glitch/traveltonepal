@@ -90,8 +90,13 @@ describe("embeds", () => {
     expect(toEmbed("https://www.wikiloc.com/wikiloc/embedv2.do?id=987&elevation=on")?.provider.name).toBe("Wikiloc");
   });
 
-  it("refuses other sites, plain http and look-alike addresses", () => {
-    for (const pasted of ["https://evil.example/maps/embed", "http://www.google.com/maps/embed?pb=1", "https://www.google.com.evil.example/maps/embed", "https://user@www.google.com/maps/embed", "javascript:alert(1)", ""]) {
+  it("takes any other https address, named by its domain", () => {
+    expect(toEmbed('<iframe src="https://www.alltrails.com/widget/map/123?u=m" width="600"></iframe>')).toEqual({ url: "https://www.alltrails.com/widget/map/123?u=m", provider: { id: "other", name: "alltrails.com", company: "alltrails.com", kind: "content" } });
+    expect(toEmbed("https://www.google.com.evil.example/maps/embed#x")?.provider.id).toBe("other");
+  });
+
+  it("refuses plain http, credentials, ports and anything that isn't an address", () => {
+    for (const pasted of ["http://www.google.com/maps/embed?pb=1", "https://user@www.google.com/maps/embed", "https://maps.example:8443/embed", "https://localhost/embed", "javascript:alert(1)", ""]) {
       expect(toEmbed(pasted)).toBeNull();
     }
   });
@@ -105,7 +110,8 @@ describe("embeds", () => {
       title: "Google Maps",
       caption: "Our route",
     });
-    expect(blockOf("embed", { title: "Route" }, { settings: { url: "https://evil.example/embed", height: "short" } })).toBeUndefined();
+    expect(blockOf("embed", { title: "Route" }, { settings: { url: "https://maps.example/embed", height: "short" } })).toMatchObject({ service: { name: "maps.example", kind: "content" }, height: 320 });
+    expect(blockOf("embed", { title: "Route" }, { settings: { url: "http://maps.example/embed", height: "short" } })).toBeUndefined();
   });
 });
 

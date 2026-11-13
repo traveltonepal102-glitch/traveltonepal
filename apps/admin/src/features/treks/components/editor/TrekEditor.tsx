@@ -16,7 +16,7 @@ import type { GuideOption } from "@/features/trekking-guides/lib/guideOptions";
 import { TREKS_PATH } from "../../constants";
 import { getTrekReadiness } from "../../lib/readiness";
 import { firstSectionWithError, sectionsWithErrors, trekSectionsInPageOrder } from "../../sections";
-import type { RegionOption, SimilarTrekOption, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
+import type { RegionOption, SimilarTrekOption, TrekFileUrls, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
 import { TrekSectionPanels } from "./TrekSectionPanels";
 import { TrekStatusSelect } from "./TrekStatusSelect";
 
@@ -39,8 +39,8 @@ type TrekEditorProps = {
   /** The region's id, to tag new uploads (null when the trek has none yet). */
   regionId: string | null;
   isNew: boolean;
-  /** Where the saved PDF map downloads from (null without one). */
-  pdfMapUrl: string | null;
+  /** Where the saved printable map and GPS track download from (null without one). */
+  trekFileUrls: TrekFileUrls;
   lastSaved?: string;
   isJustAdded?: boolean;
   /** Right after "Copy a trek": a draft whose words are still the original's. */
@@ -53,7 +53,7 @@ type TrekEditorProps = {
  * Add or edit a trek (design: Admin-trek-editor). All sections are one form: switching sections keeps what
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
-export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, blogOptions = null, regionId, isNew, pdfMapUrl, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
+export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, blogOptions = null, regionId, isNew, trekFileUrls, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
@@ -119,7 +119,7 @@ export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, region
               guideOptions={guideOptions}
               regionId={regionId}
               isNew={isNew}
-              pdfMapUrl={pdfMapUrl}
+              trekFileUrls={trekFileUrls}
               sectionOrder={sectionOrder}
               onSectionOrderChange={changeSectionOrder}
             />

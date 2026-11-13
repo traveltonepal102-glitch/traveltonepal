@@ -57,14 +57,14 @@ export const DirectConsultationCard = async ({
         <a
           href={trekInquiryUrl({ name: trekName })}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           className={`${BUTTON} bg-whatsapp text-white shadow-card hover:bg-whatsapp/90`}
         >
           <WhatsAppLogo size={18} />
           Chat on WhatsApp ({contact.phoneDisplay})
         </a>
         <a
-          href={getEmailUrl()}
+          href={getEmailUrl()} rel="nofollow"
           className={`${BUTTON} border border-line-strong bg-surface text-ink hover:bg-page`}
         >
           <Icon name="mail" size={18} className="text-brand" />

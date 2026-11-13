@@ -22,7 +22,7 @@ export const GoogleReviewLinks = async () => {
         </a>
       )}
       {googleReviews.writeUrl && (
-        <a href={ROUTES.review} target="_blank" rel="noopener noreferrer" className={LINK}>
+        <a href={ROUTES.review} target="_blank" rel="nofollow noopener noreferrer" className={LINK}>
           <Icon name="rate_review" size={16} />
           Write a review
         </a>

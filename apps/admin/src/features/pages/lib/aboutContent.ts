@@ -34,6 +34,7 @@ const section = <Shape extends z.ZodRawShape>(shape: Shape) => {
 
 const aboutFields = z.object({
   trekkersGuided: text,
+  trekkingRegions: text,
   statValue: text,
   statLabel: text,
   safetyLead: text,
@@ -72,6 +73,8 @@ const aboutFields = z.object({
   voiceEyebrow: text,
   voiceHeading: text,
   voiceText: text,
+  promisesHeading: text,
+  promisesIntro: text,
   promises: z
     .array(z.unknown())
     .catch([])
@@ -107,6 +110,7 @@ export const toAboutValues = (page: SitePage): AboutPageValues => {
 /** The About form's values as the page's saved `content` (the website reads these keys; photos are saved apart). */
 export const aboutContentOf = (values: AboutPageValues) => ({
   trekkersGuided: values.trekkersGuided,
+  trekkingRegions: values.trekkingRegions,
   statValue: values.statValue,
   statLabel: values.statLabel,
   safetyLead: values.safetyLead,
@@ -125,6 +129,8 @@ export const aboutContentOf = (values: AboutPageValues) => ({
   voiceEyebrow: values.voiceEyebrow,
   voiceHeading: values.voiceHeading,
   voiceText: values.voiceText,
+  promisesHeading: values.promisesHeading,
+  promisesIntro: values.promisesIntro,
   promises: values.promises,
   teamHeading: values.teamHeading,
   teamIntro: values.teamIntro,

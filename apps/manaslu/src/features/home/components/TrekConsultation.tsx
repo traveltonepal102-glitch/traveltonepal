@@ -17,11 +17,11 @@ export const TrekConsultation = ({ name }: { name: string }) => (
       <p className="text-base leading-6.5">Message us on WhatsApp or by email, and someone from our team answers you personally.</p>
     </div>
     <div className="actions">
-      <a href={getWhatsAppUrl(`Hello! I have a question about the ${name}.`)} className={whatsAppButton}>
+      <a href={getWhatsAppUrl(`Hello! I have a question about the ${name}.`)} rel="nofollow" className={whatsAppButton}>
         <WhatsAppLogo />
         Chat on WhatsApp
       </a>
-      <a href={getEmailUrl({ subject: `A question about the ${name}` })} className={`${outlineButton} bg-snow!`}>
+      <a href={getEmailUrl({ subject: `A question about the ${name}` })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
         <TrailIcon name="mail" />
         Email us
       </a>
