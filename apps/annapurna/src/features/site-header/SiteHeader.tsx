@@ -80,7 +80,7 @@ export const SiteHeader = async () => {
       <div className="border-b border-solid border-line">
         <div className="wrap flex items-center gap-x-6 py-3 xl:gap-x-8">
           <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="inline-flex flex-none items-center">
-            <Image src="/brand/logo.png" alt={SITE_NAME} width={636} height={235} sizes="(min-width: 1024px) 146px, 119px" preload className="h-11 w-auto max-w-none lg:h-13.5" />
+            <Image src="/brand/logo.png" alt={SITE_NAME} width={636} height={235} sizes="(min-width: 1024px) 146px, 119px" loading="eager" className="h-11 w-auto max-w-none lg:h-13.5" />
           </Link>
           <nav aria-label="Main" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 max-lg:hidden xl:gap-x-6.5">
             {trek && <MainTrekLink name={trek.name} className={NAV_LINK} />}

@@ -54,7 +54,7 @@ export const SiteHeader = async () => {
   return (
     <header className="grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto_var(--gutter)] bg-forest-deep text-snow lg:grid-cols-[minmax(var(--gutter),1fr)_214px_minmax(0,1178px)_minmax(var(--gutter),1fr)] print:hidden">
       <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="col-start-2 row-start-2 inline-flex flex-none items-center justify-self-start py-2 lg:relative lg:z-10 lg:row-span-2 lg:row-start-1 lg:-ml-6 lg:justify-self-stretch lg:bg-forest-deep lg:pl-6">
-        <Image src="/brand/logo-header-light.png" alt={SITE_NAME} width={640} height={263} sizes="(min-width: 1024px) 190px, 130px" preload className="h-13.5 w-auto max-w-none max-[389px]:h-12 lg:h-19.5" />
+        <Image src="/brand/logo-header-light.png" alt={SITE_NAME} width={640} height={263} sizes="(min-width: 1024px) 190px, 130px" loading="eager" className="h-13.5 w-auto max-w-none max-[389px]:h-12 lg:h-19.5" />
       </Link>
       {hasBar && (
         <>

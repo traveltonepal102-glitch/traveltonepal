@@ -30,7 +30,8 @@ export const ExpandablePhoto = ({ photo, title, sizes, className }: ExpandablePh
         aria-label={`Open photo full size: ${photo.alt}`}
         className={`group relative block cursor-zoom-in overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${className}`}
       >
-        <SiteImage image={{ ...photo, alt: "" }} sizes={sizes} className="object-cover transition-transform duration-300 group-hover:scale-104" />
+        {/* The image keeps its own text: Google Images reads it, not the button's label. */}
+        <SiteImage image={photo} sizes={sizes} className="object-cover transition-transform duration-300 group-hover:scale-104" />
         <span aria-hidden="true" className="absolute right-1.5 bottom-1.5 inline-flex size-7 items-center justify-center rounded-full bg-ink/70 text-white">
           <Icon name="open_in_full" size={15} />
         </span>

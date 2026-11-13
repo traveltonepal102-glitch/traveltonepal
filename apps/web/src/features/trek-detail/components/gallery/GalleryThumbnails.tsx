@@ -36,7 +36,8 @@ export const GalleryThumbnails = ({ photos, activeIndex, onSelect, onShowAll }: 
               aria-current={isActive || undefined}
               className={`${BUTTON} ${isActive ? "ring-2 ring-brand" : "border border-line opacity-85 hover:opacity-100"}`}
             >
-              <SiteImage image={{ ...photo, alt: "" }} sizes="(min-width: 1024px) 130px, 16vw" className="object-cover" />
+              {/* The image keeps its own text: Google Images reads it, not the button's label. */}
+              <SiteImage image={photo} sizes="(min-width: 1024px) 130px, 16vw" className="object-cover" />
               {isMore && (
                 <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center bg-navy/62 text-body-sm font-extrabold text-white">
                   +{photos.length - (MAX_THUMBNAILS - 1)}

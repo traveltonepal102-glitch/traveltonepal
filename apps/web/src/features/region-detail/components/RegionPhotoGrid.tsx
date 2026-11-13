@@ -29,8 +29,9 @@ export const RegionPhotoGrid = ({ photos, title }: RegionPhotoGridProps) => {
               aria-label={index === 0 ? `View all ${photos.length} photos, starting with ${photo.alt}` : `Open photo: ${photo.alt}`}
               className="group relative block size-full cursor-zoom-in overflow-hidden rounded-lg bg-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
+              {/* The image keeps its own text: Google Images reads it, not the button's label. */}
               <SiteImage
-                image={{ ...photo, alt: "" }}
+                image={photo}
                 sizes={index === 0 ? "(min-width: 768px) 600px, 100vw" : "(min-width: 768px) 300px, 50vw"}
                 className="object-cover transition-transform duration-300 group-hover:scale-104"
               />

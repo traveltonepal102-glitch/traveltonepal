@@ -1,6 +1,3 @@
-"use client";
-
-import { useId, useState } from "react";
 import type { ReactNode } from "react";
 
 type ReadMoreProps = {
@@ -13,30 +10,22 @@ type ReadMoreProps = {
 };
 
 /**
- * Shows the start of a text and a "Read more" button for the rest. The rest is in the HTML from the start (only
- * hidden), so search engines read the whole text.
+ * Shows the start of a text and "Read more" for the rest: a native <details>, so it needs no script, the rest is in the
+ * HTML from the start, and the browser opens it by itself when "find in page" or a link from a search result lands on
+ * words inside it (what `hidden="until-found"` does, which React can't write). The button stays under the text, open
+ * or closed (`order-last`; a browser that can't reorder a <details> shows it above the rest instead).
  */
-export const ReadMore = ({ children, more, buttonClassName }: ReadMoreProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const contentId = useId();
-
-  return (
-    <>
-      <div id={contentId} className="flex flex-col gap-3">
-        {children}
-        {more && <div hidden={!isExpanded}>{more}</div>}
-      </div>
-      {more && (
-        <button
-          type="button"
-          aria-expanded={isExpanded}
-          aria-controls={contentId}
-          onClick={() => setIsExpanded((current) => !current)}
-          className={`self-start ${buttonClassName}`}
-        >
-          {isExpanded ? "Show less" : "Read more"}
-        </button>
-      )}
-    </>
-  );
-};
+export const ReadMore = ({ children, more, buttonClassName }: ReadMoreProps) => (
+  <div className="flex flex-col gap-3">
+    {children}
+    {more && (
+      <details className="group flex flex-col gap-3">
+        <summary className={`order-last list-none self-start [&::-webkit-details-marker]:hidden ${buttonClassName}`}>
+          <span className="group-open:hidden">Read more</span>
+          <span className="hidden group-open:inline">Show less</span>
+        </summary>
+        {more}
+      </details>
+    )}
+  </div>
+);
