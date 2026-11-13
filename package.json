@@ -9,7 +9,8 @@
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r --if-present test",
-    "dev:manaslu": "pnpm --filter manaslu dev"
+    "dev:manaslu": "pnpm --filter manaslu dev",
+    "dev:annapurna": "pnpm --filter annapurna dev"
   },
   "devEngines": {
     "packageManager": {
