@@ -198,6 +198,8 @@ type TrekTranslationRow = {
 };
 
 type TrekGuideRow = { trek_id: string; guide_id: string; position: number };
+/** A blog post (travel guide) a trek's page shows in "Read before you go": up to 5 in order, of the trek's own website. */
+type TrekArticleRow = { trek_id: string; article_id: string; site_id: string; position: number };
 
 /** The badge printed on a guide's photo (its words and icon are set by the admin and the website). */
 export type GuideBadgeValue = "local" | "culture" | "solo" | "rescue" | "family" | "photo";
@@ -818,6 +820,12 @@ export type Database = {
         Insert: TrekGuideRow;
         Update: Partial<TrekGuideRow>;
         Relationships: [Fk<"trek_guides_trek_id_fkey", "trek_id", "treks">, Fk<"trek_guides_guide_id_fkey", "guide_id", "trekking_guides">];
+      };
+      trek_articles: {
+        Row: TrekArticleRow;
+        Insert: TrekArticleRow;
+        Update: Partial<TrekArticleRow>;
+        Relationships: [Fk<"trek_articles_trek_fkey", "trek_id", "treks">, Fk<"trek_articles_article_fkey", "article_id", "articles">];
       };
       trekking_guides: {
         Row: TrekkingGuideRow;

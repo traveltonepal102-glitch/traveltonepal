@@ -203,8 +203,8 @@ export type TrekValues = {
   hideFromGoogle: boolean;
   /** Up to 4 treks to suggest at the bottom of the page, in order; the website fills empty places itself. */
   similarTrekIds: string[];
-  /** The blog post (travel guide) shown first in "Read before you go" on a region website's trek page; null: the website's featured one. */
-  featuredArticleId: string | null;
+  /** Up to 5 blog posts (travel guides) "Read before you go" shows on a region website's trek page, in order, the first one large; none: the website chooses. */
+  articleIds: string[];
   /** Shared sections (written once in Site settings) this trek doesn't show. */
   hiddenSharedSections: SharedSectionKey[];
   /** Every section of the page with a heading, in this trek's order (full-width ones last). */

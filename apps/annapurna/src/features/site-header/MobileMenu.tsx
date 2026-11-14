@@ -7,12 +7,9 @@ import { useEffect, useId, useRef, useState } from "react";
 import { outlineButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 
-import { MainTrekLink } from "./MainTrekLink";
 import type { NavMenu } from "./types";
 
 type MobileMenuProps = {
-  /** The main trek, first in the menu (it is the home page). */
-  mainTrekName?: string;
   menus: readonly NavMenu[];
   links: readonly { href: string; label: string }[];
   /** At the bottom of the panel: "Plan my trek" and the email button. */
@@ -28,7 +25,7 @@ const ROW = "flex min-h-13 w-full items-center justify-between gap-3 border-0 bo
  * dialog: focus stays in it, Escape closes it and focus goes back to the button). "Other treks" and "Blogs" fold open
  * one at a time. A link chosen, a tap beside the panel, or the screen growing wide enough for the full menu closes it.
  */
-export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuProps) => {
+export const MobileMenu = ({ menus, links, children }: MobileMenuProps) => {
   const dialog = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
@@ -75,11 +72,6 @@ export const MobileMenu = ({ mainTrekName, menus, links, children }: MobileMenuP
 
           <nav aria-label="Main">
             <ul className="m-0 flex list-none flex-col p-0">
-              {mainTrekName && (
-                <li>
-                  <MainTrekLink name={mainTrekName} className={ROW} />
-                </li>
-              )}
               {menus
                 .filter((menu) => menu.items.length > 0)
                 .map((menu) => (

@@ -49,13 +49,14 @@ describe("guides", () => {
   );
   const slugs = (guides: readonly { slug: string }[]) => guides.map((item) => item.slug);
 
-  it("shows the post a trek picked first, then the others in order, five in all", () => {
-    expect(slugs(toTrekPageGuides(all, "f"))).toEqual(["f", "a", "b", "c", "d"]);
-    expect(slugs(toTrekPageGuides(all, "c"))).toEqual(["c", "a", "b", "d", "e"]);
+  it("shows only the posts a trek picked, in its order, five at most", () => {
+    expect(slugs(toTrekPageGuides(all, ["f", "c"]))).toEqual(["f", "c"]);
+    expect(slugs(toTrekPageGuides(all, ["f", "e", "d", "c", "b", "a"]))).toEqual(["f", "e", "d", "c", "b"]);
+    expect(slugs(toTrekPageGuides(all, ["unpublished", "c"]))).toEqual(["c"]);
   });
 
-  it("keeps the website's order without a pick, or with one that isn't published", () => {
-    expect(slugs(toTrekPageGuides(all, null))).toEqual(["a", "b", "c", "d", "e"]);
-    expect(slugs(toTrekPageGuides(all, "unpublished"))).toEqual(["a", "b", "c", "d", "e"]);
+  it("keeps the website's order without a pick, or with none that is published", () => {
+    expect(slugs(toTrekPageGuides(all, []))).toEqual(["a", "b", "c", "d", "e"]);
+    expect(slugs(toTrekPageGuides(all, ["unpublished"]))).toEqual(["a", "b", "c", "d", "e"]);
   });
 });

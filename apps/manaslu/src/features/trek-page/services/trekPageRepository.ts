@@ -58,7 +58,7 @@ export const getTrekPage = async (slug: string): Promise<TrekPageData | null> =>
     rating: home.rating,
     company: home.company,
     adventures: home.adventures,
-    guides: toTrekPageGuides(home.allGuides, rows.page.featured_guide_slug),
+    guides: toTrekPageGuides(home.allGuides, rows.page.guide_slugs),
     seo: toTrekSeo(summaryRow, rows.page, photosPublicBaseUrl, home.seo.isLive, settings.shareImageBase),
     isHidden: hidden.has(pagePath(slug)),
     canonicalPath: canonicals.get(pagePath(slug)),

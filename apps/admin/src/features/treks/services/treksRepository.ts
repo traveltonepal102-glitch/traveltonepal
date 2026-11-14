@@ -34,6 +34,7 @@ const TREK_COLUMNS = `*,
   trek_group_prices(*, trek_group_price_translations!inner(*)),
   trek_similar!trek_similar_trek_id_fkey(position, similar_trek_id),
   trek_guides(position, guide_id),
+  trek_articles(position, article_id),
   trek_regions(position, region_id)` as const;
 
 type DayQueryRow = DayRow & { photo: PhotoColumnsRow | null; trek_day_translations: DayTextRow[] };
@@ -46,6 +47,7 @@ type TrekQueryRow = TrekRow & {
   trek_group_prices: (PriceRow & { trek_group_price_translations: PriceTextRow[] })[];
   trek_similar: { position: number; similar_trek_id: string }[];
   trek_guides: { position: number; guide_id: string }[];
+  trek_articles: { position: number; article_id: string }[];
   trek_regions: RouteRegionRow[];
 };
 
@@ -226,7 +228,7 @@ const toTrek = (row: TrekQueryRow, regionNames: Map<string, string>, videoTitles
     guideIds: [...row.trek_guides].sort((a, b) => a.position - b.position).map((item) => item.guide_id),
     routeRegionIds: toRouteRegionIds(row.trek_regions),
     similarTrekIds: [...row.trek_similar].sort((a, b) => a.position - b.position).map((item) => item.similar_trek_id),
-    featuredArticleId: row.featured_article_id,
+    articleIds: [...row.trek_articles].sort((a, b) => a.position - b.position).map((item) => item.article_id),
   };
 };
 
@@ -352,7 +354,9 @@ export const saveTrek = async (values: TrekFormValues, trekId: string | null, si
       map_place: values.mapPlace,
       my_maps_id: values.myMapsId ?? "",
       similar_trek_ids: values.similarTrekIds,
-      featured_article_id: values.featuredArticleId ?? "",
+      article_ids: values.articleIds,
+      // For a website deployed before it read the whole list: the first pick, as it was.
+      featured_article_id: values.articleIds[0] ?? "",
       hidden_shared_sections: values.hiddenSharedSections,
       section_order: values.sectionOrder,
       optional_high_point_m: values.optionalHighPointM,

@@ -175,7 +175,7 @@ const FIELD_SECTIONS: Record<string, TrekSectionKey> = {
   similarHeading: "similar",
   similarIntro: "similar",
   similarTrekIds: "similar",
-  featuredArticleId: "similar",
+  articleIds: "similar",
   seoKeyword: "seo",
   seoTitle: "seo",
   seoDescription: "seo",

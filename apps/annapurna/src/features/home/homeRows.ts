@@ -77,11 +77,11 @@ export const toLatestGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl
 const SHOWN_GUIDES = 5;
 
 /**
- * The guides a trek page shows: the post its trek picked first (the admin's "Blog post shown first"), then the others
- * in the website's order. A pick that isn't published (any more) is ignored, as if none was made.
+ * The guides a trek page shows: the posts its trek picked, in the admin's order (the trek editor's "Blog posts on this
+ * trek's page"), and only those. A pick that isn't published (any more) is left out; with none left, the website's own
+ * order (its featured guide, then the newest).
  */
-export const toTrekPageGuides = (allGuides: readonly HomeGuide[], featuredSlug: string | null): HomeGuide[] => {
-  const picked = allGuides.find((guide) => guide.slug === featuredSlug);
-  const ordered = picked ? [picked, ...allGuides.filter((guide) => guide !== picked)] : allGuides;
-  return ordered.slice(0, SHOWN_GUIDES);
+export const toTrekPageGuides = (allGuides: readonly HomeGuide[], pickedSlugs: readonly string[]): HomeGuide[] => {
+  const picked = pickedSlugs.flatMap((slug) => allGuides.filter((guide) => guide.slug === slug));
+  return (picked.length > 0 ? picked : allGuides).slice(0, SHOWN_GUIDES);
 };

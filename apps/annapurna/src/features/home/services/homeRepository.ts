@@ -54,8 +54,8 @@ export const getHomeData = async (): Promise<HomeData> => {
     otherTreks: trekRows.filter((row) => row.slug !== homeSlug).map((row) => toTrekCard(row, photosPublicBaseUrl, homeSlug)),
     reviews: toHomeReviews(check(reviews, "the reviews"), photosPublicBaseUrl, new Date()),
     rating: toHomeRating(check(ratings, "the rating")),
-    // Home is the main trek's page: the post that trek picked comes first, as on the other treks' pages.
-    guides: toTrekPageGuides(allGuides, homeRows?.page?.featured_guide_slug ?? null),
+    // Home is the main trek's page: it shows the posts that trek picked, as on the other treks' pages.
+    guides: toTrekPageGuides(allGuides, homeRows?.page?.guide_slugs ?? []),
     allGuides,
     latestGuides: toLatestGuides(guideRows, photosPublicBaseUrl),
     company: toHomeCompany(about.data, photosPublicBaseUrl),

@@ -12,46 +12,48 @@ const FLAGS = ["bg-azure", "bg-[#e6e9ef]", "bg-ember", "bg-whatsapp", "bg-sun"];
 
 type HomeTitleProps = { top: HomeTop; trek: HomeTrek | null; rating: HomeRating | null; hasReviews: boolean };
 
-/** The page's label with the prayer flags, its H1 and intro from Pages › Home (a trek's Google card), what Google says of the company, where it is, and the buttons. */
+/** Across the page, the buttons under the words on the right: the page's label with the prayer flags, its H1 and intro from Pages › Home (a trek's Google card), what Google says of the company, where it is, and the buttons. */
 export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => (
-  <div className="flex flex-col gap-5">
-    {top.eyebrow && (
-      <p className="eyebrow flex items-center gap-3 text-azure">
-        <span aria-hidden="true" className="inline-flex gap-0.75">
-          {FLAGS.map((flag) => (
-            <span key={flag} className={`h-3 w-2 ${flag}`} />
-          ))}
-        </span>
-        {top.eyebrow}
-      </p>
-    )}
-    <h1>{top.heading}</h1>
-    {(rating || trek?.place) && (
-      <p className="flex flex-wrap items-center gap-x-4.5 gap-y-1.5 text-base leading-6 text-muted">
-        {rating && (
-          <span className="inline-flex items-center gap-1.5 font-bold text-ink">
-            <TrailIcon name="star" size={16} className="fill-sun text-sun" />
-            {rating.rating.toFixed(1)}
-            {hasReviews ? (
-              <a href="#reviews" className="font-medium text-muted">
-                ({rating.count} Google reviews)
-              </a>
-            ) : (
-              <span className="font-medium text-muted">({rating.count} Google reviews)</span>
-            )}
+  <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+    <div className="flex w-full flex-col gap-3.5">
+      {top.eyebrow && (
+        <p className="eyebrow flex items-center gap-3 text-azure">
+          <span aria-hidden="true" className="inline-flex gap-0.75">
+            {FLAGS.map((flag) => (
+              <span key={flag} className={`h-3 w-2 ${flag}`} />
+            ))}
           </span>
-        )}
-        {trek?.place && (
-          <span className="inline-flex items-center gap-1.5">
-            <TrailIcon name="pin" size={16} />
-            {trek.place}
-          </span>
-        )}
-      </p>
-    )}
-    {top.intro && <p className="max-w-none text-[19px] leading-7.5 text-muted">{top.intro}</p>}
+          {top.eyebrow}
+        </p>
+      )}
+      <h1>{top.heading}</h1>
+      {(rating || trek?.place) && (
+        <p className="flex flex-wrap items-center gap-x-4.5 gap-y-1.5 text-base leading-6 text-muted">
+          {rating && (
+            <span className="inline-flex items-center gap-1.5 font-bold text-ink">
+              <TrailIcon name="star" size={16} className="fill-sun text-sun" />
+              {rating.rating.toFixed(1)}
+              {hasReviews ? (
+                <a href="#reviews" className="font-medium text-muted">
+                  ({rating.count} Google reviews)
+                </a>
+              ) : (
+                <span className="font-medium text-muted">({rating.count} Google reviews)</span>
+              )}
+            </span>
+          )}
+          {trek?.place && (
+            <span className="inline-flex items-center gap-1.5">
+              <TrailIcon name="pin" size={16} />
+              {trek.place}
+            </span>
+          )}
+        </p>
+      )}
+      {top.intro && <p className="max-w-none text-[19px] leading-7.5 text-muted">{top.intro}</p>}
+    </div>
     {/* On a phone: the two main buttons full width, then "Trip PDF" and "Share" side by side. */}
-    <div className="actions max-sm:grid-cols-2">
+    <div className="actions max-sm:w-full max-sm:grid-cols-2 sm:ml-auto">
       <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
         <WhatsAppLogo />
         {top.buttonLabel}

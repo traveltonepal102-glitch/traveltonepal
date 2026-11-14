@@ -14,6 +14,7 @@ import {
   MAX_PHOTO_BADGES,
   MAX_ROUTE_REGIONS,
   MAX_SIMILAR_TREKS,
+  MAX_TREK_BLOG_POSTS,
   MAX_TREK_GUIDES,
   SHARED_SECTION_KEYS,
   MAX_SUITABILITY_POINTS,
@@ -96,10 +97,10 @@ export const trekSchema = z
       .array(z.uuid("Pick the similar treks from the list."))
       .transform(unique)
       .refine((ids) => ids.length <= MAX_SIMILAR_TREKS, `Pick up to ${MAX_SIMILAR_TREKS} similar treks.`),
-    featuredArticleId: z
-      .string()
-      .transform((value) => value || null)
-      .pipe(z.uuid("Pick the blog post from the list.").nullable()),
+    articleIds: z
+      .array(z.uuid("Pick the blog posts from the list."))
+      .transform(unique)
+      .refine((ids) => ids.length <= MAX_TREK_BLOG_POSTS, `Pick up to ${MAX_TREK_BLOG_POSTS} blog posts.`),
     guidesIntro: text(LIMIT.guidesIntro),
     currentSeason: text(LIMIT.currentSeason),
     category: text(LIMIT.category),
@@ -248,7 +249,7 @@ export const readTrekForm = (formData: FormData) => {
     canonicalPath: readText(formData, "canonicalPath"),
     hideFromGoogle: readText(formData, "hideFromGoogle"),
     similarTrekIds: readList(formData, "similarTrekId"),
-    featuredArticleId: readText(formData, "featuredArticleId"),
+    articleIds: readList(formData, "articleId"),
     sharedSectionsShown: readList(formData, "sharedSectionShown"),
     sectionOrder: readList(formData, "sectionOrder"),
     guidesIntro: readText(formData, "guidesIntro"),

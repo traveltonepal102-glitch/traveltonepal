@@ -242,6 +242,8 @@ export type WebTrekPageRow = ShareColumns & {
   similar_intro: string;
   /** The blog post its page shows first in "Read before you go" (a region website's), while published; null: none chosen. */
   featured_guide_slug: string | null;
+  /** The blog posts its page shows in "Read before you go" (a region website's), in order, those published; empty: none chosen. */
+  guide_slugs: string[];
 };
 
 /** A trek's gallery photo (the photo columns named as in the other views). */

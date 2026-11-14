@@ -5,18 +5,23 @@ import Link from "next/link";
 import { outlineOnDarkButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
+import { getHomeData } from "@/features/home/services/homeRepository";
+import type { HomeSectionKey } from "@/features/home/types";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 import { ROUTES } from "@/lib/routes";
 import { SITE_NAME } from "@/lib/site";
 
-const COLUMNS = [
+/** A link; one with `section` jumps to that part of the home page, so it is shown only while the main trek has that part. */
+type FooterLink = { label: string; href: string; section?: HomeSectionKey };
+
+const COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: "The trek",
     links: [
-      { label: "Itinerary", href: "/#itinerary" },
-      { label: "Prices", href: "/#pricing" },
-      { label: "What's included", href: "/#inclusions" },
-      { label: "Questions", href: "/#faq" },
+      { label: "Itinerary", href: "/#itinerary", section: "itinerary" },
+      { label: "Prices", href: "/#pricing", section: "pricing" },
+      { label: "What's included", href: "/#inclusions", section: "inclusions" },
+      { label: "Questions", href: "/#faq", section: "faq" },
     ],
   },
   {
@@ -25,7 +30,7 @@ const COLUMNS = [
       { label: "About us", href: ROUTES.about },
       { label: "Contact", href: ROUTES.contact },
       { label: "Blogs", href: ROUTES.blogs },
-      { label: "Reviews", href: "/#reviews" },
+      { label: "Reviews", href: "/#reviews", section: "reviews" },
     ],
   },
   {
@@ -41,7 +46,10 @@ const COLUMNS = [
 
 /** The footer: the website's details (those filled in), its links, and the way to ask. */
 export const SiteFooter = async () => {
-  const { officeAddress, officeHours, legalName, licence, panNumber, social, year } = await getSiteSettings();
+  const [{ officeAddress, officeHours, legalName, licence, panNumber, social, year }, { trek, reviews }] = await Promise.all([getSiteSettings(), getHomeData()]);
+  // The reviews part is also left out while there are no reviews to show.
+  const hasSection = (section: HomeSectionKey) => Boolean(trek?.sections.includes(section)) && (section !== "reviews" || reviews.length > 0);
+  const columns = COLUMNS.map((column) => ({ ...column, links: column.links.filter((link) => !link.section || hasSection(link.section)) })).filter((column) => column.links.length > 0);
   const legalLine = [`© ${year} ${SITE_NAME}`, legalName, licence && `Licence ${licence}`, panNumber && `PAN ${panNumber}`].filter(Boolean).join(" · ");
 
   return (
@@ -62,7 +70,7 @@ export const SiteFooter = async () => {
               </p>
             )}
           </div>
-          {COLUMNS.map((column) => (
+          {columns.map((column) => (
             <nav key={column.title} aria-label={column.title} className="flex flex-[1_1_150px] flex-col sm:gap-2">
               <span className="text-eyebrow font-semibold tracking-[0.12em] text-saffron uppercase">{column.title}</span>
               {column.links.map((link) => (

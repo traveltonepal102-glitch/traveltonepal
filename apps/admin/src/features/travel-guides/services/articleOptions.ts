@@ -180,7 +180,7 @@ export const getArticleOptions = async (site: Site, exceptArticleId: string | nu
   };
 };
 
-/** The website's published travel guides, A–Z, as choices for a trek's "Blog post shown first". */
+/** The website's published travel guides, A–Z, as choices for a trek’s "Blog posts on this trek’s page". */
 export const listPublishedArticleChoices = async (siteId: string): Promise<{ value: string; label: string }[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase

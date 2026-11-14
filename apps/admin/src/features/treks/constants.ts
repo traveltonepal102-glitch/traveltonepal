@@ -370,6 +370,8 @@ export const MAX_TREK_GUIDES = 10;
 
 /** The trek page shows 4 similar treks. */
 export const MAX_SIMILAR_TREKS = 4;
+/** The cards "Read before you go" has on a region website's trek page: one large and four beside and under it. */
+export const MAX_TREK_BLOG_POSTS = 5;
 /** Regions a route can pass through after its main one (save_trek's limit). */
 export const MAX_ROUTE_REGIONS = 4;
 
@@ -467,7 +469,7 @@ export const EMPTY_TREK_VALUES: TrekValues = {
   canonicalPath: "",
   hideFromGoogle: false,
   similarTrekIds: [],
-  featuredArticleId: null,
+  articleIds: [],
   hiddenSharedSections: [],
   sectionOrder: orderTrekSections([]),
   guidesIntro: "",

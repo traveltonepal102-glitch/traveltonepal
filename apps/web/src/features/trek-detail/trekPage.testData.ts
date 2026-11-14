@@ -1117,7 +1117,8 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
   "faq_heading": "",
   "similar_heading": "Similar trekking options in Nepal",
   "similar_intro": "Treks planned with you and led by local guides.",
-  "featured_guide_slug": null
+  "featured_guide_slug": null,
+  "guide_slugs": []
 };
 
 export const LANGTANG_PHOTOS: WebTrekPhotoRow[] = [

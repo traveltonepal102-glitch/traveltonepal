@@ -12,7 +12,6 @@ import { getSiteSettings } from "@/features/site-settings/services/siteSettingsR
 import { ROUTES, pagePath } from "@/lib/routes";
 import { SITE_NAME } from "@/lib/site";
 
-import { MainTrekLink } from "./MainTrekLink";
 import { MobileMenu } from "./MobileMenu";
 import { NavDropdown } from "./NavDropdown";
 import { PlanTrekButton } from "./PlanTrekButton";
@@ -21,6 +20,8 @@ import type { NavMenu } from "./types";
 const NAV_LINK = "inline-flex min-h-11 items-center whitespace-nowrap font-semibold text-ink no-underline hover:text-ember";
 const MENU_CONTACT_LINK = "inline-flex min-h-11 items-center gap-2.5 text-ink no-underline hover:text-navy";
 const BAR_LINK = "inline-flex min-h-6 items-center gap-1.5 whitespace-nowrap font-semibold text-ink no-underline hover:text-ember";
+/** A button that shows only its icon until there is room for its word. */
+const ICON_FIRST = "w-12 px-0! xl:w-auto xl:px-5!";
 const PAGE_LINKS = [
   { href: ROUTES.about, label: "About" },
   { href: ROUTES.contact, label: "Contact" },
@@ -28,17 +29,18 @@ const PAGE_LINKS = [
 
 /**
  * A white header under the prayer-flag stripe (design: canvas "Annapurna Trekking Home Page"): the bar of company
- * details (those filled in) on cloud grey, then the logo, the menu and "Plan my trek". Below lg: the logo, the button
- * and the menu button, which opens the menu in a panel (MobileMenu); on phones the bar is left out and its number and
+ * details (those filled in) on cloud grey, then the logo, the menu, "Email" and "Plan my trek" (the same parts as
+ * Manaslu Trek's and Travel To Nepal's headers). Below lg: the logo, the buttons and the menu button, which opens the menu in a panel (MobileMenu); on phones the bar is left out and its number and
  * address are in that panel.
  */
 export const SiteHeader = async () => {
-  const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trek, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
+  const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trekCard, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasBar = Boolean(phoneDisplay || email || licence || tourismRegistration || memberships.length);
   const otherTreksMenu: NavMenu = {
     label: "Other treks",
-    items: otherTreks.map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image })),
-    more: trek ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" },
+    // The main trek (the home page) first, then the others.
+    items: [...(trekCard ? [trekCard] : []), ...otherTreks].map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image })),
+    more: trekCard ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" },
   };
   const blogsMenu: NavMenu = {
     label: "Blogs",
@@ -83,7 +85,6 @@ export const SiteHeader = async () => {
             <Image src="/brand/logo.png" alt={SITE_NAME} width={636} height={235} sizes="(min-width: 1024px) 146px, 119px" loading="eager" className="h-11 w-auto max-w-none lg:h-13.5" />
           </Link>
           <nav aria-label="Main" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 max-lg:hidden xl:gap-x-6.5">
-            {trek && <MainTrekLink name={trek.name} className={NAV_LINK} />}
             <NavDropdown {...otherTreksMenu} />
             <NavDropdown {...blogsMenu} hasTwoColumns />
             {PAGE_LINKS.map((link) => (
@@ -93,9 +94,16 @@ export const SiteHeader = async () => {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
+            {/* On phones the menu has the address and this button. */}
+            {email && (
+              <a href={emailHref} rel="nofollow" className={`${outlineButton} ${ICON_FIRST} max-sm:hidden`}>
+                <TrailIcon name="mail" />
+                <span className="sr-only xl:not-sr-only">Email</span>
+              </a>
+            )}
             {/* Below 360px it covers the logo: the menu has the number and this button. */}
             <PlanTrekButton hasWhatsApp={Boolean(phoneDisplay)} className="max-sm:px-3.5! max-[359px]:hidden" />
-            <MobileMenu mainTrekName={trek?.name} menus={[otherTreksMenu, blogsMenu]} links={PAGE_LINKS}>
+            <MobileMenu menus={[otherTreksMenu, blogsMenu]} links={PAGE_LINKS}>
               {(phoneDisplay || email) && (
                 <p className="mb-1 flex flex-col gap-1 text-[15px]">
                   {phoneDisplay && (

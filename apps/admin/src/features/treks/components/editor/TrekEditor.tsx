@@ -32,7 +32,7 @@ type TrekEditorProps = {
   regions: RegionOption[];
   /** Every other trek, to pick similar treks from. */
   similarOptions: SimilarTrekOption[];
-  /** The website's published blog posts for "Blog post shown first"; null where trek pages show none (Travel To Nepal). */
+  /** The website's published blog posts for "Blog posts on this trek’s page"; null where trek pages show none (Travel To Nepal). */
   blogOptions?: { value: string; label: string }[] | null;
   /** Every trekking guide, to pick the trek's guides from. */
   guideOptions: GuideOption[];
