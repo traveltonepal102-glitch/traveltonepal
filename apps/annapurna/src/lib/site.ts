@@ -5,6 +5,6 @@ export const SITE_ID = "annapurna";
 export const SITE_NAME = "Annapurna Trekking";
 
 /** Public address, for canonical links and structured data. Local development falls back to the dev server. */
-export const SITE_URL = new URL(process.env.SITE_URL || "http://localhost:3002");
+export const SITE_URL = new URL(process.env.SITE_URL || "http://localhost:3003");
 
 export const absoluteUrl = (path: string) => new URL(path, SITE_URL).toString();

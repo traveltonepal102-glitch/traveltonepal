@@ -24,7 +24,7 @@ export const SidebarNavLink = ({ section, isActive, onNavigate }: SidebarNavLink
         : "text-navy-text hover:bg-white/8 hover:text-white",
     )}
   >
-    <Icon name={section.icon} size={22} className="flex-none" />
+    <Icon name={section.icon} size={22} isInline className="flex-none" />
     <span className="flex-1 rail:sr-only">{section.label}</span>
   </Link>
 );

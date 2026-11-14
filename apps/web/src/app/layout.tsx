@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
 import { AnalyticsScripts } from "@/features/analytics/AnalyticsScripts";
-// Cookie banner switched off for now (2026-11-09): uncomment this and <CookieBanner /> below to bring it back.
-// import { CookieBanner } from "@/features/consent/components/CookieBanner";
+import { CookieBanner } from "@/features/consent/components/CookieBanner";
 import { OrganizationJsonLd } from "@/features/seo/OrganizationJsonLd";
 import { SiteFooter } from "@/features/site-footer/components/SiteFooter";
 import { SITE_URL } from "@/lib/site";
@@ -31,9 +30,8 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
       <OrganizationJsonLd />
       {children}
       <SiteFooter />
-      {/* Off for now: without it nobody is asked, so Google Analytics and Clarity stay off (they need "Analytics"
-          from Cookie settings), and maps and videos still ask before loading. */}
-      {/* <CookieBanner /> */}
+      {/* Asks on the first visit: Google Analytics, Tag Manager and Clarity load only after "Analytics" is allowed. */}
+      <CookieBanner />
       <AnalyticsScripts />
     </body>
   </html>

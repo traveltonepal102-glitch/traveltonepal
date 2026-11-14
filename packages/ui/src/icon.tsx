@@ -23,15 +23,20 @@ type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "name"> & {
   size?: number;
   /** Only for an icon that stands alone with no text; otherwise it is hidden from screen readers. */
   label?: string;
+  /**
+   * Draws the icon's path in the page instead of pointing into the sprite. For an icon inside a link on a dark
+   * background (the admin menu): Chrome can paint a sprite icon black once its link has been visited.
+   */
+  isInline?: boolean;
 };
 
 /**
  * Material Symbols icon, drawn from the app's sprite (/icons.svg, one cached file) so a page with 200 icons doesn't
  * repeat their paths. Takes the surrounding text color (currentColor).
  */
-export const Icon = ({ name, size = 20, label, className, ...svgProps }: IconProps) => (
+export const Icon = ({ name, size = 20, label, isInline = false, className, ...svgProps }: IconProps) => (
   // Its look (fill: currentColor) is the `.icon` rule in each app's base CSS: fewer bytes than attributes on every icon.
-  <svg width={size} height={size} className={className ? `icon ${className}` : "icon"} {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })} {...svgProps}>
-    <use href={`${SPRITE_URL}#${name}`} />
+  <svg width={size} height={size} className={className ? `icon ${className}` : "icon"} {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })} {...(isInline ? { viewBox: ICON_VIEW_BOX } : {})} {...svgProps}>
+    {isInline ? <path d={ICON_PATHS[name]} /> : <use href={`${SPRITE_URL}#${name}`} />}
   </svg>
 );

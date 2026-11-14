@@ -14,7 +14,7 @@ type HomeTitleProps = { top: HomeTop; trek: HomeTrek | null; rating: HomeRating 
 /** The page's H1 and intro from Pages › Home, what Google says of the company, where it is, and the buttons. */
 export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => (
   <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-    <div className="flex flex-[1_1_620px] flex-col gap-2.5">
+    <div className="flex w-full flex-col gap-2.5">
       {top.eyebrow && (
         // A pill on one line; on a narrow phone it wraps into two even lines with soft corners, the tick beside the first.
         <span className="inline-flex items-start gap-2 self-start rounded-2xl bg-forest-tint px-3 py-1 text-sm leading-5 font-semibold text-balance text-forest-deep">
@@ -51,7 +51,7 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
       {top.intro && <p className="max-w-none text-[19px] leading-7.5">{top.intro}</p>}
     </div>
     {/* On a phone: the two main buttons full width, then "Trip PDF" and "Share" side by side. */}
-    <div className="actions max-sm:w-full max-sm:grid-cols-2">
+    <div className="actions max-sm:w-full max-sm:grid-cols-2 sm:ml-auto">
       <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
         <WhatsAppLogo />
         {top.buttonLabel}
