@@ -1,14 +1,11 @@
 "use client";
 
-import { ONLY_NECESSARY } from "@ttn/site-data/consent";
+import { ALL_ALLOWED, ONLY_NECESSARY } from "@ttn/site-data/consent";
 import type { ConsentChoices } from "@ttn/site-data/consent";
 import { saveConsent } from "@ttn/site-data/consentStore";
 import { useId, useState } from "react";
 
 import { useConsent } from "../useConsent";
-
-/** Only what this website really loads has a choice: it has no analytics, so that stays off (add it here, and a banner, with them). */
-const ALLOW_MEDIA: ConsentChoices = { analytics: false, externalMedia: true };
 
 const BUTTON = "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border-[1.5px] border-solid border-forest px-4 text-[15px] font-semibold";
 
@@ -50,7 +47,7 @@ export const CookieSettingsPanel = () => {
   // The visitor's edit; until they touch the switch, the panel shows what is stored.
   const [draft, setDraft] = useState<ConsentChoices | null>(null);
   const [status, setStatus] = useState("");
-  const shown = draft ?? (consent ? { analytics: false, externalMedia: consent.externalMedia } : ONLY_NECESSARY);
+  const shown = draft ?? (consent ? { analytics: consent.analytics, externalMedia: consent.externalMedia } : ONLY_NECESSARY);
 
   const save = (choices: ConsentChoices) => {
     const isStored = saveConsent(choices);
@@ -69,11 +66,20 @@ export const CookieSettingsPanel = () => {
       <ul className="divide-y divide-solid divide-line border-y border-solid border-line">
         <ConsentRow name="Necessary" text="Keeps the site working and remembers this choice. Always on." isOn />
         <ConsentRow
+          name="Analytics"
+          text="Google Analytics, loaded through Google Tag Manager, counts page visits so we can see which pages help people. Never used for advertising."
+          isOn={shown.analytics}
+          onToggle={() => {
+            setDraft({ ...shown, analytics: !shown.analytics });
+            setStatus("");
+          }}
+        />
+        <ConsentRow
           name="External media"
           text="The office map on the Contact page, and videos and embeds in blogs. They send data to Google or another service when they load, so without this each one asks first. Route maps on trek pages always load."
           isOn={shown.externalMedia}
           onToggle={() => {
-            setDraft({ analytics: false, externalMedia: !shown.externalMedia });
+            setDraft({ ...shown, externalMedia: !shown.externalMedia });
             setStatus("");
           }}
         />
@@ -83,7 +89,7 @@ export const CookieSettingsPanel = () => {
           <button type="button" onClick={() => save(ONLY_NECESSARY)} className={`${BUTTON} bg-transparent text-forest`}>
             Reject all
           </button>
-          <button type="button" onClick={() => save(ALLOW_MEDIA)} className={`${BUTTON} bg-transparent text-forest`}>
+          <button type="button" onClick={() => save(ALL_ALLOWED)} className={`${BUTTON} bg-transparent text-forest`}>
             Accept all
           </button>
           <button type="button" onClick={() => save(shown)} className={`${BUTTON} bg-forest text-snow`}>

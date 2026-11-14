@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
 import { JsonLd } from "@/components/shared/JsonLd";
+import { AnalyticsScripts } from "@/features/analytics/AnalyticsScripts";
+import { CookieBanner } from "@/features/consent/components/CookieBanner";
 import { SiteFooter } from "@/features/site-footer/SiteFooter";
 import { SiteHeader } from "@/features/site-header/SiteHeader";
 import { organizationJsonLd } from "@/features/site-settings/organizationJsonLd";
@@ -43,6 +45,9 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         <SiteHeader />
         {children}
         <SiteFooter />
+        {/* Asks on the first visit: Google Tag Manager loads only after "Analytics" is allowed. */}
+        <CookieBanner />
+        <AnalyticsScripts />
       </body>
     </html>
   );
