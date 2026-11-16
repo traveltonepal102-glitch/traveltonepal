@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { connection } from "next/server";
 
 import { getAboutContent } from "@/features/about/services/aboutRepository";
 import { getBlogsPage } from "@/features/blogs/services/blogsRepository";
@@ -12,6 +13,8 @@ import { absoluteUrl } from "@/lib/site";
 
 /** /sitemap.xml: the pages built so far that Google may list; the main trek's page is only "/" (its own address redirects here), the other treks' and the blogs' their own. Empty until the website is live. */
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
+  // Made per request (its data stays cached), so going live in Sites and new pages show without a deploy.
+  await connection();
   const { seo } = await getHomeData();
   if (!seo.isLive) return [];
   const legal = await Promise.all(

@@ -11,6 +11,7 @@ import { formatPrice } from "@/lib/format";
 import { buildBookingMessage } from "../bookingMessage";
 import { MAX_TRAVELLERS, nextGroupTip, travellersText } from "../groupSizes";
 import { useBooking } from "./BookingContext";
+import { GroupPriceTable } from "./GroupPriceTable";
 
 type BookingCardProps = { trekName: string; shortName: string; days: number };
 
@@ -19,9 +20,13 @@ const FIELD = "min-h-12 w-full rounded-[10px] border border-solid border-field b
 const STEP = "size-11 cursor-pointer border-0 bg-transparent text-[22px] leading-none text-navy disabled:cursor-not-allowed disabled:opacity-40";
 const MIN_TRAVELLERS = 1;
 
-/** The sticky card: the start day and travellers set the price and the total; the message on WhatsApp or by email carries them. */
+/**
+ * The sticky card, read top to bottom: the price per person for the travellers chosen, the start day, the travellers,
+ * every group's price (GroupPriceTable: picking one sets the travellers), the total, and WhatsApp or email, whose
+ * message carries the day and the group.
+ */
 export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => {
-  const { prices, ranges, travellers, setTravellers, chosenIndex, today, startDate, setStartDate } = useBooking();
+  const { prices, ranges, travellers, setTravellers, chosenIndex, choose, today, startDate, setStartDate } = useBooking();
   const id = useId();
   const chosen = prices[chosenIndex];
   const tip = nextGroupTip(ranges, prices, travellers);
@@ -29,15 +34,20 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
 
   return (
     <div className="overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-raised">
-      <div className="flex flex-col gap-0.5 bg-navy-deep px-5.5 pt-5 pb-4.5 text-snow">
-        <h2 id="book-h" className="font-body! text-[15px]! leading-5! font-semibold text-on-navy-muted!">
+      <div className="flex flex-col gap-1 border-b border-solid border-line px-5.5 pt-5 pb-4">
+        <h2 id="book-h" className="font-body! text-[15px]! leading-5! font-semibold text-muted!">
           {shortName} buchen
         </h2>
         {chosen && (
-          <span className="flex flex-wrap items-baseline gap-2">
-            <span className="font-display text-[38px] leading-11 font-[640]">{formatPrice(chosen.price, chosen.currency)}</span>
-            <span className="text-[15px] text-on-navy-muted">pro Person · {chosen.label}</span>
-          </span>
+          <>
+            <p className="flex flex-wrap items-baseline gap-x-2">
+              <span className="font-display text-[40px] leading-12 font-[680] text-ink">{formatPrice(chosen.price, chosen.currency)}</span>
+              <span className="text-[17px] text-muted">pro Person</span>
+            </p>
+            <p className="text-eyebrow text-muted">
+              Privattrek · Preis für {travellersText(travellers)}
+            </p>
+          </>
         )}
       </div>
 
@@ -69,6 +79,8 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
             </button>
           </span>
         </div>
+
+        {prices.length > 1 && <GroupPriceTable prices={prices} chosenIndex={chosenIndex} onChoose={choose} />}
 
         {tip && (
           <p className="flex gap-2 rounded-[10px] bg-cream px-3 py-2.5 text-sm leading-5 text-cream-ink">
