@@ -37,7 +37,8 @@ const AuthorsPage = async ({ searchParams }: PageProps<"/authors">) => {
       key={open?.id ?? "new"}
       action={saveAuthor.bind(null, site.id, open?.id ?? null)}
       author={open}
-      values={open ?? EMPTY_AUTHOR_VALUES}
+      // A new author writes in the website's language (its guides are typed in it).
+      values={open ?? { ...EMPTY_AUTHOR_VALUES, writesIn: [site.language] }}
       guides={guides}
       takenGuideIds={authors.flatMap((author) => author.guideId ?? [])}
       removeAction={open && admin.role === "super_admin" ? removeAuthor.bind(null, site.id, open.id) : null}

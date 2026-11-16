@@ -7,7 +7,7 @@ describe("photoFileNameFrom", () => {
   it("makes a slug of the uploaded file's name, without its type", () => {
     expect(photoFileNameFrom("tilicho-lake-annapurna-circuit-trek.webp", "nepal")).toBe("tilicho-lake-annapurna-circuit-trek");
     expect(photoFileNameFrom("Thorong La Pass (5,416 m).JPG", "nepal")).toBe("thorong-la-pass-5-416-m");
-    expect(photoFileNameFrom("Ränge über Manang.jpeg", "nepal")).toBe("range-uber-manang");
+    expect(photoFileNameFrom("Ränge über Manang.jpeg", "nepal")).toBe("raenge-ueber-manang");
   });
 
   it("uses the fallback for names a camera or phone made", () => {

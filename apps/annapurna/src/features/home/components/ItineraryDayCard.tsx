@@ -17,13 +17,13 @@ export const ItineraryDayCard = ({ day }: { day: HomeDay }) => (
         aria-hidden="true"
         className={`relative mt-1 inline-flex size-13 flex-col items-center justify-center gap-0.75 rounded-[14px] leading-none shadow-[0_0_0_5px_#fff] max-sm:size-11 ${day.isHighPoint ? "bg-ember text-snow" : "bg-navy text-snow"}`}
       >
-        <span className="text-[10px] font-semibold tracking-widest uppercase">Day</span>
+        <span className="text-[10px] font-semibold tracking-widest uppercase">Tag</span>
         <span className="font-display text-xl font-[640]">{day.number}</span>
       </span>
     </div>
     <article className={`mb-4 flex min-w-0 flex-col gap-2.5 rounded-[14px] border border-solid px-5.5 py-5 max-sm:px-4 ${day.isHighPoint ? "border-cream-line bg-cream" : "border-line bg-snow"}`}>
       <h3 className="text-xl! leading-6.75!">
-        Day {day.number}: {day.title}
+        Tag {day.number}: {day.title}
       </h3>
       {day.subtitle && (
         <p className="flex items-start gap-2 text-[15px] leading-5.5 font-medium text-navy">
@@ -42,7 +42,7 @@ export const ItineraryDayCard = ({ day }: { day: HomeDay }) => (
           <TrailIcon name="mountain" size={14} />
           {formatAltitude(day.altitudeM)}
         </span>
-        {day.isHighPoint && <span className="inline-flex items-center rounded-full bg-ember px-2.5 py-0.75 text-sm leading-5 font-semibold text-snow">High point</span>}
+        {day.isHighPoint && <span className="inline-flex items-center rounded-full bg-ember px-2.5 py-0.75 text-sm leading-5 font-semibold text-snow">Höchster Punkt</span>}
       </p>
       {/* The day's photo (from the trek editor) beside the text, above it on a phone. */}
       <div className="flex flex-wrap gap-4">

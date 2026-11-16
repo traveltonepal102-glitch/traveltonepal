@@ -8,8 +8,8 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
 
 const CALLOUT = {
-  note: { box: "border-line bg-cloud", icon: "doc", iconColor: "text-navy", label: "Good to know" },
-  warning: { box: "border-cream-line bg-cream", icon: "shield", iconColor: "text-cream-ink", label: "Take care" },
+  note: { box: "border-line bg-cloud", icon: "doc", iconColor: "text-navy", label: "Gut zu wissen" },
+  warning: { box: "border-cream-line bg-cream", icon: "shield", iconColor: "text-cream-ink", label: "Achtung" },
 } as const;
 
 /** A note or a warning, with its label for those who can't see the colour. */
@@ -28,7 +28,7 @@ export const BlogCallout = ({ tone, body }: { tone: "note" | "warning"; body: Ri
 
 /** A checklist in its own card. */
 export const BlogChecklist = ({ heading, items }: { heading: string; items: readonly string[] }) => (
-  <section aria-label={heading || "Checklist"} className="flex flex-col gap-3 rounded-2xl border border-solid border-line p-5">
+  <section aria-label={heading || "Checkliste"} className="flex flex-col gap-3 rounded-2xl border border-solid border-line p-5">
     {heading && <h3 className="text-xl! leading-6.5!">{heading}</h3>}
     <ul className="flex flex-col gap-2.5">
       {items.map((item) => (
@@ -55,9 +55,9 @@ export const BlogCta = async ({ heading, buttonText, message }: { heading: strin
         <WhatsAppLogo size={28} />
       </span>
       <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-1">
-        <span className="eyebrow">Ask our team</span>
+        <span className="eyebrow">Fragen Sie unser Team</span>
         <p className="font-display text-[22px] leading-7.5 font-bold text-ink">{heading}</p>
-        <p className="text-[15px] leading-5.75 text-muted">A guide from our team answers you personally, usually within a few hours.</p>
+        <p className="text-[15px] leading-5.75 text-muted">Ein Trekkingguide aus unserem Team antwortet Ihnen persönlich, meist innerhalb weniger Stunden.</p>
       </div>
       <div className="actions max-sm:w-full">
         {phoneDisplay && (
@@ -69,7 +69,7 @@ export const BlogCta = async ({ heading, buttonText, message }: { heading: strin
         {email && (
           <a href={getEmailUrl({ subject: heading, body: message })} rel="nofollow" className={outlineButton}>
             <TrailIcon name="mail" />
-            Email us
+            E-Mail schreiben
           </a>
         )}
       </div>

@@ -10,8 +10,8 @@ export const toTrekTop = (summary: WebTrekRow, page: WebTrekPageRow): HomeTop =>
   eyebrow: "",
   heading: firstText(page.headline) ?? summary.name,
   intro: summary.summary.trim(),
-  buttonLabel: "Plan my trek",
-  secondLabel: "See the itinerary",
+  buttonLabel: "Trek planen",
+  secondLabel: "Zum Reiseverlauf",
 });
 
 /** A trek page's Google result: the trek's own, else its name and summary. The share picture is its chosen one, else its cover, else the website's from Site settings. */

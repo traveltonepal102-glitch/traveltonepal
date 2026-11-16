@@ -19,7 +19,7 @@ export const PageSectionLinks = ({ links }: PageSectionLinksProps) => {
   }, [active]);
 
   return (
-    <nav ref={nav} aria-label="On this page" className="relative min-w-0 scroll-smooth overflow-x-auto motion-reduce:scroll-auto">
+    <nav ref={nav} aria-label="Auf dieser Seite" className="relative min-w-0 scroll-smooth overflow-x-auto motion-reduce:scroll-auto">
       <ul className="flex gap-7 text-[15px] font-semibold whitespace-nowrap">
         {links.map((link) => {
           const isActive = link.id === active;

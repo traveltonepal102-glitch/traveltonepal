@@ -52,7 +52,7 @@ export const ClampedText = ({ children, className = "" }: ClampedTextProps) => {
           onClick={toggle}
           className="inline-flex min-h-11 cursor-pointer items-center border-0 bg-transparent p-0 text-[15px] font-semibold text-navy underline underline-offset-2 hover:text-navy-deep"
         >
-          {isExpanded ? "Read less" : "Read more"}
+          {isExpanded ? "Weniger anzeigen" : "Weiterlesen"}
         </button>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { SITE_CURRENCIES, SITE_LANGUAGES } from "@ttn/config/siteLanguage";
 import { z } from "zod";
 
 import { requiredText } from "@/lib/forms/formFields";
@@ -14,3 +15,9 @@ export const siteUrl = z
   .toLowerCase()
   .transform((value) => value.replace(/\/+$/, ""))
   .refine((value) => value === "" || SITE_URL_PATTERN.test(value), "Use the address only, starting with https://, like https://manaslutrek.com.");
+
+/** The language the website's content is typed in. */
+export const siteLanguage = z.enum(SITE_LANGUAGES, "Pick the website's language.");
+
+/** The currency of the website's prices. */
+export const siteCurrency = z.enum(SITE_CURRENCIES, "Pick the website's currency.");

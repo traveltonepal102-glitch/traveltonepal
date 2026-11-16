@@ -4,7 +4,7 @@ import { trekPageJsonLd, trekPageMetadata } from "./seo";
 import type { TrekPageData } from "./types";
 
 const data = {
-  trek: { slug: "nar-phu", name: "Nar Phu", photos: [], pricing: { prices: [{ priceUsd: 570 }] }, faq: { items: [] } },
+  trek: { slug: "nar-phu", name: "Nar Phu", photos: [], pricing: { prices: [{ price: 570, currency: "EUR" }] }, faq: { items: [] } },
   seo: { title: "Nar Phu Trek", description: "Two villages", isLive: true, dates: { published: "2026-10-23", modified: "2026-11-03" } },
   isHidden: false,
 } as unknown as TrekPageData;
@@ -28,5 +28,6 @@ describe("trekPageJsonLd", () => {
     expect(text).toContain("/nar-phu");
     expect(text).toContain("TouristTrip");
     expect(text).toContain('"BreadcrumbList"');
+    expect(text).toContain('"name":"Startseite"');
   });
 });

@@ -31,7 +31,7 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
     const fields = new FormData(event.currentTarget);
     const name = String(fields.get("name") ?? "").trim();
     if (name.length < 2) {
-      setError("Please enter your name.");
+      setError("Bitte geben Sie Ihren Namen ein.");
       return;
     }
     setError("");
@@ -45,14 +45,14 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
       requests: String(fields.get("requests") ?? ""),
     });
     const isEmail = (event.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "email";
-    window.location.href = isEmail ? getEmailUrl({ subject: `Booking request: ${trekName}`, body: message }) : getWhatsAppUrl(message);
+    window.location.href = isEmail ? getEmailUrl({ subject: `Buchungsanfrage: ${trekName}`, body: message }) : getWhatsAppUrl(message);
   };
 
   return (
     <form noValidate onSubmit={send} className="flex flex-col gap-4">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
         <label className={LABEL}>
-          Full name
+          Vollständiger Name
           <input name="name" autoComplete="name" maxLength={80} aria-invalid={error ? true : undefined} aria-describedby={error ? "request-error" : undefined} className={FIELD} />
           {error && (
             <span id="request-error" role="alert" className="font-normal text-cream-ink">
@@ -61,31 +61,31 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
           )}
         </label>
         <label className={LABEL}>
-          Country
+          Land
           <input name="country" autoComplete="country-name" maxLength={60} className={FIELD} />
         </label>
       </div>
       <label className={LABEL}>
-        Special requests
-        <textarea name="requests" rows={3} maxLength={MAX_REQUESTS_LENGTH} placeholder="An extra rest day, vegetarian meals, a side trip…" className={`${FIELD} py-3`} />
+        Besondere Wünsche
+        <textarea name="requests" rows={3} maxLength={MAX_REQUESTS_LENGTH} placeholder="Ein zusätzlicher Ruhetag, vegetarisches Essen, ein Abstecher …" className={`${FIELD} py-3`} />
       </label>
       <p className="text-[15px] leading-5.5 text-muted">
-        For {travellersText(travellers)}
-        {startDate ? `, starting ${formatStartDate(startDate)}` : ""}. Change the group and the day in the booking card.
+        Für {travellersText(travellers)}
+        {startDate ? `, Start am ${formatStartDate(startDate)}` : ""}. Gruppe und Startdatum ändern Sie in der Buchungsbox.
       </p>
       <div className="actions">
         <button type="submit" value="whatsapp" className={`${whatsAppButton} cursor-pointer border-0`}>
           <WhatsAppLogo />
-          Send on WhatsApp
+          Per WhatsApp senden
         </button>
         <button type="submit" value="email" className={`${outlineButton} cursor-pointer`}>
           <TrailIcon name="mail" />
-          Send by email
+          Per E-Mail senden
         </button>
       </div>
       <p className="flex items-center gap-1.5 text-sm leading-5 text-muted">
         <TrailIcon name="lock" size={14} />
-        Nothing is stored on this website.
+        Auf dieser Website wird nichts gespeichert.
       </p>
     </form>
   );

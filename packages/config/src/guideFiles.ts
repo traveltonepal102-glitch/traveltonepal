@@ -1,3 +1,5 @@
+import type { SiteLanguage } from "./siteLanguage";
+
 /**
  * A travel guide's "File to download" section: a PDF in the public trek-files storage, at
  * guide-files/<uuid>/<name>.pdf. The name comes from the uploaded file ("Langtang packing list.pdf" →
@@ -10,7 +12,10 @@ export const GUIDE_FILE_PATH = /^guide-files\/[0-9a-f-]{36}\/[a-z0-9]+(-[a-z0-9]
 export const MAX_GUIDE_FILE_BYTES = 15 * 1024 * 1024;
 
 /** "1.2 MB", "850 KB": a file's size for people. */
-export const fileSizeLabel = (bytes: number) => {
-  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1).replace(/\.0$/, "")} MB`;
+export const fileSizeLabel = (bytes: number, language: SiteLanguage = "en") => {
+  if (bytes >= 1024 * 1024) {
+    const megabytes = (bytes / (1024 * 1024)).toFixed(1).replace(/\.0$/, "");
+    return `${language === "de" ? megabytes.replace(".", ",") : megabytes} MB`;
+  }
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 };

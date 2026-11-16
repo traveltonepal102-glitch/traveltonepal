@@ -109,7 +109,7 @@ export const GuidePanel = ({ action, guide, values, regions, today, removeAction
             <TextField
               name="bio"
               label="Short bio in English"
-              hint="Shown when this guide writes or checks a travel guide. German comes with the German website."
+              hint="Shown when this guide writes or checks a travel guide. In the website's language."
               multiline
               rows={3}
               defaultValue={values.bio}

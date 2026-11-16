@@ -1,3 +1,4 @@
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
 import { isRichTextEmpty, richTextDocSchema } from "@ttn/ui/lib/richText";
 import { z } from "zod";
 
@@ -9,7 +10,10 @@ export const FACT_ICONS = ["wb_sunny", "water_drop", "altitude", "wb_twilight", 
 export type GuideFactIcon = (typeof FACT_ICONS)[number];
 
 /** The admin's crowd levels, as the month table says them. */
-const CROWDS = { "very-low": "Very low", low: "Low", medium: "Medium", busy: "Busy", busiest: "Busiest" } as const;
+const CROWDS: Record<SiteLanguage, Record<string, string>> = {
+  en: { "very-low": "Very low", low: "Low", medium: "Medium", busy: "Busy", busiest: "Busiest" },
+  de: { "very-low": "Sehr wenig", low: "Wenig", medium: "Mittel", busy: "Viel", busiest: "Sehr viel" },
+};
 
 const text = z.string().trim().catch("");
 const doc = richTextDocSchema.refine((value) => !isRichTextEmpty(value));
@@ -84,11 +88,11 @@ export const readChecker = (value: unknown) => personSchema.omit({ quote: true }
 
 export const readFacts = (value: unknown) => listOf(value, factSchema);
 
-/** Jan–Dec notes, the crowd level in words; anything but 12 months is none. */
-export const readMonthNotes = (value: unknown) => {
+/** Jan–Dec notes, the crowd level in words (the website's language); anything but 12 months is none. */
+export const readMonthNotes = (value: unknown, language: SiteLanguage = "en") => {
   const notes = listOf(value, monthNoteSchema);
   if (notes.length !== 12) return undefined;
-  return notes.map((note) => ({ onTheTrail: note.onTheTrail, crowds: CROWDS[note.crowds as keyof typeof CROWDS] ?? "" }));
+  return notes.map((note) => ({ onTheTrail: note.onTheTrail, crowds: CROWDS[language][note.crowds] ?? "" }));
 };
 
 /** Readers for a section's own fields; a missing or wrong field reads as empty. */

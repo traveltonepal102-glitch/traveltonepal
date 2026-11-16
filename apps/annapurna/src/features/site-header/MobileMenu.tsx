@@ -49,13 +49,13 @@ export const MobileMenu = ({ menus, links, children }: MobileMenuProps) => {
 
   return (
     <>
-      <button type="button" onClick={open} aria-label="Menu" aria-expanded={isOpen} aria-controls={id} className={`${outlineButton} w-12 flex-none px-0! lg:hidden`}>
+      <button type="button" onClick={open} aria-label="Menü" aria-expanded={isOpen} aria-controls={id} className={`${outlineButton} w-12 flex-none px-0! lg:hidden`}>
         <TrailIcon name="menu" size={22} />
       </button>
       <dialog
         id={id}
         ref={dialog}
-        aria-label="Menu"
+        aria-label="Menü"
         onClose={() => setIsOpen(false)}
         onClick={closeOnLinkOrBackdrop}
         className="m-0 ml-auto h-dvh max-h-none w-[min(24rem,calc(100%-3rem))] max-w-none overscroll-contain border-0 bg-snow p-0 text-ink transition-transform duration-200 backdrop:overflow-hidden backdrop:overscroll-contain backdrop:bg-ink/50 starting:translate-x-full motion-reduce:transition-none"
@@ -63,14 +63,14 @@ export const MobileMenu = ({ menus, links, children }: MobileMenuProps) => {
         {isOpen && (
         <div className="flex min-h-full flex-col gap-6 px-5 pt-3 pb-6">
           <div className="flex items-center justify-between">
-            <p className="eyebrow">Menu</p>
+            <p className="eyebrow">Menü</p>
             {/* The first thing focusable: where showModal() puts the focus. */}
-            <button type="button" onClick={close} aria-label="Close menu" className="inline-flex size-12 cursor-pointer items-center justify-center rounded-xl border-0 bg-transparent text-ink hover:bg-sky">
+            <button type="button" onClick={close} aria-label="Menü schließen" className="inline-flex size-12 cursor-pointer items-center justify-center rounded-xl border-0 bg-transparent text-ink hover:bg-sky">
               <TrailIcon name="close" size={22} />
             </button>
           </div>
 
-          <nav aria-label="Main">
+          <nav aria-label="Hauptmenü">
             <ul className="m-0 flex list-none flex-col p-0">
               {menus
                 .filter((menu) => menu.items.length > 0)

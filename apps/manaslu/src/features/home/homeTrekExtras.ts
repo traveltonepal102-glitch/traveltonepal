@@ -52,7 +52,7 @@ export const toHomeRouteMap = (page: WebTrekPageRow, files: RouteFiles, shortNam
 export const toHomeMeals = (page: WebTrekPageRow): HomeTrek["meals"] => {
   const trailTips = readPoints(page.meal_trail_tips);
   const teahouseNotes = readPoints(page.meal_teahouse_notes);
-  const { meal_budget_min_usd: min, meal_budget_max_usd: max } = page;
+  const { meal_budget_min: min, meal_budget_max: max } = page;
   const budget = min && max ? { min, max } : null;
   return budget || trailTips.length || teahouseNotes.length ? { budget, trailTips, teahouseNotes } : null;
 };

@@ -27,7 +27,7 @@ export const StorySection = ({ story, founder }: StorySectionProps) => (
         </figure>
       )}
       <div className="flex flex-col gap-4.5">
-        <h2 id="story-h">{story.heading || "Our story"}</h2>
+        <h2 id="story-h">{story.heading || "Unsere Geschichte"}</h2>
         <RichText doc={story.body} className="flex flex-col gap-4" />
       </div>
     </div>
@@ -54,7 +54,7 @@ export const StorySection = ({ story, founder }: StorySectionProps) => (
         {story.quote && (
           <blockquote className="flex flex-col gap-1">
             <p className="font-display text-[26px] leading-8.5 font-semibold text-navy-deep">“{story.quote}”</p>
-            {founder && <footer className="text-[15px] leading-5.5 text-navy-deep">{founder.name}, founder</footer>}
+            {founder && <footer className="text-[15px] leading-5.5 text-navy-deep">{founder.name}, Gründer</footer>}
           </blockquote>
         )}
       </div>

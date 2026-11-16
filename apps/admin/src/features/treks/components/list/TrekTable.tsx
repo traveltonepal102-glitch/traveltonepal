@@ -8,6 +8,7 @@ import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import { STATUS_OPTIONS, difficultyOf, trekPath } from "../../constants";
 import type { TrekListItem } from "../../lib/trekListItem";
 import type { TrekStatus } from "../../types";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 const STATUS_STYLES: Record<TrekStatus, { dot: string; text: string }> = {
   published: { dot: "bg-whatsapp", text: "text-whatsapp" },
@@ -16,7 +17,6 @@ const STATUS_STYLES: Record<TrekStatus, { dot: string; text: string }> = {
 };
 
 const statusLabel = (status: TrekStatus) => STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status;
-const priceLabel = (price: number | null) => (price === null ? "Not set" : `$${price.toLocaleString("en")}`);
 
 const Thumb = ({ trek, size }: { trek: TrekListItem; size: string }) => (
   <span className={cn("flex flex-none items-center justify-center overflow-hidden rounded-md bg-navy text-white/40", size)}>
@@ -44,7 +44,10 @@ const headClass = "border-b border-solid border-border bg-page px-4 py-2.5 text-
 const cellClass = "border-b border-solid border-border px-4 py-3 align-middle";
 
 /** The treks as a table on wide screens and as cards on phones (design: Admin-treks). */
-export const TrekTable = ({ treks }: { treks: TrekListItem[] }) => (
+export const TrekTable = ({ treks }: { treks: TrekListItem[] }) => {
+  const currency = useSiteCurrency();
+  const priceLabel = (price: number | null) => (price === null ? "Not set" : currency.format(price));
+  return (
   <div className="overflow-hidden rounded-lg border border-solid border-border bg-surface">
     <table className="w-full border-collapse text-body-sm max-tablet:hidden">
       <thead>
@@ -112,3 +115,4 @@ export const TrekTable = ({ treks }: { treks: TrekListItem[] }) => (
     </ul>
   </div>
 );
+};

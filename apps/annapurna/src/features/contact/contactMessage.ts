@@ -7,14 +7,14 @@ export const MAX_MESSAGE_LENGTH = 1000;
 
 /** What the contact form asks; the name, email and message are needed to answer anyone. Checked before WhatsApp or the email app opens. */
 export const contactFormSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name.").max(80, "Please keep your name under 80 characters."),
-  email: z.string().trim().email("Please enter a valid email address, like anna@example.com.").max(120, "Please keep your email under 120 characters."),
-  phone: z.string().trim().max(30, "Please keep your phone number under 30 characters.").regex(/^[+\d\s().-]*$/, "Please use only numbers and + ( ) - in your phone number."),
-  country: z.string().trim().max(60, "Please keep the country under 60 characters."),
+  name: z.string().trim().min(2, "Bitte geben Sie Ihren Namen ein.").max(80, "Ihr Name darf höchstens 80 Zeichen lang sein."),
+  email: z.string().trim().email("Bitte geben Sie eine gültige E-Mail-Adresse ein, z. B. anna@example.com.").max(120, "Ihre E-Mail-Adresse darf höchstens 120 Zeichen lang sein."),
+  phone: z.string().trim().max(30, "Ihre Telefonnummer darf höchstens 30 Zeichen lang sein.").regex(/^[+\d\s().-]*$/, "Bitte verwenden Sie für die Telefonnummer nur Ziffern und + ( ) -."),
+  country: z.string().trim().max(60, "Das Land darf höchstens 60 Zeichen lang sein."),
   trek: z.string().trim().max(120),
-  startDate: z.string().trim().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Please choose a date from the calendar."),
+  startDate: z.string().trim().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Bitte wählen Sie ein Datum im Kalender aus."),
   group: z.string().trim().max(40),
-  message: z.string().trim().min(10, "Please tell us a little more, at least 10 characters.").max(MAX_MESSAGE_LENGTH, `Please keep your message under ${MAX_MESSAGE_LENGTH} characters.`),
+  message: z.string().trim().min(10, "Bitte schreiben Sie uns etwas mehr, mindestens 10 Zeichen.").max(MAX_MESSAGE_LENGTH, `Ihre Nachricht darf höchstens ${MAX_MESSAGE_LENGTH} Zeichen lang sein.`),
 });
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -36,18 +36,18 @@ export const checkContactForm = (values: Record<string, unknown>): { values: Con
 /** The filled-in form as the message we receive on WhatsApp or by email: blank fields are left out. */
 export const buildContactMessage = ({ name, email, phone, country, trek, startDate, group, message }: ContactFormValues) =>
   [
-    "Hello! I have a question about a trek.",
+    "Hallo! Ich habe eine Frage zu einem Trek.",
     "",
     `Name: ${name}`,
-    `Email: ${email}`,
-    ...(phone ? [`Phone: ${phone}`] : []),
-    ...(country ? [`Country: ${country}`] : []),
+    `E-Mail: ${email}`,
+    ...(phone ? [`Telefon: ${phone}`] : []),
+    ...(country ? [`Land: ${country}`] : []),
     ...(trek ? [`Trek: ${trek}`] : []),
-    ...(startDate ? [`Preferred start date: ${formatStartDate(startDate)}`] : []),
-    ...(group ? [`Group: ${group}`] : []),
+    ...(startDate ? [`Gewünschtes Startdatum: ${formatStartDate(startDate)}`] : []),
+    ...(group ? [`Gruppe: ${group}`] : []),
     "",
     message,
   ].join("\n");
 
 /** The email's subject, naming the person so it is easy to find. */
-export const contactEmailSubject = ({ name, trek }: Pick<ContactFormValues, "name" | "trek">) => `Trek enquiry from ${name}${trek ? `: ${trek}` : ""}`;
+export const contactEmailSubject = ({ name, trek }: Pick<ContactFormValues, "name" | "trek">) => `Trek-Anfrage von ${name}${trek ? `: ${trek}` : ""}`;

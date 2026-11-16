@@ -11,19 +11,19 @@ export const BookingBand = ({ name, shortName }: { name: string; shortName: stri
   <section aria-labelledby="booking-band-h" id="booking_cta" className="bg-navy-deep text-snow">
     <div className="wrap flex flex-wrap items-center justify-between gap-6 py-12">
       <div className="flex flex-[1_1_420px] flex-col gap-2">
-        <span className="text-eyebrow font-semibold tracking-[0.12em] text-sun uppercase">Ready for the Himalaya?</span>
+        <span className="text-eyebrow font-semibold tracking-[0.12em] text-sun uppercase">Bereit für den Himalaya?</span>
         <h2 id="booking-band-h" className="text-snow!">
-          Book the {shortName} with us
+          Buchen Sie den {shortName} mit uns
         </h2>
-        <p className="text-on-navy-muted">Get a personal itinerary, packing advice and a confirmed price for your group, straight from our team.</p>
+        <p className="text-on-navy-muted">Sie erhalten einen persönlichen Reiseverlauf, Tipps zur Packliste und einen verbindlichen Preis für Ihre Gruppe – direkt von unserem Team.</p>
       </div>
       <div className="actions max-sm:w-full">
-        <a href={getWhatsAppUrl(`Hello! I would like to book the ${name}.`)} rel="nofollow" className={whatsAppButton}>
+        <a href={getWhatsAppUrl(`Hallo! Ich möchte den ${name} buchen.`)} rel="nofollow" className={whatsAppButton}>
           <WhatsAppLogo />
-          Ask on WhatsApp
+          Per WhatsApp fragen
         </a>
         <a href="#book" className={SECOND_BUTTON}>
-          Check dates
+          Termin wählen
           <TrailIcon name="arrow" />
         </a>
       </div>

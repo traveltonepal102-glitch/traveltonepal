@@ -1,5 +1,5 @@
 import { TrailIcon } from "@/components/ui/TrailIcon";
-import { formatUsd } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 import type { HomePoint, HomeTrek } from "../types";
 import { PointList } from "./PointList";
@@ -7,20 +7,20 @@ import { PointList } from "./PointList";
 /** Why meals are paid on the trail: the same company policy on every trek. */
 const REASONS: readonly HomePoint[] = [
   {
-    title: "You eat what you want",
-    text: "Appetite changes with altitude. Order what your body asks for, from dal bhat to soup or porridge.",
+    title: "Sie essen, worauf Sie Lust haben",
+    text: "In der Höhe ändert sich der Appetit. Bestellen Sie, wonach Ihr Körper verlangt – von Dal Bhat bis zu Suppe oder Porridge.",
   },
   {
-    title: "The money stays in the village",
-    text: "You pay the lodges directly, so all the food money goes to the families who run them.",
+    title: "Das Geld bleibt im Dorf",
+    text: "Sie bezahlen die Lodges direkt, so geht das gesamte Essensgeld an die Familien, die sie führen.",
   },
   {
-    title: "No package markup",
-    text: "Meal packages are often padded. Here you pay the real menu price for what you eat.",
+    title: "Kein Pauschalaufschlag",
+    text: "Verpflegungspakete sind oft teurer als nötig. So zahlen Sie den echten Menüpreis für das, was Sie essen.",
   },
   {
-    title: "Your dietary needs",
-    text: "Vegetarian, vegan or gluten-free: order on the spot and get food made the way you need it.",
+    title: "Ihre Ernährungswünsche",
+    text: "Vegetarisch, vegan oder glutenfrei: Bestellen Sie vor Ort und bekommen Sie Ihr Essen so zubereitet, wie Sie es brauchen.",
   },
 ];
 
@@ -46,7 +46,7 @@ export const TrekMeals = ({
   meals: NonNullable<HomeTrek["meals"]>;
 }) => (
   <div className="flex flex-col gap-4 rounded-[14px] bg-cloud p-6">
-    <h3 className="text-xl! leading-6.5!">Why meals aren’t in the price</h3>
+    <h3 className="text-xl! leading-6.5!">Warum die Mahlzeiten nicht im Preis enthalten sind</h3>
     <ul className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-x-7 gap-y-3.5">
       {REASONS.map((reason) => (
         <li
@@ -65,15 +65,15 @@ export const TrekMeals = ({
       <p className="flex items-start gap-2.5 rounded-[10px] border border-solid border-cream-line bg-cream px-4 py-3 text-base leading-6 text-cream-ink">
         <TrailIcon name="tag" className="mt-0.75" />
         <span>
-          <strong className="font-semibold">Daily food budget:</strong> plan on
-          about {formatUsd(meals.budget.min)}–{meals.budget.max} USD a day for
-          three meals.
+          <strong className="font-semibold">Tagesbudget fürs Essen:</strong> Rechnen Sie mit
+          etwa {formatPrice(meals.budget.min, meals.budget.currency)}–{formatPrice(meals.budget.max, meals.budget.currency)} pro Tag für
+          drei Mahlzeiten.
         </span>
       </p>
     )}
     <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
-      <TipList title="On the trail" points={meals.trailTips} />
-      <TipList title="In the teahouses" points={meals.teahouseNotes} />
+      <TipList title="Unterwegs" points={meals.trailTips} />
+      <TipList title="Im Teehaus" points={meals.teahouseNotes} />
     </div>
   </div>
 );

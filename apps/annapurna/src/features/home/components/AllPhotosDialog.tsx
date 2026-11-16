@@ -20,12 +20,12 @@ export const AllPhotosDialog = ({ photos }: { photos: readonly SiteImageSource[]
     <>
       <button type="button" onClick={open} className="absolute right-4 bottom-4 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[10px] border-0 bg-snow px-4 text-[15px] font-semibold text-ink shadow-card">
         <TrailIcon name="grid" />
-        All photos
+        Alle Fotos
       </button>
-      <dialog ref={dialog} aria-label="All photos" className="m-auto max-h-[90vh] w-[min(1100px,calc(100vw-32px))] rounded-2xl border-0 p-0 backdrop:bg-navy-deep/80">
+      <dialog ref={dialog} aria-label="Alle Fotos" className="m-auto max-h-[90vh] w-[min(1100px,calc(100vw-32px))] rounded-2xl border-0 p-0 backdrop:bg-navy-deep/80">
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 bg-snow px-5 py-3">
-          <span className="font-semibold text-ink">{photos.length} photos</span>
-          <button type="button" onClick={() => dialog.current?.close()} aria-label="Close the photos" className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border-0 bg-sky text-navy">
+          <span className="font-semibold text-ink">{photos.length} Fotos</span>
+          <button type="button" onClick={() => dialog.current?.close()} aria-label="Fotos schließen" className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border-0 bg-sky text-navy">
             <TrailIcon name="close" />
           </button>
         </div>

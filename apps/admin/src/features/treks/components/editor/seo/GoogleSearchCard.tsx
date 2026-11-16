@@ -15,6 +15,7 @@ import { TREK_LIMITS as LIMIT } from "../../../constants";
 import { getSeoChecks } from "../../../lib/seoChecks";
 import type { TrekValues } from "../../../types";
 import { GooglePreview } from "./GooglePreview";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type GoogleSearchCardProps = {
   values: TrekValues;
@@ -32,7 +33,8 @@ export const GoogleSearchCard = ({ values, errors, onEdit }: GoogleSearchCardPro
   const [seoDescription, setDescription] = useState(values.seoDescription);
   const checks = getSeoChecks({ ...values, seoKeyword, seoTitle, seoDescription });
   const done = checks.filter((check) => check.isDone).length;
-  const priceFromUsd = values.groupPrices.find((price) => price.isDefault)?.priceUsd ?? null;
+  const { format, symbol } = useSiteCurrency();
+  const fromPrice = values.groupPrices.find((price) => price.isDefault)?.priceUsd ?? null;
 
   return (
     <FormSection
@@ -61,7 +63,7 @@ export const GoogleSearchCard = ({ values, errors, onEdit }: GoogleSearchCardPro
             hint="Not the same as the big heading on the page. This one is only shown on Google."
             value={seoTitle}
             onValueChange={setTitle}
-            placeholder="Langtang Valley Trek: 10 Days from $890 | Local Guides"
+            placeholder={`Langtang Valley Trek: 10 Days from ${symbol}890 | Local Guides`}
             maxLength={LIMIT.seoTitle}
             recommendedLength={LIMIT.seoTitleRecommended}
             showCount
@@ -85,7 +87,7 @@ export const GoogleSearchCard = ({ values, errors, onEdit }: GoogleSearchCardPro
           <SharePhotoField initial={values.sharePhoto} fallback="the trek's first photo" onEdit={onEdit} />
         </div>
         <div className="flex flex-col gap-3">
-          <GooglePreview slug={values.slug} title={seoTitle} description={seoDescription} priceFromUsd={priceFromUsd} />
+          <GooglePreview slug={values.slug} title={seoTitle} description={seoDescription} priceFrom={fromPrice === null ? null : format(fromPrice)} />
           <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
             {checks.map((check) => (
               <li key={check.label} className="flex items-center gap-2 text-caption">

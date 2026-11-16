@@ -37,7 +37,7 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
         {/* For the owner only: never shown to visitors. */}
         {appEnvironment() !== "production" && doc.ownerNote && (
           <p className="rounded-[10px] border border-solid border-cream-line bg-cream px-4 py-3 text-[15px] leading-5.5 text-cream-ink print:hidden">
-            <strong className="font-semibold">Owner note (only shown in development):</strong> {doc.ownerNote}
+            <strong className="font-semibold">Hinweis für den Betreiber (nur in der Entwicklung sichtbar):</strong> {doc.ownerNote}
           </p>
         )}
         {children}
@@ -53,15 +53,15 @@ export const LegalPage = ({ doc, children }: LegalPageProps) => (
         ))}
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-[14px] bg-cloud px-5 py-4.5 print:hidden">
           <p className="flex flex-col">
-            <span className="font-semibold text-ink">Questions about this page?</span>
-            <span className="text-[15px] leading-5.5">Write to us and we will explain anything that is not clear.</span>
+            <span className="font-semibold text-ink">Fragen zu dieser Seite?</span>
+            <span className="text-[15px] leading-5.5">Schreiben Sie uns, wir erklären Ihnen gern alles, was unklar ist.</span>
           </p>
           <div className="actions">
-            <a href={getEmailUrl({ subject: `Question about: ${doc.title}` })} rel="nofollow" className={outlineButton}>
+            <a href={getEmailUrl({ subject: `Frage zu: ${doc.title}` })} rel="nofollow" className={outlineButton}>
               <TrailIcon name="mail" />
-              Email
+              E-Mail
             </a>
-            <a href={getWhatsAppUrl(`Hello! I have a question about your ${doc.title.toLowerCase()}.`)} rel="nofollow" className={whatsAppButton}>
+            <a href={getWhatsAppUrl(`Hallo! Ich habe eine Frage zu Ihrer Seite „${doc.title}“.`)} rel="nofollow" className={whatsAppButton}>
               <WhatsAppLogo />
               WhatsApp
             </a>

@@ -1,13 +1,20 @@
 /** How good a month is for trekking (Jan–Dec, 12 per region; the database's month_rating). */
 export type MonthRating = "best" | "possible" | "avoid";
 
+/** English short month names. Also the anchors' words (#m-jan), in every language. */
 export const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
+
+const GERMAN_MONTH_NAMES = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"] as const;
+
+/** Short month names to show, in the website's language ("en" | "de"). */
+export const monthNames = (language: "en" | "de" = "en"): readonly string[] => (language === "de" ? GERMAN_MONTH_NAMES : MONTH_NAMES);
 
 /**
  * The best months as short ranges: "Mar–May, Oct–Nov". A run over the new year joins up ("Nov–Feb").
  * Empty when no month is rated best. The admin and the website show the same text.
  */
-export const formatBestMonths = (ratings: readonly MonthRating[]): string => {
+export const formatBestMonths = (ratings: readonly MonthRating[], language: "en" | "de" = "en"): string => {
+  const names = monthNames(language);
   const runs: [number, number][] = [];
   ratings.forEach((rating, month) => {
     if (rating !== "best") return;
@@ -24,6 +31,6 @@ export const formatBestMonths = (ratings: readonly MonthRating[]): string => {
   }
 
   return runs
-    .map(([start, end]) => (start === end ? MONTH_NAMES[start] : `${MONTH_NAMES[start]}–${MONTH_NAMES[end]}`))
+    .map(([start, end]) => (start === end ? names[start] : `${names[start]}–${names[end]}`))
     .join(", ");
 };

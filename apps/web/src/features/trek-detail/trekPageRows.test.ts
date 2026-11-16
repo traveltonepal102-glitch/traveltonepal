@@ -73,7 +73,7 @@ describe("toTrekDetail", () => {
       know_heading: "",
       map_place: "",
       distance_km: null,
-      meal_budget_min_usd: null,
+      meal_budget_min: null,
       optional_high_point_m: null,
     });
     expect(trek.headline).toBe("Langtang Valley Trek");

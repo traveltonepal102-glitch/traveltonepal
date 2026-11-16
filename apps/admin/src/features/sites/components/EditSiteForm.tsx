@@ -14,6 +14,7 @@ import { TextField } from "@/components/ui/TextField";
 
 import { SITE_LIMITS as LIMIT, SITES_PATH } from "../constants";
 import type { Site } from "../types";
+import { SiteLanguageFields } from "./SiteLanguageFields";
 import { SitesHeading } from "./SitesHeading";
 
 type EditSiteFormProps = {
@@ -66,6 +67,8 @@ export const EditSiteForm = ({ action, site, regionName, canEdit }: EditSiteForm
             <TextField name="region" label="Region" defaultValue={isMain ? "All regions (main site)" : (regionName ?? "")} isReadOnly hint="Never changes." />
           </div>
         </FormSection>
+
+        <SiteLanguageFields language={site.language} currency={site.currency} isLocked={site.isLive} errors={errors} />
 
         <FormSection title="Address and Live">
           <TextField

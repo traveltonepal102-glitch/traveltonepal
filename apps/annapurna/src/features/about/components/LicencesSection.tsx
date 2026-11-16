@@ -11,15 +11,15 @@ import { ABOUT_SECTIONS } from "../sections";
 
 const LEGAL_LINKS = [
   { label: "Impressum", href: ROUTES.impressum },
-  { label: "Terms and booking conditions", href: ROUTES.terms },
-  { label: "Privacy policy", href: ROUTES.privacy },
+  { label: "AGB", href: ROUTES.terms },
+  { label: "Datenschutzerklärung", href: ROUTES.privacy },
 ];
 
 type CertificateProps = { image: SiteImageSource; title: string };
 
 /** A scan that opens full size in a new tab. */
 const Certificate = ({ image, title }: CertificateProps) => (
-  <a href={imageFileUrl(image, 2000)} target="_blank" rel="noopener noreferrer" aria-label={`Open the ${title.toLowerCase()} (new tab)`} className="flex flex-col gap-2 text-[15px] leading-5.5 font-semibold text-ink no-underline">
+  <a href={imageFileUrl(image, 2000)} target="_blank" rel="noopener noreferrer" aria-label={`${title} öffnen (neuer Tab)`} className="flex flex-col gap-2 text-[15px] leading-5.5 font-semibold text-ink no-underline">
     <span className="relative block h-48 cursor-zoom-in overflow-hidden rounded-[10px] border border-solid border-line bg-cloud">
       <span className="absolute inset-2">
         <SiteImage image={image} sizes="(min-width: 1024px) 240px, 50vw" className="object-contain" />
@@ -33,23 +33,23 @@ const Certificate = ({ image, title }: CertificateProps) => (
 export const LicencesSection = async ({ heading }: { heading: { title: string; text: string } }) => {
   const { legalName, tourismRegistration, licence, panNumber, staffInsurer, memberships, certificate, panCertificate } = await getSiteSettings();
   const fields = [
-    { label: "Company", value: legalName },
-    { label: "Department of Tourism registration", value: tourismRegistration },
-    { label: "Tourism licence", value: licence },
-    { label: "Tax number (PAN)", value: panNumber },
-    { label: "Staff insurance", value: staffInsurer },
-    { label: "Memberships", value: memberships.join(", ") },
+    { label: "Unternehmen", value: legalName },
+    { label: "Registrierung bei der Tourismusbehörde", value: tourismRegistration },
+    { label: "Tourismuslizenz", value: licence },
+    { label: "Steuernummer (PAN)", value: panNumber },
+    { label: "Versicherung der Mitarbeiter", value: staffInsurer },
+    { label: "Mitgliedschaften", value: memberships.join(", ") },
   ].filter((field) => field.value);
   const certificates: CertificateProps[] = [
-    ...(certificate ? [{ image: certificate, title: "Trekking agency licence" }] : []),
-    ...(panCertificate ? [{ image: panCertificate, title: "PAN certificate" }] : []),
+    ...(certificate ? [{ image: certificate, title: "Lizenz als Trekkingagentur" }] : []),
+    ...(panCertificate ? [{ image: panCertificate, title: "PAN-Bescheinigung" }] : []),
   ];
   if (fields.length === 0 && certificates.length === 0) return null;
 
   return (
     <section id={ABOUT_SECTIONS.licences} aria-labelledby="licences-h" className="wrap flex flex-col gap-8 py-14 md:py-18">
-      <SectionHeading id="licences-h" title={heading.title || "Registered, licensed and insured"}>
-        <p className="max-w-[72ch]">{heading.text || "You can check every number below with the Nepal Department of Tourism."}</p>
+      <SectionHeading id="licences-h" title={heading.title || "Registriert, lizenziert und versichert"}>
+        <p className="max-w-[72ch]">{heading.text || "Jede der folgenden Nummern können Sie bei der Tourismusbehörde Nepal (Department of Tourism) überprüfen."}</p>
       </SectionHeading>
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div className="flex flex-col gap-4 rounded-2xl border border-solid border-line bg-snow p-6 shadow-card md:p-8">

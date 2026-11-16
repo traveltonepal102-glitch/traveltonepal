@@ -23,7 +23,7 @@ export const ListenSection = ({ listen }: { listen: AboutListen }) => {
           </div>
           {listen.questions.length > 0 && (
             <div className="flex flex-col gap-3 rounded-2xl border border-solid border-line bg-snow p-6">
-              <h3 className="text-xl! leading-6.5!">Questions we ask you</h3>
+              <h3 className="text-xl! leading-6.5!">Was wir Sie fragen</h3>
               <ul className="flex list-disc flex-col gap-2 pl-5 text-base leading-6.5 marker:text-navy">
                 {listen.questions.map((question) => (
                   <li key={question}>{question}</li>
@@ -57,7 +57,7 @@ export const ListenSection = ({ listen }: { listen: AboutListen }) => {
         )}
         {listen.example && (
           <p className="text-base leading-6.5">
-            <strong className="font-semibold text-ink">For example:</strong> {listen.example}
+            <strong className="font-semibold text-ink">Ein Beispiel:</strong> {listen.example}
           </p>
         )}
       </div>

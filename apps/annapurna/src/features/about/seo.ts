@@ -23,8 +23,8 @@ export const aboutJsonLd = ({ top, founder }: AboutContent) => ({
     {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl(ROUTES.home) },
-        { "@type": "ListItem", position: 2, name: "About us", item: absoluteUrl(ROUTES.about) },
+        { "@type": "ListItem", position: 1, name: "Startseite", item: absoluteUrl(ROUTES.home) },
+        { "@type": "ListItem", position: 2, name: "Über uns", item: absoluteUrl(ROUTES.about) },
       ],
     },
   ],

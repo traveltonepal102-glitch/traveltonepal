@@ -16,7 +16,7 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
   return (
     <header className="wrap flex flex-col gap-7 pt-6">
       <div className="flex flex-col gap-4">
-        <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Blogs", href: ROUTES.blogs }, { label: topicLabel, href: `${ROUTES.blogs}?topic=${topic}` }]} />
+        <Breadcrumbs items={[{ label: "Startseite", href: ROUTES.home }, { label: "Blog", href: ROUTES.blogs }, { label: topicLabel, href: `${ROUTES.blogs}?topic=${topic}` }]} />
         <p className="flex flex-wrap gap-2">
           <span className={`${TAG} bg-sky text-navy-deep`}>{topicLabel}</span>
           {highlightTag && <span className={`${TAG} bg-cream text-cream-ink`}>{highlightTag}</span>}
@@ -30,13 +30,13 @@ export const BlogHeader = ({ blog }: { blog: BlogArticle }) => {
             {author.photo ? <SiteImage image={author.photo} sizes="48px" className="object-cover" /> : <TrailIcon name="users" size={22} />}
           </span>
           <p className="flex flex-col text-[15px] leading-5.5">
-            <span className="font-semibold text-ink">By {author.name}</span>
+            <span className="font-semibold text-ink">Von {author.name}</span>
             <span className="text-muted">
-              <time dateTime={publishedOn}>{publishedLabel}</time> · {readMinutes} min read
+              <time dateTime={publishedOn}>{publishedLabel}</time> · {readMinutes} Min. Lesezeit
               {updatedOn && (
                 <>
                   {" "}
-                  · Updated <time dateTime={updatedOn}>{updatedLabel}</time>
+                  · Aktualisiert <time dateTime={updatedOn}>{updatedLabel}</time>
                 </>
               )}
               {updatedLine && ` · ${updatedLine}`}

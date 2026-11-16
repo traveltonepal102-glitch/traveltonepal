@@ -33,6 +33,6 @@ describe("the adventure cards", () => {
 
   it("uses the admin's words, and this design's where they are blank", () => {
     const section = { eyebrow: " ", heading: "Your dream adventure", intro: " Tell us. ", ask_title: "", ask_text: "" } as unknown as WebAdventureSectionRow;
-    expect(toHomeAdventures(section, [], "https://photos")).toMatchObject({ eyebrow: "Beyond the trail", heading: "Your dream adventure", intro: "Tell us.", askTitle: "Have your own idea?" });
+    expect(toHomeAdventures(section, [], "https://photos")).toMatchObject({ eyebrow: "Mehr als Trekking", heading: "Your dream adventure", intro: "Tell us.", askTitle: "Sie haben eine eigene Idee?" });
   });
 });

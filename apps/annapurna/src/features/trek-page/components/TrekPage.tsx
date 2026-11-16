@@ -17,14 +17,14 @@ export const TrekPage = ({ data }: { data: TrekPageData }) => {
     <main id="main">
       <JsonLd data={trekPageJsonLd(data)} />
       <TrekTop
-        breadcrumbs={[{ label: "Home", href: ROUTES.home }, { label: trek.name }]}
+        breadcrumbs={[{ label: "Startseite", href: ROUTES.home }, { label: trek.name }]}
         top={top}
         trek={trek}
         rating={rating}
         hasReviews={trek.sections.includes("reviews") && reviews.length > 0}
       />
       <TrekPageBody trek={trek} company={company} reviews={reviews} rating={rating}>
-        <OtherTreks current={card} treks={others} eyebrow="More treks" title="Other treks we guide" />
+        <OtherTreks current={card} treks={others} eyebrow="Mehr entdecken" title="Weitere Treks rund um die Annapurna" />
         <HomeAdventures section={adventures} />
         <HomeGuides guides={guides} />
       </TrekPageBody>

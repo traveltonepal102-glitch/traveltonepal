@@ -5,9 +5,10 @@ import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosReposit
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { ARTICLE_LOCALE, FACT_ICON_VALUES } from "../constants";
+import { FACT_ICON_VALUES } from "../constants";
 import type { Article, ArticleFormValues } from "../types";
 import { inOrder, storedMonths, storedSection, toStoredSection } from "./storedSections";
+import { contentLocaleOf, currentContentLocale } from "@/features/sites/lib/contentLocale";
 
 /** Postgres error codes the save can raise. */
 const UNIQUE_VIOLATION = "23505";
@@ -39,12 +40,12 @@ const publishModeOf = (row: Pick<ArticleRow, "status" | "published_on">, today: 
 
 /** One travel guide with its English text, or null when there is none with this id. `today`: "YYYY-MM-DD" in Nepal. */
 export const getArticle = async (articleId: string, today: string): Promise<Article | null> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), currentContentLocale()]);
   const { data: row, error } = await supabase
     .from("articles")
     .select(ARTICLE_COLUMNS)
     .eq("id", articleId)
-    .eq("article_translations.locale", ARTICLE_LOCALE)
+    .eq("article_translations.locale", locale)
     .maybeSingle();
   if (error) throw new Error(`Could not load travel guide ${articleId}: ${error.message}`);
   if (!row) return null;
@@ -82,7 +83,7 @@ export const getArticle = async (articleId: string, today: string): Promise<Arti
       .map((section) =>
         storedSection(
           { ...section, guideIds: inOrder(section.article_section_guides, "guide_id"), photoIds: inOrder(section.article_section_photos, "photo_id") },
-          section.article_section_translations.find((text) => text.locale === ARTICLE_LOCALE)?.content,
+          section.article_section_translations.find((text) => text.locale === locale)?.content,
         ),
       ),
     seoKeyword: text?.seo_keyword ?? "",
@@ -109,10 +110,10 @@ const ruleOf = (message: string): ArticleRule | undefined => RULES.find((rule) =
  * English text, regions and related guides (save_article).
  */
 export const saveArticle = async (values: ArticleFormValues, articleId: string | null, siteId: string): Promise<SaveArticleResult> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const { data, error } = await supabase.rpc("save_article", {
     p_article_id: articleId,
-    p_locale: ARTICLE_LOCALE,
+    p_locale: locale,
     p_article: {
       site_id: siteId,
       slug: values.slug,

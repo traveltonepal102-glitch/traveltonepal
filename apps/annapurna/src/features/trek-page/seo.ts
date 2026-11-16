@@ -27,7 +27,7 @@ export const trekPageJsonLd = ({ trek, seo }: TrekPageData) => {
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl(ROUTES.home) },
+          { "@type": "ListItem", position: 1, name: "Startseite", item: absoluteUrl(ROUTES.home) },
           { "@type": "ListItem", position: 2, name: trek.name, item: absoluteUrl(path) },
         ],
       },

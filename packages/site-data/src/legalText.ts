@@ -1,3 +1,4 @@
+import { toSlugText } from "@ttn/config/slugText";
 import type { LegalBlock, LegalTable, LegalTextDoc } from "@ttn/ui/lib/legalText";
 import type { RichTextInline } from "@ttn/ui/lib/richText";
 
@@ -53,7 +54,7 @@ export const legalTable = (head: readonly string[], rows: readonly (readonly str
 export const sectionIds = (headings: readonly string[]) => {
   const seen = new Map<string, number>();
   return headings.map((heading) => {
-    const base = heading.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
+    const base = toSlugText(heading) || "section";
     const count = (seen.get(base) ?? 0) + 1;
     seen.set(base, count);
     return count === 1 ? base : `${base}-${count}`;

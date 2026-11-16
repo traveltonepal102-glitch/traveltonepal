@@ -3,6 +3,8 @@
  * Keep in step with the migrations. To generate instead (needs Docker running):
  *   supabase gen types typescript --db-url "<DATABASE_URI>" --schema public
  */
+import type { SiteCurrency, SiteLanguage } from "@ttn/config/siteLanguage";
+
 export type AdminRole = "super_admin" | "editor";
 
 export type MonthRating = "best" | "possible" | "avoid";
@@ -322,6 +324,9 @@ export type SiteRow = {
   /** A region site's main trek, shown as its Home (one of its own treks); null for none yet and for the main site. */
   home_trek_id: string | null;
   position: number;
+  /** The website's language and currency (20261115100000_site_language_and_currency.sql); fixed once it is live. */
+  language: SiteLanguage;
+  currency: SiteCurrency;
   created_at: string;
   created_by: string | null;
   updated_at: string;

@@ -11,7 +11,7 @@ const PANEL = "rounded-[14px] border border-solid border-line bg-snow";
 /** Desktop side column: the legal pages, this page's sections, and Download as PDF. Stays in view while reading. */
 export const LegalSidebar = ({ doc }: { doc: LegalDoc }) => (
   <div className="sticky top-5 hidden max-h-[calc(100dvh-40px)] flex-col gap-3.5 overflow-y-auto [scrollbar-width:thin] lg:flex print:hidden">
-    <nav aria-label="Legal pages" className={`${PANEL} p-2.5`}>
+    <nav aria-label="Rechtliche Seiten" className={`${PANEL} p-2.5`}>
       <ul className="flex flex-col gap-1">
         {LEGAL_PAGES.map((page) => {
           const isCurrent = page.slug === doc.slug;
@@ -33,7 +33,7 @@ export const LegalSidebar = ({ doc }: { doc: LegalDoc }) => (
     {doc.sections.length > 0 && (
       <nav aria-labelledby="legal-toc" className={`${PANEL} flex flex-col gap-2 p-4`}>
         <p id="legal-toc" className="text-eyebrow font-semibold tracking-[0.12em] text-muted uppercase">
-          On this page
+          Auf dieser Seite
         </p>
         <ol className="flex flex-col">
           {doc.sections.map((section, index) => (

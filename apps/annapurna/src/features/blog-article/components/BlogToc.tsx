@@ -9,8 +9,8 @@ export const BlogToc = ({ links }: { links: readonly BlogTocLink[] }) => {
   const { active, jumpTo } = useActiveSection(links.map((link) => link.id));
 
   return (
-    <nav aria-label="On this page" className="flex flex-col gap-2.5">
-      <p className="font-display text-xl leading-6.5 font-semibold text-ink">On this page</p>
+    <nav aria-label="Auf dieser Seite" className="flex flex-col gap-2.5">
+      <p className="font-display text-xl leading-6.5 font-semibold text-ink">Auf dieser Seite</p>
       <ul className="flex flex-col border-0 border-l-2 border-solid border-line">
         {links.map((link) => {
           const isActive = link.id === active;

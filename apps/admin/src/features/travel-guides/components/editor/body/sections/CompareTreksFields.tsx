@@ -3,6 +3,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 import type { SectionContext } from "../../../../lib/sectionContext";
 import { COMPARE_TREKS } from "../../../../sectionKinds";
 import { ToggleChipsField } from "../pickers/ToggleChipsField";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type CompareTreksFieldsProps = {
   trekIds: string[];
@@ -13,15 +14,16 @@ type CompareTreksFieldsProps = {
   onChange: (trekIds: string[]) => void;
 };
 
-const ROWS = [
+const rowsFor = (formatPrice: (amount: number) => string) => [
   { label: "Days", value: (trek: SectionContext["treks"][number]) => (trek.days === null ? "—" : String(trek.days)) },
   { label: "Highest", value: (trek: SectionContext["treks"][number]) => (trek.maxAltitudeM === null ? "—" : `${trek.maxAltitudeM.toLocaleString("en")} m`) },
-  { label: "From", value: (trek: SectionContext["treks"][number]) => (trek.priceFromUsd === null ? "—" : `$${trek.priceFromUsd.toLocaleString("en")}`) },
+  { label: "From", value: (trek: SectionContext["treks"][number]) => (trek.priceFromUsd === null ? "—" : formatPrice(trek.priceFromUsd)) },
 ];
 
 /** "Compare treks": 2 or 3 treks side by side; days, highest point and price come from the treks. */
 export const CompareTreksFields = ({ trekIds, treks, field, errors, onChange }: CompareTreksFieldsProps) => {
   const picked = trekIds.flatMap((id) => treks.filter((trek) => trek.id === id));
+  const { format } = useSiteCurrency();
   return (
     <>
       <ToggleChipsField
@@ -50,7 +52,7 @@ export const CompareTreksFields = ({ trekIds, treks, field, errors, onChange }: 
               </tr>
             </thead>
             <tbody>
-              {ROWS.map((row) => (
+              {rowsFor(format).map((row) => (
                 <tr key={row.label} className="border-t border-solid border-border">
                   <th className="p-2 text-left font-semibold text-muted-foreground" scope="row">
                     {row.label}

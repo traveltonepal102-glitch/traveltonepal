@@ -6,8 +6,8 @@ import { absoluteUrl } from "@/lib/site";
 import { BLOGS_PER_PAGE } from "./blogFiltering";
 import type { BlogsPageData } from "./types";
 
-/** "Blogs" on the first page of the list, "Blogs (page 2)" after it: no two pages share a title. */
-export const blogsPageTitle = (title: string, page: number) => (page > 1 ? `${title} (page ${page})` : title);
+/** "Blog" on the first page of the list, "Blog (Seite 2)" after it: no two pages share a title. */
+export const blogsPageTitle = (title: string, page: number) => (page > 1 ? `${title} (Seite ${page})` : title);
 
 /** One page of the list as a CollectionPage (with its dates) naming the blogs that page shows, numbered through the whole list, and the breadcrumb. */
 export const blogsJsonLd = ({ top, guides }: BlogsPageData, page = 1, perPage = BLOGS_PER_PAGE) => {
@@ -29,8 +29,8 @@ export const blogsJsonLd = ({ top, guides }: BlogsPageData, page = 1, perPage = 
     {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl(ROUTES.home) },
-        { "@type": "ListItem", position: 2, name: "Blogs", item: absoluteUrl(ROUTES.blogs) },
+        { "@type": "ListItem", position: 1, name: "Startseite", item: absoluteUrl(ROUTES.home) },
+        { "@type": "ListItem", position: 2, name: "Blog", item: absoluteUrl(ROUTES.blogs) },
       ],
     },
   ],

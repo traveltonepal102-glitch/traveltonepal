@@ -13,6 +13,7 @@ import { TextField } from "@/components/ui/TextField";
 
 import { SITE_LIMITS as LIMIT, SITES_PATH } from "../constants";
 import { AddSiteNextSteps } from "./AddSiteNextSteps";
+import { SiteLanguageFields } from "./SiteLanguageFields";
 import { SitesHeading } from "./SitesHeading";
 
 type AddSiteFormProps = {
@@ -65,6 +66,8 @@ export const AddSiteForm = ({ action, regions }: AddSiteFormProps) => {
               error={errors.id}
             />
           </FormSection>
+
+          <SiteLanguageFields language="en" currency="USD" isLocked={false} errors={errors} />
 
           <FormSection title="Address" hint="Can be added later, once the domain points to the site's Vercel project.">
             <TextField

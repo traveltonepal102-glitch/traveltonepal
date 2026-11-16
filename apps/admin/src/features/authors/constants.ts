@@ -7,9 +7,6 @@ export const AUTHORS_PATH = ADMIN_SECTIONS.authors.href;
 export const authorPath = (authorId: string) => `${AUTHORS_PATH}?author=${authorId}`;
 export const NEW_AUTHOR_PATH = authorPath("new");
 
-/** The admin edits English for now; the German text comes later (author_translations.locale). */
-export const AUTHOR_LOCALE = "en";
-
 /** Hard limits, the same as the database checks (supabase/migrations/20261024250000_authors.sql). */
 export const AUTHOR_LIMITS = {
   name: 80,

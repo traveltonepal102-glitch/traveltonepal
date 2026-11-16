@@ -40,7 +40,7 @@ export const PeopleCard = ({ values, authors, checkers, errors }: PeopleCardProp
         hint="Shown at the top with photo and bio. Only authors who write in English are offered."
         options={[
           { value: "", label: "Pick an author" },
-          ...authors.filter((item) => item.writesEnglish || item.id === values.authorId).map((item) => ({ value: item.id, label: `${item.name}${item.isVerified ? " ✓" : ""} · ${item.jobTitle}` })),
+          ...authors.filter((item) => item.writesSiteLanguage || item.id === values.authorId).map((item) => ({ value: item.id, label: `${item.name}${item.isVerified ? " ✓" : ""} · ${item.jobTitle}` })),
         ]}
         defaultValue={authorId}
         onValueChange={setAuthorId}

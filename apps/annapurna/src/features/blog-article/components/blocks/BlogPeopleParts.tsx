@@ -18,9 +18,9 @@ const Who = ({ person }: { person: GuidePerson }) => (
 
 /** A guide's tip, with who it comes from. */
 export const GuideTip = ({ guide, text }: { guide: GuidePerson; text: string }) => (
-  <aside aria-label={`A tip from ${guide.name}`} className="flex flex-col gap-3 rounded-2xl bg-cream p-5">
+  <aside aria-label={`Ein Tipp von ${guide.name}`} className="flex flex-col gap-3 rounded-2xl bg-cream p-5">
     <p className="leading-6.5 text-ink">
-      <strong className="font-semibold">Local tip:</strong> {text}
+      <strong className="font-semibold">Tipp aus Nepal:</strong> {text}
     </p>
     <div className="flex items-center gap-3">
       <Portrait person={guide} size="small" />
@@ -42,7 +42,7 @@ export const GuideQuote = ({ guide, text }: { guide: GuidePerson; text: string }
 
 /** The guides behind the blog. */
 export const MeetGuides = ({ heading, guides }: { heading: string; guides: readonly GuidePerson[] }) => (
-  <section aria-label={heading || "Meet the guides"} className="flex flex-col gap-3">
+  <section aria-label={heading || "Unsere Trekkingguides"} className="flex flex-col gap-3">
     {heading && <h3>{heading}</h3>}
     <ul className="grid gap-3 sm:grid-cols-2">
       {guides.map((guide) => (

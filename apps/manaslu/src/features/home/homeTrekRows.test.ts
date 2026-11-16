@@ -17,7 +17,8 @@ const summary = {
   difficulty: "challenging",
   max_altitude_m: 5106,
   season_label: "",
-  price_from_usd: 1500,
+  price_from: 1500,
+  currency: "USD",
   has_page: true,
   cover_id: null,
   cover_variant_widths: null,
@@ -40,7 +41,7 @@ const page = {
   itinerary_intro: doc(""),
   itinerary_heading: "",
   days: [{ title: "Arrive", altitude_m: 1400, description: doc("Welcome."), is_high_point: false }, { title: "The pass", altitude_m: 5106, description: doc("Up."), is_high_point: true }],
-  group_prices: [{ label: "1 person", short_label: "1", price_usd: 1590 }, { label: "3–5 people", short_label: "3–5", price_usd: 1280, is_default: true }],
+  group_prices: [{ label: "1 person", short_label: "1", price: 1590 }, { label: "3–5 people", short_label: "3–5", price: 1280, is_default: true }],
   pricing_intro: "",
   pricing_heading: "",
   included: [{ title: "Permits", text: "All of them" }],
@@ -59,8 +60,8 @@ const page = {
   gpx_track_path: null,
   guides_heading: "",
   guides_intro: "",
-  meal_budget_min_usd: null,
-  meal_budget_max_usd: null,
+  meal_budget_min: null,
+  meal_budget_max: null,
   meal_trail_tips: [],
   meal_teahouse_notes: [],
   my_maps_id: null,
@@ -125,8 +126,8 @@ describe("the home page's main trek", () => {
 
   it("has meals unless the trek hides them or says nothing about them", () => {
     expect(trek().meals).toBeNull();
-    expect(trek({ meal_budget_min_usd: 25, meal_budget_max_usd: 35 }).meals?.budget).toEqual({ min: 25, max: 35 });
-    expect(trek({ meal_budget_min_usd: 25, meal_budget_max_usd: 35, hidden_shared_sections: ["meals"] }).meals).toBeNull();
+    expect(trek({ meal_budget_min: 25, meal_budget_max: 35 }).meals?.budget).toEqual({ min: 25, max: 35 });
+    expect(trek({ meal_budget_min: 25, meal_budget_max: 35, hidden_shared_sections: ["meals"] }).meals).toBeNull();
   });
 
   it("shows a field guide topic with words", () => {

@@ -4,7 +4,7 @@ import { outlineButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
-const PROMISES = ["One-to-one local advice", "Free itinerary discussion", "Fast reply on WhatsApp"];
+const PROMISES = ["Persönliche Beratung vor Ort", "Kostenlose Besprechung des Reiseverlaufs", "Schnelle Antwort per WhatsApp"];
 
 /** Ask the team personally about this trek, on WhatsApp or by email. */
 export const TrekConsultation = ({ name }: { name: string }) => (
@@ -12,18 +12,18 @@ export const TrekConsultation = ({ name }: { name: string }) => (
     <div className="flex flex-col gap-1.5">
       {/* A paragraph, not a heading: the page's headings are kept for the trek's own keyword. */}
       <p id="consultation-h" className="font-display text-[22px] leading-7 font-semibold text-ink">
-        Any questions you want to ask us personally?
+        Haben Sie Fragen, die Sie uns persönlich stellen möchten?
       </p>
-      <p className="text-base leading-6.5">Message us on WhatsApp or by email, and someone from our team answers you personally.</p>
+      <p className="text-base leading-6.5">Schreiben Sie uns per WhatsApp oder E-Mail – jemand aus unserem Team antwortet Ihnen persönlich.</p>
     </div>
     <div className="actions">
-      <a href={getWhatsAppUrl(`Hello! I have a question about the ${name}.`)} rel="nofollow" className={whatsAppButton}>
+      <a href={getWhatsAppUrl(`Hallo! Ich habe eine Frage zum ${name}.`)} rel="nofollow" className={whatsAppButton}>
         <WhatsAppLogo />
-        Chat on WhatsApp
+        Per WhatsApp schreiben
       </a>
-      <a href={getEmailUrl({ subject: `A question about the ${name}` })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
+      <a href={getEmailUrl({ subject: `Frage zum ${name}` })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
         <TrailIcon name="mail" />
-        Email us
+        E-Mail schreiben
       </a>
     </div>
     <ul className="flex flex-wrap gap-x-4 gap-y-1.5 border-t border-solid border-cream-line pt-3 text-sm leading-5">

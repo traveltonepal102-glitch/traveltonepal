@@ -1,4 +1,7 @@
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
+
 import { EDITABLE_PAGES, LEGAL_PAGES, LIST_PAGES } from "@/features/pages/constants";
+import { pageWebsitePath } from "@/features/pages/lib/pageWebsitePath";
 import { ADMIN_SECTIONS } from "@/features/shell/navigation";
 import type { SiteKind, SitePageSlug } from "@/lib/supabase/database.types";
 
@@ -18,16 +21,17 @@ type FixedPage = { slug: SitePageSlug; label: string; websitePath: string };
 /** Every fixed page slug there is (the main site has them all), to check one from an address. */
 export const FIXED_PAGES: readonly FixedPage[] = [...LIST_PAGES, ...EDITABLE_PAGES, ...LEGAL_PAGES];
 
-/** A region website's own fixed pages: Home is its main trek, the travel guides list is its blogs (apps/manaslu/src/lib/routes.ts). */
-const REGION_FIXED_PAGES: readonly FixedPage[] = [
-  { slug: "home", label: "Home", websitePath: "/" },
-  { slug: "travel-guides", label: "Blogs", websitePath: "/blogs" },
-  ...EDITABLE_PAGES,
-  ...LEGAL_PAGES,
-];
+/** A region website's own fixed pages: Home is its main trek, the travel guides list is its blogs; addresses in its language. */
+const regionFixedPages = (language: SiteLanguage): readonly FixedPage[] =>
+  [{ slug: "home" as const, label: "Home", websitePath: "/" }, { slug: "travel-guides" as const, label: "Blogs", websitePath: "/blogs" }, ...EDITABLE_PAGES, ...LEGAL_PAGES].map((page) => ({
+    slug: page.slug,
+    label: page.label,
+    websitePath: pageWebsitePath(page.slug, page.websitePath, { kind: "region", language }),
+  }));
 
 /** The fixed pages a website has, in the order the menu shows them. */
-export const fixedPagesFor = (siteKind: SiteKind): readonly FixedPage[] => (siteKind === "main" ? FIXED_PAGES : REGION_FIXED_PAGES);
+export const fixedPagesFor = (siteKind: SiteKind, language: SiteLanguage = "en"): readonly FixedPage[] =>
+  siteKind === "main" ? FIXED_PAGES : regionFixedPages(language);
 
 /** Where the website shows an item with this slug: the main site in folders, a region website at its root. */
 export const itemWebsitePath = (kind: Exclude<PageKind, "page">, slug: string, siteKind: SiteKind) => {

@@ -6,7 +6,7 @@ import type { HomeTrek } from "../types";
 /** "Is this trek for you?": one point under another, each with its tick. */
 export const TrekSuitability = ({ suitability }: { suitability: HomeTrek["suitability"] }) => (
   <section aria-labelledby="suitability-h" className="flex flex-col gap-5">
-    <SectionHeading id="suitability-h" eyebrow="Before you book" title={suitability.heading}>
+    <SectionHeading id="suitability-h" eyebrow="Vor der Buchung" title={suitability.heading}>
       {suitability.intro && <p>{suitability.intro}</p>}
     </SectionHeading>
     <ul className="overflow-hidden rounded-[14px] border border-solid border-line">

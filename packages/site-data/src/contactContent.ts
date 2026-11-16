@@ -1,3 +1,4 @@
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
 import { MAX_VISITOR_TIME_ZONES, VISITOR_TIME_ZONES } from "@ttn/config/visitorTimeZones";
 import { isRichTextEmpty } from "@ttn/ui/lib/richText";
 import type { RichTextDoc } from "@ttn/ui/lib/richText";
@@ -41,21 +42,21 @@ const contentSchema = z.object({
 const MAX_NEXT_STEPS = 3;
 
 /** The saved time zones that are in the list, in the order picked (at most four). */
-const visitorZones = (timeZones: readonly string[]): VisitorZone[] =>
+const visitorZones = (timeZones: readonly string[], language: SiteLanguage): VisitorZone[] =>
   timeZones
     .flatMap((timeZone) => VISITOR_TIME_ZONES.filter((zone) => zone.timeZone === timeZone))
     .slice(0, MAX_VISITOR_TIME_ZONES)
-    .map(({ place, timeZone }) => ({ place, timeZone }));
+    .map(({ place, placeDe, timeZone }) => ({ place: language === "de" ? placeDe : place, timeZone }));
 
 /** The Contact page's `content`, read leniently: broken or empty items are left out. */
-export const readContactContent = (value: unknown): ContactContent => {
+export const readContactContent = (value: unknown, language: SiteLanguage = "en"): ContactContent => {
   const content = contentSchema.catch(contentSchema.parse({})).parse(value ?? {});
   return {
     replyTimes: content.replyTimes,
     officeDirections: content.officeDirections,
     nextSteps: listOf(content.nextSteps, z.object({ when: text, title: required, text })).slice(0, MAX_NEXT_STEPS),
     faqs: listOf(content.faqs, z.object({ question: required, answer: z.unknown().transform(readPageRichText) })).filter((faq) => !isRichTextEmpty(faq.answer)),
-    timeZones: visitorZones([...new Set(content.timeZones)]),
+    timeZones: visitorZones([...new Set(content.timeZones)], language),
     timeNote: content.timeNote,
     faqHeading: content.faqHeading,
   };

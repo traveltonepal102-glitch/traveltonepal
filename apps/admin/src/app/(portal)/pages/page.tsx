@@ -24,7 +24,7 @@ const PagesPage = async () => {
       return updatedAt ? [[page.slug, `Saved ${formatDateTime(updatedAt)}`]] : [];
     }),
   );
-  return <PagesOverview siteKind={site?.kind ?? "main"} savedLabels={savedLabels} />;
+  return <PagesOverview siteKind={site?.kind ?? "main"} language={site?.language ?? "en"} savedLabels={savedLabels} />;
 };
 
 export default PagesPage;

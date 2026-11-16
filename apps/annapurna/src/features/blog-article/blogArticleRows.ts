@@ -1,4 +1,4 @@
-import { DEFAULT_GUIDE_HELP_BOX } from "@ttn/config/guideHelpBox";
+import { defaultGuideHelpBox } from "@ttn/config/guideHelpBox";
 import type { WebTravelGuidePageRow } from "@ttn/site-data/database.types";
 import { toBlock, toPerson, withAnchors } from "@ttn/site-data/guideBlocks";
 import type { GuideFactIcon } from "@ttn/site-data/guidePageJson";
@@ -15,6 +15,10 @@ import { SITE_NAME } from "@/lib/site";
 
 import { pickRelatedBlogs } from "./relatedBlogs";
 import type { BlogArticle, BlogBlock, BlogTocLink } from "./types";
+import { SITE_LANGUAGE } from "@/lib/site";
+
+/** The help box's words where the blog's own are empty, in German. */
+const HELP_BOX = defaultGuideHelpBox(SITE_LANGUAGE);
 
 export const QUICK_ANSWER_ID = "quick-answer";
 export const FAQ_ID = "faq";
@@ -38,8 +42,8 @@ const FACT_ICONS: Record<GuideFactIcon, TrailIconName> = {
 /** "On this page": the quick answer, each headed section and the questions, in the blog's order. */
 export const toBlogToc = (blocks: readonly BlogBlock[]): BlogTocLink[] =>
   blocks.flatMap((block) => {
-    if (block.type === "quick") return [{ id: QUICK_ANSWER_ID, label: "Quick answer" }];
-    if (block.type === "faq") return [{ id: FAQ_ID, label: "Questions and answers" }];
+    if (block.type === "quick") return [{ id: QUICK_ANSWER_ID, label: "Kurz gesagt" }];
+    if (block.type === "faq") return [{ id: FAQ_ID, label: "Fragen und Antworten" }];
     return block.type === "text" || (block.type === "heading" && block.level === "h2") ? [{ id: block.id, label: block.tocLabel }] : [];
   });
 
@@ -61,10 +65,10 @@ export const toBlogArticle = ({ page, treks, guides, photosBaseUrl, filesBaseUrl
   if (!title || !image) return undefined;
 
   const sections = readSections(page.sections);
-  const notes = readMonthNotes(page.month_notes);
+  const notes = readMonthNotes(page.month_notes, SITE_LANGUAGE);
   const ratings = page.month_ratings?.length === 12 ? page.month_ratings : undefined;
   const months = ratings ? { ratings, notes: notes ?? ratings.map(() => ({ onTheTrail: "", crowds: "" })) } : undefined;
-  const blocks = withAnchors(sections.flatMap((section) => toBlock(section, { treks, title, photosBaseUrl, filesBaseUrl, hasMonths: Boolean(months) }) ?? []));
+  const blocks = withAnchors(sections.flatMap((section) => toBlock(section, { treks, title, photosBaseUrl, filesBaseUrl, hasMonths: Boolean(months), language: SITE_LANGUAGE }) ?? []));
   const author = readAuthor(page.author);
   const checker = readChecker(page.checker);
   const trekOf = (slug: string | null) => (slug ? treks.find((trek) => trek.slug === slug) : undefined);
@@ -88,7 +92,7 @@ export const toBlogArticle = ({ page, treks, guides, photosBaseUrl, filesBaseUrl
     readMinutes: page.read_minutes,
     author: author
       ? { name: author.name, role: author.job_title, bio: author.bio, profileLinks: author.profile_links, photo: author.photo ? coverImage(author.photo, photosBaseUrl, author.name, author.name) : undefined, isOurTeam: author.kind !== "guest" }
-      : { name: `${SITE_NAME} team`, role: "", bio: "", profileLinks: [], isOurTeam: true },
+      : { name: `Team von ${SITE_NAME}`, role: "", bio: "", profileLinks: [], isOurTeam: true },
     checker: checker ? toPerson({ ...checker, quote: "" }, photosBaseUrl) : undefined,
     trek: trekOf(page.main_trek_slug) ?? trekOf(page.photo_trek_slug),
     months,
@@ -97,10 +101,10 @@ export const toBlogArticle = ({ page, treks, guides, photosBaseUrl, filesBaseUrl
     toc: toBlogToc(blocks),
     related: pickRelatedBlogs({ slug: page.slug, topic: page.topic, regionSlugs: page.region_slugs, relatedSlugs: page.related_slugs }, guides),
     helpBox: {
-      heading: firstText(page.help_heading) ?? DEFAULT_GUIDE_HELP_BOX.heading,
-      text: firstText(page.help_text) ?? DEFAULT_GUIDE_HELP_BOX.text,
+      heading: firstText(page.help_heading) ?? HELP_BOX.heading,
+      text: firstText(page.help_text) ?? HELP_BOX.text,
       // Kept as typed (a final space lets the visitor carry on writing).
-      message: page.help_message.trim() ? page.help_message : DEFAULT_GUIDE_HELP_BOX.message,
+      message: page.help_message.trim() ? page.help_message : HELP_BOX.message,
     },
     showSidebar: page.show_sidebar !== false,
     seo: {

@@ -5,7 +5,7 @@ import { primaryButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
-import { formatAltitude, formatDays, formatUsd } from "@/lib/format";
+import { formatAltitude, formatDays, formatPrice } from "@/lib/format";
 
 import type { HomeTrekCard } from "../types";
 
@@ -41,7 +41,7 @@ export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
         {trek.maxAltitudeM && (
           <li className="inline-flex items-center gap-1.5">
             <TrailIcon name="mountain" size={16} className="text-navy" />
-            Max {formatAltitude(trek.maxAltitudeM)}
+            Max. {formatAltitude(trek.maxAltitudeM)}
           </li>
         )}
         {trek.season && (
@@ -52,23 +52,23 @@ export const OtherTrekCard = ({ trek }: { trek: HomeTrekCard }) => (
         )}
       </ul>
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-solid border-line pt-4">
-        {trek.priceFromUsd !== null ? (
+        {trek.priceFrom !== null ? (
           <span className="flex flex-col text-eyebrow text-muted">
-            From
-            <strong className="font-display text-2xl leading-7.5 font-[640] text-navy">{formatUsd(trek.priceFromUsd)}</strong>
+            ab
+            <strong className="font-display text-2xl leading-7.5 font-[640] text-navy">{formatPrice(trek.priceFrom, trek.currency)}</strong>
           </span>
         ) : (
-          <span className="font-display text-xl leading-6.5 font-semibold text-navy">Price on request</span>
+          <span className="font-display text-xl leading-6.5 font-semibold text-navy">Preis auf Anfrage</span>
         )}
         {trek.hasPage ? (
           <Link href={trek.href} className={primaryButton}>
-            View trek
+            Zum Trek
             <TrailIcon name="arrow" size={16} />
           </Link>
         ) : (
-          <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} rel="nofollow" className={whatsAppButton}>
+          <a href={getWhatsAppUrl(`Hallo! Ich möchte mehr über den ${trek.name} erfahren.`)} rel="nofollow" className={whatsAppButton}>
             <WhatsAppLogo />
-            Ask us
+            Fragen Sie uns
           </a>
         )}
       </div>

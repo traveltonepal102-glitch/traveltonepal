@@ -450,8 +450,9 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
       "text": "hot showers, battery charging and Wi-Fi."
     }
   ],
-  "meal_budget_min_usd": 20,
-  "meal_budget_max_usd": 30,
+  "meal_budget_min": 20,
+  "meal_budget_max": 30,
+  "currency": "USD",
   "meal_trail_tips": [
     {
       "title": "“Dal bhat power”",
@@ -1039,35 +1040,35 @@ export const LANGTANG_PAGE: WebTrekPageRow = {
     {
       "label": "1 person (solo)",
       "short_label": "1 Pax",
-      "price_usd": 1110,
+      "price": 1110,
       "team": "Private guide + private porter",
       "is_default": false
     },
     {
       "label": "2 people",
       "short_label": "2 Pax",
-      "price_usd": 965,
+      "price": 965,
       "team": "Guide + 1 porter",
       "is_default": false
     },
     {
       "label": "3–5 people",
       "short_label": "3–5 Pax",
-      "price_usd": 890,
+      "price": 890,
       "team": "Lead guide + assistant + porters",
       "is_default": true
     },
     {
       "label": "6–10 people",
       "short_label": "6–10",
-      "price_usd": 815,
+      "price": 815,
       "team": "Lead guide + 2 assistants + porters",
       "is_default": false
     },
     {
       "label": "11+ people",
       "short_label": "11+ Pax",
-      "price_usd": 740,
+      "price": 740,
       "team": "Full trekking team",
       "is_default": false
     }

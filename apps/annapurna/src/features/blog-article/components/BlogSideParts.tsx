@@ -21,7 +21,7 @@ export const PlanThisTrek = async ({ trek }: { trek: HomeTrekCard }) => {
     <div className="flex items-center gap-3">
       <span className="relative block size-16 flex-none overflow-hidden rounded-[10px] bg-sky">{trek.image && <SiteImage image={{ ...trek.image, alt: "" }} sizes="64px" className="object-cover" />}</span>
       <span className="flex min-w-0 flex-col">
-        <span className="text-sm leading-5 text-muted">Plan this trek</span>
+        <span className="text-sm leading-5 text-muted">Diesen Trek planen</span>
         <h2 id="plan-trek-h" className="text-lg! leading-5.75!">
           {trek.name}
         </h2>
@@ -30,13 +30,13 @@ export const PlanThisTrek = async ({ trek }: { trek: HomeTrekCard }) => {
     <p className="text-sm leading-5 text-muted">{trekFacts(trek)}</p>
     {trek.hasPage ? (
       <Link href={trek.href} className={`${primaryButton} min-h-11!`}>
-        View the trek
+        Zum Trek
       </Link>
     ) : (
       phoneDisplay && (
-        <a href={getWhatsAppUrl(`Hello! I would like to know about the ${trek.name}.`)} rel="nofollow" className={`${whatsAppButton} min-h-11!`}>
+        <a href={getWhatsAppUrl(`Hallo! Ich interessiere mich für den ${trek.name}.`)} rel="nofollow" className={`${whatsAppButton} min-h-11!`}>
           <WhatsAppLogo />
-          Ask about it
+          Jetzt anfragen
         </a>
       )
     )}
@@ -63,9 +63,9 @@ export const BlogHelpBox = async ({ box, blogTitle }: { box: GuideHelpBox; blogT
         </a>
       )}
       {email && (
-        <a href={getEmailUrl({ subject: `Question about: ${blogTitle}`, body: box.message })} rel="nofollow" className={`${outlineOnDarkButton} min-h-11! px-3!`}>
+        <a href={getEmailUrl({ subject: `Frage zu: ${blogTitle}`, body: box.message })} rel="nofollow" className={`${outlineOnDarkButton} min-h-11! px-3!`}>
           <TrailIcon name="mail" />
-          Email
+          E-Mail
         </a>
       )}
     </div>
@@ -77,7 +77,7 @@ export const BlogHelpBox = async ({ box, blogTitle }: { box: GuideHelpBox; blogT
 export const BlogTocFolded = ({ links }: { links: readonly BlogTocLink[] }) => (
   <details className="group rounded-[14px] border border-solid border-line bg-snow lg:hidden">
     <summary className="flex min-h-13 cursor-pointer list-none items-center justify-between gap-3 px-4.5 font-semibold text-ink">
-      On this page
+      Auf dieser Seite
       <TrailIcon name="chevron" size={18} className="group-open:rotate-180" />
     </summary>
     <ul className="flex flex-col px-4.5 pb-3">

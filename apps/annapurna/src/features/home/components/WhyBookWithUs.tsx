@@ -9,7 +9,7 @@ const SQUARES = ["bg-azure text-snow", "bg-ember text-snow", "bg-whatsapp text-s
 export const WhyBookWithUs = ({ company: { promises, promisesHeading, promisesIntro } }: { company: HomeCompany }) =>
   promises.length > 0 && (
     <section aria-labelledby="why-book-h" id="why_book" className="flex flex-col gap-6">
-      <SectionHeading id="why-book-h" eyebrow="Book with the local team" title={promisesHeading || "Why book your trek with us"}>
+      <SectionHeading id="why-book-h" eyebrow="Direkt beim Team vor Ort buchen" title={promisesHeading || "Warum Sie Ihren Trek bei uns buchen"}>
         {promisesIntro && <p>{promisesIntro}</p>}
       </SectionHeading>
       <ol className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-4">

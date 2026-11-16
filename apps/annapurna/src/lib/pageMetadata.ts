@@ -1,8 +1,9 @@
+import { OG_LOCALES } from "@ttn/config/siteLanguage";
 import type { PageDates } from "@ttn/site-data/pageDates";
 import { SHARE_IMAGE_SIZE } from "@ttn/ui/lib/photos";
 import type { Metadata } from "next";
 
-import { SITE_NAME } from "./site";
+import { SITE_LANGUAGE, SITE_NAME } from "./site";
 
 type PageMetadataInput = {
   path: string;
@@ -34,7 +35,7 @@ export const pageMetadata = ({ path, title, description, shareImageBase, dates, 
     openGraph: {
       ...(dates ? { type: "article" as const, publishedTime: dates.published, modifiedTime: dates.modified } : { type: "website" as const }),
       siteName: SITE_NAME,
-      locale: "en_US",
+      locale: OG_LOCALES[SITE_LANGUAGE],
       url: path,
       title,
       description,

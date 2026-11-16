@@ -35,15 +35,15 @@ export const NotFoundPage = async () => {
     <main id="main">
       <div className="border-0 border-b border-solid border-line bg-cloud">
         <div className="wrap flex flex-col items-start gap-4 py-14 md:py-20">
-          <span className="eyebrow">Error 404</span>
-          <h1>We can’t find that page</h1>
-          <p className="max-w-[62ch] text-[19px] leading-7.5">The address may be mistyped, or the page may have moved. Everything else on the website is still here.</p>
+          <span className="eyebrow">Fehler 404</span>
+          <h1>Diese Seite gibt es leider nicht</h1>
+          <p className="max-w-[62ch] text-[19px] leading-7.5">Vielleicht enthält die Adresse einen Tippfehler, oder die Seite ist umgezogen. Alles andere auf der Website ist weiterhin für Sie da.</p>
           <div className="actions mt-2 max-sm:w-full">
             <Link href={ROUTES.home} className={primaryButton}>
-              Back to the home page
+              Zur Startseite
             </Link>
             <Link href={ROUTES.contact} className={outlineButton}>
-              Contact us
+              Kontakt aufnehmen
             </Link>
           </div>
         </div>
@@ -52,7 +52,7 @@ export const NotFoundPage = async () => {
         <div className={`wrap grid items-start gap-8 py-14 md:py-18 ${treks.length > 0 && canAsk ? "lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]" : ""}`}>
           {treks.length > 0 && (
             <section aria-labelledby="not-found-treks-h" className="flex flex-col gap-6">
-              <SectionHeading id="not-found-treks-h" title="Looking for a trek?" />
+              <SectionHeading id="not-found-treks-h" title="Suchen Sie einen Trek?" />
               <ul className="flex flex-col gap-3">
                 {treks.map((trek) => (
                   <li key={trek.slug}>
@@ -65,20 +65,20 @@ export const NotFoundPage = async () => {
           {canAsk && (
             <section aria-labelledby="not-found-ask-h" className="flex flex-col gap-3 rounded-2xl bg-cloud p-6 md:p-8">
               <h2 id="not-found-ask-h" className="text-[28px]! leading-9!">
-                Ask our team
+                Fragen Sie unser Team
               </h2>
-              <p className="text-base leading-6.5">Tell us what you were looking for and we will send you the right link.</p>
+              <p className="text-base leading-6.5">Sagen Sie uns, wonach Sie gesucht haben, und wir schicken Ihnen den passenden Link.</p>
               <div className="mt-2 flex flex-col gap-2.5">
                 {phoneDisplay && (
-                  <a href={getWhatsAppUrl("Hello! I was looking for a page on your website and could not find it.")} rel="nofollow" className={whatsAppButton}>
+                  <a href={getWhatsAppUrl("Hallo! Ich habe auf Ihrer Website eine Seite gesucht und nicht gefunden.")} rel="nofollow" className={whatsAppButton}>
                     <WhatsAppLogo />
-                    Ask on WhatsApp
+                    Auf WhatsApp fragen
                   </a>
                 )}
                 {email && (
-                  <a href={getEmailUrl({ subject: "A page I could not find on your website" })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
+                  <a href={getEmailUrl({ subject: "Seite auf Ihrer Website nicht gefunden" })} rel="nofollow" className={`${outlineButton} bg-snow!`}>
                     <TrailIcon name="mail" />
-                    Email us
+                    E-Mail schreiben
                   </a>
                 )}
               </div>

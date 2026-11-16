@@ -28,5 +28,5 @@ export const getBlogsPage = async (): Promise<BlogsPageData> => {
 
   const [row, guides] = await Promise.all([getSitePageRow("travel-guides"), createDatabaseClient().from("web_travel_guides").select("*").eq("locale", WEBSITE_LOCALE)]);
   const rows = check(guides, "the travel guides");
-  return { top: toSitePageTop(row, photosPublicBaseUrl, "Blogs"), guides: toLatestGuides(rows, photosPublicBaseUrl, rows.length) };
+  return { top: toSitePageTop(row, photosPublicBaseUrl, "Blog"), guides: toLatestGuides(rows, photosPublicBaseUrl, rows.length) };
 };

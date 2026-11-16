@@ -5,6 +5,7 @@ import { PhotoImage } from "@/features/photos/components/PhotoImage";
 import { difficultyOf } from "@/features/treks/constants";
 
 import type { ArticleOptions } from "../../../../types";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type TrekCardFieldsProps = {
   trekId: string | null;
@@ -14,12 +15,12 @@ type TrekCardFieldsProps = {
 };
 
 /** "10 days · Moderate · max 4,773 m · from $890", from the trek as saved. */
-const trekLine = (trek: ArticleOptions["treks"][number]) =>
+const trekLine = (trek: ArticleOptions["treks"][number], formatPrice: (amount: number) => string) =>
   [
     trek.days !== null && `${trek.days} days`,
     difficultyOf(trek.difficulty).label,
     trek.maxAltitudeM !== null && `max ${trek.maxAltitudeM.toLocaleString("en")} m`,
-    trek.priceFromUsd !== null && `from $${trek.priceFromUsd.toLocaleString("en")}`,
+    trek.priceFromUsd !== null && `from ${formatPrice(trek.priceFromUsd)}`,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -27,6 +28,7 @@ const trekLine = (trek: ArticleOptions["treks"][number]) =>
 /** "Trek card": a card that links to one of the treks. Its photo, days and price come from the trek. */
 export const TrekCardFields = ({ trekId, treks, error, onChange }: TrekCardFieldsProps) => {
   const trek = treks.find((item) => item.id === trekId);
+  const { format } = useSiteCurrency();
 
   return (
     <>
@@ -46,7 +48,7 @@ export const TrekCardFields = ({ trekId, treks, error, onChange }: TrekCardField
           </span>
           <span className="min-w-40 flex-1">
             <span className="block font-display text-[17px] font-bold text-ink">{trek.name}</span>
-            <span className="block text-caption text-muted-foreground">{trekLine(trek)}</span>
+            <span className="block text-caption text-muted-foreground">{trekLine(trek, format)}</span>
             <span className="mt-0.5 block text-xs font-semibold text-whatsapp">Photo, days and price update by themselves when the trek changes.</span>
           </span>
         </div>

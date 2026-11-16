@@ -17,7 +17,8 @@ const summary = {
   difficulty: "challenging",
   max_altitude_m: 5106,
   season_label: "",
-  price_from_usd: 1500,
+  price_from: 1500,
+  currency: "USD",
   has_page: true,
   cover_id: null,
   cover_variant_widths: null,
@@ -40,7 +41,7 @@ const page = {
   itinerary_intro: doc(""),
   itinerary_heading: "",
   days: [{ title: "Arrive", altitude_m: 1400, description: doc("Welcome."), is_high_point: false }, { title: "The pass", altitude_m: 5106, description: doc("Up."), is_high_point: true }],
-  group_prices: [{ label: "1 person", short_label: "1", price_usd: 1590 }, { label: "3–5 people", short_label: "3–5", price_usd: 1280, is_default: true }],
+  group_prices: [{ label: "1 person", short_label: "1", price: 1590 }, { label: "3–5 people", short_label: "3–5", price: 1280, is_default: true }],
   pricing_intro: "",
   pricing_heading: "",
   included: [{ title: "Permits", text: "All of them" }],
@@ -59,8 +60,8 @@ const page = {
   gpx_track_path: null,
   guides_heading: "",
   guides_intro: "",
-  meal_budget_min_usd: null,
-  meal_budget_max_usd: null,
+  meal_budget_min: null,
+  meal_budget_max: null,
   meal_trail_tips: [],
   meal_teahouse_notes: [],
   my_maps_id: null,
@@ -110,23 +111,23 @@ describe("the home page's main trek", () => {
     const result = trek({}, [guide("Second", 2), guide("First", 1)]);
     expect(result.sections).toContain("guides");
     expect(result.guides.team.map((person) => person.name)).toEqual(["First", "Second"]);
-    expect(result.guides.team[0]).toMatchObject({ badge: "Manaslu local", certBadge: "Licensed", experience: "12+ years guiding", home: "Manaslu" });
+    expect(result.guides.team[0]).toMatchObject({ badge: "aus der Region Manaslu", certBadge: "Lizenziert", experience: "12+ Jahre als Guide", home: "Manaslu" });
   });
 
   it("leaves the word region out of the local badge", () => {
-    expect(toHomeGuideTeam([{ id: "a", name: "A", role: "Guide", position: 1, badge: "local", home_village: "", home_district: "", quote: "", languages: [], other_certificates: [] } as unknown as WebTrekGuideRow], "Manaslu Region", "https://photos")[0]?.badge).toBe("Manaslu local");
+    expect(toHomeGuideTeam([{ id: "a", name: "A", role: "Guide", position: 1, badge: "local", home_village: "", home_district: "", quote: "", languages: [], other_certificates: [] } as unknown as WebTrekGuideRow], "Manaslu Region", "https://photos")[0]?.badge).toBe("aus der Region Manaslu");
   });
 
   it("builds the route map from a My Maps id, else the place, and leaves it out with neither", () => {
     expect(trek().routeMap).toBeNull();
     expect(trek({ map_place: "Samagaon, Nepal" }).routeMap).toMatchObject({ hasTrailLine: false });
-    expect(trek({ my_maps_id: "12OcfrtJkhJ8Z3YFw" }).routeMap).toMatchObject({ hasTrailLine: true, heading: "Manaslu Circuit route map" });
+    expect(trek({ my_maps_id: "12OcfrtJkhJ8Z3YFw" }).routeMap).toMatchObject({ hasTrailLine: true, heading: "Routenkarte Manaslu Circuit" });
   });
 
   it("has meals unless the trek hides them or says nothing about them", () => {
     expect(trek().meals).toBeNull();
-    expect(trek({ meal_budget_min_usd: 25, meal_budget_max_usd: 35 }).meals?.budget).toEqual({ min: 25, max: 35 });
-    expect(trek({ meal_budget_min_usd: 25, meal_budget_max_usd: 35, hidden_shared_sections: ["meals"] }).meals).toBeNull();
+    expect(trek({ meal_budget_min: 25, meal_budget_max: 35 }).meals?.budget).toEqual({ min: 25, max: 35, currency: "USD" });
+    expect(trek({ meal_budget_min: 25, meal_budget_max: 35, hidden_shared_sections: ["meals"] }).meals).toBeNull();
   });
 
   it("shows a field guide topic with words", () => {
@@ -142,11 +143,11 @@ describe("the home page's main trek", () => {
 
   it("shows only the facts filled in", () => {
     expect(trek().facts.map((fact) => [fact.label, fact.value])).toEqual([
-      ["Duration", "13 days"],
-      ["Difficulty", "Challenging"],
-      ["Highest point", "5,106 m"],
-      ["Start and finish", "Kathmandu"],
-      ["Stay", "Teahouses"],
+      ["Dauer", "13 Tage"],
+      ["Schwierigkeit", "Anspruchsvoll"],
+      ["Höchster Punkt", "5.106 m"],
+      ["Start/Ziel", "Kathmandu"],
+      ["Unterkunft", "Teahouses"],
     ]);
     expect(trek({ distance_km: 160, transport: "Jeep", guide_ratio: "1 : 4" }).facts.map((fact) => fact.value)).toEqual(expect.arrayContaining(["160 km", "Jeep", "1 : 4"]));
   });
@@ -159,13 +160,13 @@ describe("the home page's main trek", () => {
   });
 
   it("uses the short name in headings left blank, and the admin's words when typed", () => {
-    expect(trek().faq.heading).toBe("Questions about the Manaslu Circuit");
-    expect(trek({ faq_heading: "Your questions" }).faq.heading).toBe("Your questions");
+    expect(trek().faq.heading).toBe("Fragen zum Manaslu Circuit");
+    expect(trek({ faq_heading: "Ihre Fragen" }).faq.heading).toBe("Ihre Fragen");
   });
 
   it("puts the number of days before the itinerary's heading, as the trek editor expects", () => {
-    expect(trek().itinerary.heading).toBe("2-day day-by-day itinerary");
-    expect(trek({ itinerary_heading: "day-by-day route" }).itinerary.heading).toBe("2-day day-by-day route");
+    expect(trek().itinerary.heading).toBe("2-Tage-Reiseverlauf Tag für Tag");
+    expect(trek({ itinerary_heading: "Route im Detail" }).itinerary.heading).toBe("2-Tage-Route im Detail");
   });
 
   it("has best months only with all twelve ratings", () => {

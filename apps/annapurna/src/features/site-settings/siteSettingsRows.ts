@@ -5,6 +5,7 @@ import type { WebSiteSettingsRow } from "@ttn/site-data/database.types";
 import { photoShareUrl } from "@ttn/ui/lib/photos";
 
 import type { SiteSettings } from "./types";
+import { SITE_LANGUAGE } from "@/lib/site";
 
 const clockOf = (value: string) => {
   const [hour = 0, minute = 0] = value.split(":").map(Number);
@@ -22,7 +23,7 @@ export const toSiteSettings = (row: WebSiteSettingsRow, now: Date, photosBaseUrl
   const code = row.phone_country_code.trim();
   const address = row.office_address.trim();
   const embedUrl = row.google_maps_embed_url.trim();
-  const schedule: OfficeSchedule = { openDays: row.office_days, daysLabel: officeDaysLabel(row.office_days), opens: clockOf(row.office_opens), closes: clockOf(row.office_closes) };
+  const schedule: OfficeSchedule = { openDays: row.office_days, daysLabel: officeDaysLabel(row.office_days, SITE_LANGUAGE), opens: clockOf(row.office_opens), closes: clockOf(row.office_closes) };
   const social = [
     { label: "Facebook", href: secureUrl(row.facebook_url) },
     { label: "Instagram", href: secureUrl(row.instagram_url) },
@@ -37,7 +38,7 @@ export const toSiteSettings = (row: WebSiteSettingsRow, now: Date, photosBaseUrl
     email: row.email.trim(),
     officeAddress: address,
     // Hours have defaults in the database, so they say something only beside a real address.
-    officeHours: address ? officeHoursLabel(schedule) : "",
+    officeHours: address ? officeHoursLabel(schedule, SITE_LANGUAGE) : "",
     schedule,
     officeMap: { url: secureUrl(row.google_maps_url), embedUrl: isGoogleMapsEmbedUrl(embedUrl) ? embedUrl : "" },
     replyLanguages: row.reply_languages.flatMap((language) => language.trim() || []),
@@ -50,8 +51,8 @@ export const toSiteSettings = (row: WebSiteSettingsRow, now: Date, photosBaseUrl
     memberships: row.memberships.flatMap((membership) => membership.trim() || []),
     foundedYear: row.founded_year,
     shareImageBase: row.share_id ? photoShareUrl(`${photosBaseUrl}/${row.share_id}`) : undefined,
-    certificate: scanOf(row.certificate_id, row.certificate_variant_widths, row.certificate_file_name, "Registration certificate", photosBaseUrl),
-    panCertificate: scanOf(row.pan_certificate_id, row.pan_certificate_variant_widths, row.pan_certificate_file_name, "PAN registration certificate", photosBaseUrl),
+    certificate: scanOf(row.certificate_id, row.certificate_variant_widths, row.certificate_file_name, "Registrierungsurkunde", photosBaseUrl),
+    panCertificate: scanOf(row.pan_certificate_id, row.pan_certificate_variant_widths, row.pan_certificate_file_name, "PAN-Registrierungsbescheinigung", photosBaseUrl),
     social: social.filter((link) => link.href),
     googleProfileUrl: secureUrl(row.google_business_url),
     googleWriteUrl: secureUrl(row.google_review_url),

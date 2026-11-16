@@ -29,7 +29,7 @@ describe("a legal page", () => {
     const body = JSON.stringify(toLegalDoc("impressum", row([text("{registers}")]), settings).lead);
     expect(body).toContain("123");
     expect(body).toContain("456");
-    expect(body).not.toContain("tourism licence");
+    expect(body).not.toContain("Tourismuslizenz");
   });
 
   it("leaves the registers out when none is typed", () => {
@@ -40,13 +40,15 @@ describe("a legal page", () => {
     const table = JSON.stringify(toLegalDoc("cookies", row([text("{cookieTable}")]), settings).lead);
     expect(table).toContain("Google Maps");
     // Videos and embeds in the blogs load only after a click or consent, but they are listed.
-    expect(table).toContain("YouTube, Vimeo, Komoot, Wikiloc and other services");
-    expect(table).not.toContain("Analytics");
+    expect(table).toContain("YouTube, Vimeo, Komoot, Wikiloc und andere");
+    expect(table).toContain("Google Tag Manager");
+    expect(table).toContain("Google Analytics");
+    expect(table).not.toContain("Clarity");
   });
 
   it("dates the page by its Last updated day, and falls back to the page's words for Google", () => {
     const doc = toLegalDoc("terms", row([]), settings);
-    expect(doc.updated).toBe("20 October 2026");
+    expect(doc.updated).toBe("20. Oktober 2026");
     expect(doc.dates?.modified).toBe("2026-10-20");
     expect(doc.seo).toEqual({ title: "Terms", description: "Our terms." });
   });

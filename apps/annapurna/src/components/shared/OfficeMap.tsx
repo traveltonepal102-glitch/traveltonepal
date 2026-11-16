@@ -41,17 +41,17 @@ export const OfficeMap = ({ mapsUrl, embedUrl, label }: OfficeMapProps) => {
         {embedUrl && (
           <button type="button" onClick={() => setIsShown(true)} className={`${BUTTON} bg-snow text-ink hover:bg-cloud`}>
             <TrailIcon name="map" />
-            Show the map
+            Karte anzeigen
           </button>
         )}
         {mapsUrl && (
           <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={`${BUTTON} bg-navy text-snow hover:bg-navy-deep hover:text-snow`}>
             <TrailIcon name="pin" />
-            Open in Google Maps
+            In Google Maps öffnen
           </a>
         )}
       </div>
-      {embedUrl && <p className="max-w-100 text-sm leading-5 text-muted">Showing the map connects to Google Maps, which can see your IP address.</p>}
+      {embedUrl && <p className="max-w-100 text-sm leading-5 text-muted">Beim Anzeigen der Karte wird eine Verbindung zu Google Maps hergestellt. Dabei wird Ihre IP-Adresse übermittelt.</p>}
     </div>
   );
 };

@@ -59,7 +59,7 @@ describe("toBlogArticle", () => {
 
   it("reads the words, the trek and the contents list", () => {
     const blog = toBlogArticle(source);
-    expect(blog).toMatchObject({ title: "Permits", intro: "The intro", topicLabel: "Planning", publishedLabel: "Oct 25, 2026", trek: { slug: "circuit" }, showSidebar: true });
+    expect(blog).toMatchObject({ title: "Permits", intro: "The intro", topicLabel: "Planung", publishedLabel: "25. Okt. 2026", trek: { slug: "circuit" }, showSidebar: true });
     expect(blog?.toc.map((link) => link.id)).toEqual([QUICK_ANSWER_ID, "which-permits", FAQ_ID]);
     expect(blog?.faqs.map((faq) => faq.question)).toEqual(["Why?"]);
   });
@@ -81,7 +81,7 @@ describe("toBlogArticle", () => {
 
   it("says 'updated' only for a later date, and keeps a general blog's sidebar off", () => {
     expect(toBlogArticle(source)?.updatedLabel).toBeUndefined();
-    expect(toBlogArticle({ ...source, page: { ...page, updated_on: "2026-11-02", show_sidebar: false } })).toMatchObject({ updatedLabel: "Nov 2, 2026", showSidebar: false });
+    expect(toBlogArticle({ ...source, page: { ...page, updated_on: "2026-11-02", show_sidebar: false } })).toMatchObject({ updatedLabel: "2. Nov. 2026", showSidebar: false });
   });
 });
 

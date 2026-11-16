@@ -85,13 +85,17 @@ const daySchema = z.object({
   region_slug: z.string().nullable().catch(null),
 });
 
-const groupPriceSchema = z.object({
-  label: text.min(1),
-  short_label: text.min(1),
-  price_usd: z.number().int().positive(),
-  team: optionalText,
-  is_default: z.boolean().catch(false),
-});
+/** A group price; `price` is in the website's currency (rows from before 2026-11-15 only have `price_usd`). */
+const groupPriceSchema = z.preprocess(
+  (value) => (value && typeof value === "object" && !("price" in value) ? { ...value, price: (value as { price_usd?: unknown }).price_usd } : value),
+  z.object({
+    label: text.min(1),
+    short_label: text.min(1),
+    price: z.number().int().positive(),
+    team: optionalText,
+    is_default: z.boolean().catch(false),
+  }),
+);
 
 const packingGroupSchema = z.object({ title: text.min(1), icon: iconOf(PACKING_ICONS), items: z.array(z.unknown()).catch([]) });
 

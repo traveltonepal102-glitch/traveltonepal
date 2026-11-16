@@ -1,5 +1,7 @@
 import { EMBED_HEIGHTS, toEmbed } from "@ttn/config/embeds";
 import { GUIDE_FILE_PATH, fileSizeLabel } from "@ttn/config/guideFiles";
+import { toSlugText } from "@ttn/config/slugText";
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
 import { cleanCustomHtml, customHtmlText } from "@ttn/ui/lib/customHtml";
 import { toRichTextDoc } from "@ttn/ui/lib/richText";
 
@@ -68,15 +70,18 @@ export type GuideBlock<Trek> =
   | { type: "video"; youtubeId: string; title: string };
 
 /** What the sections are shown with: the published treks, the guide's title (photo text), whether it has months and where files are. */
-type BlockContext<Trek> = { treks: readonly Trek[]; title: string; photosBaseUrl: string; filesBaseUrl: string; hasMonths: boolean };
+type BlockContext<Trek> = {
+  treks: readonly Trek[];
+  title: string;
+  photosBaseUrl: string;
+  filesBaseUrl: string;
+  hasMonths: boolean;
+  /** The website's language, for the few words made here (a file's size). English when left out. */
+  language?: SiteLanguage;
+};
 
-/** "Autumn: the clearest views" → "autumn-the-clearest-views", for the contents list. */
-const anchorOf = (heading: string) =>
-  heading
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+/** "Autumn: the clearest views" → "autumn-the-clearest-views", "Über Nacht" → "ueber-nacht", for the contents list. */
+const anchorOf = (heading: string) => toSlugText(heading);
 
 /** A portrait's image text is the person's name, not where it was taken. */
 export const toPerson = (row: PersonRow, photosBaseUrl: string): GuidePerson => ({
@@ -134,10 +139,10 @@ const toEmbedBlock = (content: Record<string, unknown>, settings: Record<string,
 };
 
 /** A PDF uploaded in the admin (its address checked again here, so it is safe to add to the base) with its title. */
-const toFileBlock = (content: Record<string, unknown>, settings: Record<string, unknown>, filesBaseUrl: string) => {
+const toFileBlock = (content: Record<string, unknown>, settings: Record<string, unknown>, filesBaseUrl: string, language: SiteLanguage = "en") => {
   const title = field.text(content, "title");
   if (!title || typeof settings.path !== "string" || !GUIDE_FILE_PATH.test(settings.path)) return undefined;
-  const size = typeof settings.byteSize === "number" && settings.byteSize > 0 ? fileSizeLabel(settings.byteSize) : "";
+  const size = typeof settings.byteSize === "number" && settings.byteSize > 0 ? fileSizeLabel(settings.byteSize, language) : "";
   return { type: "file" as const, url: `${filesBaseUrl}/${settings.path}`, title, description: field.text(content, "description"), size };
 };
 
@@ -207,7 +212,7 @@ export const toBlock = <Trek extends { slug: string }>(section: SectionRow, cont
     case "embed":
       return toEmbedBlock(content, settings);
     case "file":
-      return toFileBlock(content, settings, context.filesBaseUrl);
+      return toFileBlock(content, settings, context.filesBaseUrl, context.language);
     case "cost": {
       const rows = field.costRows(content);
       return rows.length ? { type: "cost", heading: field.text(content, "heading"), rows, totalLabel: field.text(content, "totalLabel"), total: field.text(content, "total") } : undefined;

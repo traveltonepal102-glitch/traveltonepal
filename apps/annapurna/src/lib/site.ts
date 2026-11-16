@@ -1,5 +1,13 @@
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
+
 /** This website's id in the admin's Sites: every database read asks for this website's rows. */
 export const SITE_ID = "annapurna";
+
+/**
+ * The website's language (decided 2026-11-15: German, addressing visitors as "Sie"), the same as its language in the
+ * admin's Sites. Its content is typed in German there; its own words are written in German here.
+ */
+export const SITE_LANGUAGE: SiteLanguage = "de";
 
 /** The brand name, as search results and shared links show it. */
 export const SITE_NAME = "Annapurna Trekking";

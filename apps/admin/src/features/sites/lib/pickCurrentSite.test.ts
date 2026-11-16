@@ -12,6 +12,8 @@ const site = (id: string, kind: Site["kind"], url: string | null = null): Site =
   isLive: false,
   homeTrekId: null,
   position: 1,
+  language: "en",
+  currency: "USD",
 });
 
 const SITES = [site("ttn", "main", "https://traveltonepal.com"), site("manaslu", "region")];

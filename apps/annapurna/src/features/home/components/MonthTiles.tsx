@@ -1,10 +1,11 @@
-import { MONTH_NAMES } from "@ttn/ui/lib/bestMonths";
+import { MONTH_NAMES, monthNames } from "@ttn/ui/lib/bestMonths";
 import type { MonthRating } from "@ttn/ui/lib/bestMonths";
+import { SITE_LANGUAGE } from "@/lib/site";
 
 const RATING: Record<MonthRating, { tile: string; words: string }> = {
-  best: { tile: "bg-navy text-snow", words: "Best" },
-  possible: { tile: "bg-sun text-ink", words: "Possible" },
-  avoid: { tile: "border border-solid border-line bg-cloud text-muted", words: "Avoid" },
+  best: { tile: "bg-navy text-snow", words: "Beste Zeit" },
+  possible: { tile: "bg-sun text-ink", words: "Möglich" },
+  avoid: { tile: "border border-solid border-line bg-cloud text-muted", words: "Nicht empfohlen" },
 };
 
 const LEGEND: readonly MonthRating[] = ["best", "possible", "avoid"];
@@ -15,7 +16,7 @@ export const MonthTiles = ({ ratings }: { ratings: readonly MonthRating[] }) => 
     <ul className="grid grid-cols-4 gap-1 sm:grid-cols-6 lg:grid-cols-12">
       {ratings.map((rating, month) => (
         <li key={MONTH_NAMES[month]} className={`rounded-lg py-3 text-center text-sm leading-4.5 font-semibold ${RATING[rating].tile}`}>
-          {MONTH_NAMES[month]}
+          {monthNames(SITE_LANGUAGE)[month]}
           <span className="sr-only">: {RATING[rating].words}</span>
         </li>
       ))}

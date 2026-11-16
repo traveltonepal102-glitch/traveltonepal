@@ -5,7 +5,7 @@ import { readText } from "@/lib/forms/formFields";
 
 import { SITE_LIMITS as LIMIT } from "../constants";
 import type { NewSiteValues } from "../types";
-import { siteName, siteUrl } from "./siteFields";
+import { siteCurrency, siteLanguage, siteName, siteUrl } from "./siteFields";
 
 const siteId = z
   .string()
@@ -21,6 +21,8 @@ export const newSiteSchema = z.object({
   id: siteId,
   regionId: z.uuid("Pick the region."),
   url: siteUrl,
+  language: siteLanguage,
+  currency: siteCurrency,
 }) satisfies z.ZodType<NewSiteValues, unknown>;
 
 /** The form's FormData as the schema expects it. */
@@ -29,4 +31,6 @@ export const readNewSiteForm = (formData: FormData) => ({
   id: readText(formData, "id"),
   regionId: readText(formData, "regionId"),
   url: readText(formData, "url"),
+  language: readText(formData, "language"),
+  currency: readText(formData, "currency"),
 });

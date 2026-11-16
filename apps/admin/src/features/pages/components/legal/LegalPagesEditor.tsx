@@ -13,6 +13,8 @@ import type { LegalPagesValues } from "../../types";
 import { PageEditorForm } from "../PageEditorForm";
 import { LegalPageCard } from "./LegalPageCard";
 import { LegalTextEditor } from "./LegalTextEditor";
+import { pageWebsitePath } from "../../lib/pageWebsitePath";
+import type { PageSite } from "../../lib/pageWebsitePath";
 
 type LegalPagesEditorProps = {
   action: EditorSaveAction;
@@ -20,21 +22,23 @@ type LegalPagesEditorProps = {
   /** The page open first, e.g. from the Pages list's row. */
   initialPage: LegalPageSlug;
   websiteUrl: string | null;
+  /** The website the pages are on: a region website's addresses are in its language. */
+  site: PageSite;
   lastSaved: string;
 };
 
 const FIXED_NOTE = "The layout, the “On this page” list and “Download as PDF” come from the design. Company details come from Site settings through the placeholders below.";
 
-const pathOf = (slug: LegalPageSlug) => LEGAL_PAGES.find((page) => page.slug === slug)?.websitePath ?? "/";
+const pathOf = (slug: LegalPageSlug, site: PageSite) => pageWebsitePath(slug, LEGAL_PAGES.find((page) => page.slug === slug)?.websitePath ?? "/", site);
 
 /** Pages › Legal pages (design: Admin-pages, "Legal pages"): Terms, Privacy, Impressum and Cookie settings, one form. */
-export const LegalPagesEditor = ({ action, values, initialPage, websiteUrl, lastSaved }: LegalPagesEditorProps) => (
+export const LegalPagesEditor = ({ action, values, initialPage, websiteUrl, site, lastSaved }: LegalPagesEditorProps) => (
   <PageEditorForm
     action={action}
     title="Legal pages"
     lastSaved={lastSaved}
     websiteUrl={websiteUrl}
-    pathFor={pathOf}
+    pathFor={(slug) => pathOf(slug, site)}
     sections={LEGAL_SECTIONS}
     initialKey={initialPage}
     readiness={legalReadiness(values)}

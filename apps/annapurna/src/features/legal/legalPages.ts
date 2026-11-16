@@ -15,10 +15,10 @@ type LegalMenuItem = {
 
 /** The legal pages, in menu order. */
 export const LEGAL_PAGES: readonly LegalMenuItem[] = [
-  { slug: "terms", path: ROUTES.terms, label: "Terms and booking", icon: "doc", isListed: true, uncheckedNote: "Template text. Have these terms checked by a lawyer, including whether EU package travel rules apply to your bookings." },
-  { slug: "privacy", path: ROUTES.privacy, label: "Privacy", icon: "lock", isListed: true, uncheckedNote: "Template text. Have this policy checked by a data protection specialist before going live." },
-  { slug: "impressum", path: ROUTES.impressum, label: "Impressum", icon: "shield", isListed: false, uncheckedNote: "Fill in every bracket with your real company details. The Impressum must be complete before going live." },
-  { slug: "cookies", path: ROUTES.cookies, label: "Cookie settings", icon: "tag", isListed: false, uncheckedNote: "Check that the list matches what the website loads." },
+  { slug: "terms", path: ROUTES.terms, label: "AGB", icon: "doc", isListed: true, uncheckedNote: "Mustertext. Lassen Sie diese AGB von einem Anwalt prüfen, auch ob das EU-Pauschalreiserecht für Ihre Buchungen gilt." },
+  { slug: "privacy", path: ROUTES.privacy, label: "Datenschutz", icon: "lock", isListed: true, uncheckedNote: "Mustertext. Lassen Sie diese Datenschutzerklärung vor dem Start der Website von einer Fachperson für Datenschutz prüfen." },
+  { slug: "impressum", path: ROUTES.impressum, label: "Impressum", icon: "shield", isListed: false, uncheckedNote: "Ersetzen Sie jede eckige Klammer durch Ihre echten Firmendaten. Das Impressum muss vor dem Start der Website vollständig sein." },
+  { slug: "cookies", path: ROUTES.cookies, label: "Cookie-Einstellungen", icon: "tag", isListed: false, uncheckedNote: "Prüfen Sie, ob die Liste mit dem übereinstimmt, was die Website lädt." },
 ];
 
 export const legalPage = (slug: LegalSlug) => LEGAL_PAGES.find((page) => page.slug === slug) ?? LEGAL_PAGES[0];

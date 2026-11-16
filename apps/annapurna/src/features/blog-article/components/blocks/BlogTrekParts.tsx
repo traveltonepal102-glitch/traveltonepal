@@ -38,7 +38,7 @@ export const BlogTrekCard = ({ trek }: { trek: HomeTrekCard }) => {
 
 /** Some days from a trek's plan, with their number in the trek, and the way to the whole plan. */
 export const BlogDays = ({ trek, days }: { trek: HomeTrekCard; days: readonly GuideDay[] }) => (
-  <section aria-label={`Days from the ${trek.name}`} className="flex flex-col gap-2">
+  <section aria-label={`Tage des Treks: ${trek.name}`} className="flex flex-col gap-2">
     <ol>
       {days.map((day) => (
         <ItineraryDayCard key={day.dayNumber} day={toHomeDay(day)} />
@@ -46,7 +46,7 @@ export const BlogDays = ({ trek, days }: { trek: HomeTrekCard; days: readonly Gu
     </ol>
     {trek.hasPage && (
       <Link href={trek.href} className="inline-flex min-h-11 items-center gap-1.5 self-start font-semibold">
-        See every day of the {trek.name}
+        {trek.name}: alle Tage ansehen
         <TrailIcon name="arrow" size={16} />
       </Link>
     )}
@@ -55,7 +55,7 @@ export const BlogDays = ({ trek, days }: { trek: HomeTrekCard; days: readonly Gu
 
 /** The altitude of a trek's whole plan. */
 export const BlogAltitude = ({ heading, trek, days }: { heading: string; trek: HomeTrekCard; days: readonly GuideDay[] }) => (
-  <section aria-label={heading || `Altitude on the ${trek.name}`} className="flex flex-col gap-3">
+  <section aria-label={heading || `Höhenprofil: ${trek.name}`} className="flex flex-col gap-3">
     {heading && <h3>{heading}</h3>}
     <AltitudeChart days={days.map(toHomeDay)} />
   </section>

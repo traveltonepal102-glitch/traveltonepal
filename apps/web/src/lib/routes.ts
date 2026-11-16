@@ -6,7 +6,6 @@ export const ROUTES = {
   guides: "/travel-guides",
   about: "/about",
   contact: "/contact",
-  german: "/de",
   privacy: "/privacy",
   terms: "/terms",
   impressum: "/impressum",

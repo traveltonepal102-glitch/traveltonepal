@@ -38,7 +38,7 @@ export const toTrekSummaries = (rows: readonly WebTrekRow[], photosBaseUrl: stri
           days: row.days,
           maxAltitudeM: row.max_altitude_m,
           difficulty: DIFFICULTY[row.difficulty],
-          priceFromUsd: row.price_from_usd ?? undefined,
+          priceFromUsd: row.price_from ?? undefined,
           seasonLabel: row.season_label.trim(),
           seasons: row.seasons,
           tags: row.tags,

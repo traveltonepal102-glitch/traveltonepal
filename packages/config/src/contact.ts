@@ -5,6 +5,7 @@
  * Links go through the website's own /whatsapp and /email addresses, which look up today's number and email in Site
  * settings and send the visitor on. So a link built anywhere, in any component, never holds an old number.
  */
+import type { SiteLanguage } from "./siteLanguage";
 
 export type ClockTime = { hour: number; minute: number };
 
@@ -68,20 +69,40 @@ export const mailtoUrl = (email: string, draft?: { subject?: string; body?: stri
   return query ? `mailto:${email}?${query}` : `mailto:${email}`;
 };
 
-const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAY_WORDS: Record<SiteLanguage, { days: readonly string[]; everyDay: string; to: string; and: string; nepalTime: string }> = {
+  en: {
+    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    everyDay: "Every day",
+    to: "to",
+    and: "and",
+    nepalTime: "Nepal time",
+  },
+  de: {
+    days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+    everyDay: "Täglich",
+    to: "bis",
+    and: "und",
+    nepalTime: "Ortszeit Nepal",
+  },
+};
 
-/** "Sunday to Friday" for days in a row (Nepal's week starts on Sunday), else "Sunday, Tuesday and Friday". */
-export const officeDaysLabel = (days: readonly number[]): string => {
+/**
+ * "Sunday to Friday" for days in a row (Nepal's week starts on Sunday), else "Sunday, Tuesday and Friday"; in German
+ * "Sonntag bis Freitag".
+ */
+export const officeDaysLabel = (days: readonly number[], language: SiteLanguage = "en"): string => {
+  const words = DAY_WORDS[language];
   const sorted = [...new Set(days)].sort((a, b) => a - b);
   if (sorted.length === 0) return "";
-  if (sorted.length === 7) return "Every day";
+  if (sorted.length === 7) return words.everyDay;
   const isRun = sorted.every((day, index) => index === 0 || day === (sorted[index - 1] ?? 0) + 1);
-  const names = sorted.map((day) => DAY_NAMES[day] ?? "");
-  if (isRun && names.length > 2) return `${names[0]} to ${names[names.length - 1]}`;
-  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : (names[0] ?? "");
+  const names = sorted.map((day) => words.days[day] ?? "");
+  if (isRun && names.length > 2) return `${names[0]} ${words.to} ${names[names.length - 1]}`;
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} ${words.and} ${names[names.length - 1]}` : (names[0] ?? "");
 };
 
 const clock = ({ hour, minute }: ClockTime) => `${hour}:${String(minute).padStart(2, "0")}`;
 
-/** "Sunday to Friday, 9:00–18:00 (Nepal time)". */
-export const officeHoursLabel = (schedule: OfficeSchedule): string => `${schedule.daysLabel}, ${clock(schedule.opens)}–${clock(schedule.closes)} (Nepal time)`;
+/** "Sunday to Friday, 9:00–18:00 (Nepal time)"; "Sonntag bis Freitag, 9:00–18:00 (Ortszeit Nepal)". */
+export const officeHoursLabel = (schedule: OfficeSchedule, language: SiteLanguage = "en"): string =>
+  `${schedule.daysLabel}, ${clock(schedule.opens)}–${clock(schedule.closes)} (${DAY_WORDS[language].nepalTime})`;

@@ -26,7 +26,7 @@ export const ContactPage = async () => {
       <JsonLd data={contactJsonLd(page)} />
       <div className="border-0 border-b border-solid border-line bg-cloud">
         <div className="wrap flex flex-col gap-3 pt-6 pb-10">
-          <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Contact" }]} />
+          <Breadcrumbs items={[{ label: "Startseite", href: ROUTES.home }, { label: "Kontakt" }]} />
           <h1>{page.top.heading}</h1>
           {page.top.intro && <p className="max-w-[62ch] text-[19px] leading-7.5">{page.top.intro}</p>}
         </div>
@@ -39,7 +39,7 @@ export const ContactPage = async () => {
       <OfficeSection page={page} />
       {page.faqs.length > 0 && (
         <section id={CONTACT_SECTIONS.faq} aria-labelledby="contact-faq-h" className="wrap flex max-w-200 flex-col gap-6 py-14 md:py-18">
-          <SectionHeading id="contact-faq-h" title={page.faqHeading || "Before you get in touch"} />
+          <SectionHeading id="contact-faq-h" title={page.faqHeading || "Bevor Sie uns schreiben"} />
           <FaqList items={page.faqs.map((faq) => ({ question: faq.question, body: faq.answer }))} />
         </section>
       )}

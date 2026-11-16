@@ -19,16 +19,16 @@ export const HomeGuides = ({ guides }: { guides: readonly HomeGuide[] }) => {
   return (
     <section aria-labelledby="guides-h" className="wrap flex flex-col gap-7 py-22 max-md:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4.5">
-        <SectionHeading id="guides-h" eyebrow="Blogs" title="Read before you go" />
+        <SectionHeading id="guides-h" eyebrow="Blog" title="Vor der Reise lesen" />
         <Link href={ROUTES.blogs} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
-          View all blogs
+          Alle Blogartikel
           <TrailIcon name="arrow" />
         </Link>
       </div>
-      <ul aria-label="Blog topics" className="flex flex-wrap gap-2">
+      <ul aria-label="Blog-Themen" className="flex flex-wrap gap-2">
         <li>
           <Link href={ROUTES.blogs} className={`${TOPIC} border-navy bg-navy text-snow hover:text-snow`}>
-            All
+            Alle
           </Link>
         </li>
         {topics.map(([topic, tag]) => (

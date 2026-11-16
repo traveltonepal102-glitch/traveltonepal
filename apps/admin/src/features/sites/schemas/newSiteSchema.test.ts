@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { newSiteSchema } from "./newSiteSchema";
 
 const REGION_ID = "4f8c2b1e-6a3d-4c5b-9e7f-1a2b3c4d5e6f";
-const VALID = { name: "Manaslu Trek", id: "manaslu", regionId: REGION_ID, url: "" };
+const VALID = { name: "Manaslu Trek", id: "manaslu", regionId: REGION_ID, url: "", language: "en", currency: "USD" };
 
 describe("newSiteSchema", () => {
   it("accepts a new region site without an address yet", () => {

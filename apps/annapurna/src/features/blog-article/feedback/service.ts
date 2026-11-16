@@ -3,7 +3,7 @@ import type { GuideFeedback, GuideFeedbackResult } from "@ttn/site-data/guideFee
 
 import { createDatabaseClient } from "@/lib/database";
 
-export const NOT_SAVED: GuideFeedbackResult = { status: "error", message: "We could not save that. Please try again." };
+export const NOT_SAVED: GuideFeedbackResult = { status: "error", message: "Das konnten wir nicht speichern. Bitte versuchen Sie es erneut." };
 
 /** Stores one vote: the database checks the blog is live on this website and refuses floods, and keeps nothing about the visitor. */
 export const recordBlogFeedback = async ({ slug, vote }: GuideFeedback): Promise<GuideFeedbackResult> => {

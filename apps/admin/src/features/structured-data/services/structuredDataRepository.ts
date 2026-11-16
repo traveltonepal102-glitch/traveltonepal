@@ -2,8 +2,6 @@ import "server-only";
 
 import { REGION_LOCALE } from "@/features/regions/constants";
 import type { Site } from "@/features/sites/types";
-import { ARTICLE_LOCALE } from "@/features/travel-guides/constants";
-import { TREK_LOCALE } from "@/features/treks/constants";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { fixedPagesFor, itemWebsitePath } from "../constants";
@@ -54,9 +52,9 @@ export const listSchemaPages = async (site: Site): Promise<SchemaPage[]> => {
   const supabase = await createSupabaseServerClient();
   const [schemas, treks, regions, articles] = await Promise.all([
     supabase.from("page_schemas").select("site_page_slug, trek_id, region_id, article_id, is_shown").eq("site_id", site.id),
-    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("site_id", site.id).eq("trek_translations.locale", TREK_LOCALE),
+    supabase.from("treks").select("id, slug, status, trek_translations!inner(name)").eq("site_id", site.id).eq("trek_translations.locale", site.language),
     listRegionRows(site),
-    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("site_id", site.id).eq("article_translations.locale", ARTICLE_LOCALE),
+    supabase.from("articles").select("id, slug, status, article_translations!inner(title)").eq("site_id", site.id).eq("article_translations.locale", site.language),
   ]);
   if (schemas.error || treks.error || regions.error || articles.error) {
     const error = schemas.error ?? treks.error ?? regions.error ?? articles.error;
@@ -74,7 +72,7 @@ export const listSchemaPages = async (site: Site): Promise<SchemaPage[]> => {
   // A region website's main trek is its Home: its page is "/" (its own address moves there).
   const trekPath = (id: string, slug: string) => (id === site.homeTrekId ? "/" : itemWebsitePath("trek", slug, site.kind));
   return [
-    ...fixedPagesFor(site.kind).map((page) => toSchemaPage({ kind: "page", key: page.slug }, page.label, page.websitePath, null, counts)),
+    ...fixedPagesFor(site.kind, site.language).map((page) => toSchemaPage({ kind: "page", key: page.slug }, page.label, page.websitePath, null, counts)),
     ...treks.data
       .map((row) => toSchemaPage({ kind: "trek", key: row.id }, row.trek_translations[0]?.name ?? row.slug, trekPath(row.id, row.slug), row.status, counts))
       .sort(byName),

@@ -9,6 +9,7 @@ import { SidebarUser } from "@/features/shell/components/SidebarUser";
 import { SiteSwitcher } from "@/features/shell/components/SiteSwitcher";
 import { RAIL_COOKIE } from "@/features/shell/constants";
 import { newItemsFor } from "@/features/shell/newItems";
+import { SiteCurrencyProvider } from "@/features/sites/components/SiteCurrency";
 import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import { listSites } from "@/features/sites/services/sitesRepository";
 import { photosPublicBaseUrl } from "@/lib/storage/photoOrigins";
@@ -41,7 +42,10 @@ const PortalLayout = async ({ children }: LayoutProps<"/">) => {
       user={<SidebarUser name={admin.full_name || admin.email} roleLabel={ROLE_LABELS[admin.role]} />}
     >
       {/* The text editors show the photos added in a text from here. */}
-      <PhotosBaseUrlProvider value={photosPublicBaseUrl}>{children}</PhotosBaseUrlProvider>
+      <PhotosBaseUrlProvider value={photosPublicBaseUrl}>
+        {/* Prices are typed and shown in the current website's currency. */}
+        <SiteCurrencyProvider value={currentSite?.currency ?? "USD"}>{children}</SiteCurrencyProvider>
+      </PhotosBaseUrlProvider>
     </AdminShell>
   );
 };

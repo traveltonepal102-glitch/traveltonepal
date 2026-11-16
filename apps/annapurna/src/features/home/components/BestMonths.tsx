@@ -11,7 +11,7 @@ type BestMonthsProps = { heading: string; line: RichTextDoc; ratings: readonly M
 /** The twelve months, rated from the regions on the route, under the trek's own line (if any). Stands for the trek's "pricing" section: the booking card beside the page has the prices. */
 export const BestMonths = ({ heading, line, ratings }: BestMonthsProps) => (
   <section aria-labelledby="pricing-h" id="pricing" className="flex flex-col gap-5">
-    <SectionHeading id="pricing-h" eyebrow="When to go" title={heading}>
+    <SectionHeading id="pricing-h" eyebrow="Reisezeit" title={heading}>
       <HeadingLine doc={line} />
     </SectionHeading>
     <MonthTiles ratings={ratings} />

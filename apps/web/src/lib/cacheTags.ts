@@ -15,5 +15,5 @@ export const CACHE_TAGS = WEBSITE_CACHE_TAGS;
  */
 export const DATABASE_CACHE_LIFE = "max";
 
-/** The language the website shows for now (German comes with the German site). */
+/** Travel To Nepal is English only (decided 2026-11-15; a German website is its own region website, like Annapurna Trekking). */
 export const WEBSITE_LOCALE = "en";

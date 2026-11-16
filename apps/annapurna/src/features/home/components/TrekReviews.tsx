@@ -4,6 +4,7 @@ import { ROUTES } from "@/lib/routes";
 
 import type { HomeRating, HomeReview } from "../types";
 import { ReviewCard } from "./ReviewCard";
+import { formatDecimal } from "@/lib/format";
 
 type TrekReviewsProps = { reviews: readonly HomeReview[]; rating: HomeRating | null };
 
@@ -16,11 +17,11 @@ export const TrekReviews = async ({ reviews, rating }: TrekReviewsProps) => {
   return (
     <section aria-labelledby="reviews-h" id="reviews" className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <SectionHeading id="reviews-h" eyebrow={isAllGoogle ? "Google reviews" : "Reviews"} title="What trekkers say" />
+        <SectionHeading id="reviews-h" eyebrow={isAllGoogle ? "Google-Bewertungen" : "Bewertungen"} title="Das sagen unsere Gäste" />
         {rating && (
           <span className="inline-flex items-center gap-2.5 rounded-full border border-solid border-line px-4 py-2 font-semibold text-ink">
             <span className="font-[Arial,sans-serif] font-bold text-[#4285f4]">G</span>
-            {rating.rating.toFixed(1)} · {rating.count} reviews
+            {formatDecimal(rating.rating)} · {rating.count} Bewertungen
           </span>
         )}
       </div>
@@ -30,16 +31,16 @@ export const TrekReviews = async ({ reviews, rating }: TrekReviewsProps) => {
         ))}
       </div>
       <p className="text-[15px] leading-5.5 text-muted">
-        Copied word for word from {isAllGoogle ? "our Google profile" : "the review sites"}.{" "}
+        Wortgetreu übernommen {isAllGoogle ? "aus unserem Google-Profil" : "von den Bewertungsportalen"}.{" "}
         {googleProfileUrl && (
           <a href={googleProfileUrl} rel="noopener noreferrer" className="underline">
-            See all on Google
+            Alle bei Google ansehen
           </a>
         )}
         {googleProfileUrl && " · "}
         {(googleWriteUrl || googleProfileUrl) && (
           <a href={ROUTES.review} rel="nofollow" className="underline">
-            Write a review
+            Bewertung schreiben
           </a>
         )}
       </p>

@@ -12,6 +12,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { MAX_INCLUDED_ITEMS, TREK_LIMITS as LIMIT } from "../../constants";
 import type { TrekValues } from "../../types";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type TrekIncludedSectionProps = {
   values: TrekValues;
@@ -32,7 +33,9 @@ const ListHeading = ({ icon, tone, children }: { icon: IconName; tone: "green" |
 );
 
 /** What's covered, what's not, and the meals box (design: section "included"; data: the trek page). */
-export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSectionProps) => (
+export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSectionProps) => {
+  const currency = useSiteCurrency();
+  return (
   <>
     <FormSection title="What the price includes" hint="Each item is a bold lead-in and one line, e.g. “Permits: Langtang National Park permit and TIMS card.”">
       <ListHeading icon="check_circle" tone="green">
@@ -74,7 +77,7 @@ export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSect
       <div className="grid max-w-105 grid-cols-2 gap-3">
         <TextField
           name="mealBudgetMinUsd"
-          label="Food a day, from (US$)"
+          label={`Food a day, from (${currency.symbol})`}
           inputMode="numeric"
           placeholder="20"
           defaultValue={numberText(values.mealBudgetMinUsd)}
@@ -82,7 +85,7 @@ export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSect
         />
         <TextField
           name="mealBudgetMaxUsd"
-          label="to (US$)"
+          label={`to (${currency.symbol})`}
           inputMode="numeric"
           placeholder="30"
           defaultValue={numberText(values.mealBudgetMaxUsd)}
@@ -120,3 +123,4 @@ export const TrekIncludedSection = ({ values, errors, onEdit }: TrekIncludedSect
     </FormSection>
   </>
 );
+};

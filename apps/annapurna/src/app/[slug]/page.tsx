@@ -35,7 +35,7 @@ export const generateMetadata = async ({ params }: SlugPageProps): Promise<Metad
   const trek = await getTrekPage(slug);
   if (trek) return trekPageMetadata(trek);
   const blog = await getBlogArticle(slug);
-  return blog ? blogMetadata(blog) : { title: "Page not found" };
+  return blog ? blogMetadata(blog) : { title: "Seite nicht gefunden" };
 };
 
 const SlugPage = async ({ params }: SlugPageProps) => {

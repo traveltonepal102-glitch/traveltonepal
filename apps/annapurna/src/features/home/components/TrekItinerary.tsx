@@ -16,7 +16,7 @@ type TrekItineraryProps = { name: string; itinerary: HomeTrek["itinerary"] };
 /** The day-by-day plan: the altitude chart, a card per day, and how to change it. */
 export const TrekItinerary = ({ name, itinerary }: TrekItineraryProps) => (
   <section aria-labelledby="itinerary-h" id="itinerary" className="flex flex-col gap-6">
-    <SectionHeading id="itinerary-h" eyebrow="Step-by-step route" title={itinerary.heading} />
+    <SectionHeading id="itinerary-h" eyebrow="Tag für Tag" title={itinerary.heading} />
     {!isRichTextEmpty(itinerary.intro) && <RichText doc={itinerary.intro} />}
     <AltitudeChart days={itinerary.days} />
     <ol className="flex flex-col">
@@ -32,14 +32,14 @@ export const TrekItinerary = ({ name, itinerary }: TrekItineraryProps) => (
           </span>
           <div className="flex flex-col gap-1">
             <h3 id="custom-h" className="text-xl! leading-6.5!">
-              Change the route to suit you
+              Die Route nach Ihren Wünschen
             </h3>
-            <p className="text-base leading-6.25">Want an extra rest day or a different finish? Every trek is private, so we can change it for your group.</p>
+            <p className="text-base leading-6.25">Sie wünschen sich einen zusätzlichen Ruhetag oder ein anderes Ende? Jeder Trek ist privat, daher passen wir ihn gern für Ihre Gruppe an.</p>
           </div>
         </div>
-        <a href={getWhatsAppUrl(`Hello! I would like to change the ${name} route for my group.`)} rel="nofollow" className={whatsAppButton}>
+        <a href={getWhatsAppUrl(`Hallo! Ich möchte die Route für den ${name} an meine Gruppe anpassen.`)} rel="nofollow" className={whatsAppButton}>
           <WhatsAppLogo />
-          Plan my route
+          Route planen
         </a>
       </section>
     )}

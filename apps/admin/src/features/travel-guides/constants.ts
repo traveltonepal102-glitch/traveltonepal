@@ -6,9 +6,6 @@ export const TRAVEL_GUIDES_PATH = ADMIN_SECTIONS.travelGuides.href;
 export const NEW_ARTICLE_PATH = `${TRAVEL_GUIDES_PATH}/new`;
 export const articlePath = (articleId: string) => `${TRAVEL_GUIDES_PATH}/${articleId}`;
 
-/** The admin edits English for now; German comes later (article_translations.locale). */
-export const ARTICLE_LOCALE = "en";
-
 /** Hard limits, the same as the database checks (supabase/migrations/20261024260000_travel_guides.sql). */
 export const ARTICLE_LIMITS = {
   slug: 100,

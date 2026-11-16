@@ -10,7 +10,7 @@ export const AboutHero = ({ top, stats }: { top: SitePageTop; stats: readonly Ab
   <div className="border-0 border-b border-solid border-line bg-cloud">
     <div className="wrap grid items-center gap-x-12 gap-y-8 pt-6 pb-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
       <div className="flex flex-col gap-4">
-        <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "About us" }]} />
+        <Breadcrumbs items={[{ label: "Startseite", href: ROUTES.home }, { label: "Über uns" }]} />
         <h1>{top.heading}</h1>
         {top.intro && <p className="max-w-[62ch] text-[19px] leading-7.5">{top.intro}</p>}
         {stats.length > 0 && (

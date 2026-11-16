@@ -1,6 +1,6 @@
 "use server";
 
-import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
+import { WEBSITE_CACHE_TAG_VALUES } from "@ttn/config/websiteCache";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -20,6 +20,7 @@ const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveStat
 const FAILURES: Record<SaveSiteFailure, { message: string; field?: string }> = {
   url_taken: { message: "Another site already uses this address.", field: "url" },
   needs_url: { message: "Add the website's address before switching it live.", field: "url" },
+  language_locked: { message: "A live website's language and currency can't change." },
   not_found: { message: "This site no longer exists." },
   forbidden: { message: "Only a Super admin can change a site." },
   failed: { message: "The site couldn't be saved. Nothing was lost in the form: try Save again in a moment." },
@@ -44,8 +45,8 @@ export const saveSite = async (siteId: string, _previous: EditorSaveState, formD
     return failure(message, field ? { [field]: message } : {});
   }
 
-  // The website shows its name and whether it is live.
-  refreshSiteWebsite(siteId, [WEBSITE_CACHE_TAGS.settings]);
+  // The website shows its name and whether it is live; its language and currency change what every page reads.
+  refreshSiteWebsite(siteId, WEBSITE_CACHE_TAG_VALUES);
   revalidatePath("/", "layout");
   redirect(sitesSavedPath("changed"));
 };

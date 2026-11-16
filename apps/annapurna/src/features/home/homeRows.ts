@@ -4,14 +4,15 @@ import { reviewAge } from "@ttn/site-data/reviewAge";
 import { firstText } from "@ttn/site-data/rowText";
 
 import type { HomeGuide, HomeRating, HomeReview, HomeTop } from "./types";
+import { SITE_LANGUAGE } from "@/lib/site";
 
 const REVIEWS_SHOWN = 6;
 
-export const GUIDE_TOPICS: Record<WebTravelGuideRow["topic"], string> = { planning: "Planning", "best-time": "Best time to trek", health: "Health and safety", gear: "Gear and packing" };
+export const GUIDE_TOPICS: Record<WebTravelGuideRow["topic"], string> = { planning: "Planung", "best-time": "Beste Reisezeit", health: "Gesundheit und Sicherheit", gear: "Ausrüstung und Packliste" };
 
-const DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const DATE = new Intl.DateTimeFormat("de-DE", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-/** "Oct 25, 2026" from a saved date. */
+/** "25. Okt. 2026" from a saved date. */
 export const formatGuideDate = (day: string) => DATE.format(new Date(`${day}T00:00:00Z`));
 
 const textOf = (content: unknown, key: string) => {
@@ -25,11 +26,11 @@ export const toHomeTop = (row: WebSitePageRow, photosBaseUrl: string): HomeTop =
   heading: row.heading.trim(),
   intro: row.intro.trim(),
   photo: coverImage(row, photosBaseUrl, row.heading, textOf(row.content, "photoAlt")),
-  buttonLabel: textOf(row.content, "buttonLabel") || "Plan my trek on WhatsApp",
+  buttonLabel: textOf(row.content, "buttonLabel") || "Trek per WhatsApp planen",
   secondLabel: textOf(row.content, "secondLabel"),
 });
 
-/** The newest reviews; "5 months ago" is worked out here, so it stays true while the page is cached. */
+/** The newest reviews; "vor 5 Monaten" is worked out here, so it stays true while the page is cached. */
 export const toHomeReviews = (rows: readonly WebReviewRow[], photosBaseUrl: string, now: Date): HomeReview[] =>
   rows
     .toSorted((a, b) => b.reviewed_on.localeCompare(a.reviewed_on))
@@ -38,7 +39,7 @@ export const toHomeReviews = (rows: readonly WebReviewRow[], photosBaseUrl: stri
       id: row.id,
       source: row.source,
       name: row.reviewer_name,
-      when: reviewAge(row.reviewed_on, now),
+      when: reviewAge(row.reviewed_on, now, SITE_LANGUAGE),
       rating: row.rating,
       text: row.quote,
       url: row.url,
@@ -59,7 +60,7 @@ const toGuide = (row: WebTravelGuideRow, photosBaseUrl: string): HomeGuide => ({
   text: firstText(row.card_text) ?? "",
   topic: row.topic,
   tag: GUIDE_TOPICS[row.topic],
-  meta: `${formatGuideDate(row.published_on)} · ${row.read_minutes} min read`,
+  meta: `${formatGuideDate(row.published_on)} · ${row.read_minutes} Min. Lesezeit`,
   image: coverImage(row, photosBaseUrl, row.title, row.cover_alt),
   isFeatured: row.is_featured,
   regionSlugs: row.region_slugs,

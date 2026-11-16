@@ -4,7 +4,7 @@ type BreadcrumbsProps = { items: readonly { label: string; href?: string }[] };
 
 /** Where the page sits: the last item is the page, and an item with no page of its own is plain text. */
 export const Breadcrumbs = ({ items }: BreadcrumbsProps) => (
-  <nav aria-label="Breadcrumb" className="text-sm leading-5 text-muted">
+  <nav aria-label="Brotkrümelnavigation" className="text-sm leading-5 text-muted">
     <ol className="flex flex-wrap items-center gap-2">
       {items.map((item, index) => {
         const isLast = index === items.length - 1;

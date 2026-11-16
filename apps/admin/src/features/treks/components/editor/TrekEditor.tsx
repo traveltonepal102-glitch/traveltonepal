@@ -19,6 +19,7 @@ import { firstSectionWithError, sectionsWithErrors, trekSectionsInPageOrder } fr
 import type { RegionOption, SimilarTrekOption, TrekFileUrls, TrekPhotos, TrekSectionKey, TrekValues } from "../../types";
 import { TrekSectionPanels } from "./TrekSectionPanels";
 import { TrekStatusSelect } from "./TrekStatusSelect";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type TrekEditorProps = {
   /** saveTrek bound to this trek's id (null for a new trek). */
@@ -54,13 +55,17 @@ type TrekEditorProps = {
  * you typed, and Save sends everything, including the status. Nothing is saved until Save.
  */
 export const TrekEditor = ({ action, values, photos, trekId, topicPhotos, regions, similarOptions, guideOptions, blogOptions = null, regionId, isNew, trekFileUrls, lastSaved, isJustAdded = false, isJustCopied = false, headerActions }: TrekEditorProps) => {
+  const { currency } = useSiteCurrency();
+  // A copy keeps Travel To Nepal's numbers, which are US dollars: a website in another currency needs its own prices.
+  const copiedLabel =
+    currency === "USD" ? "Copied as a draft: change the words, then publish" : "Copied as a draft: translate the words and enter euro prices (copied in US dollars), then publish";
   const form = useEditorForm<TrekSectionKey>({
     action,
     firstKey: "top",
     firstSectionWithError,
     isNew,
     lastSaved,
-    addedLabel: isJustCopied ? "Copied as a draft: change the words, then publish" : isJustAdded ? "Trek added" : undefined,
+    addedLabel: isJustCopied ? copiedLabel : isJustAdded ? "Trek added" : undefined,
   });
   const { errors, activeKey, markDirty } = form;
   const [status, statusTone] = form.saveStatus;

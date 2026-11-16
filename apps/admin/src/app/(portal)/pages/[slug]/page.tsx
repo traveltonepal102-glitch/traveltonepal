@@ -27,6 +27,7 @@ import { listTrekkingGuides } from "@/features/trekking-guides/services/guidesRe
 import { getCurrentSite } from "@/features/sites/lib/currentSite";
 import type { Site } from "@/features/sites/types";
 import { formatDateTime } from "@/utils/formatDateTime";
+import { pageWebsitePath } from "@/features/pages/lib/pageWebsitePath";
 
 export const generateMetadata = async ({ params }: PageProps<"/pages/[slug]">): Promise<Metadata> => {
   const { slug } = await params;
@@ -81,6 +82,7 @@ const LegalPagesEditorPage = async (site: Site, pageParam: unknown) => {
       values={{ terms, privacy, impressum, cookies }}
       initialPage={initialPage}
       websiteUrl={viewOnSiteUrl(site)}
+      site={site}
       lastSaved={savedLabel(latest)}
     />
   );
@@ -100,7 +102,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
   const websiteUrl = viewOnSiteUrl(site);
 
   if (slug === "contact") {
-    return <ContactPageEditor action={saveContactPage.bind(null, site.id)} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} lastSaved={lastSaved} />;
+    return <ContactPageEditor action={saveContactPage.bind(null, site.id)} values={toContactValues(page)} photo={page.photo} sharePhoto={page.sharePhoto} websiteUrl={websiteUrl} websitePath={pageWebsitePath("contact", "/contact", site)} lastSaved={lastSaved} />;
   }
 
   // The website's own people: its founder is one of its office authors, its team its own authors and guides.
@@ -116,6 +118,7 @@ const SitePageEditorPage = async ({ params, searchParams }: PageProps<"/pages/[s
       team={aboutTeamPeople(authors, guides, { authorHref: authorPath, guideHref: guidePath })}
       facts={aboutFactsFrom(settings, regions?.length ?? null)}
       websiteUrl={websiteUrl}
+      websitePath={pageWebsitePath("about", "/about", site)}
       lastSaved={lastSaved}
     />
   );

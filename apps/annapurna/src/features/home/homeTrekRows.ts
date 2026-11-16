@@ -1,3 +1,4 @@
+import { toSiteCurrency } from "@ttn/config/siteLanguage";
 import { coverImage } from "@ttn/site-data/images";
 import type { SiteImageSource } from "@ttn/site-data/images";
 import type { WebTrekGuideRow, WebTrekPageRow, WebTrekPhotoRow, WebTrekRow } from "@ttn/site-data/database.types";
@@ -14,7 +15,7 @@ import { toHomeFieldGuide, toHomeGuideTeam, toHomeMeals, toHomeRouteMap } from "
 import { topPlaceOf } from "./topPlace";
 import type { HomeFact, HomeSectionKey, HomeTrek, HomeTrekCard } from "./types";
 
-const DIFFICULTY: Record<WebTrekRow["difficulty"], string> = { easy: "Easy", moderate: "Moderate", challenging: "Challenging", strenuous: "Strenuous" };
+const DIFFICULTY: Record<WebTrekRow["difficulty"], string> = { easy: "Leicht", moderate: "Mittel", challenging: "Anspruchsvoll", strenuous: "Sehr anspruchsvoll" };
 
 const MONTH_RATINGS: readonly string[] = ["best", "possible", "avoid"];
 
@@ -35,7 +36,8 @@ export const toTrekCard = (row: WebTrekRow, photosBaseUrl: string, homeSlug: str
   difficulty: DIFFICULTY[row.difficulty],
   maxAltitudeM: row.max_altitude_m,
   season: row.season_label.trim(),
-  priceFromUsd: row.price_from_usd,
+  priceFrom: row.price_from,
+  currency: toSiteCurrency(row.currency),
   image: coverImage(row, photosBaseUrl, row.name),
   hasPage: row.has_page,
   href: row.slug === homeSlug ? ROUTES.home : pagePath(row.slug),
@@ -54,16 +56,16 @@ const toPhotos = (summary: WebTrekRow, rows: readonly WebTrekPhotoRow[], photosB
 /** Only the facts the admin filled in. */
 const toFacts = (summary: WebTrekRow, page: WebTrekPageRow): HomeFact[] => {
   const facts: { icon: HomeFact["icon"]; label: string; value: string | null | undefined }[] = [
-    { icon: "calendar", label: "Duration", value: summary.days ? formatDays(summary.days) : "" },
-    { icon: "trend", label: "Difficulty", value: DIFFICULTY[summary.difficulty] },
-    { icon: "mountain", label: "Highest point", value: summary.max_altitude_m ? formatAltitude(summary.max_altitude_m) : "" },
-    { icon: "route", label: "Start and finish", value: page.start_finish },
-    { icon: "trend", label: "Total distance", value: page.distance_km ? `${page.distance_km} km` : "" },
-    { icon: "clock", label: "Walking each day", value: page.daily_walking },
-    { icon: "bed", label: "Stay", value: page.accommodation },
+    { icon: "calendar", label: "Dauer", value: summary.days ? formatDays(summary.days) : "" },
+    { icon: "trend", label: "Schwierigkeit", value: DIFFICULTY[summary.difficulty] },
+    { icon: "mountain", label: "Höchster Punkt", value: summary.max_altitude_m ? formatAltitude(summary.max_altitude_m) : "" },
+    { icon: "route", label: "Start/Ziel", value: page.start_finish },
+    { icon: "trend", label: "Strecke", value: page.distance_km ? `${page.distance_km} km` : "" },
+    { icon: "clock", label: "Gehzeit pro Tag", value: page.daily_walking },
+    { icon: "bed", label: "Unterkunft", value: page.accommodation },
     { icon: "map", label: "Transport", value: page.transport },
-    { icon: "users", label: "Guide to trekkers", value: page.guide_ratio },
-    { icon: "sun", label: "Best season", value: summary.season_label },
+    { icon: "users", label: "Betreuungsschlüssel", value: page.guide_ratio },
+    { icon: "sun", label: "Beste Reisezeit", value: summary.season_label },
   ];
   return facts.flatMap(({ icon, label, value }) => (value?.trim() ? [{ icon, label, value: value.trim() }] : []));
 };
@@ -114,7 +116,8 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
   // The database only takes pdf-maps/<uuid>.pdf and gpx-tracks/<uuid>.gpx, so the paths are safe to add to the address.
   const pdfMapUrl = page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined;
   const gpxUrl = page.gpx_track_path ? `${trekFilesBaseUrl}/${page.gpx_track_path}` : undefined;
-  const prices = readGroupPrices(page.group_prices).map((price) => ({ label: price.label, shortLabel: price.short_label, priceUsd: price.price_usd, team: price.team, isDefault: price.is_default }));
+  const currency = toSiteCurrency(page.currency);
+  const prices = readGroupPrices(page.group_prices).map((price) => ({ label: price.label, shortLabel: price.short_label, price: price.price, currency, team: price.team, isDefault: price.is_default }));
 
   const trek: Omit<HomeTrek, "sections"> = {
     slug: summary.slug,
@@ -126,20 +129,20 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
     photos: toPhotos(summary, photos, photosBaseUrl),
     facts: toFacts(summary, page),
     pdfMapUrl,
-    intro: { heading: firstText(page.intro_heading, page.overview_heading) ?? `About the ${shortName}`, body: toRichTextDoc(page.introduction) },
-    highlights: { heading: firstText(page.highlights_heading) ?? "What you’ll remember", points: readPoints(page.highlights) },
-    suitability: { heading: firstText(page.suitability_heading) ?? `Is the ${shortName} for you?`, intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
-    itinerary: { heading: `${days.length}-day ${firstText(page.itinerary_heading) ?? "day-by-day itinerary"}`, intro: toRichTextDoc(page.itinerary_intro), days, showsCustomization: !page.hidden_shared_sections.includes("customization") },
-    pricing: { heading: firstText(page.pricing_heading) ?? "Prices for your group", intro: page.pricing_intro.trim(), prices },
-    guides: { heading: firstText(page.guides_heading) ?? "Meet your trek guide", intro: page.guides_intro.trim(), team: toHomeGuideTeam(guides, summary.region_name, photosBaseUrl) },
-    inclusions: { heading: firstText(page.inclusions_heading) ?? "What’s included", included: readPoints(page.included), excluded: readPoints(page.excluded) },
+    intro: { heading: firstText(page.intro_heading, page.overview_heading) ?? `${shortName} im Überblick`, body: toRichTextDoc(page.introduction) },
+    highlights: { heading: firstText(page.highlights_heading) ?? "Was Ihnen in Erinnerung bleibt", points: readPoints(page.highlights) },
+    suitability: { heading: firstText(page.suitability_heading) ?? `Ist der ${shortName} das Richtige für Sie?`, intro: page.suitability_intro.trim(), points: readPoints(page.suitability_points) },
+    itinerary: { heading: `${days.length}-Tage-${firstText(page.itinerary_heading) ?? "Reiseverlauf Tag für Tag"}`, intro: toRichTextDoc(page.itinerary_intro), days, showsCustomization: !page.hidden_shared_sections.includes("customization") },
+    pricing: { heading: firstText(page.pricing_heading) ?? "Preise für Ihre Gruppe", intro: page.pricing_intro.trim(), prices },
+    guides: { heading: firstText(page.guides_heading) ?? "Lernen Sie Ihren Guide kennen", intro: page.guides_intro.trim(), team: toHomeGuideTeam(guides, summary.region_name, photosBaseUrl) },
+    inclusions: { heading: firstText(page.inclusions_heading) ?? "Im Preis enthalten", included: readPoints(page.included), excluded: readPoints(page.excluded) },
     meals: page.hidden_shared_sections.includes("meals") ? null : toHomeMeals(page),
     routeMap: toHomeRouteMap(page, { pdfUrl: pdfMapUrl, gpxUrl }, shortName),
-    months: ratings && { heading: `Best months for the ${shortName}`, line: toRichTextDoc(page.months_line), ratings },
-    packing: { heading: firstText(page.packing_heading) ?? "Packing list", line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups).map(({ title, items }) => ({ title, items })) },
+    months: ratings && { heading: `Beste Reisemonate für den ${shortName}`, line: toRichTextDoc(page.months_line), ratings },
+    packing: { heading: firstText(page.packing_heading) ?? "Packliste", line: toRichTextDoc(page.packing_line), groups: readPackingGroups(page.packing_groups).map(({ title, items }) => ({ title, items })) },
     fieldGuide: toHomeFieldGuide(page, summary.name, photosBaseUrl),
     faq: {
-      heading: firstText(page.faq_heading) ?? `Questions about the ${shortName}`,
+      heading: firstText(page.faq_heading) ?? `Fragen zum ${shortName}`,
       items: readFaqGroups(page.faqs).flatMap((group) => group.items.map(({ question, body, answer }) => ({ question, body, answer }))),
     },
   };

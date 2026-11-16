@@ -19,7 +19,7 @@ const FUNCTION_MISSING = "PGRST202";
 
 /** Until supabase/migrations/20261103100000_sites.sql is applied: the main site alone, so the admin keeps working. */
 const MAIN_SITE_ONLY: Site[] = [
-  { id: MAIN_SITE_ID, kind: "main", regionId: null, name: "Travel To Nepal", url: "https://traveltonepal.com", isLive: true, homeTrekId: null, position: 1 },
+  { id: MAIN_SITE_ID, kind: "main", regionId: null, name: "Travel To Nepal", url: "https://traveltonepal.com", isLive: true, homeTrekId: null, position: 1, language: "en", currency: "USD" },
 ];
 
 /** Every site, in switcher order (the main site first). Throws when the database can't be read. Once per request. */
@@ -27,7 +27,7 @@ export const listSites = cache(async (): Promise<Site[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("sites")
-    .select("id, kind, region_id, name, url, is_live, home_trek_id, position")
+    .select("id, kind, region_id, name, url, is_live, home_trek_id, position, language, currency")
     .order("position")
     .order("name");
   if (error?.code === TABLE_MISSING) {
@@ -44,6 +44,8 @@ export const listSites = cache(async (): Promise<Site[]> => {
     isLive: row.is_live,
     homeTrekId: row.home_trek_id,
     position: row.position,
+    language: row.language,
+    currency: row.currency,
   }));
 });
 
@@ -63,7 +65,7 @@ export const addSite = async (values: NewSiteValues): Promise<AddSiteResult> => 
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_site", {
     p_site_id: null,
-    p_site: { id: values.id, region_id: values.regionId, name: values.name, url: values.url },
+    p_site: { id: values.id, region_id: values.regionId, name: values.name, url: values.url, language: values.language, currency: values.currency },
   });
   if (!error) return { ok: true, siteId: data };
   if (error.code === UNIQUE_VIOLATION) return { ok: false, reason: duplicateReason(error.message) };
@@ -74,18 +76,19 @@ export const addSite = async (values: NewSiteValues): Promise<AddSiteResult> => 
   return { ok: false, reason: "failed" };
 };
 
-export type SaveSiteFailure = "url_taken" | "needs_url" | "not_found" | "forbidden" | "failed";
+export type SaveSiteFailure = "url_taken" | "needs_url" | "language_locked" | "not_found" | "forbidden" | "failed";
 
-/** Saves a site's name, address and "Live" switch (save_site; the main site stays live). */
+/** Saves a site's name, address, "Live" switch, language and currency (save_site; the main site stays live; a live site's language and currency stay). */
 export const saveSite = async (siteId: string, values: EditSiteValues): Promise<{ ok: true } | { ok: false; reason: SaveSiteFailure }> => {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc("save_site", {
     p_site_id: siteId,
-    p_site: { name: values.name, url: values.url, is_live: values.isLive },
+    p_site: { name: values.name, url: values.url, is_live: values.isLive, language: values.language ?? "", currency: values.currency ?? "" },
   });
   if (!error) return { ok: true };
   if (error.code === UNIQUE_VIOLATION) return { ok: false, reason: "url_taken" };
   if (error.code === CHECK_VIOLATION) return { ok: false, reason: "needs_url" };
+  if (error.code === INVALID_REQUEST) return { ok: false, reason: "language_locked" };
   if (error.code === NOT_FOUND) return { ok: false, reason: "not_found" };
   if (error.code === RLS_VIOLATION) return { ok: false, reason: "forbidden" };
   console.error(`save_site failed: ${error.code} ${error.message}`);

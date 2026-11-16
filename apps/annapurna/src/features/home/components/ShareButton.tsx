@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { TrailIcon } from "@/components/ui/TrailIcon";
 
-const WORDS = { idle: "Share", copied: "Link copied", failed: "Couldn't copy the link" } as const;
+const WORDS = { idle: "Teilen", copied: "Link kopiert", failed: "Link konnte nicht kopiert werden" } as const;
 
 /** Shares the page with the phone's share sheet, else copies its address. */
 export const ShareButton = ({ title, className }: { title: string; className: string }) => {

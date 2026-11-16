@@ -8,7 +8,7 @@ import { getBlogsPage } from "@/features/blogs/services/blogsRepository";
 import { sitePageMetadata } from "@/features/site-pages/seo";
 import { ROUTES, blogsPagePath } from "@/lib/routes";
 
-type BlogsListPageProps = PageProps<"/blogs/page/[page]">;
+type BlogsListPageProps = PageProps<"/blog/seite/[page]">;
 
 /** "2" → 2; anything that isn't a whole number above 0 written plainly ("02", "2a") → null. */
 const toPageNumber = (page: string) => (/^[1-9]\d*$/.test(page) ? Number(page) : null);
@@ -28,7 +28,7 @@ export const instant = false;
 export const generateMetadata = async ({ params }: BlogsListPageProps): Promise<Metadata> => {
   const page = toPageNumber((await params).page);
   const { top, guides } = await getBlogsPage();
-  if (!page || page > blogPageCount(guides.length)) return { title: "Page not found" };
+  if (!page || page > blogPageCount(guides.length)) return { title: "Seite nicht gefunden" };
   // Its own address is its canonical: each page lists different blogs.
   return sitePageMetadata({ ...top, seo: { ...top.seo, title: blogsPageTitle(top.seo.title, page) } }, blogsPagePath(page));
 };

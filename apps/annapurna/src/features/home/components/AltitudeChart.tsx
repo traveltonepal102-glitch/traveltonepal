@@ -20,16 +20,16 @@ export const AltitudeChart = ({ days }: { days: readonly HomeDay[] }) => {
   return (
     <figure className="flex flex-col gap-3 rounded-[14px] border border-solid border-line px-4 pt-5 pb-4 sm:px-5">
       <figcaption className="flex flex-wrap justify-between gap-x-3 gap-y-1 text-sm leading-5 text-muted">
-        <span className="font-semibold text-ink">Altitude by day</span>
+        <span className="font-semibold text-ink">Höhenprofil nach Tagen</span>
         <span>
-          Highest: {formatAltitude(top)}, {highest.topPlace} (day {highest.number})
+          Höchster Punkt: {formatAltitude(top)}, {highest.topPlace} (Tag {highest.number})
         </span>
       </figcaption>
       <div aria-hidden="true" className={`${ROW} border-b border-solid border-line pb-1.5 text-xs leading-4 font-semibold tracking-wide text-muted uppercase`}>
-        <span>Day</span>
-        <span>Place</span>
+        <span>Tag</span>
+        <span>Ort</span>
         <span />
-        <span className="text-right">Altitude</span>
+        <span className="text-right">Höhe</span>
       </div>
       <ol className="flex flex-col gap-1">
         {days.map((day) => {
@@ -37,7 +37,7 @@ export const AltitudeChart = ({ days }: { days: readonly HomeDay[] }) => {
           return (
             <li key={day.number} className={`${ROW} min-h-7 text-sm leading-4.5 ${isTop ? "font-semibold text-ink" : "text-text"}`}>
               <span className="font-semibold text-muted tabular-nums">
-                <span className="sr-only">Day </span>
+                <span className="sr-only">Tag </span>
                 {day.number}
                 <span className="sr-only">:</span>
               </span>
@@ -48,7 +48,7 @@ export const AltitudeChart = ({ days }: { days: readonly HomeDay[] }) => {
               <span className="text-right whitespace-nowrap tabular-nums">
                 <span className="sr-only">, </span>
                 {formatAltitude(day.altitudeM)}
-                {isTop && <span className="sr-only">, the highest point</span>}
+                {isTop && <span className="sr-only">, der höchste Punkt</span>}
               </span>
             </li>
           );

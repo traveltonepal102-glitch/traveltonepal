@@ -6,6 +6,7 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { HomeRating, HomeTop, HomeTrek } from "../types";
 import { ShareButton } from "./ShareButton";
+import { formatDecimal } from "@/lib/format";
 
 const SMALL_BUTTON = `${outlineButton} min-h-11 px-4 text-[15px]`;
 const FLAGS = ["bg-azure", "bg-[#e6e9ef]", "bg-ember", "bg-whatsapp", "bg-sun"];
@@ -32,13 +33,13 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
           {rating && (
             <span className="inline-flex items-center gap-1.5 font-bold text-ink">
               <TrailIcon name="star" size={16} className="fill-sun text-sun" />
-              {rating.rating.toFixed(1)}
+              {formatDecimal(rating.rating)}
               {hasReviews ? (
                 <a href="#reviews" className="font-medium text-muted">
-                  ({rating.count} Google reviews)
+                  ({rating.count} Google-Bewertungen)
                 </a>
               ) : (
-                <span className="font-medium text-muted">({rating.count} Google reviews)</span>
+                <span className="font-medium text-muted">({rating.count} Google-Bewertungen)</span>
               )}
             </span>
           )}
@@ -54,7 +55,7 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
     </div>
     {/* On a phone: the two main buttons full width, then "Trip PDF" and "Share" side by side. */}
     <div className="actions max-sm:w-full max-sm:grid-cols-2 sm:ml-auto">
-      <a href={getWhatsAppUrl(`Hello! I would like to plan the ${trek?.name ?? "trek"}.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
+      <a href={getWhatsAppUrl(`Hallo! Ich möchte den ${trek?.name ?? "Trek"} planen.`)} rel="nofollow" className={`${whatsAppButton} max-sm:col-span-2`}>
         <WhatsAppLogo />
         {top.buttonLabel}
       </a>
@@ -66,7 +67,7 @@ export const HomeTitle = ({ top, trek, rating, hasReviews }: HomeTitleProps) => 
       {trek?.pdfMapUrl && (
         <a href={trek.pdfMapUrl} className={SMALL_BUTTON}>
           <TrailIcon name="doc" />
-          Trip PDF
+          Reise-PDF
         </a>
       )}
       <ShareButton title={top.heading} className={`${SMALL_BUTTON} ${trek?.pdfMapUrl ? "" : "max-sm:col-span-2"}`} />

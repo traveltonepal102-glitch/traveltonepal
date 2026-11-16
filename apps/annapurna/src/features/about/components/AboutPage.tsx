@@ -26,17 +26,17 @@ import { TeamSection } from "./TeamSection";
 export const AboutPage = async () => {
   const [about, team, { foundedYear }] = await Promise.all([getAboutContent(), listTeam(), getSiteSettings()]);
   const stats: AboutStat[] = [
-    ...(foundedYear ? [{ value: String(foundedYear), label: "Founded" }] : []),
-    ...(about.trekkingRegions ? [{ value: about.trekkingRegions, label: "Trekking regions" }] : []),
-    ...(about.trekkersGuided ? [{ value: about.trekkersGuided, label: "Trekkers guided" }] : []),
+    ...(foundedYear ? [{ value: String(foundedYear), label: "Gegründet" }] : []),
+    ...(about.trekkingRegions ? [{ value: about.trekkingRegions, label: "Trekkingregionen" }] : []),
+    ...(about.trekkersGuided ? [{ value: about.trekkersGuided, label: "Begleitete Trekker" }] : []),
     ...(about.stat ? [about.stat] : []),
   ];
   const links = [
-    { id: ABOUT_SECTIONS.beliefs, label: "What we believe" },
-    { id: ABOUT_SECTIONS.story, label: "Our story" },
-    ...(team.length > 0 ? [{ id: ABOUT_SECTIONS.team, label: "Our team" }] : []),
-    { id: ABOUT_SECTIONS.licences, label: "Licences" },
-    { id: ABOUT_SECTIONS.responsible, label: "Responsible travel" },
+    { id: ABOUT_SECTIONS.beliefs, label: "Unsere Werte" },
+    { id: ABOUT_SECTIONS.story, label: "Unsere Geschichte" },
+    ...(team.length > 0 ? [{ id: ABOUT_SECTIONS.team, label: "Unser Team" }] : []),
+    { id: ABOUT_SECTIONS.licences, label: "Lizenzen" },
+    { id: ABOUT_SECTIONS.responsible, label: "Verantwortungsvoll reisen" },
   ];
 
   return (
@@ -44,7 +44,7 @@ export const AboutPage = async () => {
       <JsonLd data={aboutJsonLd(about)} />
       <AboutHero top={about.top} stats={stats} />
       <ScrollRevealBar>
-        <section aria-label="Sections of this page" className="border-0 border-b border-solid border-line bg-white/97 shadow-card backdrop-blur-sm">
+        <section aria-label="Abschnitte dieser Seite" className="border-0 border-b border-solid border-line bg-white/97 shadow-card backdrop-blur-sm">
           <div className="wrap">
             <PageSectionLinks links={links} />
           </div>

@@ -6,7 +6,7 @@ import { useId } from "react";
 import { outlineButton, whatsAppButton } from "@/components/ui/buttonStyles";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
-import { formatUsd } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 import { buildBookingMessage } from "../bookingMessage";
 import { MAX_TRAVELLERS, nextGroupTip, travellersText } from "../groupSizes";
@@ -31,12 +31,12 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
     <div className="overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-raised">
       <div className="flex flex-col gap-0.5 bg-navy-deep px-5.5 pt-5 pb-4.5 text-snow">
         <h2 id="book-h" className="font-body! text-[15px]! leading-5! font-semibold text-on-navy-muted!">
-          Book the {shortName}
+          {shortName} buchen
         </h2>
         {chosen && (
           <span className="flex flex-wrap items-baseline gap-2">
-            <span className="font-display text-[38px] leading-11 font-[640]">{formatUsd(chosen.priceUsd)}</span>
-            <span className="text-[15px] text-on-navy-muted">per person · {chosen.label}</span>
+            <span className="font-display text-[38px] leading-11 font-[640]">{formatPrice(chosen.price, chosen.currency)}</span>
+            <span className="text-[15px] text-on-navy-muted">pro Person · {chosen.label}</span>
           </span>
         )}
       </div>
@@ -44,27 +44,27 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
       <div className="flex flex-col gap-4 px-5.5 pt-4.5 pb-5.5">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={`${id}-date`} className={LABEL}>
-            Start date
+            Startdatum
           </label>
           <input id={`${id}-date`} type="date" value={startDate} min={today || undefined} onChange={(event) => setStartDate(event.target.value)} className={FIELD} />
-          <span className="text-eyebrow text-muted">Private trek: start on any day you like.</span>
+          <span className="text-eyebrow text-muted">Privattrek: Sie starten an einem Tag Ihrer Wahl.</span>
         </div>
 
         <div className="flex items-center justify-between gap-3">
           <span className="flex flex-col">
             <span id={`${id}-travellers`} className={LABEL}>
-              Travellers
+              Personen
             </span>
             {chosen?.team && <span className="text-eyebrow text-muted">{chosen.team}</span>}
           </span>
           <span role="group" aria-labelledby={`${id}-travellers`} className="inline-flex flex-none items-center rounded-[10px] border border-solid border-field">
-            <button type="button" aria-label="One traveller fewer" disabled={travellers <= MIN_TRAVELLERS} onClick={() => setTravellers(travellers - 1)} className={STEP}>
+            <button type="button" aria-label="Eine Person weniger" disabled={travellers <= MIN_TRAVELLERS} onClick={() => setTravellers(travellers - 1)} className={STEP}>
               −
             </button>
             <output aria-live="polite" className="min-w-8 text-center font-semibold text-ink">
               {travellers}
             </output>
-            <button type="button" aria-label="One more traveller" disabled={travellers >= MAX_TRAVELLERS} onClick={() => setTravellers(travellers + 1)} className={STEP}>
+            <button type="button" aria-label="Eine Person mehr" disabled={travellers >= MAX_TRAVELLERS} onClick={() => setTravellers(travellers + 1)} className={STEP}>
               +
             </button>
           </span>
@@ -73,19 +73,19 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
         {tip && (
           <p className="flex gap-2 rounded-[10px] bg-cream px-3 py-2.5 text-sm leading-5 text-cream-ink">
             <TrailIcon name="tag" size={16} className="mt-0.5" />
-            Add {tip.more} more and the price drops to {formatUsd(tip.priceUsd)} per person.
+            Mit {tip.more === 1 ? "einer weiteren Person" : `${tip.more} weiteren Personen`} sinkt der Preis auf {formatPrice(tip.price, tip.currency)} pro Person.
           </p>
         )}
 
         {chosen && (
           <dl className="flex flex-col gap-2 border-t border-solid border-line pt-3.5 text-[15px] leading-5.5">
             <div className="flex justify-between gap-3">
-              <dt>{formatUsd(chosen.priceUsd)} × {travellersText(travellers)}</dt>
-              <dd className="text-ink">{formatUsd(chosen.priceUsd * travellers)}</dd>
+              <dt>{formatPrice(chosen.price, chosen.currency)} × {travellersText(travellers)}</dt>
+              <dd className="text-ink">{formatPrice(chosen.price * travellers, chosen.currency)}</dd>
             </div>
             <div className="flex items-baseline justify-between gap-3 border-t border-dashed border-line pt-2.5">
-              <dt className="font-semibold text-ink">Total</dt>
-              <dd className="font-display text-[26px] leading-7.5 font-[640] text-ink">{formatUsd(chosen.priceUsd * travellers)}</dd>
+              <dt className="font-semibold text-ink">Gesamt</dt>
+              <dd className="font-display text-[26px] leading-7.5 font-[640] text-ink">{formatPrice(chosen.price * travellers, chosen.currency)}</dd>
             </div>
           </dl>
         )}
@@ -93,13 +93,13 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
         <div className="flex flex-col gap-2 border-t border-solid border-line pt-4">
           <a href={getWhatsAppUrl(message)} rel="nofollow" className={whatsAppButton}>
             <WhatsAppLogo />
-            Book on WhatsApp
+            Per WhatsApp anfragen
           </a>
-          <a href={getEmailUrl({ subject: `Booking the ${trekName}`, body: message })} rel="nofollow" className={outlineButton}>
+          <a href={getEmailUrl({ subject: `Buchungsanfrage: ${trekName}`, body: message })} rel="nofollow" className={outlineButton}>
             <TrailIcon name="mail" />
-            Book by email
+            Per E-Mail anfragen
           </a>
-          <p className="text-center text-eyebrow text-muted">Nothing to pay now: this only starts the conversation.</p>
+          <p className="text-center text-eyebrow text-muted">Jetzt nichts zu zahlen: Sie nehmen nur unverbindlich Kontakt auf.</p>
         </div>
       </div>
     </div>

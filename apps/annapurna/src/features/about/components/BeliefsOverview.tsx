@@ -17,7 +17,7 @@ export const BeliefsOverview = ({ listen, honest, flexible, openMind, safetyLine
 
   return (
     <section id={ABOUT_SECTIONS.beliefs} aria-labelledby="beliefs-h" className="wrap flex flex-col gap-8 py-14 md:py-18">
-      <SectionHeading id="beliefs-h" title="What we believe">
+      <SectionHeading id="beliefs-h" title="Woran wir glauben">
         {(safetyLine.lead || safetyLine.text) && (
           <p>
             {safetyLine.lead} <strong className="font-semibold text-ink">{safetyLine.text}</strong>

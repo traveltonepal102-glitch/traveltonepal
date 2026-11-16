@@ -6,7 +6,7 @@ export type SeoCheck = { label: string; isDone: boolean };
 
 const includesKeyword = (text: string, keyword: string) => Boolean(keyword) && text.toLowerCase().includes(keyword.toLowerCase());
 
-/** The Google checklist (design: "Google (SEO)"). The German version's check comes with the German version. */
+/** The Google checklist (design: "Google (SEO)"), for the guide in its website's language. */
 export const getArticleSeoChecks = (article: ArticleDraft & { hasCover: boolean; sections: ArticleSection[] }): SeoCheck[] => {
   const keyword = article.seoKeyword.trim();
   const descriptionLength = article.seoDescription.trim().length;

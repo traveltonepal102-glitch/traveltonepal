@@ -25,6 +25,8 @@ export const CONSENT_STORAGE_KEY = "ttn-consent";
 export const CONSENT_MAX_AGE_DAYS = 365;
 /** CONSENT_MAX_AGE_DAYS as the privacy and cookie pages say it. */
 export const CONSENT_MAX_AGE_LABEL = "12 months";
+/** The same in German. */
+export const CONSENT_MAX_AGE_LABEL_DE = "12 Monate";
 
 export const ALL_ALLOWED: ConsentChoices = { analytics: true, externalMedia: true };
 export const ONLY_NECESSARY: ConsentChoices = { analytics: false, externalMedia: false };

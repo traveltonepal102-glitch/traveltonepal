@@ -1,7 +1,7 @@
-import { formatDays, formatUsd } from "@/lib/format";
+import { formatDays, formatPrice } from "@/lib/format";
 
 import type { HomeTrekCard } from "./types";
 
-/** "12 days · Challenging · from $1,450": what's known of a trek, for a short link to it. */
-export const trekFacts = ({ days, difficulty, priceFromUsd }: HomeTrekCard) =>
-  [days && formatDays(days), difficulty, priceFromUsd !== null && `from ${formatUsd(priceFromUsd)}`].filter(Boolean).join(" · ");
+/** "12 Tage · Anspruchsvoll · ab 1.450 €": what's known of a trek, for a short link to it. */
+export const trekFacts = ({ days, difficulty, priceFrom, currency }: HomeTrekCard) =>
+  [days && formatDays(days), difficulty, priceFrom !== null && `ab ${formatPrice(priceFrom, currency)}`].filter(Boolean).join(" · ");

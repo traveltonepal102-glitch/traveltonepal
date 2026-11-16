@@ -2,7 +2,9 @@
  * The database as the website sees it: the read-only "web_" views (supabase/migrations/…_website_views.sql) and
  * two writes, record_guide_feedback and record_contact_click. Keep in step with those.
  */
-type Locale = "en" | "de";
+import type { SiteCurrency, SiteLanguage } from "@ttn/config/siteLanguage";
+
+type Locale = SiteLanguage;
 
 /**
  * A view's photo columns (null without a photo). `cover_file_name`: the words in its files' names (PhotoFiles in
@@ -133,7 +135,9 @@ export type WebTrekRow = CoverColumns & {
   is_popular: boolean;
   /** No longer shown: trekkers pick their own start date (kept in the view, unused). */
   has_fixed_dates: boolean;
-  price_from_usd: number | null;
+  /** The "From" price in the website's currency (`currency`). The view still has price_from_usd too, for websites built before 2026-11-15. */
+  price_from: number | null;
+  currency: SiteCurrency;
   region_slug: string;
   region_name: string;
   /** The first time it was published, and its last save: the page's published and modified dates. */
@@ -180,8 +184,10 @@ export type WebTrekPageRow = ShareColumns & {
   guides_intro: string;
   included: unknown;
   excluded: unknown;
-  meal_budget_min_usd: number | null;
-  meal_budget_max_usd: number | null;
+  /** A day's meal budget in the website's currency (`currency`); the view still has the old *_usd names too. */
+  meal_budget_min: number | null;
+  meal_budget_max: number | null;
+  currency: SiteCurrency;
   meal_trail_tips: unknown;
   meal_teahouse_notes: unknown;
   start_finish: string;
@@ -206,7 +212,7 @@ export type WebTrekPageRow = ShareColumns & {
   know_topics: unknown;
   /** [{ title, icon, items: [{ question, answer }] }]. */
   faqs: unknown;
-  /** In order: [{ label, short_label, price_usd, team, is_default }]. */
+  /** In order: [{ label, short_label, price, team, is_default }], `price` in the website's currency (also as price_usd, for older builds). */
   group_prices: unknown;
   /** No longer shown: trekkers pick their own start date (kept in the view, unused). */
   has_fixed_dates: boolean;
@@ -346,6 +352,8 @@ export type WebSiteRow = {
   is_live: boolean;
   region_slug: string | null;
   home_trek_slug: string | null;
+  language: SiteLanguage;
+  currency: SiteCurrency;
 };
 
 /** Site settings, as the website shows them (one row: contact details, company and licences, social links). */

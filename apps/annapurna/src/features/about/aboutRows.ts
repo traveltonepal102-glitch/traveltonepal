@@ -19,7 +19,7 @@ export const toAboutContent = (row: WebSitePageRow, photosBaseUrl: string): Abou
   const statLabel = field("statLabel");
 
   return {
-    top: toSitePageTop(row, photosBaseUrl, `${SITE_NAME}'s team`),
+    top: toSitePageTop(row, photosBaseUrl, `Das Team von ${SITE_NAME}`),
     trekkersGuided: field("trekkersGuided"),
     trekkingRegions: field("trekkingRegions"),
     stat: statValue && statLabel ? { value: statValue, label: statLabel } : undefined,
@@ -34,7 +34,7 @@ export const toAboutContent = (row: WebSitePageRow, photosBaseUrl: string): Abou
       body: readPageRichText(content.storyText ?? content.story),
       quote: field("quote"),
       origin: field("founderOrigin"),
-      photo: photoAt(PHOTO_PLACES.founder, founderName ? `${founderName}, ${founderRole || `founder of ${SITE_NAME}`}` : ""),
+      photo: photoAt(PHOTO_PLACES.founder, founderName ? `${founderName}, ${founderRole || `Gründer von ${SITE_NAME}`}` : ""),
       goals: titledList(content.goals),
       voice: { eyebrow: field("voiceEyebrow"), heading: field("voiceHeading"), paragraphs: paragraphsOf(field("voiceText")) },
     },

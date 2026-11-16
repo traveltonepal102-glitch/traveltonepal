@@ -8,9 +8,6 @@ export const SITE_ID = process.env.SITE_ID || MAIN_SITE_ID;
 
 export const IS_MAIN_SITE = SITE_ID === MAIN_SITE_ID;
 
-/** True once the German site (/de) exists; until then the header shows no language switch (it would open a 404). */
-export const HAS_GERMAN_SITE = false;
-
 /** The brand name, as search results and shared links show it. */
 export const SITE_NAME = "Travel To Nepal";
 

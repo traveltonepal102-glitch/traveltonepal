@@ -2,15 +2,13 @@ import { getEmailUrl, getWhatsAppUrl } from "@ttn/config/contact";
 import { Icon } from "@ttn/ui/icon";
 
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { ROUTES } from "@/lib/routes";
-import { HAS_GERMAN_SITE } from "@/lib/site";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import type { HeaderVariant } from "./HeaderMenuProvider";
 
 const LINK = "inline-flex items-center gap-1.5 rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white";
 
-/** Thin top bar (desktop and tablet): licence, email, WhatsApp, language. */
+/** Thin top bar (desktop and tablet): licence, email, WhatsApp. Travel To Nepal is English only (decided 2026-11-15). */
 export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
   const { contact, company } = await getSiteSettings();
   const isTaanMember = company.memberships.some((name) => name.toUpperCase() === "TAAN");
@@ -38,19 +36,6 @@ export const UtilityBar = async ({ variant }: { variant: HeaderVariant }) => {
             {contact.phoneDisplay}
             <span className="sr-only"> on WhatsApp</span>
           </a>
-          {HAS_GERMAN_SITE && (
-            <nav aria-label="Language" className="flex items-center gap-1">
-              <a href={ROUTES.home} aria-current="true" className={`${LINK} font-bold text-white`}>
-                EN
-              </a>
-              <span aria-hidden="true" className="opacity-50">
-                /
-              </span>
-              <a href={ROUTES.german} lang="de" hrefLang="de" className={LINK}>
-                DE
-              </a>
-            </nav>
-          )}
         </div>
       </div>
     </div>

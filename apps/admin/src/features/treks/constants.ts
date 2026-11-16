@@ -22,9 +22,6 @@ export const TREKS_PATH = "/treks";
 export const NEW_TREK_PATH = "/treks/new";
 export const trekPath = (trekId: string) => `${TREKS_PATH}/${trekId}`;
 
-/** The admin edits English for now; the German version comes later (trek_translations.locale). */
-export const TREK_LOCALE = "en";
-
 /** Where a trek page lives on the main site. */
 export const MAIN_SITE_TREKS_PREFIX = "traveltonepal.com/treks/";
 

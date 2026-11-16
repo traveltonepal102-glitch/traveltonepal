@@ -31,25 +31,25 @@ export const ContactDetails = async ({ replyTimes }: { replyTimes: ContactConten
   return (
     <aside aria-labelledby="contact-details-h" className="flex flex-col gap-5 rounded-2xl bg-cloud p-6 md:p-8 lg:sticky lg:top-6 lg:self-start">
       <h2 id="contact-details-h" className="text-[28px]! leading-9!">
-        Contact details
+        Kontaktdaten
       </h2>
       <ul className="flex flex-col divide-y divide-solid divide-line">
         {phoneDisplay && (
           <Detail icon={<WhatsAppLogo size={20} />} title="WhatsApp" note={replyTimes.whatsApp}>
-            <a href={getWhatsAppUrl("Hello! I'd like to ask about a trek.")} rel="nofollow" className={LINK}>
+            <a href={getWhatsAppUrl("Hallo! Ich habe eine Frage zu einem Trek.")} rel="nofollow" className={LINK}>
               {phoneDisplay}
             </a>
           </Detail>
         )}
         {email && (
-          <Detail icon={<TrailIcon name="mail" size={20} />} title="Email" note={replyTimes.email}>
-            <a href={getEmailUrl({ subject: `Question for ${SITE_NAME}` })} rel="nofollow" className={LINK}>
+          <Detail icon={<TrailIcon name="mail" size={20} />} title="E-Mail" note={replyTimes.email}>
+            <a href={getEmailUrl({ subject: `Frage an ${SITE_NAME}` })} rel="nofollow" className={LINK}>
               {email}
             </a>
           </Detail>
         )}
         {officeAddress && (
-          <Detail icon={<TrailIcon name="pin" size={20} />} title="Office">
+          <Detail icon={<TrailIcon name="pin" size={20} />} title="Büro">
             {officeMap.url ? (
               <a href={officeMap.url} target="_blank" rel="noopener noreferrer" className={LINK}>
                 {officeAddress}
@@ -60,13 +60,13 @@ export const ContactDetails = async ({ replyTimes }: { replyTimes: ContactConten
           </Detail>
         )}
         {officeHours && (
-          <Detail icon={<TrailIcon name="clock" size={20} />} title="Office hours" note={replyLanguages.length ? `We reply in ${replyLanguages.join(", ")}.` : undefined}>
+          <Detail icon={<TrailIcon name="clock" size={20} />} title="Bürozeiten" note={replyLanguages.length ? `Wir antworten auf ${replyLanguages.join(", ")}.` : undefined}>
             {officeHours}
           </Detail>
         )}
       </ul>
       {social.length > 0 && (
-        <ul aria-label="Follow us" className="flex flex-wrap gap-x-4 gap-y-1 border-0 border-t border-solid border-line pt-4 text-[15px] font-semibold">
+        <ul aria-label="Folgen Sie uns" className="flex flex-wrap gap-x-4 gap-y-1 border-0 border-t border-solid border-line pt-4 text-[15px] font-semibold">
           {social.map((link) => (
             <li key={link.label}>
               <a href={link.href} rel="noopener noreferrer" className="inline-flex min-h-6 items-center underline underline-offset-2">

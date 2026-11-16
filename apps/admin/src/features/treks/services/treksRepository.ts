@@ -10,7 +10,10 @@ import { EMPTY_RICH_TEXT, richTextDocSchema } from "@/lib/richText/richText";
 import type { Database } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, MEAL_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS, TREK_LOCALE } from "../constants";
+import { REGION_LOCALE } from "@/features/regions/constants";
+import { contentLocaleOf, currentContentLocale } from "@/features/sites/lib/contentLocale";
+
+import { BADGE_ICON_VALUES, FAQ_ICON_VALUES, KNOW_ICON_VALUES, MEAL_VALUES, PACKING_ICON_VALUES, SHARED_SECTION_KEYS } from "../constants";
 import type { GroupPrice, ItineraryDay, Meal, RegionOption, SharedSectionKey, SimilarTrekOption, Trek, TrekFormValues } from "../types";
 
 type TrekRow = Database["public"]["Tables"]["treks"]["Row"];
@@ -238,7 +241,7 @@ export const listRegionOptions = cache(async (): Promise<RegionOption[]> => {
   const { data, error } = await supabase
     .from("regions")
     .select("id, month_ratings, region_translations!inner(name)")
-    .eq("region_translations.locale", TREK_LOCALE);
+    .eq("region_translations.locale", REGION_LOCALE);
   if (error) throw new Error(`Could not load regions: ${error.message}`);
 
   return data
@@ -250,13 +253,13 @@ const regionNameMap = async () => new Map((await listRegionOptions()).map((regio
 
 /** The website's treks to pick from (as similar treks, a region's featured trek…), but `exceptId`, A–Z. Throws when the database can't be read. */
 export const listSimilarTrekOptions = async (siteId: string, exceptId: string | null): Promise<SimilarTrekOption[]> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const [{ data, error }, regionNames] = await Promise.all([
     supabase
       .from("treks")
       .select(`id, days, difficulty, region_id, cover:photos!treks_cover_photo_id_fkey(${PHOTO_COLUMNS}), trek_translations!inner(name), trek_regions(position, region_id)`)
       .eq("site_id", siteId)
-      .eq("trek_translations.locale", TREK_LOCALE),
+      .eq("trek_translations.locale", locale),
     regionNameMap(),
   ]);
   if (error) throw new Error(`Could not load treks: ${error.message}`);
@@ -278,15 +281,15 @@ export const listSimilarTrekOptions = async (siteId: string, exceptId: string | 
 
 /** The website's treks with their English text, most recently edited first. Throws when the database can't be read. */
 export const listTreks = async (siteId: string): Promise<Trek[]> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const [{ data, error }, regionNames, videoTitles] = await Promise.all([
     supabase
       .from("treks")
       .select(TREK_COLUMNS)
       .eq("site_id", siteId)
-      .eq("trek_translations.locale", TREK_LOCALE)
-      .eq("trek_days.trek_day_translations.locale", TREK_LOCALE)
-      .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
+      .eq("trek_translations.locale", locale)
+      .eq("trek_days.trek_day_translations.locale", locale)
+      .eq("trek_group_prices.trek_group_price_translations.locale", locale)
       .order("updated_at", { ascending: false }),
     regionNameMap(),
     videoTitleMap(),
@@ -297,15 +300,15 @@ export const listTreks = async (siteId: string): Promise<Trek[]> => {
 
 /** One trek, or null when there is none with this id. Throws when the database can't be read. Once per request. */
 export const getTrek = cache(async (trekId: string): Promise<Trek | null> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), currentContentLocale()]);
   const [{ data, error }, regionNames, videoTitles] = await Promise.all([
     supabase
       .from("treks")
       .select(TREK_COLUMNS)
       .eq("id", trekId)
-      .eq("trek_translations.locale", TREK_LOCALE)
-      .eq("trek_days.trek_day_translations.locale", TREK_LOCALE)
-      .eq("trek_group_prices.trek_group_price_translations.locale", TREK_LOCALE)
+      .eq("trek_translations.locale", locale)
+      .eq("trek_days.trek_day_translations.locale", locale)
+      .eq("trek_group_prices.trek_group_price_translations.locale", locale)
       .maybeSingle(),
     regionNameMap(),
     videoTitleMap(),
@@ -327,14 +330,14 @@ export type SaveTrekResult =
   | { ok: false; reason: "slug_taken" | "missing_link" | "not_found" | "forbidden" | "failed" };
 
 /**
- * Adds (trekId null) a trek to the website `siteId`, or updates one (it stays on its website), with its English text
+ * Adds (trekId null) a trek to the website `siteId`, or updates one (it stays on its website), with its text in the website's language
  * and its photos in one transaction (save_trek).
  */
 export const saveTrek = async (values: TrekFormValues, trekId: string | null, siteId: string): Promise<SaveTrekResult> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const { data, error } = await supabase.rpc("save_trek", {
     p_trek_id: trekId,
-    p_locale: TREK_LOCALE,
+    p_locale: locale,
     p_trek: {
       site_id: siteId,
       slug: values.slug,

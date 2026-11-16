@@ -15,8 +15,8 @@ export const contactJsonLd = ({ top, faqs }: ContactPageContent) => ({
     {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl(ROUTES.home) },
-        { "@type": "ListItem", position: 2, name: "Contact", item: absoluteUrl(ROUTES.contact) },
+        { "@type": "ListItem", position: 1, name: "Startseite", item: absoluteUrl(ROUTES.home) },
+        { "@type": "ListItem", position: 2, name: "Kontakt", item: absoluteUrl(ROUTES.contact) },
       ],
     },
     ...(faqs.length

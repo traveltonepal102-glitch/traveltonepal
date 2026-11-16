@@ -13,13 +13,13 @@ import { BlogSearchBox } from "./BlogSearchBox";
 const LIST_ID = "blog-list";
 const CHIP = "inline-flex min-h-10 items-center rounded-full border border-solid px-4 text-[15px] font-semibold no-underline";
 
-const countWords = (total: number) => `${total} ${total === 1 ? "blog" : "blogs"}`;
+const countWords = (total: number) => `${total} Artikel`;
 
-/** "2 blogs match “permit” in Planning", or how many there are and which page this is. */
+/** "2 Artikel zu „Permit“ im Thema „Planung“", or how many there are and which page this is. */
 const statusLine = (total: number, q: string, topicLabel: string | undefined, page: number, pageCount: number) => {
-  const where = topicLabel ? ` in ${topicLabel}` : "";
-  if (q) return `${countWords(total)} ${total === 1 ? "matches" : "match"} “${q}”${where}`;
-  return `${countWords(total)}${where}${pageCount > 1 ? `, page ${page} of ${pageCount}` : ""}`;
+  const where = topicLabel ? ` im Thema „${topicLabel}“` : "";
+  if (q) return `${countWords(total)} zu „${q}“${where}`;
+  return `${countWords(total)}${where}${pageCount > 1 ? `, Seite ${page} von ${pageCount}` : ""}`;
 };
 
 type ViewProps = {
@@ -41,7 +41,7 @@ const BlogExplorerView = ({ guides, listPage, filters, onChange }: ViewProps) =>
   const { items, page, pageCount, total, isFiltering } = toBlogPage(guides, isNarrowed ? filters : { ...EMPTY_BLOG_FILTERS, page: listPage });
   const topicLabel = topics.find((topic) => topic.id === filters.topic)?.label;
   // By name while narrowed down; otherwise the list is newest first.
-  const listHeading = filters.q ? "Search results" : (topicLabel ?? "Latest blogs");
+  const listHeading = filters.q ? "Suchergebnisse" : (topicLabel ?? "Neueste Artikel");
 
   const showPage = (number: number) => {
     onChange?.({ ...filters, page: number }, "push");
@@ -49,12 +49,12 @@ const BlogExplorerView = ({ guides, listPage, filters, onChange }: ViewProps) =>
   };
 
   return (
-    <section aria-label="All blogs" id={LIST_ID} className="wrap flex flex-col gap-7 py-10 md:py-14">
+    <section aria-label="Alle Artikel" id={LIST_ID} className="wrap flex flex-col gap-7 py-10 md:py-14">
       <div className="grid items-center gap-4 md:grid-cols-[minmax(0,1fr)_320px]">
         <div>
           {topics.length > 1 && (
-            <ul aria-label="Blog topics" className="flex flex-wrap gap-2">
-              {[{ id: null, label: "All" }, ...topics].map(({ id, label }) => {
+            <ul aria-label="Themen" className="flex flex-wrap gap-2">
+              {[{ id: null, label: "Alle" }, ...topics].map(({ id, label }) => {
                 const isCurrent = filters.topic === id;
                 return (
                   <li key={label}>
@@ -83,11 +83,11 @@ const BlogExplorerView = ({ guides, listPage, filters, onChange }: ViewProps) =>
         </div>
         {total === 0 ? (
           <div className="flex flex-col items-start gap-3 rounded-2xl bg-cloud p-6 md:p-8">
-            <h3>No blogs found</h3>
-            <p>{isFiltering ? "Try a shorter word, or look through all of them." : "New blogs will be listed here."}</p>
+            <h3>Keine Artikel gefunden</h3>
+            <p>{isFiltering ? "Versuchen Sie ein kürzeres Suchwort oder sehen Sie sich alle Artikel an." : "Neue Artikel erscheinen hier."}</p>
             {isFiltering && (
               <button type="button" onClick={() => onChange?.(EMPTY_BLOG_FILTERS, "replace")} className={`${CHIP} cursor-pointer border-navy bg-navy text-snow hover:text-snow`}>
-                See all blogs
+                Alle Artikel anzeigen
               </button>
             )}
           </div>

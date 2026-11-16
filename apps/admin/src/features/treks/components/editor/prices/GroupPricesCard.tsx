@@ -14,6 +14,7 @@ import type { FieldErrors } from "@/lib/forms/fieldErrors";
 
 import { BOOKING_DEPOSIT_PERCENT, MAX_GROUP_PRICES, PRICE_LIMITS as LIMIT } from "../../../constants";
 import type { GroupPrice } from "../../../types";
+import { useSiteCurrency } from "@/features/sites/components/SiteCurrency";
 
 type GroupPricesCardProps = {
   prices: GroupPrice[];
@@ -30,6 +31,8 @@ const toRow = (price: GroupPrice): PriceRow => ({ ...price, priceUsd: price.pric
 /** Price per person by group size, with one "Most popular" row (design: "Price per person, by group size"). */
 export const GroupPricesCard = ({ prices, errors, onEdit }: GroupPricesCardProps) => {
   const list = useRowList<PriceRow>(prices.map(toRow), onEdit);
+  const { currency, symbol } = useSiteCurrency();
+  const currencyName = currency === "EUR" ? "euros" : "US dollars";
   const rowError = (index: number, field: string) => errors[`groupPrices.${index}.${field}`];
 
   const addRow = () => list.add({ id: null, label: "", shortLabel: "", priceUsd: "", team: "", isDefault: list.rows.length === 0 });
@@ -38,13 +41,13 @@ export const GroupPricesCard = ({ prices, errors, onEdit }: GroupPricesCardProps
   return (
     <FormSection
       title="Price per person, by group size"
-      hint="Prices in US dollars. The trek is always private, so the price falls as the group grows. “Most popular” is selected first on the trek page and is the “From” price."
+      hint={`Prices in ${currencyName}, the website's currency. The trek is always private, so the price falls as the group grows. “Most popular” is selected first on the trek page and is the “From” price.`}
     >
       {list.rows.length > 0 && (
         <div aria-hidden="true" className={cn("hidden gap-2 px-1 text-xs font-bold tracking-wider text-muted-foreground uppercase tablet:grid", COLUMNS)}>
           <span>Group size</span>
           <span>Short label</span>
-          <span>Price (US$)</span>
+          <span>Price ({symbol})</span>
           <span>Team that comes</span>
           <span>Most popular</span>
         </div>
@@ -65,8 +68,8 @@ export const GroupPricesCard = ({ prices, errors, onEdit }: GroupPricesCardProps
             <TextField name="priceLabel" label={`Group size, row ${number}`} isLabelHidden value={row.label} onValueChange={(label) => list.update(row.key, { label })} placeholder="3–5 people" maxLength={LIMIT.label} error={rowError(index, "label")} />
             <TextField name="priceShortLabel" label={`Short label, row ${number}`} isLabelHidden value={row.shortLabel} onValueChange={(shortLabel) => list.update(row.key, { shortLabel })} placeholder="3–5 Pax" maxLength={LIMIT.shortLabel} error={rowError(index, "shortLabel")} />
             <div className="relative">
-              <span aria-hidden="true" className="pointer-events-none absolute top-2.5 left-3 font-bold text-muted-foreground">$</span>
-              <TextField name="priceUsd" label={`Price per person in US dollars, row ${number}`} isLabelHidden inputMode="numeric" value={row.priceUsd} onValueChange={(priceUsd) => list.update(row.key, { priceUsd })} placeholder="890" error={rowError(index, "priceUsd")} inputClassName="pl-7 font-bold" />
+              <span aria-hidden="true" className="pointer-events-none absolute top-2.5 left-3 font-bold text-muted-foreground">{symbol}</span>
+              <TextField name="priceUsd" label={`Price per person in ${currencyName}, row ${number}`} isLabelHidden inputMode="numeric" value={row.priceUsd} onValueChange={(priceUsd) => list.update(row.key, { priceUsd })} placeholder="890" error={rowError(index, "priceUsd")} inputClassName="pl-7 font-bold" />
             </div>
             <TextField name="priceTeam" label={`Team that comes, row ${number}`} isLabelHidden value={row.team} onValueChange={(team) => list.update(row.key, { team })} placeholder="Lead guide + assistant + porters" maxLength={LIMIT.team} error={rowError(index, "team")} multiline rows={1} inputClassName="min-h-10.5 resize-none [field-sizing:content]" />
             <label className="flex h-10.5 cursor-pointer items-center gap-2 text-caption font-bold">

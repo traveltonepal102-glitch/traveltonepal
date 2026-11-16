@@ -24,7 +24,7 @@ export const BlogPagination = ({ page, pageCount, hrefFor, onChoose }: BlogPagin
 
   const item = (target: number, children: ReactNode, rel?: "prev" | "next") => {
     const isCurrent = !rel && target === page;
-    const shared = { "aria-label": rel ? undefined : `Page ${target}`, "aria-current": isCurrent ? ("page" as const) : undefined, className: isCurrent ? CURRENT : LINK };
+    const shared = { "aria-label": rel ? undefined : `Seite ${target}`, "aria-current": isCurrent ? ("page" as const) : undefined, className: isCurrent ? CURRENT : LINK };
     if (hrefFor) {
       return (
         <Link href={hrefFor(target)} rel={rel} {...shared}>
@@ -40,7 +40,7 @@ export const BlogPagination = ({ page, pageCount, hrefFor, onChoose }: BlogPagin
   };
 
   return (
-    <nav aria-label="Pages of blogs">
+    <nav aria-label="Seiten des Blogs">
       <ul className="m-0 flex list-none flex-wrap items-center justify-center gap-2 p-0">
         {page > 1 && (
           <li>
@@ -48,7 +48,7 @@ export const BlogPagination = ({ page, pageCount, hrefFor, onChoose }: BlogPagin
               page - 1,
               <>
                 <TrailIcon name="arrow" size={16} className="rotate-180" />
-                Previous
+                Zurück
               </>,
               "prev",
             )}
@@ -68,7 +68,7 @@ export const BlogPagination = ({ page, pageCount, hrefFor, onChoose }: BlogPagin
             {item(
               page + 1,
               <>
-                Next
+                Weiter
                 <TrailIcon name="arrow" size={16} />
               </>,
               "next",

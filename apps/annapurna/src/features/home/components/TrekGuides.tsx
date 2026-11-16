@@ -20,12 +20,12 @@ const GuideCard = ({ guide }: { guide: HomeTrekGuide }) => (
       {guide.quote && <blockquote className="rounded-[10px] bg-cloud px-3.5 py-2.5 text-[15px] leading-5.5 italic">“{guide.quote}”</blockquote>}
       <dl className="mt-auto flex flex-col gap-1 border-t border-solid border-line pt-2.5 text-sm leading-5">
         <div>
-          <dt className="inline font-semibold text-ink">Certificates: </dt>
+          <dt className="inline font-semibold text-ink">Zertifikate: </dt>
           <dd className="inline">{guide.certifications}</dd>
         </div>
         {guide.languages.length > 0 && (
           <div>
-            <dt className="inline font-semibold text-ink">Languages: </dt>
+            <dt className="inline font-semibold text-ink">Sprachen: </dt>
             <dd className="inline">{guide.languages.join(", ")}</dd>
           </div>
         )}
@@ -37,7 +37,7 @@ const GuideCard = ({ guide }: { guide: HomeTrekGuide }) => (
 /** The guides who lead this trek. */
 export const TrekGuides = ({ guides }: { guides: HomeTrek["guides"] }) => (
   <section aria-labelledby="guides-team-h" id="guides" className="flex flex-col gap-5">
-    <SectionHeading id="guides-team-h" eyebrow="Your local team" title={guides.heading}>
+    <SectionHeading id="guides-team-h" eyebrow="Ihr Team vor Ort" title={guides.heading}>
       {guides.intro && <p>{guides.intro}</p>}
     </SectionHeading>
     <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 max-sm:grid-cols-1">

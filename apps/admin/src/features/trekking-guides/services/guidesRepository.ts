@@ -1,11 +1,13 @@
 import "server-only";
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
 import { z } from "zod";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { GUIDE_CERTIFICATE_VALUES, GUIDE_LOCALE } from "../constants";
+import { GUIDE_CERTIFICATE_VALUES } from "../constants";
 import type { TrekkingGuide, TrekkingGuideFormValues } from "../types";
+import { contentLocaleOf } from "@/features/sites/lib/contentLocale";
 
 /** Postgres error codes the save can raise. */
 const FOREIGN_KEY_VIOLATION = "23503";
@@ -25,20 +27,20 @@ const certificatesSchema = z.array(z.enum(GUIDE_CERTIFICATE_VALUES)).catch([]);
 const toMonth = (date: string | null) => date?.slice(0, 7) ?? null;
 const toDate = (month: string | null) => (month ? `${month}-01` : "");
 
-/** Trek names in English by id, to list where each guide is used. */
-const trekNames = async () => {
+/** The website's trek names by id (in its language), to list where each guide is used. */
+const trekNames = async (siteId: string, locale: SiteLanguage) => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("treks").select("id, trek_translations!inner(name)").eq("trek_translations.locale", GUIDE_LOCALE);
+  const { data, error } = await supabase.from("treks").select("id, trek_translations!inner(name)").eq("site_id", siteId).eq("trek_translations.locale", locale);
   if (error) throw new Error(`Could not load trek names: ${error.message}`);
   return new Map(data.map((trek) => [trek.id, trek.trek_translations[0]?.name ?? ""]));
 };
 
-/** The website's guides (each website has its own) with their English text, A–Z. Throws when the database can't be read. */
+/** The website's guides (each website has its own) with their text in its language, A–Z. Throws when the database can't be read. */
 export const listTrekkingGuides = async (siteId: string): Promise<TrekkingGuide[]> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const [{ data, error }, names] = await Promise.all([
-    supabase.from("trekking_guides").select(GUIDE_COLUMNS).eq("site_id", siteId).eq("trekking_guide_translations.locale", GUIDE_LOCALE),
-    trekNames(),
+    supabase.from("trekking_guides").select(GUIDE_COLUMNS).eq("site_id", siteId).eq("trekking_guide_translations.locale", locale),
+    trekNames(siteId, locale),
   ]);
   if (error) throw new Error(`Could not load trekking guides: ${error.message}`);
 
@@ -81,10 +83,10 @@ export type SaveGuideResult = { ok: true; guideId: string } | { ok: false; reaso
 
 /** Adds (guideId null) a guide to the website `siteId`, or updates one (it stays on its website), with its English text and regions in one transaction. */
 export const saveTrekkingGuide = async (values: TrekkingGuideFormValues, guideId: string | null, siteId: string): Promise<SaveGuideResult> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const { data, error } = await supabase.rpc("save_trekking_guide", {
     p_guide_id: guideId,
-    p_locale: GUIDE_LOCALE,
+    p_locale: locale,
     p_guide: {
       site_id: siteId,
       name: values.name,

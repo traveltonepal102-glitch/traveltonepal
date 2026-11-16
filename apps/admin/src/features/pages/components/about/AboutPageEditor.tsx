@@ -33,6 +33,8 @@ type AboutPageEditorProps = {
   team: AboutTeamPerson[];
   facts: AboutFacts;
   websiteUrl: string | null;
+  /** The page's address on this website (/contact, /kontakt on the German one). */
+  websitePath: string;
   lastSaved: string;
 };
 
@@ -40,7 +42,7 @@ const FIXED_NOTE =
   "Fixed in the website, not edited here: “Responsible travel”, “Our office in Kathmandu” and the “Ready to plan your trek with us?” box at the end (WhatsApp and email). Address, hours, map and licence numbers come from Site settings.";
 
 /** Pages › About (design: About.dc.html): the About page's sections, top to bottom, then the trek pages' promises. */
-export const AboutPageEditor = ({ action, values, photo, sharePhoto, photoSlots, officeAuthors, team, facts, websiteUrl, lastSaved }: AboutPageEditorProps) => {
+export const AboutPageEditor = ({ action, values, photo, sharePhoto, photoSlots, officeAuthors, team, facts, websiteUrl, websitePath, lastSaved }: AboutPageEditorProps) => {
   const slot = (index: number) => photoSlots[index] ?? null;
   return (
     <PageEditorForm
@@ -48,7 +50,7 @@ export const AboutPageEditor = ({ action, values, photo, sharePhoto, photoSlots,
       title="About us"
       lastSaved={lastSaved}
       websiteUrl={websiteUrl}
-      pathFor={() => "/about"}
+      pathFor={() => websitePath}
       sections={ABOUT_SECTIONS}
       readiness={aboutReadiness(values, team, facts)}
       errorLookup={aboutSectionErrors}
@@ -90,7 +92,7 @@ export const AboutPageEditor = ({ action, values, photo, sharePhoto, photoSlots,
             <AboutPromisesCard values={values} errors={errors} />
           </div>
           <div hidden={activeKey !== "seo"}>
-            <PageGoogleCard values={values} errors={errors} websitePath="/about" sharePhoto={sharePhoto} shareFallback="the photo behind the heading, else the share image in Site settings" onEdit={onEdit} />
+            <PageGoogleCard values={values} errors={errors} websitePath={websitePath} sharePhoto={sharePhoto} shareFallback="the photo behind the heading, else the share image in Site settings" onEdit={onEdit} />
           </div>
         </>
       )}

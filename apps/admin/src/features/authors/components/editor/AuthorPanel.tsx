@@ -113,7 +113,7 @@ export const AuthorPanel = ({ action, author, values, guides, takenGuideIds, rem
               <TextField
                 name="bio"
                 label="Short bio in English"
-                hint="Years of experience, regions known best, languages spoken. German comes with the German website."
+                hint="Years of experience, regions known best, languages spoken. In the website's language."
                 multiline
                 rows={3}
                 defaultValue={values.bio}

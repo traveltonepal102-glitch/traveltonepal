@@ -2,14 +2,14 @@ import { TrailIcon } from "@/components/ui/TrailIcon";
 import type { TrailIconName } from "@/components/ui/TrailIcon";
 
 const PROMISES: readonly { icon: TrailIconName; tint: string; title: string; text: string }[] = [
-  { icon: "shield", tint: "bg-azure", title: "Permits handled.", text: "ACAP and TIMS arranged before you arrive." },
-  { icon: "users", tint: "bg-ember", title: "Guides from the region.", text: "Licensed, first-aid trained and fairly paid." },
-  { icon: "heart", tint: "bg-whatsapp", title: "Your pace.", text: "Private group only: we walk at the pace of the slowest trekker." },
+  { icon: "shield", tint: "bg-azure", title: "Genehmigungen erledigt.", text: "ACAP und TIMS besorgen wir vor Ihrer Ankunft." },
+  { icon: "users", tint: "bg-ember", title: "Guides aus der Region.", text: "Lizenziert, in Erster Hilfe geschult und fair bezahlt." },
+  { icon: "heart", tint: "bg-whatsapp", title: "Ihr Tempo.", text: "Nur private Gruppen: Wir gehen im Tempo der langsamsten Person." },
 ];
 
 /** The navy band under the top of the page: what you can count on, on every trek. */
 export const BookingPromises = () => (
-  <section aria-label="What you can count on" className="bg-navy text-snow">
+  <section aria-label="Darauf können Sie sich verlassen" className="bg-navy text-snow">
     <ul className="wrap grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))]">
       {PROMISES.map((promise) => (
         <li key={promise.title} className="flex items-start gap-3.5 py-6 pr-6">

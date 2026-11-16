@@ -1,6 +1,6 @@
 "use client";
 
-import { formatUsd } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 import { travellersText } from "../groupSizes";
 import { useBooking } from "./BookingContext";
@@ -16,9 +16,9 @@ export const SectionMenuPrice = () => {
 
   return (
     <span className="text-right text-sm leading-4.5 text-muted">
-      Per person · {travellersText(travellers)}
+      Pro Person · {travellersText(travellers)}
       <br />
-      <strong className="font-display text-xl leading-6 font-[640] text-ink">{formatUsd(chosen.priceUsd)}</strong>
+      <strong className="font-display text-xl leading-6 font-[640] text-ink">{formatPrice(chosen.price, chosen.currency)}</strong>
     </span>
   );
 };

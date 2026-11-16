@@ -23,6 +23,8 @@ type ContactPageEditorProps = {
   photo: Photo | null;
   sharePhoto: Photo | null;
   websiteUrl: string | null;
+  /** The page's address on this website (/contact, /kontakt on the German one). */
+  websitePath: string;
   lastSaved: string;
 };
 
@@ -30,13 +32,13 @@ const FIXED_NOTE =
   "Fixed in the website, not edited here: the WhatsApp, email and phone boxes, the message helper, and the office address, hours and map. They come from Site settings, so they are the same on every page.";
 
 /** Pages › Contact (design: Admin-pages, "Contact"): the Contact page's sections, top to bottom. */
-export const ContactPageEditor = ({ action, values, photo, sharePhoto, websiteUrl, lastSaved }: ContactPageEditorProps) => (
+export const ContactPageEditor = ({ action, values, photo, sharePhoto, websiteUrl, websitePath, lastSaved }: ContactPageEditorProps) => (
   <PageEditorForm
     action={action}
     title="Contact"
     lastSaved={lastSaved}
     websiteUrl={websiteUrl}
-    pathFor={() => "/contact"}
+    pathFor={() => websitePath}
     sections={CONTACT_SECTIONS}
     readiness={contactReadiness(values)}
     errorLookup={contactSectionErrors}
@@ -76,7 +78,7 @@ export const ContactPageEditor = ({ action, values, photo, sharePhoto, websiteUr
           </FaqListEditor>
         </div>
         <div hidden={activeKey !== "seo"}>
-          <PageGoogleCard values={values} errors={errors} websitePath="/contact" sharePhoto={sharePhoto} shareFallback="the photo behind the heading, else the share image in Site settings" onEdit={onEdit} />
+          <PageGoogleCard values={values} errors={errors} websitePath={websitePath} sharePhoto={sharePhoto} shareFallback="the photo behind the heading, else the share image in Site settings" onEdit={onEdit} />
         </div>
       </>
     )}

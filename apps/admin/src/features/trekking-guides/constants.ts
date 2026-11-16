@@ -9,9 +9,6 @@ export const TREKKING_GUIDES_PATH = ADMIN_SECTIONS.trekkingGuides.href;
 export const guidePath = (guideId: string) => `${TREKKING_GUIDES_PATH}?guide=${guideId}`;
 export const NEW_GUIDE_PATH = guidePath("new");
 
-/** The admin edits English for now; the German text comes later (trekking_guide_translations.locale). */
-export const GUIDE_LOCALE = "en";
-
 /** Hard limits, the same as the database checks (supabase/migrations/20261024170000_trekking_guides.sql). */
 export const GUIDE_LIMITS = {
   name: 80,

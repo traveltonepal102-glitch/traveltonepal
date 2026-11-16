@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/shared/SectionHeading";
 /** What happens after they write: three numbered steps. */
 export const NextSteps = ({ steps }: { steps: readonly NextStep[] }) => (
   <section aria-labelledby="contact-next-h" className="wrap flex flex-col gap-8 py-14 md:py-18">
-    <SectionHeading id="contact-next-h" title="What happens after you write" />
+    <SectionHeading id="contact-next-h" title="So geht es weiter" />
     <ol className="grid gap-8 md:grid-cols-3">
       {steps.map((step, index) => (
         <li key={step.title} className="flex gap-4">

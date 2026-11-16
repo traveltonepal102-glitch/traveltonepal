@@ -1,3 +1,4 @@
+import type { SiteCurrency } from "@ttn/config/siteLanguage";
 import type { SiteImageSource } from "@ttn/site-data/images";
 import type { PageDates } from "@ttn/site-data/pageDates";
 import type { MonthRating } from "@ttn/ui/lib/bestMonths";
@@ -34,7 +35,8 @@ export type HomeDay = {
   photo?: SiteImageSource;
 };
 
-export type HomeGroupPrice = { label: string; shortLabel: string; priceUsd: number; team: string; isDefault: boolean };
+/** A group's price per person, in the website's currency. */
+export type HomeGroupPrice = { label: string; shortLabel: string; price: number; currency: SiteCurrency; team: string; isDefault: boolean };
 
 export type HomeFaq = { question: string; body: RichTextDoc; answer: string };
 
@@ -97,7 +99,7 @@ export type HomeTrek = {
   guides: { heading: string; intro: string; team: HomeTrekGuide[] };
   inclusions: { heading: string; included: HomePoint[]; excluded: HomePoint[] };
   /** Left out when the trek hides it or says nothing about meals. */
-  meals: { budget: { min: number; max: number } | null; trailTips: HomePoint[]; teahouseNotes: HomePoint[] } | null;
+  meals: { budget: { min: number; max: number; currency: SiteCurrency } | null; trailTips: HomePoint[]; teahouseNotes: HomePoint[] } | null;
   /** `line`: the rich text under the heading (links to other pages), empty when there is none; the same for months and packing. */
   routeMap: { heading: string; line: RichTextDoc; embedUrl: string; openUrl: string; hasTrailLine: boolean; pdfUrl?: string; gpxUrl?: string } | null;
   months: { heading: string; line: RichTextDoc; ratings: MonthRating[] } | null;
@@ -115,7 +117,9 @@ export type HomeTrekCard = {
   difficulty: string;
   maxAltitudeM: number | null;
   season: string;
-  priceFromUsd: number | null;
+  /** The "From" price in `currency`, the website's. */
+  priceFrom: number | null;
+  currency: SiteCurrency;
   image?: SiteImageSource;
   hasPage: boolean;
   /** Where its page is: the main trek's is the home page. */

@@ -27,7 +27,7 @@ export const GuideCard = ({ guide, isPriority = false }: { guide: HomeGuide; isP
       {guide.text && <p className="text-[15px] leading-5.75">{guide.text}</p>}
       <p className="text-sm leading-5 text-muted">{guide.meta}</p>
       <span aria-hidden="true" className="mt-auto inline-flex items-center gap-1 pt-1.5 text-[15px] font-semibold text-navy">
-        Read the blog
+        Zum Blogartikel
         <TrailIcon name="arrow" size={16} />
       </span>
     </div>

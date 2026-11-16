@@ -7,7 +7,10 @@ export const REGIONS_PATH = "/regions";
 export const NEW_REGION_PATH = "/regions/new";
 export const regionPath = (regionId: string) => `${REGIONS_PATH}/${regionId}`;
 
-/** The admin edits English for now; the German version comes later (region_translations.locale). */
+/**
+ * Regions are Travel To Nepal's and written in English; a German website shows a region's English name where it has
+ * no German one. Everything else is typed in its website's language (`features/sites/lib/contentLocale.ts`).
+ */
 export const REGION_LOCALE = "en";
 
 /** Where a region page lives on the main site (design: "Page on the main site"). */

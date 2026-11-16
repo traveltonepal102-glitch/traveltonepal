@@ -7,7 +7,7 @@ const seo = { title: "Manaslu Circuit Trek", description: "Private trek", isLive
 const trek = {
   name: "Manaslu Circuit Trek",
   photos: [],
-  pricing: { prices: [{ priceUsd: 1590 }, { priceUsd: 1110 }] },
+  pricing: { prices: [{ price: 1590, currency: "EUR" }, { price: 1110, currency: "EUR" }] },
   faq: { items: [{ question: "Is it hard?", answer: "Yes." }] },
 } as unknown as HomeTrek;
 

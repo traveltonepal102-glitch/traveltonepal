@@ -24,7 +24,7 @@ export const BlogBlock = ({ block, blog }: { block: Block; blog: BlogArticle }) 
       return (
         <section id={QUICK_ANSWER_ID} aria-labelledby="quick-answer-h" className="flex flex-col gap-2.5 rounded-2xl bg-sky p-5 md:p-6">
           <h2 id="quick-answer-h" className="text-xl! leading-6.5! text-navy-deep!">
-            Quick answer
+            Kurz gesagt
           </h2>
           <RichText doc={block.body} className="flex flex-col gap-3 font-medium text-ink" />
         </section>
@@ -33,7 +33,7 @@ export const BlogBlock = ({ block, blog }: { block: Block; blog: BlogArticle }) 
       return (
         <section id={FAQ_ID} aria-labelledby="faq-h" className="flex flex-col gap-4">
           <h2 id="faq-h" className={H2}>
-            Questions and answers
+            Fragen und Antworten
           </h2>
           <FaqList items={blog.faqs} />
         </section>

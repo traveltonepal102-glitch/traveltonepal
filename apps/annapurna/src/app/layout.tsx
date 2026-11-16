@@ -3,11 +3,13 @@ import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
 import { JsonLd } from "@/components/shared/JsonLd";
+import { AnalyticsScripts } from "@/features/analytics/AnalyticsScripts";
+import { CookieBanner } from "@/features/consent/components/CookieBanner";
 import { SiteFooter } from "@/features/site-footer/SiteFooter";
 import { SiteHeader } from "@/features/site-header/SiteHeader";
 import { organizationJsonLd } from "@/features/site-settings/organizationJsonLd";
 import { getSiteSettings } from "@/features/site-settings/services/siteSettingsRepository";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { SITE_LANGUAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 
 import "./globals.css";
 
@@ -20,22 +22,25 @@ const inter = localFont({ src: "../fonts/Inter-Variable.woff2", weight: "400 700
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
-  description: "Private treks in the Annapurna region with a local team.",
+  description: "Private Treks in der Annapurna-Region mit einem einheimischen Team.",
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const settings = await getSiteSettings();
   return (
-    <html lang="en" className={`${archivo.variable} ${inter.variable}`}>
+    <html lang={SITE_LANGUAGE} className={`${archivo.variable} ${inter.variable}`}>
       {/* Browser extensions add attributes to <body> before React loads. */}
       <body suppressHydrationWarning>
         <JsonLd data={organizationJsonLd(settings)} />
         <a href="#main" className="sr-only rounded-[10px] bg-snow px-4 py-2 font-semibold focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50">
-          Skip to the main content
+          Zum Hauptinhalt springen
         </a>
         <SiteHeader />
         {children}
         <SiteFooter />
+        {/* Asks on the first visit: Google Tag Manager loads only after "Analyse" is allowed. */}
+        <CookieBanner />
+        <AnalyticsScripts />
       </body>
     </html>
   );

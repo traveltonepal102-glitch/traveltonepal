@@ -116,7 +116,7 @@ export const toTrekDetail = (
   const daySlugs = dayRegionSlugs(dayRows.map((day) => day.region_slug), summary.route);
   const days = dayRows.map((day, index) => ({ ...toDay(day, photosBaseUrl), regionSlug: daySlugs[index] }));
   const sideTrip = firstText(page.optional_high_point);
-  const { meal_budget_min_usd: low, meal_budget_max_usd: high } = page;
+  const { meal_budget_min: low, meal_budget_max: high } = page;
 
   return {
     ...summary,
@@ -181,7 +181,7 @@ export const toTrekDetail = (
     groupPrices: readGroupPrices(page.group_prices).map((price) => ({
       label: price.label,
       shortLabel: price.short_label,
-      priceUsd: price.price_usd,
+      priceUsd: price.price,
       team: price.team,
       isDefault: price.is_default,
     })),

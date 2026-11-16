@@ -5,18 +5,18 @@ import { ABOUT_SECTIONS } from "../sections";
 
 /** Company practice that rarely changes (the rest of the page is in Pages › About). */
 const PRACTICES: readonly { title: string; points: readonly string[] }[] = [
-  { title: "Fair to porters", points: ["Weight limits on every load", "Warm gear and proper boots", "Insurance and fair pay"] },
-  { title: "Money stays local", points: ["Local guides from each valley", "Family-run teahouses", "Meals bought on the trail"] },
-  { title: "Leave no trace", points: ["No single-use plastic bottles", "All rubbish carried out", "Stay on marked trails"] },
-  { title: "Respect local culture", points: ["Briefing on customs before you go", "Dress well near monasteries", "Ask before taking photos"] },
+  { title: "Fair zu Trägern", points: ["Gewichtsgrenze für jede Last", "Warme Kleidung und gute Schuhe", "Versicherung und faire Bezahlung"] },
+  { title: "Das Geld bleibt vor Ort", points: ["Einheimische Guides aus jedem Tal", "Familiengeführte Teehäuser", "Mahlzeiten unterwegs gekauft"] },
+  { title: "Keine Spuren hinterlassen", points: ["Keine Einweg-Plastikflaschen", "Jeder Müll wird mitgenommen", "Auf markierten Wegen bleiben"] },
+  { title: "Respekt vor der Kultur", points: ["Einweisung in Sitten und Bräuche vorab", "Angemessene Kleidung bei Klöstern", "Vor dem Fotografieren fragen"] },
 ];
 
 /** "Good for the people and places you visit": four practices with their checklists. */
 export const ResponsibleSection = () => (
   <section id={ABOUT_SECTIONS.responsible} aria-labelledby="responsible-h" className="bg-cloud py-14 md:py-18">
     <div className="wrap flex flex-col gap-8">
-      <SectionHeading id="responsible-h" title="Good for the people and places you visit">
-        <p className="max-w-[72ch]">Trekking keeps many mountain families going. We make sure the money and the respect go where they should.</p>
+      <SectionHeading id="responsible-h" title="Gut für die Menschen und Orte, die Sie besuchen">
+        <p className="max-w-[72ch]">Vom Trekking leben viele Bergfamilien. Wir sorgen dafür, dass Geld und Respekt dort ankommen, wo sie hingehören.</p>
       </SectionHeading>
       <ul className="grid gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
         {PRACTICES.map((practice) => (

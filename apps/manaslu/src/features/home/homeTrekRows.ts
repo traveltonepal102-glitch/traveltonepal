@@ -35,7 +35,7 @@ export const toTrekCard = (row: WebTrekRow, photosBaseUrl: string, homeSlug: str
   difficulty: DIFFICULTY[row.difficulty],
   maxAltitudeM: row.max_altitude_m,
   season: row.season_label.trim(),
-  priceFromUsd: row.price_from_usd,
+  priceFromUsd: row.price_from,
   image: coverImage(row, photosBaseUrl, row.name),
   hasPage: row.has_page,
   href: row.slug === homeSlug ? ROUTES.home : pagePath(row.slug),
@@ -114,7 +114,7 @@ export const toHomeTrek = ({ summary, page, photos, guides }: HomeTrekSource, ph
   // The database only takes pdf-maps/<uuid>.pdf and gpx-tracks/<uuid>.gpx, so the paths are safe to add to the address.
   const pdfMapUrl = page.pdf_map_path ? `${trekFilesBaseUrl}/${page.pdf_map_path}` : undefined;
   const gpxUrl = page.gpx_track_path ? `${trekFilesBaseUrl}/${page.gpx_track_path}` : undefined;
-  const prices = readGroupPrices(page.group_prices).map((price) => ({ label: price.label, shortLabel: price.short_label, priceUsd: price.price_usd, team: price.team, isDefault: price.is_default }));
+  const prices = readGroupPrices(page.group_prices).map((price) => ({ label: price.label, shortLabel: price.short_label, priceUsd: price.price, team: price.team, isDefault: price.is_default }));
 
   const trek: Omit<HomeTrek, "sections"> = {
     slug: summary.slug,

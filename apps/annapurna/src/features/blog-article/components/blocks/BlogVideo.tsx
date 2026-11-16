@@ -9,7 +9,7 @@ import { useConsent } from "@/features/consent/useConsent";
 export const BlogVideo = ({ youtubeId, title }: { youtubeId: string; title: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const consent = useConsent();
-  const label = title || "Trail video";
+  const label = title || "Video vom Trail";
 
   return (
     <figure className="flex flex-col gap-2">
@@ -17,7 +17,7 @@ export const BlogVideo = ({ youtubeId, title }: { youtubeId: string; title: stri
         {isPlaying || consent?.externalMedia ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${youtubeId}${isPlaying ? "?autoplay=1" : ""}`}
-            title={`YouTube video: ${label}`}
+            title={`YouTube-Video: ${label}`}
             loading="lazy"
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
@@ -28,10 +28,10 @@ export const BlogVideo = ({ youtubeId, title }: { youtubeId: string; title: stri
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-5 text-center">
             <p className="max-w-110 text-[15px] leading-5.5 text-on-navy-muted">
               <strong className="block font-semibold text-snow">{label}</strong>
-              Playing it connects to YouTube (Google), which can see your IP address.
+              Beim Abspielen wird eine Verbindung zu YouTube (Google) hergestellt. Dabei wird Ihre IP-Adresse übermittelt.
             </p>
-            <button type="button" onClick={() => setIsPlaying(true)} aria-label={`Play video: ${label}`} className={`${primaryButton} cursor-pointer border-[1.5px] border-solid border-white/50`}>
-              Play video
+            <button type="button" onClick={() => setIsPlaying(true)} aria-label={`Video abspielen: ${label}`} className={`${primaryButton} cursor-pointer border-[1.5px] border-solid border-white/50`}>
+              Video abspielen
             </button>
           </div>
         )}

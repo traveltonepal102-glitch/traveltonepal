@@ -23,7 +23,8 @@ const row = (slug: string, overrides: Partial<WebTrekRow> = {}): WebTrekRow => (
   is_popular: true,
   has_fixed_dates: false,
   has_page: true,
-  price_from_usd: 890,
+  price_from: 890,
+  currency: "USD",
   region_slug: "langtang",
   region_name: "Langtang",
   route_regions: [{ slug: "langtang", name: "Langtang" }],
@@ -72,7 +73,7 @@ describe("toTrekSummaries", () => {
   });
 
   it("has no price without one (the card says “Price on request”) and no badge for blank text", () => {
-    const [trek] = toTrekSummaries([row("a", { price_from_usd: null, card_badge: "   " })], BASE);
+    const [trek] = toTrekSummaries([row("a", { price_from: null, card_badge: "   " })], BASE);
     expect(trek.priceFromUsd).toBeUndefined();
     expect(trek.badge).toBeUndefined();
   });

@@ -24,14 +24,14 @@ export const ReviewCard = ({ review }: { review: HomeReview }) => (
         <span className="flex-none text-sm font-semibold text-muted">{SITE_NAMES[review.source]}</span>
       )}
     </div>
-    <p role="img" aria-label={`${review.rating} out of 5 stars`} className="flex gap-0.5 text-sun">
+    <p role="img" aria-label={`${review.rating} von 5 Sternen`} className="flex gap-0.5 text-sun">
       {Array.from({ length: review.rating }, (_, star) => (
         <TrailIcon key={star} name="star" className="fill-sun" />
       ))}
     </p>
     <p className="line-clamp-5 text-base leading-6.25">{review.text}</p>
     <a href={review.url} rel="noopener noreferrer" className="mt-auto text-[15px] font-semibold">
-      Read more on {SITE_NAMES[review.source]}
+      Mehr bei {SITE_NAMES[review.source]} lesen
     </a>
   </article>
 );

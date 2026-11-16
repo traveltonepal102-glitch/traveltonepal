@@ -42,8 +42,8 @@ export const blogJsonLd = ({ slug, title, seo, image, author, faqs }: BlogArticl
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl(ROUTES.home) },
-          { "@type": "ListItem", position: 2, name: "Blogs", item: absoluteUrl(ROUTES.blogs) },
+          { "@type": "ListItem", position: 1, name: "Startseite", item: absoluteUrl(ROUTES.home) },
+          { "@type": "ListItem", position: 2, name: "Blog", item: absoluteUrl(ROUTES.blogs) },
           { "@type": "ListItem", position: 3, name: title, item: url },
         ],
       },

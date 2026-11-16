@@ -35,7 +35,7 @@ export const BlogArticlePage = ({ blog }: { blog: BlogArticle }) => {
           <BlogAuthor author={blog.author} checker={blog.checker} />
         </article>
         {hasRail && (
-          <aside aria-label="About this blog" className="min-w-0 self-stretch">
+          <aside aria-label="Zu diesem Artikel" className="min-w-0 self-stretch">
             {/* Stays in view beside the article; on a screen too short for all of it, it scrolls by itself. On a phone it follows the article, and the contents are folded above it. */}
             <div className="flex flex-col gap-3 *:flex-none lg:sticky lg:top-6 lg:max-h-[calc(100dvh-48px)] lg:gap-5 lg:overflow-y-auto lg:[scrollbar-width:thin]">
               {toc.length > 0 && (
@@ -52,7 +52,7 @@ export const BlogArticlePage = ({ blog }: { blog: BlogArticle }) => {
       {related.length > 0 && (
         <section aria-labelledby="keep-reading-h" className="bg-cloud">
           <div className="wrap flex flex-col gap-7 py-14 md:py-18">
-            <SectionHeading id="keep-reading-h" title="Keep reading" />
+            <SectionHeading id="keep-reading-h" title="Weiterlesen" />
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {related.map((guide) => (
                 <GuideCard key={guide.slug} guide={guide} />

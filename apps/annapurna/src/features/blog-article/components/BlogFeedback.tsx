@@ -8,11 +8,11 @@ import { TrailIcon } from "@/components/ui/TrailIcon";
 import { sendBlogFeedback } from "../feedback/actions";
 
 const OPTIONS: readonly { vote: GuideVote; label: string }[] = [
-  { vote: "yes", label: "Yes" },
-  { vote: "no", label: "No" },
+  { vote: "yes", label: "Ja" },
+  { vote: "no", label: "Nein" },
 ];
 
-const UNREACHABLE: GuideFeedbackResult = { status: "error", message: "We could not reach the server. Please try again." };
+const UNREACHABLE: GuideFeedbackResult = { status: "error", message: "Der Server ist nicht erreichbar. Bitte versuchen Sie es erneut." };
 
 /** "Was this helpful?": one vote per visit. The buttons lock while it is sent, and a thank-you takes their place once it is saved; a failed vote can be tried again. */
 export const BlogFeedback = ({ slug }: { slug: string }) => {
@@ -31,7 +31,7 @@ export const BlogFeedback = ({ slug }: { slug: string }) => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-cloud px-5 py-4">
       <p id="blog-feedback-q" className="font-semibold text-ink">
-        Was this helpful?
+        War dieser Artikel hilfreich?
       </p>
       <div className="flex flex-wrap items-center gap-3">
         {result?.status !== "recorded" && (
@@ -54,7 +54,7 @@ export const BlogFeedback = ({ slug }: { slug: string }) => {
           {result?.status === "recorded" && (
             <span className="inline-flex items-center gap-1.5 text-navy">
               <TrailIcon name="check" size={18} />
-              Thanks for telling us
+              Danke für Ihr Feedback
             </span>
           )}
           {result?.status === "error" && <span className="text-cream-ink">{result.message}</span>}

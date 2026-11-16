@@ -10,6 +10,8 @@ import type { SiteKind } from "@/lib/supabase/database.types";
 
 import type { EditablePageSlug, LegalPageSlug, ListPageSlug } from "../constants";
 import { EDITABLE_PAGES, LEGAL_PAGES, LIST_PAGES, PAGE_GROUPS, legalPagePath, listPagePath, listPagesFor, pagePath } from "../constants";
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
+import { pageWebsitePath } from "../lib/pageWebsitePath";
 
 const SECTION = ADMIN_SECTIONS.pages;
 
@@ -53,12 +55,14 @@ const PageRowContent = ({ icon, tone, label, websitePath, what, note }: PageRowP
 type PagesOverviewProps = {
   /** The kind of site "Working on" shows: a region site has no Treks or Regions list page. */
   siteKind: SiteKind;
+  /** Its language: a region website's addresses are in it. */
+  language: SiteLanguage;
   /** "Saved 26 Oct, 11:32" per page that can be edited. */
   savedLabels: Partial<Record<EditablePageSlug | ListPageSlug | LegalPageSlug, string>>;
 };
 
 /** Pages (design: Admin-pages, list view): the pages that are not treks, regions or travel guides, in groups. */
-export const PagesOverview = ({ siteKind, savedLabels }: PagesOverviewProps) => {
+export const PagesOverview = ({ siteKind, language, savedLabels }: PagesOverviewProps) => {
   const siteListPages = listPagesFor(siteKind);
   // A region site's Home is not a list page there, but it has its own editor.
   const isOnSite = (slug: string) => slug === "home" || !LIST_PAGES.some((page) => page.slug === slug) || siteListPages.some((page) => page.slug === slug);
@@ -90,7 +94,7 @@ export const PagesOverview = ({ siteKind, savedLabels }: PagesOverviewProps) => 
             const row = siteKind === "region" && slug === "home" ? { ...found, ...REGION_HOME_ROW } : found;
             return (
               <Link key={row.slug} href={row.href} className={cn(ROW, "hover:bg-page focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring")}>
-                <PageRowContent icon={row.icon} tone={group.tone} label={row.label} websitePath={row.websitePath} what={row.what} note={savedLabels[row.slug] ?? "Not saved yet"} />
+                <PageRowContent icon={row.icon} tone={group.tone} label={row.label} websitePath={pageWebsitePath(row.slug, row.websitePath, { kind: siteKind, language })} what={row.what} note={savedLabels[row.slug] ?? "Not saved yet"} />
                 <Icon name="chevron_right" size={20} className="flex-none text-subtle" />
               </Link>
             );

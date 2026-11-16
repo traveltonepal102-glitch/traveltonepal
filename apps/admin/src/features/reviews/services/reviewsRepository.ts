@@ -1,7 +1,7 @@
 import "server-only";
 
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
-import { TREK_LOCALE } from "@/features/treks/constants";
+import { contentLocaleOf } from "@/features/sites/lib/contentLocale";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import type { Review, ReviewRating, ReviewTrekOption, ReviewValues } from "../types";
@@ -41,8 +41,8 @@ export const listReviews = async (siteId: string): Promise<Review[]> => {
 
 /** The website's treks a review can be about, A–Z (any status: a review of a hidden trek shows as a review of the company). */
 export const listReviewTrekOptions = async (siteId: string): Promise<ReviewTrekOption[]> => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("treks").select("id, trek_translations!inner(name)").eq("site_id", siteId).eq("trek_translations.locale", TREK_LOCALE);
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
+  const { data, error } = await supabase.from("treks").select("id, trek_translations!inner(name)").eq("site_id", siteId).eq("trek_translations.locale", locale);
   if (error) throw new Error(`Could not load treks: ${error.message}`);
   return data.map((trek) => ({ id: trek.id, name: trek.trek_translations[0]?.name ?? "" })).sort((a, b) => a.name.localeCompare(b.name));
 };

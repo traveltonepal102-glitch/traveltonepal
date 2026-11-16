@@ -11,7 +11,7 @@ import type { HomeTrek } from "../types";
  */
 export const TrekFieldGuide = ({ fieldGuide }: { fieldGuide: HomeTrek["fieldGuide"] }) => (
   <section aria-labelledby="field-guide-h" id="field_guide" className="flex flex-col gap-5">
-    <SectionHeading id="field-guide-h" eyebrow="Good to know" title={fieldGuide.heading}>
+    <SectionHeading id="field-guide-h" eyebrow="Gut zu wissen" title={fieldGuide.heading}>
       {fieldGuide.intro && <p>{fieldGuide.intro}</p>}
     </SectionHeading>
     <div className="flex flex-col gap-3">

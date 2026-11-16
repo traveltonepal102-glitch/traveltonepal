@@ -19,24 +19,24 @@ export const OfficeSection = async ({ page }: OfficeSectionProps) => {
   return (
     <section id={CONTACT_SECTIONS.office} aria-labelledby="contact-office-h" className="bg-cloud py-14 md:py-18">
       <div className="wrap flex flex-col gap-8">
-        <SectionHeading id="contact-office-h" title="Find us">
+        <SectionHeading id="contact-office-h" title="So finden Sie uns">
           {officeAddress && <p>{[officeAddress, page.officeDirections].filter(Boolean).join(". ")}</p>}
         </SectionHeading>
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-          <OfficeMap mapsUrl={officeMap.url} embedUrl={officeMap.embedUrl} label={`${SITE_NAME} office`} />
+          <OfficeMap mapsUrl={officeMap.url} embedUrl={officeMap.embedUrl} label={`Büro von ${SITE_NAME}`} />
           <div className="flex flex-col gap-4">
             {times.length > 0 && (
               <div className="flex flex-col gap-3 rounded-2xl border border-solid border-line bg-snow p-6">
-                <h3 className="text-xl! leading-6.5!">Our office hours in your time</h3>
-                <p className="text-[15px] leading-5.75">Nepal time is UTC+5:45.</p>
+                <h3 className="text-xl! leading-6.5!">Unsere Bürozeiten in Ihrer Ortszeit</h3>
+                <p className="text-[15px] leading-5.75">In Nepal gilt UTC+5:45.</p>
                 <table className="w-full border-collapse text-[15px] leading-5.5">
                   <thead>
                     <tr className="text-left">
                       <th scope="col" className="py-2 pr-3 font-semibold text-muted">
-                        City
+                        Stadt
                       </th>
                       <th scope="col" className="py-2 pr-3 font-semibold text-muted">
-                        Summer
+                        Sommer
                       </th>
                       <th scope="col" className="py-2 font-semibold text-muted">
                         Winter
@@ -55,14 +55,14 @@ export const OfficeSection = async ({ page }: OfficeSectionProps) => {
                     ))}
                   </tbody>
                 </table>
-                <p className="text-sm leading-5 text-muted">{page.timeNote || "Outside these hours? Leave a WhatsApp message. We reply first thing in the morning."}</p>
+                <p className="text-sm leading-5 text-muted">{page.timeNote || "Außerhalb dieser Zeiten? Schreiben Sie uns auf WhatsApp. Wir antworten gleich am nächsten Morgen."}</p>
               </div>
             )}
             {googleWriteUrl && (
               <p className="text-[15px] leading-5.75">
-                Trekked with us?{" "}
+                Schon mit uns unterwegs gewesen?{" "}
                 <a href={ROUTES.review} rel="nofollow" className="font-semibold underline underline-offset-2">
-                  Write a review on Google
+                  Bewertung auf Google schreiben
                 </a>
               </p>
             )}

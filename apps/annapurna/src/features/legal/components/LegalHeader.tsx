@@ -12,22 +12,22 @@ export const LegalHeader = ({ doc }: { doc: LegalDoc }) => (
   <div className="border-b border-solid border-line bg-cloud">
     <div className="wrap flex flex-col gap-3 pt-5 pb-7">
       <div className="print:hidden">
-        <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: "Legal" }, { label: doc.title }]} />
+        <Breadcrumbs items={[{ label: "Startseite", href: ROUTES.home }, { label: "Rechtliches" }, { label: doc.title }]} />
       </div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex max-w-190 flex-col gap-2">
-          <span className="eyebrow">Legal information</span>
+          <span className="eyebrow">Rechtliche Informationen</span>
           <h1>{doc.title}</h1>
           {doc.intro && <p>{doc.intro}</p>}
         </div>
         {doc.updated && (
           <p className="inline-flex flex-none items-center gap-1.5 text-sm leading-5 text-muted">
             <TrailIcon name="clock" size={16} />
-            Last updated: {doc.updated}
+            Zuletzt aktualisiert: {doc.updated}
           </p>
         )}
       </div>
-      <nav aria-label="Legal pages" className="overflow-x-auto pt-1.5 lg:hidden print:hidden">
+      <nav aria-label="Rechtliche Seiten" className="overflow-x-auto pt-1.5 lg:hidden print:hidden">
         <ul className="flex gap-1.5">
           {LEGAL_PAGES.map((page) => {
             const isCurrent = page.slug === doc.slug;

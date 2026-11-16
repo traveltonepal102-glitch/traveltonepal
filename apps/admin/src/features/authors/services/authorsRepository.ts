@@ -4,8 +4,9 @@ import { z } from "zod";
 import { PHOTO_COLUMNS, toPhoto } from "@/features/photos/services/photosRepository";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { AUTHOR_LANGUAGE_VALUES, AUTHOR_LOCALE } from "../constants";
+import { AUTHOR_LANGUAGE_VALUES } from "../constants";
 import type { Author, AuthorFormValues } from "../types";
+import { contentLocaleOf } from "@/features/sites/lib/contentLocale";
 
 /** Postgres error codes the save can raise. */
 const UNIQUE_VIOLATION = "23505";
@@ -23,8 +24,8 @@ const writesInSchema = z.array(z.enum(AUTHOR_LANGUAGE_VALUES)).catch(["en"]);
 
 /** The website's authors (each website has its own) with their English text (the list sorts them by the name shown, see filterAuthors). */
 export const listAuthors = async (siteId: string): Promise<Author[]> => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("authors").select(AUTHOR_COLUMNS).eq("site_id", siteId).eq("author_translations.locale", AUTHOR_LOCALE);
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
+  const { data, error } = await supabase.from("authors").select(AUTHOR_COLUMNS).eq("site_id", siteId).eq("author_translations.locale", locale);
   if (error) throw new Error(`Could not load authors: ${error.message}`);
 
   return data.map((row): Author => {
@@ -57,10 +58,10 @@ export type SaveAuthorResult =
  * text in one transaction (save_author). A trekking guide of another website fails as "missing_link".
  */
 export const saveAuthor = async (values: AuthorFormValues, authorId: string | null, siteId: string): Promise<SaveAuthorResult> => {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
   const { data, error } = await supabase.rpc("save_author", {
     p_author_id: authorId,
-    p_locale: AUTHOR_LOCALE,
+    p_locale: locale,
     p_author: {
       site_id: siteId,
       kind: values.kind,

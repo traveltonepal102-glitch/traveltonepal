@@ -2,7 +2,6 @@ import "server-only";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { TREK_LOCALE } from "../constants";
 import type { TrekUsageItem } from "../types";
 
 const FOREIGN_KEY_VIOLATION = "23503";
@@ -12,7 +11,8 @@ const RLS_VIOLATION = "42501";
 /** What still uses a trek (trek_usage): a website's main trek, a region's featured trek, travel guides. */
 export const getTrekUsage = async (trekId: string): Promise<TrekUsageItem[]> => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("trek_usage", { p_trek_id: trekId, p_locale: TREK_LOCALE });
+  // Each item is named in its own website's language (trek_usage reads it; p_locale is no longer used).
+  const { data, error } = await supabase.rpc("trek_usage", { p_trek_id: trekId });
   if (error) throw new Error(`Could not check what uses trek ${trekId}: ${error.message}`);
   return data;
 };

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { readText, switchField } from "@/lib/forms/formFields";
 
 import type { EditSiteValues } from "../types";
-import { siteName, siteUrl } from "./siteFields";
+import { siteCurrency, siteLanguage, siteName, siteUrl } from "./siteFields";
 
 /** A site's edit form (read with readEditSiteForm). A site goes live only with an address (the database checks the same). */
 export const editSiteSchema = z
@@ -11,6 +11,9 @@ export const editSiteSchema = z
     name: siteName,
     url: siteUrl,
     isLive: switchField,
+    // Not sent for a live site: its language and currency are shown, not edited.
+    language: siteLanguage.optional(),
+    currency: siteCurrency.optional(),
   })
   .refine((values) => !values.isLive || values.url !== "", {
     path: ["url"],
@@ -22,4 +25,6 @@ export const readEditSiteForm = (formData: FormData) => ({
   name: readText(formData, "name"),
   url: readText(formData, "url"),
   isLive: readText(formData, "isLive"),
+  language: formData.has("language") ? readText(formData, "language") : undefined,
+  currency: formData.has("currency") ? readText(formData, "currency") : undefined,
 });

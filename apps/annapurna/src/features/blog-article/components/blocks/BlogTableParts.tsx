@@ -5,9 +5,9 @@ type BlogTableProps = { heading: string; header: readonly string[]; rows: readon
 
 /** The admin's table. It scrolls sideways on a phone, and can be reached by keyboard to do so. */
 export const BlogTable = ({ heading, header, rows, footer, hasRowHeadings }: BlogTableProps) => (
-  <section aria-label={heading || "Table"} className="flex flex-col gap-3">
+  <section aria-label={heading || "Tabelle"} className="flex flex-col gap-3">
     {heading && <h3>{heading}</h3>}
-    <div role="group" aria-label="Table, scrolls sideways" tabIndex={0} className={SCROLLER}>
+    <div role="group" aria-label="Tabelle, seitlich scrollbar" tabIndex={0} className={SCROLLER}>
       <table className="w-full border-collapse text-[15px] leading-5.5">
         {header.length > 0 && (
           <thead className="bg-cloud">
@@ -57,9 +57,9 @@ type BlogCostTableProps = { heading: string; rows: readonly { item: string; pric
 
 /** A list of costs, with a total when there is one. */
 export const BlogCostTable = ({ heading, rows, totalLabel, total }: BlogCostTableProps) => (
-  <section aria-label={heading || "Costs"} className="flex flex-col gap-3">
+  <section aria-label={heading || "Kosten"} className="flex flex-col gap-3">
     {heading && <h3>{heading}</h3>}
-    <div role="group" aria-label="Costs, scrolls sideways" tabIndex={0} className={SCROLLER}>
+    <div role="group" aria-label="Kosten, seitlich scrollbar" tabIndex={0} className={SCROLLER}>
       <table className="w-full border-collapse text-[15px] leading-5.5">
         <tbody>
           {rows.map((row) => (

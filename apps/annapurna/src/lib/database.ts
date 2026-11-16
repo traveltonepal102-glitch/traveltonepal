@@ -1,3 +1,4 @@
+import { SITE_LANGUAGE } from "./site";
 import "server-only";
 import { createSiteClient } from "@ttn/site-data/siteClient";
 import { WEBSITE_CACHE_TAGS } from "@ttn/config/websiteCache";
@@ -18,5 +19,5 @@ export const CACHE_TAGS = WEBSITE_CACHE_TAGS;
  */
 export const DATABASE_CACHE_LIFE = "max";
 
-/** The language this website shows. */
-export const WEBSITE_LOCALE = "en";
+/** The language of the rows this website reads: its own (German). */
+export const WEBSITE_LOCALE = SITE_LANGUAGE;

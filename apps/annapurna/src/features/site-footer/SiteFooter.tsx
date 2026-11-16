@@ -12,30 +12,30 @@ import { SITE_NAME } from "@/lib/site";
 
 const COLUMNS = [
   {
-    title: "The trek",
+    title: "Der Trek",
     links: [
-      { label: "Itinerary", href: "/#itinerary" },
-      { label: "Prices", href: "/#pricing" },
-      { label: "What's included", href: "/#inclusions" },
-      { label: "Questions", href: "/#faq" },
+      { label: "Reiseverlauf", href: "/#itinerary" },
+      { label: "Preise", href: "/#pricing" },
+      { label: "Leistungen", href: "/#inclusions" },
+      { label: "Fragen", href: "/#faq" },
     ],
   },
   {
-    title: "Company",
+    title: "Unternehmen",
     links: [
-      { label: "About us", href: ROUTES.about },
-      { label: "Contact", href: ROUTES.contact },
-      { label: "Blogs", href: ROUTES.blogs },
-      { label: "Reviews", href: "/#reviews" },
+      { label: "Über uns", href: ROUTES.about },
+      { label: "Kontakt", href: ROUTES.contact },
+      { label: "Blog", href: ROUTES.blogs },
+      { label: "Bewertungen", href: "/#reviews" },
     ],
   },
   {
-    title: "Useful links",
+    title: "Rechtliches",
     links: [
-      { label: "Terms", href: ROUTES.terms },
-      { label: "Privacy", href: ROUTES.privacy },
+      { label: "AGB", href: ROUTES.terms },
+      { label: "Datenschutz", href: ROUTES.privacy },
       { label: "Impressum", href: ROUTES.impressum },
-      { label: "Cookie settings", href: ROUTES.cookies },
+      { label: "Cookie-Einstellungen", href: ROUTES.cookies },
     ],
   },
 ];
@@ -43,7 +43,7 @@ const COLUMNS = [
 /** The footer, in navy under the prayer-flag stripe: the website's details (those filled in), its links, and the way to ask. */
 export const SiteFooter = async () => {
   const { officeAddress, officeHours, legalName, licence, panNumber, social, year } = await getSiteSettings();
-  const legalLine = [`© ${year} ${SITE_NAME}`, legalName, licence && `Licence ${licence}`, panNumber && `PAN ${panNumber}`].filter(Boolean).join(" · ");
+  const legalLine = [`© ${year} ${SITE_NAME}`, legalName, licence && `Lizenz ${licence}`, panNumber && `PAN ${panNumber}`].filter(Boolean).join(" · ");
 
   return (
     <footer className="bg-navy text-[15px] leading-6 text-on-navy-muted print:hidden">
@@ -55,7 +55,7 @@ export const SiteFooter = async () => {
             <span className="inline-flex self-start rounded-[14px] bg-snow px-3.5 py-2.5">
               <Image src="/brand/logo.png" alt={SITE_NAME} width={636} height={235} sizes="130px" className="h-12 w-auto" />
             </span>
-            <p>Private treks in the Annapurna Conservation Area, on the day you choose and at your own pace.</p>
+            <p>Private Treks im Annapurna-Schutzgebiet, an Ihrem Wunschtermin und in Ihrem eigenen Tempo.</p>
             {officeAddress && (
               <p className="flex items-start gap-2">
                 <TrailIcon name="pin" className="mt-0.75 text-sun" />
@@ -80,14 +80,14 @@ export const SiteFooter = async () => {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3.5 rounded-[14px] bg-white/6 px-6 py-5">
-          <span className="font-display text-[22px] leading-7 font-bold text-snow">Questions about your trek?</span>
+          <span className="font-display text-[22px] leading-7 font-bold text-snow">Fragen zu Ihrem Trek?</span>
           <span className="flex flex-wrap gap-3">
             <a href={getWhatsAppUrl()} rel="nofollow" className={`${whatsAppButton} min-h-11 rounded-full`}>
               <WhatsAppLogo />
               WhatsApp
             </a>
             <a href={getEmailUrl()} rel="nofollow" className={`${outlineOnDarkButton} min-h-11 rounded-full`}>
-              Email
+              E-Mail
             </a>
           </span>
         </div>

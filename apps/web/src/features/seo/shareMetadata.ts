@@ -11,7 +11,7 @@ export type PageSeo = { title: string; description: string; shareImage?: SiteIma
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
-/** The site's language for share previews (the German site will send "de_DE"). */
+/** The site's language for share previews (Travel To Nepal is English only). */
 export const SHARE_LOCALE = "en_US";
 
 /**

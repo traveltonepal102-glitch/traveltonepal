@@ -5,11 +5,11 @@ import { primaryButton } from "@/components/ui/buttonStyles";
 /** A page that couldn't load (usually the database, for a moment). */
 const ErrorPage = ({ reset }: { reset: () => void }) => (
   <main className="wrap flex flex-col items-start gap-4 py-24">
-    <span className="eyebrow">Something went wrong</span>
-    <h1>This page didn’t load</h1>
-    <p>Please try again in a moment.</p>
+    <span className="eyebrow">Etwas ist schiefgelaufen</span>
+    <h1>Diese Seite konnte nicht geladen werden</h1>
+    <p>Bitte versuchen Sie es gleich noch einmal.</p>
     <button type="button" onClick={reset} className={`${primaryButton} cursor-pointer`}>
-      Try again
+      Erneut versuchen
     </button>
   </main>
 );

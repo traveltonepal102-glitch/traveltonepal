@@ -1,3 +1,4 @@
+import type { SiteLanguage } from "@ttn/config/siteLanguage";
 export const NOT_SURE_TREK = "Not sure yet, please suggest";
 export const CUSTOM_TREK = "Other / custom trek";
 
@@ -11,6 +12,11 @@ export const WHEN_OPTIONS = [
 ] as const;
 
 export const GROUP_OPTIONS = ["Just me", "2 people", "3–5 people", "6–10 people", "11+ people"] as const;
+
+const GERMAN_GROUP_OPTIONS = ["Nur ich", "2 Personen", "3–5 Personen", "6–10 Personen", "11+ Personen"] as const;
+
+/** The group sizes to choose from, in the website's language. */
+export const groupOptions = (language: SiteLanguage = "en"): readonly string[] => (language === "de" ? GERMAN_GROUP_OPTIONS : GROUP_OPTIONS);
 
 /** Longest text we pass on (WhatsApp and mail links get unwieldy beyond these). */
 export const MAX_LENGTHS = { name: 80, country: 60, note: 1000 } as const;

@@ -50,7 +50,7 @@ export const LEGAL_SECTIONS: EditorSection<LegalPageSlug>[] = LEGAL_PAGES.map((p
   key: page.slug,
   label: page.label,
   icon: page.icon,
-  description: `Shown at ${page.websitePath}. Write or paste the whole text in one editor: each numbered section heading starts a section.`,
+  description: "Write or paste the whole text in one editor: each numbered section heading starts a section.",
 }));
 
 /** A legal page's fields start with its slug ("terms.body"), so its errors belong to its section. */

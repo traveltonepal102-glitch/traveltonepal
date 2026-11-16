@@ -33,7 +33,7 @@ export const BlogMap = ({ title, place }: { title: string; place: string }) => {
   const { embedUrl } = googleMapLinks({ place });
   return (
     <figure className="flex flex-col gap-2">
-      <RouteMapFrame embedUrl={embedUrl} title={title || `Map of ${place}`} hidesTitleBar={false} />
+      <RouteMapFrame embedUrl={embedUrl} title={title || `Karte: ${place}`} hidesTitleBar={false} />
       {title && <figcaption className="text-sm leading-5 text-muted">{title}</figcaption>}
     </figure>
   );
@@ -48,7 +48,7 @@ export const BlogFile = ({ url, title, description, size }: { url: string; title
     <span className="flex min-w-0 flex-col">
       <span className="font-semibold text-ink">{title}</span>
       {description && <span className="text-[15px] leading-5.5">{description}</span>}
-      <span className="text-sm leading-5 text-muted">PDF{size && `, ${size}`} (opens in a new tab)</span>
+      <span className="text-sm leading-5 text-muted">PDF{size && `, ${size}`} (öffnet in neuem Tab)</span>
     </span>
   </a>
 );

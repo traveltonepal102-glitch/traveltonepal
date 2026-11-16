@@ -1,14 +1,11 @@
 "use client";
 
-import { ONLY_NECESSARY } from "@ttn/site-data/consent";
+import { ALL_ALLOWED, ONLY_NECESSARY } from "@ttn/site-data/consent";
 import type { ConsentChoices } from "@ttn/site-data/consent";
 import { saveConsent } from "@ttn/site-data/consentStore";
 import { useId, useState } from "react";
 
 import { useConsent } from "../useConsent";
-
-/** Only what this website really loads has a choice: it has no analytics, so that stays off (add it here, and a banner, with them). */
-const ALLOW_MEDIA: ConsentChoices = { analytics: false, externalMedia: true };
 
 const BUTTON = "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border-[1.5px] border-solid border-navy px-4 text-[15px] font-semibold";
 
@@ -44,36 +41,52 @@ const ConsentRow = ({ name, text, isOn, onToggle }: ConsentRowProps) => {
   );
 };
 
-/** "Your current choices" on the Cookie settings page: the stored choice, editable, saved on the buttons. */
+/**
+ * "Ihre aktuelle Auswahl" on the Cookie settings page: the stored choice, editable, saved on the buttons. Analytics is
+ * Google Tag Manager with Google Analytics (features/analytics), loaded only with it.
+ */
 export const CookieSettingsPanel = () => {
   const consent = useConsent();
-  // The visitor's edit; until they touch the switch, the panel shows what is stored.
+  // The visitor's edit; until they touch a switch, the panel shows what is stored.
   const [draft, setDraft] = useState<ConsentChoices | null>(null);
   const [status, setStatus] = useState("");
-  const shown = draft ?? (consent ? { analytics: false, externalMedia: consent.externalMedia } : ONLY_NECESSARY);
+  const shown = draft ?? (consent ? { analytics: consent.analytics, externalMedia: consent.externalMedia } : ONLY_NECESSARY);
 
   const save = (choices: ConsentChoices) => {
     const isStored = saveConsent(choices);
     setDraft(null);
-    setStatus(isStored ? "Saved. Your choice applies right away." : "Applied for this visit. Your browser blocks saving it, so we will ask again next time.");
+    setStatus(
+      isStored ? "Gespeichert. Ihre Auswahl gilt sofort." : "Für diesen Besuch übernommen. Ihr Browser verhindert das Speichern, daher fragen wir beim nächsten Mal erneut.",
+    );
   };
 
   return (
     <section aria-labelledby="cookie-choices-h" className="overflow-hidden rounded-[14px] border border-solid border-line bg-cloud print:hidden">
       <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-4">
         <h2 id="cookie-choices-h" className="text-xl! leading-6.5!">
-          Your current choices
+          Ihre aktuelle Auswahl
         </h2>
-        <p className="text-sm leading-5 text-muted">{consent === null ? "You have not chosen yet: only necessary functions are on." : "Changes apply right away"}</p>
+        <p className="text-sm leading-5 text-muted">
+          {consent === null ? "Sie haben noch nicht gewählt: Nur notwendige Funktionen sind aktiv." : "Änderungen gelten sofort"}
+        </p>
       </div>
       <ul className="divide-y divide-solid divide-line border-y border-solid border-line">
-        <ConsentRow name="Necessary" text="Keeps the site working and remembers this choice. Always on." isOn />
+        <ConsentRow name="Notwendig" text="Hält die Website am Laufen und speichert diese Auswahl. Immer aktiv." isOn />
         <ConsentRow
-          name="External media"
-          text="The office map on the Contact page, and videos and embeds in blogs. They send data to Google or another service when they load, so without this each one asks first. Route maps on trek pages always load."
+          name="Analyse"
+          text="Google Analytics, geladen über den Google Tag Manager, zählt Seitenaufrufe, damit wir sehen, welche Seiten weiterhelfen. Nie für Werbung genutzt."
+          isOn={shown.analytics}
+          onToggle={() => {
+            setDraft({ ...shown, analytics: !shown.analytics });
+            setStatus("");
+          }}
+        />
+        <ConsentRow
+          name="Externe Medien"
+          text="Die Bürokarte auf der Kontaktseite sowie Videos und eingebettete Inhalte in Blogs. Beim Laden senden sie Daten an Google oder einen anderen Dienst, daher fragt ohne diese Zustimmung jedes Element zuerst. Routenkarten auf den Trekseiten werden immer geladen."
           isOn={shown.externalMedia}
           onToggle={() => {
-            setDraft({ analytics: false, externalMedia: !shown.externalMedia });
+            setDraft({ ...shown, externalMedia: !shown.externalMedia });
             setStatus("");
           }}
         />
@@ -81,13 +94,13 @@ export const CookieSettingsPanel = () => {
       <div className="flex flex-col gap-2.5 px-5 py-4">
         <div className="grid gap-2 sm:grid-cols-3">
           <button type="button" onClick={() => save(ONLY_NECESSARY)} className={`${BUTTON} bg-transparent text-navy`}>
-            Reject all
+            Alle ablehnen
           </button>
-          <button type="button" onClick={() => save(ALLOW_MEDIA)} className={`${BUTTON} bg-transparent text-navy`}>
-            Accept all
+          <button type="button" onClick={() => save(ALL_ALLOWED)} className={`${BUTTON} bg-transparent text-navy`}>
+            Alle akzeptieren
           </button>
           <button type="button" onClick={() => save(shown)} className={`${BUTTON} bg-navy text-snow`}>
-            Save my choices
+            Auswahl speichern
           </button>
         </div>
         <p role="status" className="text-[15px] leading-5.5 font-semibold text-navy">

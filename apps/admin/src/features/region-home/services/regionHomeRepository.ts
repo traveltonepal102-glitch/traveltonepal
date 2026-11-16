@@ -2,15 +2,15 @@ import "server-only";
 
 import type { SavePageInput } from "@/features/pages/services/pagesRepository";
 import { toPagePayload } from "@/features/pages/services/pagesRepository";
-import { TREK_LOCALE } from "@/features/treks/constants";
+import { contentLocaleOf } from "@/features/sites/lib/contentLocale";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import type { HomeTrekOption } from "../types";
 
 /** The website's treks to pick as its main trek, A–Z. Throws when the database can't be read. */
 export const listHomeTrekOptions = async (siteId: string): Promise<HomeTrekOption[]> => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.from("treks").select("id, status, trek_translations!inner(name)").eq("site_id", siteId).eq("trek_translations.locale", TREK_LOCALE);
+  const [supabase, locale] = await Promise.all([createSupabaseServerClient(), contentLocaleOf(siteId)]);
+  const { data, error } = await supabase.from("treks").select("id, status, trek_translations!inner(name)").eq("site_id", siteId).eq("trek_translations.locale", locale);
   if (error) throw new Error(`Could not load the website's treks: ${error.message}`);
   return data.map((trek) => ({ id: trek.id, name: trek.trek_translations[0]?.name ?? "", status: trek.status })).sort((a, b) => a.name.localeCompare(b.name));
 };

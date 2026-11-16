@@ -35,11 +35,11 @@ export const toHomeCompany = (about: WebSitePageRow | null, photosBaseUrl: strin
 
 /** The section's words from the admin (blank ones take this design's) and its cards in the admin's order; a card needs a photo. */
 export const toHomeAdventures = (section: WebAdventureSectionRow | null, rows: readonly WebAdventureRow[], photosBaseUrl: string): HomeAdventures => ({
-  eyebrow: section?.eyebrow.trim() || "Beyond the trail",
-  heading: section?.heading.trim() || "More to do in Nepal",
+  eyebrow: section?.eyebrow.trim() || "Mehr als Trekking",
+  heading: section?.heading.trim() || "Noch mehr erleben in Nepal",
   intro: section?.intro.trim() ?? "",
-  askTitle: section?.ask_title.trim() || "Have your own idea?",
-  askText: section?.ask_text.trim() || "Tell us what you would like to do and we plan it with you.",
+  askTitle: section?.ask_title.trim() || "Sie haben eine eigene Idee?",
+  askText: section?.ask_text.trim() || "Erzählen Sie uns, was Sie erleben möchten – wir planen es gemeinsam mit Ihnen.",
   cards: rows
     .toSorted((a, b) => a.position - b.position)
     .flatMap((row) => {

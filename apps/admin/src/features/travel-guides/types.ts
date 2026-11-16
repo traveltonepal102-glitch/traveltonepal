@@ -168,7 +168,7 @@ export type ArticleOptions = {
   guides: { id: string; name: string; role: string; photo: Photo | null; regionIds: string[]; hasConsent: boolean }[];
   /** The library photos the "Photo" and "Photo gallery" sections show, for their previews (others are chosen in the photo window). */
   photos: Photo[];
-  authors: { id: string; name: string; jobTitle: string; isVerified: boolean; isGuest: boolean; writesEnglish: boolean }[];
+  authors: { id: string; name: string; jobTitle: string; isVerified: boolean; isGuest: boolean; writesSiteLanguage: boolean }[];
   /** Trekking guides who can check travel guides and agreed to be shown. */
   checkers: { id: string; name: string; role: string }[];
   /** Other travel guides, for "Keep reading". */

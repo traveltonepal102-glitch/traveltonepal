@@ -11,6 +11,7 @@ describe("toTrekTop", () => {
     expect(toTrekTop(summary, page).heading).toBe("Nar Phu Trek");
     expect(toTrekTop(summary, { ...page, headline: "Nar Phu in 10 days" }).heading).toBe("Nar Phu in 10 days");
     expect(toTrekTop(summary, page).intro).toBe("Two hidden villages.");
+    expect(toTrekTop(summary, page)).toMatchObject({ buttonLabel: "Trek planen", secondLabel: "Zum Reiseverlauf" });
   });
 });
 

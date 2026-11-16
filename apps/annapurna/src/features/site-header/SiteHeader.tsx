@@ -23,8 +23,8 @@ const BAR_LINK = "inline-flex min-h-6 items-center gap-1.5 whitespace-nowrap fon
 /** A button that shows only its icon until there is room for its word. */
 const ICON_FIRST = "w-12 px-0! xl:w-auto xl:px-5!";
 const PAGE_LINKS = [
-  { href: ROUTES.about, label: "About" },
-  { href: ROUTES.contact, label: "Contact" },
+  { href: ROUTES.about, label: "Über uns" },
+  { href: ROUTES.contact, label: "Kontakt" },
 ] as const;
 
 /**
@@ -37,18 +37,18 @@ export const SiteHeader = async () => {
   const [{ phoneDisplay, email, licence, tourismRegistration, memberships }, { trekCard, otherTreks, latestGuides }] = await Promise.all([getSiteSettings(), getHomeData()]);
   const hasBar = Boolean(phoneDisplay || email || licence || tourismRegistration || memberships.length);
   const otherTreksMenu: NavMenu = {
-    label: "Other treks",
+    label: "Weitere Treks",
     // The main trek (the home page) first, then the others.
     items: [...(trekCard ? [trekCard] : []), ...otherTreks].map((other) => ({ href: other.hasPage ? other.href : "/#other-treks", title: other.name, text: trekFacts(other), image: other.image })),
-    more: trekCard ? { href: "/#compare", label: "Compare the treks" } : { href: "/#other-treks", label: "See the treks" },
+    more: trekCard ? { href: "/#compare", label: "Treks vergleichen" } : { href: "/#other-treks", label: "Alle Treks ansehen" },
   };
   const blogsMenu: NavMenu = {
-    label: "Blogs",
-    heading: "Latest blogs",
+    label: "Blog",
+    heading: "Neueste Artikel",
     items: latestGuides.map((guide) => ({ href: pagePath(guide.slug), title: guide.title, text: guide.meta, image: guide.image })),
-    more: { href: ROUTES.blogs, label: "View all blogs" },
+    more: { href: ROUTES.blogs, label: "Alle Artikel ansehen" },
   };
-  const emailHref = getEmailUrl({ subject: `Planning a trek with ${SITE_NAME}` });
+  const emailHref = getEmailUrl({ subject: `Trekplanung mit ${SITE_NAME}` });
 
   return (
     <header className="bg-snow print:hidden">
@@ -57,9 +57,9 @@ export const SiteHeader = async () => {
         <div className="bg-cloud text-sm leading-5 text-muted max-md:hidden">
           <div className="wrap flex min-w-0 items-center justify-between gap-x-6 py-2">
             <p className="flex min-w-0 gap-x-6 overflow-hidden whitespace-nowrap">
-              {tourismRegistration && <span>Govt reg: {tourismRegistration}</span>}
-              {licence && <span className="max-xl:hidden">Licence: {licence}</span>}
-              {memberships.length > 0 && <span className="max-xl:hidden">Member of {memberships.join(", ")}</span>}
+              {tourismRegistration && <span>Reg.-Nr.: {tourismRegistration}</span>}
+              {licence && <span className="max-xl:hidden">Lizenz: {licence}</span>}
+              {memberships.length > 0 && <span className="max-xl:hidden">Mitglied bei {memberships.join(", ")}</span>}
             </p>
             <p className="flex flex-none gap-x-5">
               {phoneDisplay && (
@@ -81,10 +81,10 @@ export const SiteHeader = async () => {
       )}
       <div className="border-b border-solid border-line">
         <div className="wrap flex items-center gap-x-6 py-3 xl:gap-x-8">
-          <Link href={ROUTES.home} aria-label={`${SITE_NAME}, home`} className="inline-flex flex-none items-center">
+          <Link href={ROUTES.home} aria-label={`${SITE_NAME}, Startseite`} className="inline-flex flex-none items-center">
             <Image src="/brand/logo.png" alt={SITE_NAME} width={636} height={235} sizes="(min-width: 1024px) 146px, 119px" loading="eager" className="h-11 w-auto max-w-none lg:h-13.5" />
           </Link>
-          <nav aria-label="Main" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 max-lg:hidden xl:gap-x-6.5">
+          <nav aria-label="Hauptmenü" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 max-lg:hidden xl:gap-x-6.5">
             <NavDropdown {...otherTreksMenu} />
             <NavDropdown {...blogsMenu} hasTwoColumns />
             {PAGE_LINKS.map((link) => (
@@ -98,7 +98,7 @@ export const SiteHeader = async () => {
             {email && (
               <a href={emailHref} rel="nofollow" className={`${outlineButton} ${ICON_FIRST} max-sm:hidden`}>
                 <TrailIcon name="mail" />
-                <span className="sr-only xl:not-sr-only">Email</span>
+                <span className="sr-only xl:not-sr-only">E-Mail</span>
               </a>
             )}
             {/* Below 360px it covers the logo: the menu has the number and this button. */}
@@ -126,7 +126,7 @@ export const SiteHeader = async () => {
               {email && (
                 <a href={emailHref} rel="nofollow" className={`${outlineButton} w-full`}>
                   <TrailIcon name="mail" />
-                  Email us
+                  E-Mail schreiben
                 </a>
               )}
             </MobileMenu>

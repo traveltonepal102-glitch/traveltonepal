@@ -15,10 +15,10 @@ export const FounderStory = ({ company: { storyTeaser, founder } }: { company: H
         {founder?.photo ? <SiteImage image={founder.photo} sizes="112px" className="object-cover" /> : <TrailIcon name="users" size={56} />}
       </span>
       <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-2">
-        <span className="eyebrow">Our roots</span>
+        <span className="eyebrow">Unsere Wurzeln</span>
         {/* A paragraph, not a heading: the page's headings are kept for the trek's own keyword. */}
         <p id="founder-h" className="font-display text-[22px] leading-7 font-semibold text-ink">
-          Our story
+          Unsere Geschichte
         </p>
         <ClampedText>
           <p>{storyTeaser}</p>
@@ -31,7 +31,7 @@ export const FounderStory = ({ company: { storyTeaser, founder } }: { company: H
             </p>
           )}
           <Link href={`${ROUTES.about}#story`} className="inline-flex min-h-11 items-center gap-1.5 font-semibold">
-            Read our story
+            Unsere Geschichte lesen
             <TrailIcon name="arrow" size={16} />
           </Link>
         </div>

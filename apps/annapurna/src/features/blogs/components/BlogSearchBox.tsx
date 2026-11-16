@@ -28,7 +28,7 @@ export const BlogSearchBox = ({ value, onSearch }: BlogSearchBoxProps) => {
       className="relative w-full"
     >
       <label htmlFor="blog-search" className="sr-only">
-        Search the blogs
+        Blog durchsuchen
       </label>
       <TrailIcon name="search" size={20} className="pointer-events-none absolute top-3.5 left-3.5 text-muted" />
       <input
@@ -38,7 +38,7 @@ export const BlogSearchBox = ({ value, onSearch }: BlogSearchBoxProps) => {
         name="q"
         maxLength={100}
         defaultValue={value}
-        placeholder="Search the blogs"
+        placeholder="Blog durchsuchen"
         autoComplete="off"
         onChange={(event) => onSearch?.(event.target.value)}
         className="min-h-12 w-full rounded-xl border border-solid border-field bg-snow pr-12 pl-11 text-base text-ink [&::-webkit-search-cancel-button]:hidden"
@@ -46,7 +46,7 @@ export const BlogSearchBox = ({ value, onSearch }: BlogSearchBoxProps) => {
       {value && (
         <button
           type="button"
-          aria-label="Clear the search"
+          aria-label="Suche löschen"
           onClick={() => {
             if (input.current) input.current.value = "";
             onSearch?.("");

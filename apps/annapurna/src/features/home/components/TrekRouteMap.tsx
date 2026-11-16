@@ -14,35 +14,35 @@ const MAP_LINK = "inline-flex min-h-11 items-center gap-1.5 font-semibold";
 export const TrekRouteMap = ({ name, routeMap }: { name: string; routeMap: NonNullable<HomeTrek["routeMap"]> }) => (
   <section aria-labelledby="route-map-h" id="route_map" className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <SectionHeading id="route-map-h" eyebrow="Where you walk" title={routeMap.heading}>
+      <SectionHeading id="route-map-h" eyebrow="Ihre Route" title={routeMap.heading}>
         <HeadingLine doc={routeMap.line} />
       </SectionHeading>
       <div className="flex flex-wrap gap-x-5">
         <a href={routeMap.openUrl} target="_blank" rel="noopener noreferrer" className={MAP_LINK}>
           <TrailIcon name="map" />
-          Open in Google Maps
+          In Google Maps öffnen
         </a>
         {routeMap.pdfUrl && (
           <a href={routeMap.pdfUrl} target="_blank" rel="noopener noreferrer" type="application/pdf" className={MAP_LINK}>
             <TrailIcon name="doc" />
-            Printable map (PDF)
+            PDF-Karte herunterladen
           </a>
         )}
         {routeMap.gpxUrl && (
           <a href={routeMap.gpxUrl} download className={MAP_LINK}>
             <TrailIcon name="route" />
-            GPS track (GPX)
+            GPS-Track (GPX)
           </a>
         )}
       </div>
     </div>
-    <RouteMapFrame embedUrl={routeMap.embedUrl} title={`Google map of the ${name}`} hidesTitleBar={routeMap.hasTrailLine} />
+    <RouteMapFrame embedUrl={routeMap.embedUrl} title={`Google-Karte zum ${name}`} hidesTitleBar={routeMap.hasTrailLine} />
     <p className="text-sm leading-5 text-muted">
-      Map by Google Maps. See our{" "}
+      Karte von Google Maps. Wie Google mit Ihren Daten umgeht, lesen Sie in unserer{" "}
       <Link href={ROUTES.privacy} className="underline">
-        privacy policy
-      </Link>{" "}
-      for how Google handles your data.
+        Datenschutzerklärung
+      </Link>
+      .
     </p>
   </section>
 );

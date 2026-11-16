@@ -9,8 +9,8 @@ import type { TeamMember } from "../types";
 export const TeamSection = ({ team, heading }: { team: readonly TeamMember[]; heading: { title: string; text: string } }) => (
   <section id={ABOUT_SECTIONS.team} aria-labelledby="team-h" className="bg-cloud py-14 md:py-18">
     <div className="wrap flex flex-col gap-8">
-      <SectionHeading id="team-h" title={heading.title || "The people who plan and lead your trek"}>
-        <p className="max-w-[72ch]">{heading.text || "Licensed guides who know these valleys, and a small office that answers your messages."}</p>
+      <SectionHeading id="team-h" title={heading.title || "Die Menschen, die Ihren Trek planen und begleiten"}>
+        <p className="max-w-[72ch]">{heading.text || "Lizenzierte Trekkingguides, die diese Täler kennen, und ein kleines Büro, das Ihre Nachrichten beantwortet."}</p>
       </SectionHeading>
       <ul className="grid gap-4.5 sm:grid-cols-2 lg:grid-cols-3">
         {team.map((member) => (

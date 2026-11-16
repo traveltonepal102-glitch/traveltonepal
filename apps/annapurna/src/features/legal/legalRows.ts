@@ -1,4 +1,4 @@
-import { CONSENT_MAX_AGE_LABEL, CONSENT_STORAGE_KEY } from "@ttn/site-data/consent";
+import { CONSENT_MAX_AGE_LABEL_DE, CONSENT_STORAGE_KEY } from "@ttn/site-data/consent";
 import type { WebSitePageRow } from "@ttn/site-data/database.types";
 import { fillLegalPlaceholders, legalTable, sectionIds } from "@ttn/site-data/legalText";
 import { toPageDates } from "@ttn/site-data/pageDates";
@@ -20,7 +20,7 @@ const contentSchema = z
 
 /** "2026-10-26" → "26 October 2026" (a calendar day: no time zone to shift it). */
 const formatDay = (day: string) =>
-  day ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`)) : "";
+  day ? new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`)) : "";
 
 /** A blank detail shows as a visible gap ("[OFFICE ADDRESS]"), so it is noticed and never invented. */
 const orGap = (value: string, gap: string) => value.trim() || `[${gap}]`;
@@ -39,19 +39,29 @@ const placeholderValues = (settings: SiteSettings): Record<string, string> => ({
 /** The registers the company is entered in: only the ones typed in Site settings. */
 const companyRegisters = ({ tourismRegistration, licence, panNumber }: SiteSettings) =>
   [
-    ["Department of Tourism, trekking agency registration", tourismRegistration],
-    ["Department of Tourism, tourism licence", licence],
-    ["Tax number (PAN / VAT)", panNumber],
+    ["Tourismusbehörde Nepal (Department of Tourism), Registrierung als Trekkingagentur", tourismRegistration],
+    ["Tourismusbehörde Nepal (Department of Tourism), Tourismuslizenz", licence],
+    ["Steuernummer (PAN / VAT)", panNumber],
   ].filter(([, number]) => number);
 
 /** "What we use" on Cookie settings ({cookieTable}): only what this website really uses (keep in step with CookieSettingsPanel). */
 const cookieTable = () =>
   legalTable(
-    ["Name", "Purpose", "Stored for"],
+    ["Name", "Zweck", "Speicherdauer"],
     [
-      [CONSENT_STORAGE_KEY, "Remembers your choice on this page (stored in your browser, not a cookie)", CONSENT_MAX_AGE_LABEL],
-      ["Google Maps", "The route maps on trek pages and in blogs (they load with the page); the office map on the Contact page only with your consent or after you click to load it", "Set by Google"],
-      ["Embedded videos, maps and widgets", "YouTube, Vimeo, Komoot, Wikiloc and other services embedded in a blog, only with your consent or after you click to load them", "Set by each service"],
+      [CONSENT_STORAGE_KEY, "Speichert Ihre Auswahl auf dieser Seite (im Browser gespeichert, kein Cookie)", CONSENT_MAX_AGE_LABEL_DE],
+      ["Google Tag Manager", "Lädt unsere Messwerkzeuge von Google (nur mit Ihrer Zustimmung zur Analyse)", "Von Google festgelegt"],
+      ["Google Analytics", "Zählt Seitenaufrufe (nur mit Ihrer Zustimmung zur Analyse)", "Von Google festgelegt"],
+      [
+        "Google Maps",
+        "Die Routenkarten auf Trekseiten und in Blogs (sie laden mit der Seite); die Bürokarte auf der Kontaktseite nur mit Ihrer Zustimmung oder nach einem Klick zum Laden",
+        "Von Google festgelegt",
+      ],
+      [
+        "Eingebettete Videos, Karten und Widgets",
+        "YouTube, Vimeo, Komoot, Wikiloc und andere in einem Blog eingebettete Dienste, nur mit Ihrer Zustimmung oder nach einem Klick zum Laden",
+        "Vom jeweiligen Dienst festgelegt",
+      ],
     ],
   );
 
@@ -59,7 +69,7 @@ const cookieTable = () =>
 export const toLegalDoc = (slug: LegalSlug, row: WebSitePageRow, settings: SiteSettings): LegalDoc => {
   const content = contentSchema.parse(row.content ?? {});
   const body = fillLegalPlaceholders(toLegalTextDoc(content.body), placeholderValues(settings), {
-    registers: legalTable(["Register", "Number"], companyRegisters(settings)),
+    registers: legalTable(["Register", "Nummer"], companyRegisters(settings)),
     cookieTable: cookieTable(),
   });
   const { lead, sections } = splitLegalSections(body);
