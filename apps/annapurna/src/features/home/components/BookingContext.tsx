@@ -31,8 +31,11 @@ const subscribeToNothing = () => () => undefined;
 /** The travellers and day chosen on the page: the price list, the booking card, the request form and the phone's bar follow them. */
 export const BookingProvider = ({ prices, children }: { prices: readonly HomeGroupPrice[]; children: ReactNode }) => {
   const ranges = useMemo(() => groupRanges(prices), [prices]);
-  // Every trek is private from one person, so the card starts with one traveller ("Most chosen" only marks a price).
-  const [travellers, setTravellers] = useState(1);
+  // The card starts on the group marked "Most popular" in the trek editor (the "From" price), else the first group.
+  const [travellers, setTravellers] = useState(() => {
+    const popular = Math.max(0, prices.findIndex((price) => price.isDefault));
+    return groupRanges(prices)[popular]?.min ?? 1;
+  });
   // Starts on today, which only the browser knows: the page is built ahead. A day picked (or the field cleared) replaces it.
   const today = useSyncExternalStore(subscribeToNothing, todayInNepal, () => "");
   const [pickedDate, setPickedDate] = useState<string | null>(null);

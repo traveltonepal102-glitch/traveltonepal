@@ -9,7 +9,6 @@ import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 import { formatPrice } from "@/lib/format";
 
 import { buildBookingMessage } from "../bookingMessage";
-import { MAX_TRAVELLERS, nextGroupTip, travellersText } from "../groupSizes";
 import { useBooking } from "./BookingContext";
 import { GroupPriceTable } from "./GroupPriceTable";
 
@@ -17,20 +16,17 @@ type BookingCardProps = { trekName: string; shortName: string; days: number };
 
 const LABEL = "text-sm leading-5 font-semibold text-ink";
 const FIELD = "min-h-12 w-full rounded-[10px] border border-solid border-field bg-snow px-3.5 text-ink";
-const STEP = "size-11 cursor-pointer border-0 bg-transparent text-[22px] leading-none text-navy disabled:cursor-not-allowed disabled:opacity-40";
-const MIN_TRAVELLERS = 1;
 
 /**
- * The sticky card, read top to bottom: the price per person for the travellers chosen, the start day, the travellers,
- * every group's price (GroupPriceTable: picking one sets the travellers), the total, and WhatsApp or email, whose
- * message carries the day and the group.
+ * The sticky card, read top to bottom: the price per person for the group chosen, the start day, every group's price
+ * (GroupPriceTable, one is chosen), and WhatsApp or email, whose message carries the day and the group. No total: a
+ * group is a range ("3–5 Personen"), so the price is per person (decided 2026-11-16).
  */
 export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => {
-  const { prices, ranges, travellers, setTravellers, chosenIndex, choose, today, startDate, setStartDate } = useBooking();
+  const { prices, chosenIndex, choose, today, startDate, setStartDate } = useBooking();
   const id = useId();
   const chosen = prices[chosenIndex];
-  const tip = nextGroupTip(ranges, prices, travellers);
-  const message = buildBookingMessage({ trekName, days, groupSize: travellersText(travellers), startDate });
+  const message = buildBookingMessage({ trekName, days, groupSize: chosen?.label ?? "", startDate });
 
   return (
     <div className="overflow-hidden rounded-2xl border border-solid border-line bg-snow shadow-raised">
@@ -45,7 +41,7 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
               <span className="text-[17px] text-muted">pro Person</span>
             </p>
             <p className="text-eyebrow text-muted">
-              Privattrek · Preis für {travellersText(travellers)}
+              Privattrek · Preis für {chosen.label}
             </p>
           </>
         )}
@@ -60,47 +56,8 @@ export const BookingCard = ({ trekName, shortName, days }: BookingCardProps) => 
           <span className="text-eyebrow text-muted">Privattrek: Sie starten an einem Tag Ihrer Wahl.</span>
         </div>
 
-        <div className="flex items-center justify-between gap-3">
-          <span className="flex flex-col">
-            <span id={`${id}-travellers`} className={LABEL}>
-              Personen
-            </span>
-            {chosen?.team && <span className="text-eyebrow text-muted">{chosen.team}</span>}
-          </span>
-          <span role="group" aria-labelledby={`${id}-travellers`} className="inline-flex flex-none items-center rounded-[10px] border border-solid border-field">
-            <button type="button" aria-label="Eine Person weniger" disabled={travellers <= MIN_TRAVELLERS} onClick={() => setTravellers(travellers - 1)} className={STEP}>
-              −
-            </button>
-            <output aria-live="polite" className="min-w-8 text-center font-semibold text-ink">
-              {travellers}
-            </output>
-            <button type="button" aria-label="Eine Person mehr" disabled={travellers >= MAX_TRAVELLERS} onClick={() => setTravellers(travellers + 1)} className={STEP}>
-              +
-            </button>
-          </span>
-        </div>
-
         {prices.length > 1 && <GroupPriceTable prices={prices} chosenIndex={chosenIndex} onChoose={choose} />}
-
-        {tip && (
-          <p className="flex gap-2 rounded-[10px] bg-cream px-3 py-2.5 text-sm leading-5 text-cream-ink">
-            <TrailIcon name="tag" size={16} className="mt-0.5" />
-            Mit {tip.more === 1 ? "einer weiteren Person" : `${tip.more} weiteren Personen`} sinkt der Preis auf {formatPrice(tip.price, tip.currency)} pro Person.
-          </p>
-        )}
-
-        {chosen && (
-          <dl className="flex flex-col gap-2 border-t border-solid border-line pt-3.5 text-[15px] leading-5.5">
-            <div className="flex justify-between gap-3">
-              <dt>{formatPrice(chosen.price, chosen.currency)} × {travellersText(travellers)}</dt>
-              <dd className="text-ink">{formatPrice(chosen.price * travellers, chosen.currency)}</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3 border-t border-dashed border-line pt-2.5">
-              <dt className="font-semibold text-ink">Gesamt</dt>
-              <dd className="font-display text-[26px] leading-7.5 font-[640] text-ink">{formatPrice(chosen.price * travellers, chosen.currency)}</dd>
-            </div>
-          </dl>
-        )}
+        {chosen?.team && <p className="-mt-2 text-eyebrow text-muted">Team: {chosen.team}</p>}
 
         <div className="flex flex-col gap-2 border-t border-solid border-line pt-4">
           <a href={getWhatsAppUrl(message)} rel="nofollow" className={whatsAppButton}>

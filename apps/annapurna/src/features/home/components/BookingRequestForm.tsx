@@ -9,7 +9,6 @@ import { TrailIcon } from "@/components/ui/TrailIcon";
 import { WhatsAppLogo } from "@/components/ui/WhatsAppLogo";
 
 import { MAX_REQUESTS_LENGTH, buildBookingMessage, formatStartDate } from "../bookingMessage";
-import { travellersText } from "../groupSizes";
 import { useBooking } from "./BookingContext";
 
 type BookingRequestFormProps = { trekName: string; days: number };
@@ -23,7 +22,8 @@ const FIELD = "min-h-12 w-full rounded-[10px] border border-solid border-field b
  * the first message, on WhatsApp or by email: nothing is stored on this website.
  */
 export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) => {
-  const { travellers, startDate } = useBooking();
+  const { prices, chosenIndex, startDate } = useBooking();
+  const group = prices[chosenIndex]?.label ?? "";
   const [error, setError] = useState("");
 
   const send = (event: FormEvent<HTMLFormElement>) => {
@@ -38,7 +38,7 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
     const message = buildBookingMessage({
       trekName,
       days,
-      groupSize: travellersText(travellers),
+      groupSize: group,
       startDate,
       name,
       country: String(fields.get("country") ?? ""),
@@ -70,7 +70,7 @@ export const BookingRequestForm = ({ trekName, days }: BookingRequestFormProps) 
         <textarea name="requests" rows={3} maxLength={MAX_REQUESTS_LENGTH} placeholder="Ein zusätzlicher Ruhetag, vegetarisches Essen, ein Abstecher …" className={`${FIELD} py-3`} />
       </label>
       <p className="text-[15px] leading-5.5 text-muted">
-        Für {travellersText(travellers)}
+        Für {group || "Ihre Gruppe"}
         {startDate ? `, Start am ${formatStartDate(startDate)}` : ""}. Gruppe und Startdatum ändern Sie in der Buchungsbox.
       </p>
       <div className="actions">

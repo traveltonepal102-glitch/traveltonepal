@@ -8,16 +8,16 @@ import type { HomeGroupPrice } from "../types";
 
 type GroupPriceTableProps = {
   prices: readonly HomeGroupPrice[];
-  /** The group the chosen travellers are in: its row is selected. */
+  /** The chosen group: its row is selected. */
   chosenIndex: number;
-  /** Picking a row sets the travellers to that group's smallest size. */
+  /** Picking a row chooses that group. */
   onChoose: (index: number) => void;
 };
 
 /**
- * "Preis pro Person nach Gruppengröße" in the booking card: every group's price per person, always shown, as one
- * choice list. Real radio buttons (keyboard: arrow keys), so picking a group and the travellers stepper above always
- * agree: the stepper's number selects its group here, and a row picked here sets the stepper.
+ * "Preis nach Gruppengröße" in the booking card: every group's price per person, always shown, as the one choice of
+ * group size (real radio buttons: arrow keys move between them). The chosen group sets the card's price, the menu's
+ * price and the group named in the WhatsApp and email messages.
  */
 export const GroupPriceTable = ({ prices, chosenIndex, onChoose }: GroupPriceTableProps) => {
   const name = useId();

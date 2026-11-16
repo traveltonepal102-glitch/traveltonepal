@@ -2,7 +2,6 @@
 
 import { formatPrice } from "@/lib/format";
 
-import { travellersText } from "../groupSizes";
 import { useBooking } from "./BookingContext";
 
 /**
@@ -10,13 +9,13 @@ import { useBooking } from "./BookingContext";
  * (it changes with them), so the page never shows two different prices. Nothing while the trek has no prices.
  */
 export const SectionMenuPrice = () => {
-  const { prices, chosenIndex, travellers } = useBooking();
+  const { prices, chosenIndex } = useBooking();
   const chosen = prices[chosenIndex];
   if (!chosen) return null;
 
   return (
     <span className="text-right text-sm leading-4.5 text-muted">
-      Pro Person · {travellersText(travellers)}
+      Pro Person · {chosen.label}
       <br />
       <strong className="font-display text-xl leading-6 font-[640] text-ink">{formatPrice(chosen.price, chosen.currency)}</strong>
     </span>
