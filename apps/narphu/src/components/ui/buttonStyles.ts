@@ -14,5 +14,3 @@ export const quietButton = `${BASE} min-h-11 rounded-full border-[1.5px] border-
 /** On a dark background (the itinerary, the maroon bands). */
 export const outlineOnDarkButton = `${BASE} min-h-12 rounded-full border-[1.5px] border-solid border-white/50 px-5 text-snow hover:bg-white/10 hover:text-snow`;
 
-/** A light button on a photo or a dark background. */
-export const lightButton = `${BASE} min-h-11 rounded-full bg-paper px-4 text-[15px] text-ink hover:bg-cream hover:text-ink`;

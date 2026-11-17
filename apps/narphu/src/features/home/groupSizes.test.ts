@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { groupIndexFor, groupRanges, nextGroupTip, travellersText } from "./groupSizes";
+import { groupIndexFor, groupRanges, travellersText } from "./groupSizes";
 
 const prices = [
   { label: "1 person", priceUsd: 1590 },
@@ -21,10 +21,6 @@ describe("group sizes", () => {
     expect(groupRanges([{ label: "Up to 4" }, { label: "5+" }])).toEqual([{ min: 1, max: 4 }, { min: 5, max: 20 }]);
   });
 
-  it("says nothing when the next group isn't cheaper", () => {
-    expect(nextGroupTip(groupRanges([{ label: "1 person" }, { label: "2 people" }]), [{ priceUsd: 900 }, { priceUsd: 900 }], 1)).toBeNull();
-  });
-
   it("follows the group before when a label has no number", () => {
     expect(groupRanges([{ label: "2 people" }, { label: "A bigger group" }])).toEqual([{ min: 2, max: 2 }, { min: 3, max: 3 }]);
   });
@@ -38,11 +34,6 @@ describe("group sizes", () => {
   it("never quotes a cheaper group when the labels leave a gap or start higher", () => {
     expect(groupIndexFor(groupRanges([{ label: "1 person" }, { label: "2 people" }, { label: "6–10 people" }]), 3)).toBe(1);
     expect(groupIndexFor(groupRanges([{ label: "2 people" }, { label: "3–5 people" }]), 1)).toBe(0);
-  });
-
-  it("says how many more bring the price down, and nothing in the last group", () => {
-    expect(nextGroupTip(ranges, prices, 4)).toEqual({ more: 2, priceUsd: 1190 });
-    expect(nextGroupTip(ranges, prices, 12)).toBeNull();
   });
 
   it("counts travellers in words", () => {

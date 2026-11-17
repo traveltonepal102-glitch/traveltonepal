@@ -8,6 +8,4 @@ export const newsletterSchema = z.object({
   website: z.string().optional(),
 });
 
-export type NewsletterFields = z.input<typeof newsletterSchema>;
-
 export type NewsletterResult = { status: "confirmation-sent" } | { status: "error"; message: string };

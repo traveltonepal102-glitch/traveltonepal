@@ -29,11 +29,3 @@ export const groupIndexFor = (ranges: readonly GroupRange[], travellers: number)
 /** 1 → "1 traveller", 3 → "3 travellers" */
 export const travellersText = (travellers: number) => `${travellers} ${travellers === 1 ? "traveller" : "travellers"}`;
 
-/** "Add 1 more and the price drops…" needs the next cheaper group: null when there is none. */
-export const nextGroupTip = (ranges: readonly GroupRange[], prices: readonly Pick<HomeGroupPrice, "priceUsd">[], travellers: number) => {
-  const next = groupIndexFor(ranges, travellers) + 1;
-  const range = ranges[next];
-  const price = prices[next];
-  const current = prices[next - 1];
-  return range && price && current && travellers < range.min && price.priceUsd < current.priceUsd ? { more: range.min - travellers, priceUsd: price.priceUsd } : null;
-};
