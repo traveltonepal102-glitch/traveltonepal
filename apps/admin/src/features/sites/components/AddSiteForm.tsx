@@ -52,9 +52,9 @@ export const AddSiteForm = ({ action, regions }: AddSiteFormProps) => {
             <SelectField
               name="regionId"
               label="Region"
-              placeholder={regions.length > 0 ? "Pick the region" : "Every region already has a website"}
+              placeholder="Pick the region"
               options={regions}
-              hint="One website per region. Its treks are copied from Travel To Nepal's treks in this region."
+              hint="The region the website is about (a region may have more than one website). Its treks are copied from Travel To Nepal's treks in this region."
               error={errors.regionId}
             />
             <TextField

@@ -1,0 +1,124 @@
+/*
+ * Nar Phu Trek's own look (design: canvas "Nar Phu Trek Website", brand guide): monastery maroon, prayer-flag saffron and
+ * warm cream paper, with Mukta for headings and text. Everything visual on this website comes from these tokens.
+ */
+@theme {
+  --color-maroon: #7b2d2d;
+  --color-maroon-deep: #5e1f1f;
+  --color-maroon-tint: #f5ede0;
+  --color-on-maroon-muted: #ebddd0;
+  --color-saffron: #e39b2e;
+  --color-saffron-tint: #fcf1df;
+  --color-saffron-line: #edd3a6;
+  --color-saffron-ink: #8a5413;
+  --color-ink: #2a1d1a;
+  --color-text: #3a2a25;
+  --color-muted: #6e5a50;
+  --color-line: #e6d8c3;
+  --color-field: #d5c4ae;
+  --color-cream: #f5ede0;
+  --color-paper: #fffaf2;
+  --color-snow: #ffffff;
+  --color-whatsapp: #15803d;
+  --color-whatsapp-deep: #116a32;
+  /* On the dark ink ground (footer, itinerary): labels, quiet lines, WhatsApp's green and errors bright enough to read. */
+  --color-on-ink-label: #c9b8a6;
+  --color-on-ink-muted: #a8978a;
+  --color-on-ink-whatsapp: #4ade80;
+  --color-on-ink-error: #ffb4ab;
+  --color-saffron-deep: #d58d22;
+  --color-error: #b42318;
+  /* Google's own blue, only for its "G". */
+  --color-google: #4285f4;
+  --color-focus: #2a1d1a;
+
+  --font-display: var(--font-mukta), "Mukta", system-ui, sans-serif;
+  --font-body: var(--font-mukta), "Noto Sans Devanagari", system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(42, 29, 26, 0.05), 0 14px 34px -18px rgba(42, 29, 26, 0.28);
+  --shadow-raised: 0 24px 48px -24px rgba(94, 31, 31, 0.45);
+
+  --text-eyebrow: 13px;
+  --text-eyebrow--line-height: 18px;
+  /* Headings grow with the screen, from a phone (375px) to a laptop (1024px), instead of jumping at one width. */
+  --text-h1: clamp(38px, 3.9vw + 23px, 64px);
+  --text-h1--line-height: 1.04;
+  --text-h2: clamp(30px, 1.6vw + 24px, 40px);
+  --text-h2--line-height: 1.18;
+  --text-h3: clamp(20px, 0.4vw + 18.5px, 22px);
+  --text-h3--line-height: 1.28;
+  --text-body: 17px;
+  --text-body--line-height: 27px;
+}
+
+/* The space between the screen's edge and the content: 16px on a phone, growing to 24px. The header lines up with it. */
+:root {
+  --gutter: clamp(16px, 4vw, 32px);
+}
+
+/* The page's width and side gutters. */
+@utility wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/*
+ * A row of buttons. Below Tailwind's sm (640px) they stack, each as wide as the column: easy to tap, and no ragged rows.
+ * A group that pairs small buttons on a phone sets max-sm:grid-cols-2 and spans the wide ones (max-sm:col-span-2).
+ */
+@utility actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  @media (width < 40rem) {
+    display: grid;
+    align-items: stretch;
+  }
+}
+
+/*
+ * The box around a table. A table of four or more columns keeps its cells readable and scrolls sideways when the
+ * screen is too narrow, instead of breaking words onto one line each; a shadow at an edge shows there is more.
+ */
+@utility table-scroll {
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--color-snow) 30%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--color-snow) 30%, transparent) right / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(42 29 26 / 0.16), transparent) left / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(42 29 26 / 0.16), transparent) right / 12px 100% no-repeat scroll;
+  background-color: var(--color-snow);
+  & table:has(tr > :nth-child(4)) :is(th, td) {
+    min-width: 7rem;
+  }
+  & table:has(tr > :nth-child(4)) :is(th, td):first-child {
+    min-width: 4.5rem;
+  }
+}
+
+/* Small capitals above a heading. */
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow--line-height);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-saffron-ink);
+}
+
+/* The saffron dash before an eyebrow (design: every section's label). */
+@utility eyebrow-dash {
+  &::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-saffron);
+  }
+}

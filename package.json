@@ -10,7 +10,8 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r --if-present test",
     "dev:manaslu": "pnpm --filter manaslu dev",
-    "dev:annapurna": "pnpm --filter annapurna dev"
+    "dev:annapurna": "pnpm --filter annapurna dev",
+    "dev:narphu": "pnpm --filter narphu dev"
   },
   "devEngines": {
     "packageManager": {

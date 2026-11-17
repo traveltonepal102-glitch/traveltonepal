@@ -1,0 +1,151 @@
+import { isContactRedirect } from "@ttn/config/contact";
+import { isSafeHref } from "@ttn/ui/lib/richText";
+import type { RichTextBlock, RichTextDoc, RichTextImage, RichTextInline } from "@ttn/ui/lib/richText";
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+import { SiteImage } from "@/components/ui/SiteImage";
+import { photosPublicBaseUrl } from "@/env";
+
+const LINK = "font-semibold underline underline-offset-2";
+
+/** Bold and italic as marked; a link only when its address is safe (checked again here, not only on save). */
+const InlineText = ({ inline }: { inline: RichTextInline }) => {
+  if (inline.type === "hardBreak") return <br />;
+  const marks = inline.marks ?? [];
+  let node: ReactNode = inline.text;
+  if (marks.some((mark) => mark.type === "italic")) node = <em>{node}</em>;
+  if (marks.some((mark) => mark.type === "bold")) node = <strong className="font-semibold text-ink">{node}</strong>;
+
+  const link = marks.find((mark) => mark.type === "link");
+  if (!link || !isSafeHref(link.attrs.href)) return node;
+  const { href } = link.attrs;
+  if (href.startsWith("/") && !isContactRedirect(href)) {
+    return (
+      <Link href={href} className={LINK}>
+        {node}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} {...outsideLinkProps(href)} className={LINK}>
+      {node}
+    </a>
+  );
+};
+
+/**
+ * A link that leaves the page opens in a new tab, so the website stays open behind it. Email stays in this tab (it
+ * opens the mail app; a new tab would be left empty); WhatsApp keeps sending its page, which the click count reads.
+ */
+const outsideLinkProps = (href: string) => {
+  if (href.startsWith("mailto:") || href.startsWith("/email")) return { rel: "nofollow" };
+  if (href.startsWith("/whatsapp")) return { target: "_blank", rel: "nofollow noopener" };
+  return { target: "_blank", rel: "noopener noreferrer" };
+};
+
+const Inlines = ({ content = [] }: { content?: readonly RichTextInline[] }) => content.map((inline, index) => <InlineText key={index} inline={inline} />);
+
+/** A photo's `sizes` hint: as wide as a text column (900px) unless the page says it spans more. */
+const COLUMN_PHOTO_SIZES = "(min-width: 1024px) 900px, 100vw";
+
+const Photo = ({ image, sizes }: { image: RichTextImage; sizes: string }) => {
+  const { photoId, alt, width, height, variantWidths, fileName } = image.attrs;
+  return (
+    <figure className="relative overflow-hidden rounded-xl bg-maroon-tint" style={{ aspectRatio: `${width} / ${height}` }}>
+      <SiteImage image={{ src: `${photosPublicBaseUrl}/${photoId}`, alt, variantWidths, fileName }} sizes={sizes} className="object-cover" />
+    </figure>
+  );
+};
+
+/** The level of the text's headings: one below the heading the text sits under (h3 under an h2, h4 under an h3). */
+type HeadingLevel = 3 | 4;
+
+const Block = ({ block, headingLevel, photoSizes }: { block: RichTextBlock; headingLevel: HeadingLevel; photoSizes: string }) => {
+  if (block.type === "paragraph") {
+    return block.content?.length ? (
+      <p>
+        <Inlines content={block.content} />
+      </p>
+    ) : null;
+  }
+  if (block.type === "heading") {
+    const Heading = headingLevel === 4 ? "h4" : "h3";
+    return (
+      <Heading>
+        <Inlines content={block.content} />
+      </Heading>
+    );
+  }
+  if (block.type === "image") return <Photo image={block} sizes={photoSizes} />;
+  if (block.type === "table") {
+    // A first row of heading cells is the table's head, so screen readers can name each column.
+    const [first, ...others] = block.content;
+    const hasHead = Boolean(first?.content.every((cell) => cell.type === "tableHeader"));
+    return (
+      <div role="group" aria-label="Table, scrolls sideways" tabIndex={0} className="table-scroll rounded-xl border border-solid border-line">
+        <table className="w-full border-collapse text-[15px] leading-[22px]">
+          {hasHead && first && (
+            <thead className="bg-cream">
+              <tr>
+                {first.content.map((cell, cellIndex) => (
+                  <th key={cellIndex} scope="col" className="p-3 text-left align-top font-semibold text-ink">
+                    {cell.content.map((child, childIndex) => (
+                      <Block key={childIndex} block={child} headingLevel={headingLevel} photoSizes={photoSizes} />
+                    ))}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {(hasHead ? others : block.content).map((row, rowIndex) => (
+              <tr key={rowIndex} className="border-t border-solid border-line first:border-t-0 [thead+tbody_&]:first:border-t">
+                {row.content.map((cell, cellIndex) => {
+                  const Cell = cell.type === "tableHeader" ? "th" : "td";
+                  return (
+                    <Cell key={cellIndex} className="p-3 text-left align-top">
+                      {cell.content.map((child, childIndex) => (
+                        <Block key={childIndex} block={child} headingLevel={headingLevel} photoSizes={photoSizes} />
+                      ))}
+                    </Cell>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  const List = block.type === "orderedList" ? "ol" : "ul";
+  return (
+    <List className={`flex max-w-[var(--text-measure,72ch)] flex-col gap-1.5 pl-6 ${block.type === "orderedList" ? "list-decimal" : "list-disc"}`}>
+      {block.content.map((item, index) => (
+        <li key={index} className="space-y-1.5">
+          {item.content.map((child, childIndex) => (
+            <Block key={childIndex} block={child} headingLevel={headingLevel} photoSizes={photoSizes} />
+          ))}
+        </li>
+      ))}
+    </List>
+  );
+};
+
+type RichTextProps = {
+  doc: RichTextDoc;
+  className?: string;
+  /** 4 when the text sits under an h3 (an itinerary day, a trek guide topic); else its headings are h3. */
+  headingLevel?: HeadingLevel;
+  /** The `sizes` hint of its photos, when the text spans more than a column (the itinerary's intro across its band). */
+  photoSizes?: string;
+};
+
+/** Text written in the admin's rich text editor, as plain HTML on the server, in this website's look. */
+export const RichText = ({ doc, className = "flex flex-col gap-3.5", headingLevel = 3, photoSizes = COLUMN_PHOTO_SIZES }: RichTextProps) => (
+  <div className={className}>
+    {doc.content.map((block, index) => (
+      <Block key={index} block={block} headingLevel={headingLevel} photoSizes={photoSizes} />
+    ))}
+  </div>
+);

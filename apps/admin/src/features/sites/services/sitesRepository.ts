@@ -49,13 +49,12 @@ export const listSites = cache(async (): Promise<Site[]> => {
   }));
 });
 
-export type AddSiteFailure = "id_taken" | "region_taken" | "url_taken" | "missing_region" | "forbidden" | "not_set_up" | "failed";
+export type AddSiteFailure = "id_taken" | "url_taken" | "missing_region" | "forbidden" | "not_set_up" | "failed";
 
 export type AddSiteResult = { ok: true; siteId: string } | { ok: false; reason: AddSiteFailure };
 
 /** Which unique rule a duplicate broke, from the constraint name Postgres reports. */
 const duplicateReason = (message: string): AddSiteFailure => {
-  if (message.includes("sites_region_id_key")) return "region_taken";
   if (message.includes("sites_url_key")) return "url_taken";
   return "id_taken";
 };

@@ -17,7 +17,6 @@ const failure = (message: string, fieldErrors: FieldErrors = {}): EditorSaveStat
 
 const FAILURES: Record<AddSiteFailure, { message: string; field?: string }> = {
   id_taken: { message: "Another site already has this site id.", field: "id" },
-  region_taken: { message: "This region already has a website.", field: "regionId" },
   url_taken: { message: "Another site already uses this address.", field: "url" },
   missing_region: { message: "This region no longer exists. Pick another one.", field: "regionId" },
   forbidden: { message: "Only a Super admin can add a site." },
