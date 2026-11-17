@@ -34,7 +34,7 @@ export const TrekItinerary = ({ name, itinerary }: TrekItineraryProps) => (
             <h3 id="custom-h" className="text-xl! leading-6.5!">
               Die Route nach Ihren Wünschen
             </h3>
-            <p className="text-base leading-6.25">Sie wünschen sich einen zusätzlichen Ruhetag oder ein anderes Ende? Jeder Trek ist privat, daher passen wir ihn gern für Ihre Gruppe an.</p>
+            <p className="text-base leading-6.25">Sie wünschen sich einen zusätzlichen Ruhetag oder ein anderes Ende? Jeder Trek ist privat, daher passen wir ihn gern für Ihre Gruppe an. Änderungen am Reiseverlauf vor Trekbeginn sind kostenlos, zusätzliche Tage berechnen wir separat.</p>
           </div>
         </div>
         <a href={getWhatsAppUrl(`Hallo! Ich möchte die Route für den ${name} an meine Gruppe anpassen.`)} rel="nofollow" className={whatsAppButton}>

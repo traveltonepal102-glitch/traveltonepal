@@ -33,7 +33,7 @@ const RegionHomePage = async () => {
       regionId={site.regionId}
       treks={treks}
       homeTrekId={site.homeTrekId}
-      top={{ ...page.top, ...toHomeTopContent(page.content) }}
+      top={{ ...page.top, ...toHomeTopContent(page.content, site.language) }}
       photo={page.photo}
       sharePhoto={page.sharePhoto}
       lastSaved={`Published · saved ${formatDateTime(page.updatedAt)} Nepal time`}

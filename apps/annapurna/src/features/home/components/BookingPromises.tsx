@@ -2,7 +2,7 @@ import { TrailIcon } from "@/components/ui/TrailIcon";
 import type { TrailIconName } from "@/components/ui/TrailIcon";
 
 const PROMISES: readonly { icon: TrailIconName; tint: string; title: string; text: string }[] = [
-  { icon: "shield", tint: "bg-azure", title: "Genehmigungen erledigt.", text: "ACAP und TIMS besorgen wir vor Ihrer Ankunft." },
+  { icon: "shield", tint: "bg-azure", title: "Genehmigungen erledigt.", text: "Das ACAP-Permit besorgen wir vor Ihrer Ankunft." },
   { icon: "users", tint: "bg-ember", title: "Guides aus der Region.", text: "Lizenziert, in Erster Hilfe geschult und fair bezahlt." },
   { icon: "heart", tint: "bg-whatsapp", title: "Ihr Tempo.", text: "Nur private Gruppen: Wir gehen im Tempo der langsamsten Person." },
 ];
