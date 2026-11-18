@@ -96,7 +96,7 @@ export const BlogBlock = ({ block, blog }: { block: Block; blog: BlogArticle }) 
     case "embed":
       return <BlogEmbed url={block.url} service={block.service} height={block.height} title={block.title} caption={block.caption} />;
     case "file":
-      return <BlogFile url={block.url} title={block.title} description={block.description} size={block.size} />;
+      return <BlogFile url={block.url} title={block.title} description={block.description} size={block.size} format={block.format} opensInBrowser={block.opensInBrowser} />;
     case "video":
       return <BlogVideo youtubeId={block.youtubeId} title={block.title} />;
   }

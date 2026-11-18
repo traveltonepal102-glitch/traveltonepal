@@ -21,7 +21,7 @@ const FAILURE_MESSAGES = {
 } as const;
 
 /**
- * Deletes a travel guide of the website `siteId` for good, with the PDFs only it offered, then opens Travel guides.
+ * Deletes a travel guide of the website `siteId` for good, with the files to download only it offered, then opens Travel guides.
  * Super admins only: checked here for the message, and enforced by RLS. Both ids come from the browser, so they are
  * checked.
  */

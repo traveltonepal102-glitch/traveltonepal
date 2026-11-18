@@ -64,7 +64,7 @@ export const saveArticle = async (siteId: string, articleId: string | null, _pre
     return failure(message, field ? { [field[0]]: field[1] } : {});
   }
 
-  // A removed or replaced "File to download" PDF is public, so it is deleted once no guide uses it.
+  // A removed or replaced "File to download" file is public, so it is deleted once no guide uses it.
   const keptFiles = new Set(parsed.data.sections.flatMap((section) => (section.type === "file" ? [section.path] : [])));
   await removeUnusedGuideFiles(previousFiles.filter((path) => !keptFiles.has(path)));
 

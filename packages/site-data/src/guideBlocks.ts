@@ -1,5 +1,6 @@
 import { EMBED_HEIGHTS, toEmbed } from "@ttn/config/embeds";
-import { GUIDE_FILE_PATH, fileSizeLabel } from "@ttn/config/guideFiles";
+import { GUIDE_FILE_PATH, fileSizeLabel, guideFileFormatOf } from "@ttn/config/guideFiles";
+import type { GuideFileCategory } from "@ttn/config/guideFiles";
 import { toSlugText } from "@ttn/config/slugText";
 import type { SiteLanguage } from "@ttn/config/siteLanguage";
 import { cleanCustomHtml, customHtmlText } from "@ttn/ui/lib/customHtml";
@@ -64,8 +65,11 @@ export type GuideBlock<Trek> =
   | { type: "map"; title: string; place: string }
   /** A frame from an allowed service (@ttn/config/embeds), loaded once the visitor allows it. `height` in px. */
   | { type: "embed"; url: string; service: Pick<EmbedProvider, "name" | "company" | "kind">; height: number; title: string; caption: string }
-  /** A PDF to open or download; `size` like "1.2 MB" ("" when unknown). */
-  | { type: "file"; url: string; title: string; description: string; size: string }
+  /**
+   * A file to open or download; `size` like "1.2 MB" ("" when unknown), `format` its ending as people say it ("PDF",
+   * "XLSX"), `category` for its icon, `opensInBrowser` when browsers show it in a tab rather than save it.
+   */
+  | { type: "file"; url: string; title: string; description: string; size: string; format: string; category: GuideFileCategory; opensInBrowser: boolean }
   /** A YouTube video, played in privacy-enhanced mode once the visitor allows it. */
   | { type: "video"; youtubeId: string; title: string };
 
@@ -138,12 +142,22 @@ const toEmbedBlock = (content: Record<string, unknown>, settings: Record<string,
   return { type: "embed" as const, url: embed.url, service: { name, company, kind }, height, title: field.text(content, "title") || name, caption: field.text(content, "caption") };
 };
 
-/** A PDF uploaded in the admin (its address checked again here, so it is safe to add to the base) with its title. */
+/** A file uploaded in the admin (its address checked again here, so it is safe to add to the base) with its title. */
 const toFileBlock = (content: Record<string, unknown>, settings: Record<string, unknown>, filesBaseUrl: string, language: SiteLanguage = "en") => {
   const title = field.text(content, "title");
-  if (!title || typeof settings.path !== "string" || !GUIDE_FILE_PATH.test(settings.path)) return undefined;
+  const format = typeof settings.path === "string" && GUIDE_FILE_PATH.test(settings.path) ? guideFileFormatOf(settings.path) : undefined;
+  if (!title || !format) return undefined;
   const size = typeof settings.byteSize === "number" && settings.byteSize > 0 ? fileSizeLabel(settings.byteSize, language) : "";
-  return { type: "file" as const, url: `${filesBaseUrl}/${settings.path}`, title, description: field.text(content, "description"), size };
+  return {
+    type: "file" as const,
+    url: `${filesBaseUrl}/${settings.path}`,
+    title,
+    description: field.text(content, "description"),
+    size,
+    format: format.label,
+    category: format.category,
+    opensInBrowser: format.opensInBrowser,
+  };
 };
 
 /** One section as a block of the article, or nothing when what it needs is missing (a trek not published, no text…). */

@@ -118,22 +118,33 @@ describe("embeds", () => {
 describe("file sections", () => {
   const path = "guide-files/00000000-0000-4000-8000-000000000001/langtang-packing-list.pdf";
 
-  it("links to an uploaded PDF with its title, description and size", () => {
+  it("links to an uploaded PDF with its title, description, size and format", () => {
     expect(blockOf("file", { title: "Packing list", description: "One page" }, { settings: { path, byteSize: 1_258_291 } })).toEqual({
       type: "file",
       url: `https://photos.example/trek-files/${path}`,
       title: "Packing list",
       description: "One page",
       size: "1.2 MB",
+      format: "PDF",
+      category: "pdf",
+      opensInBrowser: true,
     });
     expect(blockOf("file", { title: "Packing list" }, { settings: { path, byteSize: 86_000 } })).toMatchObject({ description: "", size: "84 KB" });
     expect(blockOf("file", { title: "Packing list" }, { settings: { path } })).toMatchObject({ size: "" });
+  });
+
+  it("names other formats by their ending: a spreadsheet is saved, a recording opens", () => {
+    const folder = "guide-files/00000000-0000-4000-8000-000000000001";
+    expect(blockOf("file", { title: "Prices" }, { settings: { path: `${folder}/prices-2026.xlsx` } })).toMatchObject({ format: "XLSX", category: "spreadsheet", opensInBrowser: false });
+    expect(blockOf("file", { title: "Guide" }, { settings: { path: `${folder}/audio-guide.mp3` } })).toMatchObject({ format: "MP3", category: "audio", opensInBrowser: true });
+    expect(blockOf("file", { title: "Maps" }, { settings: { path: `${folder}/maps.7z` } })).toMatchObject({ format: "7Z", category: "archive" });
   });
 
   it("leaves out a file without a title or with an address an upload never hands out", () => {
     expect(blockOf("file", { title: "" }, { settings: { path } })).toBeUndefined();
     expect(blockOf("file", { title: "Map" }, { settings: { path: "https://evil.example/x.pdf" } })).toBeUndefined();
     expect(blockOf("file", { title: "Map" }, { settings: { path: "guide-files/../../photos/secret.pdf" } })).toBeUndefined();
+    expect(blockOf("file", { title: "Page" }, { settings: { path: "guide-files/00000000-0000-4000-8000-000000000001/page.html" } })).toBeUndefined();
   });
 });
 

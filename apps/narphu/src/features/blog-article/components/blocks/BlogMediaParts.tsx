@@ -40,8 +40,10 @@ export const BlogMap = ({ title, place }: { title: string; place: string }) => {
   );
 };
 
-/** A PDF to open or save. */
-export const BlogFile = ({ url, title, description, size }: { url: string; title: string; description: string; size: string }) => (
+type BlogFileProps = { url: string; title: string; description: string; size: string; format: string; opensInBrowser: boolean };
+
+/** A file to open (a PDF, a photo, a recording) or save (Word, Excel, an archive…), with its format and size. */
+export const BlogFile = ({ url, title, description, size, format, opensInBrowser }: BlogFileProps) => (
   <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3.5 rounded-2xl border border-solid border-line p-4.5 text-text no-underline hover:border-maroon">
     <span className="inline-flex size-12 flex-none items-center justify-center rounded-[10px] bg-maroon-tint text-maroon">
       <TrailIcon name="doc" size={24} />
@@ -49,7 +51,10 @@ export const BlogFile = ({ url, title, description, size }: { url: string; title
     <span className="flex min-w-0 flex-col">
       <span className="font-semibold text-ink">{title}</span>
       {description && <span className="text-[15px] leading-5.5">{description}</span>}
-      <span className="text-sm leading-5 text-muted">PDF{size && `, ${size}`} (opens in a new tab)</span>
+      <span className="text-sm leading-5 text-muted">
+        {format}
+        {size && `, ${size}`} {opensInBrowser ? "(opens in a new tab)" : "(downloads)"}
+      </span>
     </span>
   </a>
 );

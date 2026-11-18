@@ -99,7 +99,7 @@ export const ArticleBlock = ({ block, article }: ArticleBlockProps) => {
     case "embed":
       return <ArticleEmbed url={block.url} service={block.service} height={block.height} title={block.title} caption={block.caption} />;
     case "file":
-      return <ArticleFile url={block.url} title={block.title} description={block.description} size={block.size} />;
+      return <ArticleFile {...block} />;
     case "video":
       return <ArticleVideo youtubeId={block.youtubeId} title={block.title} />;
   }

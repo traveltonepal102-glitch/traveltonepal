@@ -6,13 +6,13 @@ import { removeUnusedTrekFile } from "@/lib/storage/trekFiles";
 import type { Json } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-/** A "File to download" section's PDF address ([] when its settings hold none). */
+/** A "File to download" section's file address ([] when its settings hold none). */
 const filePathOf = (settings: Json): string[] => {
   const path = settings && typeof settings === "object" && !Array.isArray(settings) ? settings.path : undefined;
   return typeof path === "string" && GUIDE_FILE_PATH.test(path) ? [path] : [];
 };
 
-/** The PDFs the guide's saved "File to download" sections use, to delete those a save removes or replaces. */
+/** The files the guide's saved "File to download" sections use, to delete those a save removes or replaces. */
 export const listGuideFilePaths = async (articleId: string): Promise<string[]> => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from("article_sections").select("settings").eq("article_id", articleId).eq("type", "file");
@@ -21,7 +21,7 @@ export const listGuideFilePaths = async (articleId: string): Promise<string[]> =
 };
 
 /**
- * Deletes the PDFs of `paths` that no travel guide uses any more (they are public, so they should go). A failure
+ * Deletes the files of `paths` that no travel guide uses any more (they are public, so they should go). A failure
  * only leaves unused files behind: it is logged, never shown to the admin.
  */
 export const removeUnusedGuideFiles = async (paths: string[]) => {

@@ -7,11 +7,17 @@ import { putFile } from "@/features/photos/lib/putFile";
 
 type Failure = { ok: false; message: string };
 
-/** What the input may take: the type sent to storage (browsers don't know every type, e.g. GPX), and the file ending. */
-export type FileAccept = { contentType: string; extension: string; label: string };
+/**
+ * What the input may take: each file ending (".pdf") with the type sent to storage for it (browsers don't know every
+ * type, e.g. GPX, so it never comes from the browser), and what to say when another file is chosen.
+ */
+export type FileAccept = { types: readonly { extension: string; contentType: string }[]; wrongTypeMessage: string };
 
-export const PDF_ACCEPT: FileAccept = { contentType: "application/pdf", extension: ".pdf", label: "PDF" };
-export const GPX_ACCEPT: FileAccept = { contentType: "application/gpx+xml", extension: ".gpx", label: "GPX" };
+export const PDF_ACCEPT: FileAccept = { types: [{ extension: ".pdf", contentType: "application/pdf" }], wrongTypeMessage: "Choose a PDF file." };
+export const GPX_ACCEPT: FileAccept = { types: [{ extension: ".gpx", contentType: "application/gpx+xml" }], wrongTypeMessage: "Choose a GPX file." };
+
+/** For the file input's `accept`: ".pdf,.docx,…". */
+export const acceptAttribute = (accept: FileAccept) => accept.types.map((type) => type.extension).join(",");
 
 type FileUploadSteps<Result> = {
   accept: FileAccept;
@@ -34,13 +40,14 @@ export const useFileUpload = <Result extends object>({ accept, start, finish, on
     const chosen = event.target.files?.[0];
     event.target.value = "";
     if (!chosen) return;
-    if (!chosen.name.toLowerCase().endsWith(accept.extension)) return setMessage(`Choose a ${accept.label} file.`);
+    const type = accept.types.find((each) => chosen.name.toLowerCase().endsWith(each.extension));
+    if (!type) return setMessage(accept.wrongTypeMessage);
     setMessage("");
     setProgress(0);
     try {
       const started = await start(chosen);
       if (!started.ok) return setMessage(started.message);
-      await putFile(started.uploadUrl, chosen, setProgress, undefined, accept.contentType);
+      await putFile(started.uploadUrl, chosen, setProgress, undefined, type.contentType);
       const finished = await finish(started.path);
       if (!finished.ok) return setMessage(finished.message);
       onUploaded(finished);

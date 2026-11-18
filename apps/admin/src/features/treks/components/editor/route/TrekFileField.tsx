@@ -7,7 +7,7 @@ import { useId, useState } from "react";
 
 import { secondaryButton } from "@/components/ui/buttonStyles";
 import { FieldError } from "@/components/ui/FieldError";
-import { GPX_ACCEPT, PDF_ACCEPT, useFileUpload } from "@/hooks/useFileUpload";
+import { GPX_ACCEPT, PDF_ACCEPT, acceptAttribute, useFileUpload } from "@/hooks/useFileUpload";
 import type { FileAccept } from "@/hooks/useFileUpload";
 import type { TrekFileKind } from "@/lib/storage/trekFiles";
 
@@ -88,7 +88,7 @@ export const TrekFileField = ({ kind, path: savedPath, url: savedUrl, error, onE
           <Icon name="upload" size={16} />
           {progress !== null ? `Uploading ${Math.round(progress * 100)}%` : file ? "Replace" : words.add}
         </label>
-        <input id={`${id}-file`} type="file" accept={words.accept.extension} onChange={upload} disabled={progress !== null} className="sr-only" />
+        <input id={`${id}-file`} type="file" accept={acceptAttribute(words.accept)} onChange={upload} disabled={progress !== null} className="sr-only" />
         {file && (
           <button
             type="button"

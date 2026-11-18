@@ -40,11 +40,11 @@ describe("“File to download” sections", () => {
     ]);
     if (result.success) throw new Error("expected the sections to be rejected");
     expect(toFieldErrors(result.error)).toMatchObject({
-      "sections.0.path": "Add the PDF, or remove this section.",
+      "sections.0.path": "Add the file, or remove this section.",
       "sections.0.title": expect.stringContaining("Write the file's title"),
-      "sections.1.path": "Add the PDF again.",
-      "sections.2.path": "Add the PDF again.",
-      "sections.3.byteSize": "Use a PDF of up to 15 MB.",
+      "sections.1.path": "Add the file again.",
+      "sections.2.path": "Add the file again.",
+      "sections.3.byteSize": "Use a file of up to 15 MB.",
     });
   });
 

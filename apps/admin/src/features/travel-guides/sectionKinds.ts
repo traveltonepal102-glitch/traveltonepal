@@ -188,10 +188,10 @@ export const SECTION_KINDS: SectionKind[] = [
     type: "file",
     group: "media",
     name: "File to download",
-    description: "A PDF visitors can open or download, with its title and size.",
+    description: "A file visitors can open or download (PDF, Word, Excel, PowerPoint, text, photo, audio or archive), with its title and size.",
     goodFor: "Packing lists, printable maps, permit forms, price lists.",
-    youFillIn: ["PDF (up to 15 MB)", "Title", "Short description (optional)"],
-    icon: "picture_as_pdf",
+    youFillIn: ["File (up to 15 MB)", "Title", "Short description (optional)"],
+    icon: "download",
   },
   { type: "video", group: "media", name: "YouTube video", description: "A video with a “Play” button first (privacy rules).", goodFor: "Trail videos, guide introductions.", youFillIn: ["YouTube link"], icon: "smart_display" },
   {

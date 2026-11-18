@@ -96,25 +96,25 @@ const createS3TrekFiles = (settings: S3Settings): TrekFileStorage => {
 };
 
 /**
- * Trek files (printable maps, GPS tracks, blogs' PDFs): S3 in production, Supabase Storage in development. Files
+ * Trek files (printable maps, GPS tracks, blogs' files to download): S3 in production, Supabase Storage in development. Files
  * are public once uploaded: a map or a route has nothing private in it.
  */
 export const createTrekFileStorage = async (): Promise<TrekFileStorage> => (env.s3 ? createS3TrekFiles(env.s3) : createSupabaseTrekFiles());
 
 /**
- * Keeps an uploaded file only when it really is one of this kind (its content, not its name) within the limit,
- * else removes it. Returns its size in bytes, or null when it was removed.
+ * Keeps an uploaded file only when `isValid` says its bytes are what they should be (its content, not its name) and
+ * it is within the limit, else removes it. Returns its size in bytes, or null when it was removed.
  */
-export const keepIfTrekFile = async (kind: TrekFileKind, path: string): Promise<number | null> => {
+export const keepIfValid = async (path: string, isValid: (file: Buffer) => boolean): Promise<number | null> => {
   const storage = await createTrekFileStorage();
   const file = await storage.download(path);
-  if (file.length <= MAX_TREK_FILE_BYTES && TREK_FILE_KINDS[kind].isValid(file)) return file.length;
+  if (file.length <= MAX_TREK_FILE_BYTES && isValid(file)) return file.length;
   await storage.remove(path);
   return null;
 };
 
-/** As keepIfTrekFile for a PDF (a blog's "File to download" too). */
-export const keepIfPdf = (path: string) => keepIfTrekFile("pdfMap", path);
+/** As keepIfValid for one of the trek's own files (the printable map, the GPS track). */
+export const keepIfTrekFile = (kind: TrekFileKind, path: string) => keepIfValid(path, TREK_FILE_KINDS[kind].isValid);
 
 /**
  * Deletes a file nothing uses any more (e.g. the printable map a save replaced). It is public, so it should go,
