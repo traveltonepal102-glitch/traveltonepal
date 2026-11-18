@@ -11,7 +11,8 @@
     "test": "pnpm -r --if-present test",
     "dev:manaslu": "pnpm --filter manaslu dev",
     "dev:annapurna": "pnpm --filter annapurna dev",
-    "dev:narphu": "pnpm --filter narphu dev"
+    "dev:narphu": "pnpm --filter narphu dev",
+    "dev:everest": "pnpm --filter everest dev"
   },
   "devEngines": {
     "packageManager": {

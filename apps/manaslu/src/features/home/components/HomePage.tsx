@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ROUTES } from "@/lib/routes";
+import { SITE_NAME } from "@/lib/site";
 
 import { homeJsonLd } from "../homeJsonLd";
 import type { HomeData } from "../types";
@@ -24,7 +25,7 @@ export const HomePage = ({ data }: { data: HomeData }) => {
       <section aria-label="Top of the page" className="wrap flex flex-col gap-5 pt-7">
         {trek && <Breadcrumbs items={[{ label: "Home", href: ROUTES.home }, { label: trek.name }]} />}
         <HomeTitle top={top} trek={trek} rating={rating} hasReviews={Boolean(trek?.sections.includes("reviews")) && reviews.length > 0} />
-        <HomeGallery main={top.photo} photos={trek?.photos ?? []} />
+        <HomeGallery main={top.photo} photos={trek?.photos ?? []} title={trek?.name ?? SITE_NAME} />
       </section>
 
       {trek ? (

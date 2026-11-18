@@ -1,6 +1,6 @@
 import { ClampedText } from "@/components/shared/ClampedText";
+import { ExpandablePhoto } from "@/components/shared/photo-viewer/ExpandablePhoto";
 import { RichText } from "@/components/shared/RichText";
-import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { formatAltitude } from "@/lib/format";
 
@@ -47,9 +47,7 @@ export const ItineraryDayCard = ({ day }: { day: HomeDay }) => (
       {/* The day's photo (from the trek editor) beside the text, above it on a phone. */}
       <div className="flex flex-wrap gap-4">
         {day.photo && (
-          <div className="relative h-42.5 w-full flex-none overflow-hidden rounded-[10px] bg-sky sm:h-28 sm:w-40">
-            <SiteImage image={day.photo} sizes="(min-width: 640px) 160px, 100vw" className="object-cover" />
-          </div>
+          <ExpandablePhoto photo={day.photo} title={`Tag ${day.number}: ${day.title}`} sizes="(min-width: 640px) 160px, 100vw" className="relative h-42.5 w-full flex-none overflow-hidden rounded-[10px] bg-sky sm:h-28 sm:w-40" />
         )}
         <ClampedText className="min-w-0 flex-[1_1_260px] text-base leading-6.5">
           <RichText doc={day.body} className="flex flex-col gap-3" headingLevel={4} />

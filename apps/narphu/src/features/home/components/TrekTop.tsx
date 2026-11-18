@@ -1,6 +1,8 @@
 import type { SiteImageSource } from "@ttn/site-data/images";
 import type { ReactNode } from "react";
 
+import { SITE_NAME } from "@/lib/site";
+
 import type { HomeRating, HomeTop, HomeTrek } from "../types";
 import { BookingCard } from "./BookingCard";
 import { HomeGallery } from "./HomeGallery";
@@ -30,7 +32,7 @@ export const TrekTop = ({ top, trek, rating, hasReviews, mainPhoto, before }: Tr
       <div className={`grid gap-8 lg:gap-10 ${trek ? "lg:grid-cols-[minmax(0,1fr)_400px]" : ""}`}>
         <div className="flex min-w-0 flex-col gap-8">
           <HomeTitle top={top} trek={trek} rating={rating} hasReviews={hasReviews} />
-          <HomeGallery main={mainPhoto} photos={trek?.photos ?? []} />
+          <HomeGallery main={mainPhoto} photos={trek?.photos ?? []} title={trek?.name ?? SITE_NAME} />
         </div>
         {trek && (
           <div id="book" className="self-start scroll-mt-24">

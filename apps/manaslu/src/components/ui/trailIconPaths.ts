@@ -11,6 +11,7 @@ export const TRAIL_ICON_PATHS = {
   close: "M6 6l12 12M18 6L6 18",
   doc: "M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6",
   drop: "M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z",
+  expand: "M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7",
   grid: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
   heart: "M12 20s-7-4.3-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.7-7 10-7 10z",
   home: "M4 11l8-7 8 7M6 9.5V20h12V9.5M10 20v-5h4v5",
@@ -29,6 +30,8 @@ export const TRAIL_ICON_PATHS = {
   tag: "M3 12V4h8l10 10-8 8L3 12zM7.5 7.5h.01",
   trend: "M3 17l6-6 4 4 8-8M15 7h6v6",
   users: "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 6.5M18 14a5.5 5.5 0 0 1 3.5 6",
+  "zoom-in": "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4M8 11h6M11 8v6",
+  "zoom-out": "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4M8 11h6",
 } as const;
 
 export type TrailIconName = keyof typeof TRAIL_ICON_PATHS;

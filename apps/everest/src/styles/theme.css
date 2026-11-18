@@ -1,0 +1,133 @@
+/*
+ * Everest Trek's own look (Brand Guidelines 1.0, November 2026: "Deep Ocean", blue only; design canvas "Everest Trek
+ * Website"): navy for headings and dark bands, Ocean 700 for buttons and links, ice blues for the light bands, the
+ * glacier accent for decoration and large text only, Outfit for headings and DM Sans for text. Everything visual on
+ * this website comes from these tokens. The leopard's fur colours live only inside the logo.
+ */
+@theme {
+  /* Ocean 700: buttons, links, the brand's action colour. Ocean 800: hover. */
+  --color-ocean: #134074;
+  --color-ocean-deep: #13315c;
+  --color-ocean-tint: #edf2f8;
+  --color-on-ocean-muted: #d6e4f0;
+  /* Accent (#4A90C8): decoration, icons, stars and large numbers; never small text on white. */
+  --color-glacier: #4a90c8;
+  --color-glacier-tint: #e4eef8;
+  --color-glacier-line: #bcd2e6;
+  /* Small text in the accent's place (eyebrows, notes): Ocean 500, readable on white and ice. */
+  --color-glacier-ink: #255d96;
+  --color-glacier-deep: #2f6fae;
+  /* Ocean 900: headings and the dark bands. Ocean 950 (night): the footer. */
+  --color-ink: #0b2545;
+  --color-night: #0b1a2e;
+  --color-text: #33465c;
+  --color-muted: #556a82;
+  --color-line: #dce3ea;
+  --color-field: #7f8fa3;
+  /* Ice 100: every second light band; Ice 50 (mist): the page. */
+  --color-ice: #edf2f8;
+  --color-ice-strong: #d6e4f0;
+  --color-mist: #f7f9fc;
+  --color-snow: #ffffff;
+  --color-whatsapp: #15803d;
+  --color-whatsapp-deep: #116a32;
+  /* On the navy grounds (footer, itinerary): labels, quiet lines, WhatsApp's green and errors bright enough to read. */
+  --color-on-ink-label: #8da9c4;
+  --color-on-ink-muted: #a9bcd0;
+  --color-on-ink-whatsapp: #4ade80;
+  --color-on-ink-error: #ffb4ab;
+  --color-error: #b42318;
+  /* Google's own blue, only for its "G". */
+  --color-google: #4285f4;
+  --color-focus: #2f6fae;
+
+  --font-display: var(--font-outfit), "Outfit", system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(11, 37, 69, 0.05), 0 14px 34px -18px rgba(11, 37, 69, 0.28);
+  --shadow-raised: 0 30px 70px -28px rgba(11, 37, 69, 0.4);
+
+  --text-eyebrow: 13px;
+  --text-eyebrow--line-height: 18px;
+  /* Headings grow with the screen, from a phone (375px) to a laptop (1024px), instead of jumping at one width. */
+  --text-h1: clamp(40px, 4.6vw + 23px, 76px);
+  --text-h1--line-height: 1.02;
+  --text-h2: clamp(30px, 2vw + 22px, 46px);
+  --text-h2--line-height: 1.1;
+  --text-h3: clamp(20px, 0.4vw + 18.5px, 22px);
+  --text-h3--line-height: 1.28;
+  --text-body: 17px;
+  --text-body--line-height: 28px;
+}
+
+/* The space between the screen's edge and the content: 16px on a phone, growing to 24px. The header lines up with it. */
+:root {
+  --gutter: clamp(16px, 4vw, 32px);
+}
+
+/* The page's width and side gutters. */
+@utility wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/*
+ * A row of buttons. Below Tailwind's sm (640px) they stack, each as wide as the column: easy to tap, and no ragged rows.
+ * A group that pairs small buttons on a phone sets max-sm:grid-cols-2 and spans the wide ones (max-sm:col-span-2).
+ */
+@utility actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  @media (width < 40rem) {
+    display: grid;
+    align-items: stretch;
+  }
+}
+
+/*
+ * The box around a table. A table of four or more columns keeps its cells readable and scrolls sideways when the
+ * screen is too narrow, instead of breaking words onto one line each; a shadow at an edge shows there is more.
+ */
+@utility table-scroll {
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--color-snow) 30%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--color-snow) 30%, transparent) right / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(11 37 69 / 0.16), transparent) left / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(11 37 69 / 0.16), transparent) right / 12px 100% no-repeat scroll;
+  background-color: var(--color-snow);
+  & table:has(tr > :nth-child(4)) :is(th, td) {
+    min-width: 7rem;
+  }
+  & table:has(tr > :nth-child(4)) :is(th, td):first-child {
+    min-width: 4.5rem;
+  }
+}
+
+/* Small capitals above a heading. */
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow--line-height);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-glacier-ink);
+}
+
+/* The accent dash before an eyebrow (design: every section's label). */
+@utility eyebrow-dash {
+  &::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-glacier);
+  }
+}

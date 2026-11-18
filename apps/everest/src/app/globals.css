@@ -1,0 +1,186 @@
+@import "tailwindcss";
+@import "../styles/theme.css";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--color-mist);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  /* Text stays easy to read however wide the page is. A column that is narrow enough already (the trek beside its
+     booking card, a blog) sets --text-measure: none, so its text fills it instead of leaving a gap. */
+  p {
+    max-width: var(--text-measure, 72ch);
+  }
+
+  /* Brand Guidelines 1.0: Outfit ExtraBold for the big headings, a little tighter. */
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* An h4 sits under an h3 (a heading inside an itinerary day) and looks like one. */
+  h3,
+  h4 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+  }
+
+  a {
+    color: var(--color-ocean);
+  }
+
+  a:hover {
+    color: var(--color-ocean-deep);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* The line icons (TrailIcon): drawn from the sprite, styled here once instead of on every <svg>. */
+  .trail-icon {
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Don't let the sticky section menu cover a heading it jumps to. */
+  [id] {
+    scroll-margin-top: 80px;
+  }
+}
+
+/*
+ * Motion (design: canvas "Everest Trek Website"): the hero photo drifts slowly, its words rise in, the altitude ribbon
+ * draws itself and its peak pulses; sections fade up as they scroll into view where the browser supports scroll-driven
+ * animations (elsewhere they are simply there). Only transform and opacity move, and nothing moves for visitors who ask
+ * for reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-photo {
+    animation: hero-drift 28s ease-in-out infinite alternate;
+  }
+
+  /* Only moves, never fades: the hero's words are the page's first paint (LCP), so they are visible from the start. */
+  .rise {
+    animation: slide-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .rise-2 {
+    animation-delay: 0.12s;
+  }
+
+  .rise-3 {
+    animation-delay: 0.24s;
+  }
+
+  .ribbon-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ribbon-draw 2.4s 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .ribbon-pulse {
+    animation: ribbon-pulse 2s ease-out infinite;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 20%;
+    }
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08) translate(-1.5%, -1%);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ribbon-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ribbon-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgb(74 144 200 / 0.7);
+  }
+  to {
+    box-shadow: 0 0 0 14px rgb(74 144 200 / 0);
+  }
+}
+
+/* While a pop-up window (the photo viewer, the phone menu) is open, only it scrolls: scrolling past its end never moves
+   the page behind it, phones included. */
+html:has(dialog:modal) {
+  overflow: hidden;
+}
+
+dialog:modal {
+  overscroll-behavior: contain;
+}

@@ -1,6 +1,6 @@
 import { ClampedText } from "@/components/shared/ClampedText";
+import { ExpandablePhoto } from "@/components/shared/photo-viewer/ExpandablePhoto";
 import { RichText } from "@/components/shared/RichText";
-import { SiteImage } from "@/components/ui/SiteImage";
 import { TrailIcon } from "@/components/ui/TrailIcon";
 import { formatAltitude } from "@/lib/format";
 
@@ -13,8 +13,8 @@ export const ItineraryDayPanel = ({ day, count }: { day: HomeDay; count: number 
   <article aria-labelledby={`day-${day.number}-h`} className="overflow-hidden rounded-3xl bg-paper text-text">
     {day.photo && (
       <div className="relative h-75 bg-maroon-tint max-sm:h-52">
-        <SiteImage image={day.photo} sizes="(min-width: 1024px) 700px, 100vw" className="object-cover" />
-        {day.isHighPoint && <span className="absolute top-5 left-5 rounded-full bg-saffron px-3 py-1 text-[13px] leading-4.5 font-bold text-ink">Highest point of the trek</span>}
+        <ExpandablePhoto photo={day.photo} title={`Day ${day.number}: ${day.title}`} sizes="(min-width: 1024px) 700px, 100vw" className="absolute inset-0 size-full" />
+        {day.isHighPoint && <span className="pointer-events-none absolute top-5 left-5 rounded-full bg-saffron px-3 py-1 text-[13px] leading-4.5 font-bold text-ink">Highest point of the trek</span>}
       </div>
     )}
     <div className="flex flex-col gap-3.5 p-7 max-sm:p-5">

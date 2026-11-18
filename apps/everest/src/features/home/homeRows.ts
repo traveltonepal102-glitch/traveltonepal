@@ -1,0 +1,88 @@
+import { coverImage } from "@ttn/site-data/images";
+import type { WebReviewRatingRow, WebReviewRow, WebSitePageRow, WebTravelGuideRow } from "@ttn/site-data/database.types";
+import { reviewAge } from "@ttn/site-data/reviewAge";
+import { firstText } from "@ttn/site-data/rowText";
+
+import type { HomeGuide, HomeRating, HomeReview, HomeTop } from "./types";
+import { SITE_LANGUAGE } from "@/lib/site";
+
+const REVIEWS_SHOWN = 6;
+
+export const GUIDE_TOPICS: Record<WebTravelGuideRow["topic"], string> = { planning: "Planung", "best-time": "Beste Reisezeit", health: "Gesundheit und Sicherheit", gear: "Ausrüstung und Packliste" };
+
+const DATE = new Intl.DateTimeFormat("de-DE", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+/** "25. Okt. 2026" from a saved date. */
+export const formatGuideDate = (day: string) => DATE.format(new Date(`${day}T00:00:00Z`));
+
+const textOf = (content: unknown, key: string) => {
+  const value = content && typeof content === "object" && key in content ? (content as Record<string, unknown>)[key] : "";
+  return typeof value === "string" ? value.trim() : "";
+};
+
+/** The top of the page from its row: `content` holds what only a region website's Home has (read leniently). */
+export const toHomeTop = (row: WebSitePageRow, photosBaseUrl: string): HomeTop => ({
+  eyebrow: row.eyebrow.trim(),
+  heading: row.heading.trim(),
+  intro: row.intro.trim(),
+  photo: coverImage(row, photosBaseUrl, row.heading, textOf(row.content, "photoAlt")),
+  buttonLabel: textOf(row.content, "buttonLabel") || "Trek per WhatsApp planen",
+  secondLabel: textOf(row.content, "secondLabel"),
+});
+
+/** The newest reviews; "vor 5 Monaten" is worked out here, so it stays true while the page is cached. */
+export const toHomeReviews = (rows: readonly WebReviewRow[], photosBaseUrl: string, now: Date): HomeReview[] =>
+  rows
+    .toSorted((a, b) => b.reviewed_on.localeCompare(a.reviewed_on))
+    .slice(0, REVIEWS_SHOWN)
+    .map((row) => ({
+      id: row.id,
+      source: row.source,
+      name: row.reviewer_name,
+      when: reviewAge(row.reviewed_on, now, SITE_LANGUAGE),
+      rating: row.rating,
+      text: row.quote,
+      url: row.url,
+      photo: row.photo_id && row.photo_variant_widths?.length
+        ? { src: `${photosBaseUrl}/${row.photo_id}`, alt: "", variantWidths: row.photo_variant_widths, fileName: row.photo_file_name ?? undefined, placeholder: row.photo_placeholder ?? undefined }
+        : undefined,
+    }));
+
+/** Google's overall rating as typed in the admin, never one worked out from the chosen reviews. */
+export const toHomeRating = (rows: readonly WebReviewRatingRow[]): HomeRating | null => {
+  const google = rows.find((row) => row.source === "google");
+  return google ? { rating: Number(google.rating), count: google.review_count, profileUrl: google.profile_url } : null;
+};
+
+const toGuide = (row: WebTravelGuideRow, photosBaseUrl: string): HomeGuide => ({
+  slug: row.slug,
+  title: row.title,
+  text: firstText(row.card_text) ?? "",
+  topic: row.topic,
+  tag: GUIDE_TOPICS[row.topic],
+  meta: `${formatGuideDate(row.published_on)} · ${row.read_minutes} Min. Lesezeit`,
+  image: coverImage(row, photosBaseUrl, row.title, row.cover_alt),
+  isFeatured: row.is_featured,
+  regionSlugs: row.region_slugs,
+});
+
+/** Every guide, the featured one first, then the newest. */
+export const toAllGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string): HomeGuide[] =>
+  rows.toSorted((a, b) => Number(b.is_featured) - Number(a.is_featured) || b.published_on.localeCompare(a.published_on)).map((row) => toGuide(row, photosBaseUrl));
+
+/** The newest guides, whichever is featured: the menu's ten, or every one for the Blogs page. */
+export const toLatestGuides = (rows: readonly WebTravelGuideRow[], photosBaseUrl: string, count = 10): HomeGuide[] =>
+  rows.toSorted((a, b) => b.published_on.localeCompare(a.published_on)).slice(0, count).map((row) => toGuide(row, photosBaseUrl));
+
+/** How many guides "Read before you go" shows: one large and four beside and under it. */
+const SHOWN_GUIDES = 5;
+
+/**
+ * The guides a trek page shows: the posts its trek picked, in the admin's order (the trek editor's "Blog posts on this
+ * trek's page"), and only those. A pick that isn't published (any more) is left out; with none left, the website's own
+ * order (its featured guide, then the newest).
+ */
+export const toTrekPageGuides = (allGuides: readonly HomeGuide[], pickedSlugs: readonly string[]): HomeGuide[] => {
+  const picked = pickedSlugs.flatMap((slug) => allGuides.filter((guide) => guide.slug === slug));
+  return (picked.length > 0 ? picked : allGuides).slice(0, SHOWN_GUIDES);
+};

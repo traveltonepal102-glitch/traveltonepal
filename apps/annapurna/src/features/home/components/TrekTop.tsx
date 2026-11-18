@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { SITE_NAME } from "@/lib/site";
 
 import type { HomeRating, HomeTop, HomeTrek } from "../types";
 import { HomeGallery } from "./HomeGallery";
@@ -17,6 +18,6 @@ export const TrekTop = ({ breadcrumbs, top, trek, rating, hasReviews }: TrekTopP
   <section aria-label="Seitenanfang" className="wrap flex flex-col gap-4 pt-5 pb-8 max-md:pb-6">
     {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
     <HomeTitle top={top} trek={trek} rating={rating} hasReviews={hasReviews} />
-    <HomeGallery main={top.photo} photos={trek?.photos ?? []} />
+    <HomeGallery main={top.photo} photos={trek?.photos ?? []} title={trek?.name ?? SITE_NAME} />
   </section>
 );

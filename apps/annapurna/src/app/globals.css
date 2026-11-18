@@ -84,3 +84,13 @@
     scroll-margin-top: 80px;
   }
 }
+
+/* While a pop-up window (the photo viewer, the phone menu) is open, only it scrolls: scrolling past its end never moves
+   the page behind it, phones included. */
+html:has(dialog:modal) {
+  overflow: hidden;
+}
+
+dialog:modal {
+  overscroll-behavior: contain;
+}
