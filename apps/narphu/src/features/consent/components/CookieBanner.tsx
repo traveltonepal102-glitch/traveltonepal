@@ -58,8 +58,8 @@ export const CookieBanner = () => {
               </h2>
               <p className="text-[15px] leading-5.5">
                 We use only what is needed to run this site. With your permission we also count page visits (Google Analytics, loaded through Google Tag Manager) and show
-                maps and videos from other services. Choose one by one, or change your mind at any time, under <Link href={ROUTES.cookies}>Cookie settings</Link>. Read our{" "}
-                <Link href={ROUTES.privacy}>privacy policy</Link>.
+                maps and videos from other services. Choose one by one, or change your mind at any time, under <Link href={ROUTES.cookies} className="underline underline-offset-2">Cookie settings</Link>. Read our{" "}
+                <Link href={ROUTES.privacy} className="underline underline-offset-2">privacy policy</Link>.
               </p>
             </div>
             <div className="flex flex-none flex-col gap-2.5 sm:flex-row">

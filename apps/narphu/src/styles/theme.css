@@ -8,6 +8,8 @@
   --color-maroon-tint: #f5ede0;
   --color-on-maroon-muted: #ebddd0;
   --color-saffron: #e39b2e;
+  /* Saffron light enough for small text on maroon (6:1) and on a white/10 box over it (4.7:1); the brand saffron is 4:1 there. */
+  --color-saffron-light: #f7c97e;
   --color-saffron-tint: #fcf1df;
   --color-saffron-line: #edd3a6;
   --color-saffron-ink: #8a5413;

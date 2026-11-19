@@ -31,7 +31,7 @@ const Tile = ({ point, index, look, photo }: TileProps) => {
           <span aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-ink/0 from-30% to-ink/85" />
         </>
       )}
-      <span className={`relative text-sm leading-none font-bold tracking-[0.12em] ${isLight ? "text-saffron-ink" : "text-saffron"}`}>{String(index + 1).padStart(2, "0")}</span>
+      <span className={`relative text-sm leading-none font-bold tracking-[0.12em] ${isLight ? "text-saffron-ink" : "text-saffron-light"}`}>{String(index + 1).padStart(2, "0")}</span>
       <h3 className={`relative ${isBig ? "text-[34px]! leading-10!" : "text-[21px]! leading-6.5!"} ${isLight ? "" : "text-snow!"}`}>{point.title}</h3>
       {point.text && <p className={`relative m-0 ${isBig ? "max-w-115 text-[17px] leading-6.75" : "text-[15px] leading-5.5"} ${isLight ? "text-muted" : "text-on-maroon-muted"}`}>{point.text}</p>}
     </li>

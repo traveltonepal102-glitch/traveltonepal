@@ -1,25 +1,30 @@
 import { ClampedText } from "@/components/shared/ClampedText";
 import { TrailIcon } from "@/components/ui/TrailIcon";
+import type { TrailIconName } from "@/components/ui/TrailIcon";
 import { formatPrice } from "@/lib/format";
 
 import type { HomePoint, HomeTrek } from "../types";
 import { PointList } from "./PointList";
 
-/** Why meals are paid on the trail: the same company policy on every trek. */
-const REASONS: readonly HomePoint[] = [
+/** Why meals are paid on the trail: the same company policy on every trek, each reason with its own icon. */
+const REASONS: readonly (HomePoint & { icon: TrailIconName })[] = [
   {
+    icon: "utensils",
     title: "Du isst, worauf du Lust hast",
     text: "In der Höhe ändert sich der Appetit. Bestell, wonach dein Körper verlangt – von Dal Bhat bis zu Suppe oder Porridge.",
   },
   {
+    icon: "home",
     title: "Das Geld bleibt im Dorf",
     text: "Du bezahlst die Lodges direkt, so geht das gesamte Essensgeld an die Sherpa-Familien, die sie führen.",
   },
   {
+    icon: "receipt",
     title: "Kein Pauschalaufschlag",
     text: "Verpflegungspakete sind oft teurer als nötig. So zahlst du den echten Menüpreis für das, was du isst.",
   },
   {
+    icon: "leaf",
     title: "Deine Ernährungswünsche",
     text: "Vegetarisch, vegan oder glutenfrei: Bestell vor Ort und bekomm dein Essen so zubereitet, wie du es brauchst.",
   },
@@ -54,7 +59,7 @@ export const TrekMeals = ({
           key={reason.title}
           className="flex items-start gap-2.5 text-base leading-6"
         >
-          <TrailIcon name="check" size={20} className="mt-0.5 text-glacier" />
+          <TrailIcon name={reason.icon} size={20} className="mt-0.5 flex-none text-glacier" />
           <span>
             <strong className="font-semibold text-snow">{reason.title}.</strong>{" "}
             {reason.text}

@@ -24,8 +24,9 @@ export const generateStaticParams = async () => {
   return (pages.length > 0 ? [...new Set(pages.map((page) => page.slug))] : [NO_PAGE_YET]).map((slug) => ({ slug }));
 };
 
-// An address not built yet waits for its finished page instead of streaming a shell (which would fix the status at 200),
-// so an unknown address answers a real 404 and the main trek's and a renamed trek's a real 308, also on the first visit.
+// A clicked link shows loading.tsx at once. A direct visit to an address not built yet waits for the finished page
+// instead of streaming that skeleton (which would fix the status at 200), so an unknown address answers a real 404
+// and the main trek's and a renamed trek's a real 308, also on the first visit.
 export const ensureStatic = "navigation";
 // Waiting is on purpose (see above), so the development check for "instant" navigation leaves this page alone.
 export const instant = false;

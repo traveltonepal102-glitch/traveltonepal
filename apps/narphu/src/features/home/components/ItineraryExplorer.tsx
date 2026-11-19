@@ -69,6 +69,19 @@ export const ItineraryExplorer = ({ days, panels }: ItineraryExplorerProps) => {
               </svg>
             </span>
           )}
+          {/* The night's place under each marker; phones have room only for the chosen day's. */}
+          {days.map((day, index) =>
+            day.place ? (
+              <span
+                key={day.number}
+                aria-hidden="true"
+                className={`pointer-events-none absolute -translate-x-1/2 truncate rounded-full bg-ink/85 px-1.5 text-[11px] leading-4 ${index === chosen ? "translate-y-[calc(100%+28px)] font-semibold text-paper" : "translate-y-[calc(100%+20px)] text-on-maroon-muted max-md:hidden"}`}
+                style={{ left: `${x(index)}%`, bottom: `${y(day.nightAltitudeM)}%`, maxWidth: last > 0 ? `calc(${100 / last}% - 4px)` : undefined }}
+              >
+                {day.place}
+              </span>
+            ) : null,
+          )}
           {days.map((day, index) => {
             const isChosen = index === chosen;
             return (
@@ -86,7 +99,7 @@ export const ItineraryExplorer = ({ days, panels }: ItineraryExplorerProps) => {
             );
           })}
         </div>
-        <p className="m-0 mt-4 ml-16 text-xs text-on-ink-muted max-sm:ml-12">Numbers are days; each sits at that night&apos;s altitude.</p>
+        <p className="m-0 mt-4 ml-16 text-xs text-on-ink-muted max-sm:ml-12">Numbers are days; each sits at that night&apos;s place and altitude.</p>
       </figure>
 
       <div className="flex flex-wrap items-start gap-7">
@@ -103,7 +116,7 @@ export const ItineraryExplorer = ({ days, panels }: ItineraryExplorerProps) => {
                 >
                   <span className="text-xs font-bold tracking-[0.14em] text-saffron">DAY {String(day.number).padStart(2, "0")}</span>
                   <span>{day.route}</span>
-                  <span className="text-sm text-on-ink-muted">{formatAltitude(day.nightAltitudeM)}</span>
+                  <span className="text-sm text-on-ink-label">{formatAltitude(day.nightAltitudeM)}</span>
                 </button>
               </li>
             );

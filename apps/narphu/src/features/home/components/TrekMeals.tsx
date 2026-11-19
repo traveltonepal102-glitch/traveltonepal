@@ -67,14 +67,14 @@ export const TrekMeals = ({
         <TrailIcon name="tag" className="mt-0.75 text-saffron" />
         <span>
           <strong className="font-semibold">Daily food budget:</strong> plan on
-          about <strong className="text-saffron">{formatUsd(meals.budget.min)}–{meals.budget.max} USD a day</strong> for
+          about <strong className="text-saffron-light">{formatUsd(meals.budget.min)}–{meals.budget.max} USD a day</strong> for
           three meals.
         </span>
       </p>
     )}
     {(meals.trailTips.length > 0 || meals.teahouseNotes.length > 0) && (
       // The tips are long: their first lines, then "Read more" (all of them are in the page for search engines).
-      <ClampedText lines={13} className="text-base leading-6" buttonClassName="text-saffron hover:text-snow">
+      <ClampedText lines={13} className="text-base leading-6" buttonClassName="text-saffron-light hover:text-snow">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
           <TipList title="On the trail" points={meals.trailTips} />
           <TipList title="In the teahouses" points={meals.teahouseNotes} />

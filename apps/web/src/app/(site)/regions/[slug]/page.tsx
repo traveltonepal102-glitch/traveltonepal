@@ -19,9 +19,11 @@ export const generateStaticParams = async () => {
   return (slugs.length > 0 ? slugs : [NO_REGION_PAGE_YET]).map((slug) => ({ slug }));
 };
 
-// The slug is read before anything streams, so an unknown region answers with a real 404 status.
-// Reading it inside <Suspense> instead (Next's "instant navigation" advice) turns that into a
-// 200 + noindex "soft 404", which search engines handle worse. Regions are prerendered, so blocking is cheap.
+// A clicked link shows loading.tsx at once. A direct visit to an address not built yet waits for the finished
+// page instead of streaming that skeleton (which would fix the status at 200), so an unknown region answers a real
+// 404 and a renamed one a real 308, also on the first visit.
+export const ensureStatic = "navigation";
+// Waiting is on purpose (see above), so the development check for "instant" navigation leaves this page alone.
 export const instant = false;
 
 export const generateMetadata = async ({ params }: RegionPageProps): Promise<Metadata> => {
